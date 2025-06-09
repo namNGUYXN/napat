@@ -1,0 +1,30 @@
+:root {
+  --pink-40: #f9e6e6;
+  --pink-50: #f2c2c2;
+}
+
+/* --------------------
+----- Tùy chỉnh thanh scroll bar
+-------------------- */
+.custom-scrollbar::-webkit-scrollbar-track {
+  border-radius: 10px;
+  background-color: #fff;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 10px;
+	height: 5px;
+  background-color: #fff;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: var(--pink-50);
+}
+
+/* --------------------
+----- Xóa mũi tên của dropdown trong Bootstrap
+-------------------- */
+.remove-arrow-down.dropdown-toggle::after {
+  display: none;
+}

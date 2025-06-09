@@ -13,6 +13,21 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+// Các route về auth
+Route::get('/dang-nhap', 'AuthController@giaoDienDangNhap')->name('dang-nhap');
+Route::post('/dang-nhap', 'AuthController@dangNhap');
+Route::post('/dang-xuat', 'AuthController@dangXuat')->name('dang-xuat');
+
+
+// Các route phía client
+Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien+sinh-vien']], function () {
+    Route::get('/', 'HomeController@home')->name('home');
+    Route::get('/trang-chu', 'HomeController@home');
+});
+
+
+// Các route phía admin
+Route::group(['middleware' => ['auth.custom', 'vai_tro:admin']], function () {
+    Route::get('/admin', 'HomeController@dashboard')->name('dashboard');
+    Route::get('/admin/dashboard', 'HomeController@dashboard');
 });

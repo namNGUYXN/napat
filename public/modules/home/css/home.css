@@ -1,0 +1,25 @@
+.home-banner img {
+  width: 100%;
+  max-height: 350px;
+  object-fit: cover;
+}
+
+.department-list ul .department-item {
+  margin-bottom: 20px;
+}
+
+.department-list ul a:hover {
+  text-decoration: underline !important;
+}
+
+.department-list .department-toggle i.fa-angle-down {
+  transition: transform 0.3s ease-in-out;
+}
+
+.department-list .department-toggle i.fa-angle-down.rotated {
+  transform: rotate(-90deg);
+}
+
+.department-submenu-sidebar {
+  display: none;
+}

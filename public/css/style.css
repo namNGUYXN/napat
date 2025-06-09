@@ -1,0 +1,73 @@
+.sidebar.collapsed {
+  width: 60px;
+}
+
+.sidebar.collapsed a:has(.nav-text) {
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.07s ease-in-out;
+}
+
+.sidebar {
+  width: 250px;
+  transition: width 0.3s;
+  background-color: var(--pink-40);
+}
+
+.sidebar a:has(.nav-text) {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.2s ease-in-out 0.1s;
+}
+
+.sidebar .toggle-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+}
+
+ul.menu-sidebar,
+ul.submenu-sidebar {
+  padding-left: 0;
+  list-style: none;
+}
+
+ul.menu-sidebar li a {
+  display: block;
+  padding: 10px 15px;
+}
+
+ul.menu-sidebar li:not(:last-child) a {
+  border-bottom: 1px solid #bababa;
+}
+
+ul.menu-sidebar li a:hover {
+  background: var(--pink-50);
+}
+
+ul.submenu-sidebar {
+  margin-left: 20px;
+  border-left: 1px solid #bababa;
+  display: none;
+}
+
+ul.menu-sidebar>li>ul.submenu-sidebar {
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+ul.menu-sidebar a.nav-link i.fa-angle-down {
+  transition: transform 0.3s ease-in-out;
+}
+
+ul.menu-sidebar a.nav-link i.fa-angle-down.rotated {
+  transform: rotate(-90deg);
+}
+
+.department-submenu-sidebar {
+  display: none;
+}
+
+.content-row {
+  height: calc(100vh - 126px);
+}
