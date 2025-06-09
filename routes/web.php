@@ -17,6 +17,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/dang-nhap', 'AuthController@giaoDienDangNhap')->name('dang-nhap');
 Route::post('/dang-nhap', 'AuthController@dangNhap');
 Route::post('/dang-xuat', 'AuthController@dangXuat')->name('dang-xuat');
+Route::get('/quen-mat-khau', 'AuthController@giaoDienQuenMatKhau')->name('quen-mat-khau');
+Route::post('/gui-lien-ket-dat-lai-mat-khau', 'AuthController@guiLienKetDatLaiMatKhau')->name('lien-ket-dlmk');
+Route::get('/dat-lai-mat-khau/{token}', 'AuthController@giaoDienDatLaiMatKhau')->name('dat-lai-mat-khau');
+Route::post('/dat-lai-mat-khau', 'AuthController@datLaiMatKhau')->name('dat-lai-mat-khau');
 
 
 // Các route phía client

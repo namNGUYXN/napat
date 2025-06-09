@@ -2,10 +2,14 @@
 
 namespace App\Services;
 
+use App\DatLaiMatKhau;
+use App\Mail\DatLaiMatKhauMail;
 use App\NguoiDung;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class AuthService
 {
@@ -60,5 +64,91 @@ class AuthService
     // Xóa cookie token_remember
     Cookie::queue(Cookie::forget('token_remember'));
     return ['success' => true, 'message' => 'Đã đăng xuất'];
+  }
+
+  function guiLienKetDatLaiMatKhau(string $email)
+  {
+    $nguoiDung = NguoiDung::where('email', $email)->first();
+    if (!$nguoiDung) {
+      return [
+        'success' => false,
+        'message' => 'Email không tồn tại trong hệ thống.',
+      ];
+    }
+
+    $token = Str::random(60);
+
+    // Lưu token vào bảng dat_lai_mat_khau
+    DatLaiMatKhau::updateOrCreate(
+      ['email' => $nguoiDung->email],
+      [
+        'token' => $token,
+        'created_at' => Carbon::now(),
+      ]
+    );
+
+    // Gửi email
+    try {
+      $data = [
+        'token' => $token,
+        'nguoi_dung' => $nguoiDung
+      ];
+
+      Mail::to($nguoiDung->email)->send(new DatLaiMatKhauMail($data));
+    } catch (\Exception $e) {
+      return [
+        'success' => false,
+        'message' => 'Không thể gửi email. Vui lòng thử lại sau.',
+      ];
+    }
+
+    return [
+      'success' => true,
+      'message' => 'Liên kết đặt lại mật khẩu đã được gửi đến email của bạn!',
+    ];
+  }
+
+  function xacThucTokenDatLaiMatKhau(string $token)
+  {
+    $reset = DatLaiMatKhau::where('token', $token)->first();
+
+    if (!$reset || Carbon::parse($reset->created_at)->addMinutes(10)->isPast()) {
+      return [
+        'success' => false,
+        'message' => 'Liên kết đặt lại mật khẩu không hợp lệ hoặc đã hết hạn.'
+      ];
+    }
+
+    return [
+      'success' => true,
+      'email' => $reset->email
+    ];
+  }
+
+  function datLaiMatKhau(array $data)
+  {
+    $reset = DatLaiMatKhau::where([
+      ['email', $data['email']],
+      ['token', $data['token']]
+    ])->first();
+
+    if (!$reset || Carbon::parse($reset->created_at)->addMinutes(10)->isPast()) {
+      return [
+        'success' => false,
+        'message' => 'Liên kết đặt lại mật khẩu không hợp lệ hoặc đã hết hạn.',
+      ];
+    }
+
+    $nguoiDung = NguoiDung::where('email', $data['email'])->first();
+    $nguoiDung->mat_khau = $data['mat_khau'];
+    $nguoiDung->save();
+
+    // Xóa token
+    DatLaiMatKhau::where('email', $data['email'])->delete();
+
+    return [
+      'success' => true,
+      'message' => 'Mật khẩu đã được đặt lại thành công.',
+    ];
   }
 }

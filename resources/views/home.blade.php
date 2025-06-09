@@ -79,3 +79,11 @@
     </div>
   </div>
 @endsection
+
+@section('styles')
+    <link rel="stylesheet" href="{{ asset('modules/home/css/home.css') }}">
+@endsection
+
+@section('scripts')
+    <script src="{{ asset('modules/home/js/home.js') }}"></script>
+@endsection

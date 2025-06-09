@@ -33,6 +33,15 @@ class NguoiDungSeeder extends Seeder
                 'is_active' => true,
             ],
             [
+                'ho_ten' => 'Nguyễn Tấn Phát',
+                'email' => '0306221262@caothang.edu.vn',
+                'sdt' => null,
+                'hinh_anh' => null,
+                'mat_khau' => Hash::make('Mk123!'),
+                'vai_tro' => 'Giảng viên',
+                'is_active' => true,
+            ],
+            [
                 'ho_ten' => 'Lê Gia Nghi',
                 'email' => 'phuongnam8481@gmail.com',
                 'sdt' => null,

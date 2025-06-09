@@ -10,7 +10,8 @@
 
   <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
   <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-  <link rel="stylesheet" href="{{ asset('modules/home/css/home.css') }}">
+
+  @yield('styles')
 </head>
 
 <body>
@@ -39,7 +40,7 @@
   <script src="{{ asset('js/bootstrap-5.3.3.bundle.min.js') }}"></script>
   <script src="{{ asset('js/main.js') }}"></script>
   
-  <script src="{{ asset('modules/home/js/home.js') }}"></script>
+  @yield('scripts')
 </body>
 
 </html>
