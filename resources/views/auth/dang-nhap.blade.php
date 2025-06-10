@@ -9,15 +9,9 @@
 @section('form-content')
   <form action="{{ route('dang-nhap') }}" method="POST">
     @csrf
-    {{-- @if ($errors->any())
-      <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        {{ $errors->first() }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    @endif --}}
-    @if (session('success'))
-      <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ session('success') }}
+    @if (session('message'))
+      <div class="alert alert-{{ session('status') }} alert-dismissible fade show" role="alert">
+        {{ session('message') }}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
     @endif
@@ -30,7 +24,12 @@
     </div>
     <div class="mb-3">
       <label for="password" class="form-label">Mật khẩu:</label>
-      <input type="password" class="form-control" id="password" name="mat_khau">
+      <div class="input-group">
+        <input type="password" class="form-control" id="password" name="mat_khau">
+        <button class="btn btn-outline-secondary toggle-password" type="button">
+          <i class="fas fa-eye-slash toggle-icon"></i>
+        </button>
+      </div>
       @error('mat_khau')
         <small class="text-danger">{{ $message }}</small>
       @enderror
@@ -42,8 +41,4 @@
     </div>
     <button class="btn btn-primary form-control">Đăng nhập</button>
   </form>
-@endsection
-
-@section('styles')
-  <link rel="stylesheet" href="{{ asset('modules/auth/css/login.css') }}">
 @endsection

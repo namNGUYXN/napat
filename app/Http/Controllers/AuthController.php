@@ -56,13 +56,19 @@ class AuthController extends Controller
             return redirect()->route('home')->with('success', $result['message']);
         }
 
-        return back()->withErrors(['email' => $result['message']]);
+        return back()->with([
+            'message' => $result['message'],
+            'status' => 'danger'
+        ]);
     }
 
     function dangXuat()
     {
         $result = $this->authService->dangXuat();
-        return redirect()->route('dang-nhap')->with('success', $result['message']);
+        return redirect()->route('dang-nhap')->with([
+            'message' => $result['message'],
+            'status' => 'success'
+        ]);
     }
 
     function giaoDienQuenMatKhau()
@@ -85,10 +91,16 @@ class AuthController extends Controller
         $result = $this->authService->guiLienKetDatLaiMatKhau($request->email);
 
         if ($result['success']) {
-            return back()->with('success', $result['message']);
+            return back()->with([
+                'message' => $result['message'],
+                'status' => 'success'
+            ]);
         }
 
-        return back()->withErrors(['email' => $result['message']]);
+        return back()->with([
+            'message' => $result['message'],
+            'status' => 'danger'
+        ]);
     }
 
     function giaoDienDatLaiMatKhau($token)
@@ -96,7 +108,10 @@ class AuthController extends Controller
         $result = $this->authService->xacThucTokenDatLaiMatKhau($token);
 
         if (!$result['success']) {
-            return redirect()->route('quen-mat-khau')->withErrors(['message' => $result['message']]);
+            return redirect()->route('quen-mat-khau')->with([
+                'message' => $result['message'],
+                'status' => 'danger'
+            ]);
         }
 
         return view('auth.dat-lai-mat-khau', [
@@ -118,7 +133,7 @@ class AuthController extends Controller
                 ],
             ],
             [
-                'mat_khau.required' => 'Vui lòng nhập mật khẩu.',
+                'mat_khau.required' => 'Vui lòng nhập mật khẩu mới.',
                 'mat_khau.regex' => 'Password chỉ được sử dụng kí tự, chữ số, ký tự đặc biệt, bắt đầu bằng kí tự hoa và có 6 đến 32 kí tự',
                 'mat_khau.confirmed' => 'Mật khẩu mới không trùng khớp'
             ]
@@ -131,9 +146,15 @@ class AuthController extends Controller
         ]);
 
         if ($result['success']) {
-            return redirect()->route('dang-nhap')->with('success', $result['message']);
+            return redirect()->route('dang-nhap')->with([
+                'message' => $result['message'],
+                'status' => 'success'
+            ]);
         }
 
-        return back()->withErrors(['message' => $result['message']]);
+        return back()->with([
+            'message' => $result['message'],
+            'status' => 'danger'
+        ]);
     }
 }

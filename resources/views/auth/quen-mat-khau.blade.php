@@ -9,12 +9,12 @@
 @section('form-content')
   <form action="{{ route('lien-ket-dlmk') }}" method="POST">
     @csrf
-    @error('message')
-      <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        {{ $message }}
+    @if(session('message'))
+      <div class="alert alert-{{ session('status') }} alert-dismissible fade show" role="alert">
+        {{ session('message') }}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
-    @enderror
+    @endif
     @if (session('success'))
       <div class="alert alert-success alert-dismissible fade show" role="alert">
         {{ session('success') }}

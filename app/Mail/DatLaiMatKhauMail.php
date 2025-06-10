@@ -31,8 +31,8 @@ class DatLaiMatKhauMail extends Mailable
     public function build()
     {
         return $this->view('mails.auth.dat-lai-mat-khau')
-                    ->from('namdemoit11@gmail.com', 'Nguyễn Phương Nam')
-                    ->subject('Đặt lại mật khẩu')
+                    ->from('namdemoit11@gmail.com', 'NAPAT E-Learning')
+                    ->subject('[NAPAT] Yêu Cầu Đặt Lại Mật Khẩu')
                     ->with($this->data);
     }
 }

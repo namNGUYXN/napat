@@ -143,7 +143,7 @@ class AuthService
     $nguoiDung->mat_khau = $data['mat_khau'];
     $nguoiDung->save();
 
-    // Xóa token
+    // Xóa token khỏi db
     DatLaiMatKhau::where('email', $data['email'])->delete();
 
     return [
