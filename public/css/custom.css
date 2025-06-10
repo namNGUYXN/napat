@@ -28,3 +28,17 @@
 .remove-arrow-down.dropdown-toggle::after {
   display: none;
 }
+
+/* --------------------
+----- Bỏ nút tăng giảm trong input[type="number"]
+-------------------- */
+.no-spinner::-webkit-inner-spin-button,
+.no-spinner::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Cho Firefox */
+.no-spinner {
+  -moz-appearance: textfield;
+}

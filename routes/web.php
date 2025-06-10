@@ -32,6 +32,11 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien+sinh-vien']], 
 
 // Các route phía admin
 Route::group(['middleware' => ['auth.custom', 'vai_tro:admin']], function () {
+
     Route::get('/admin', 'HomeController@dashboard')->name('dashboard');
     Route::get('/admin/dashboard', 'HomeController@dashboard');
+
+    Route::get('/admin/menu', 'MenuController@giaoDienQuanLy')->name('list-menu');
+    Route::get('/admin/them-menu', 'MenuController@giaoDienThem')->name('them-menu');
+    Route::post('/admin/them-menu', 'MenuController@them');
 });
