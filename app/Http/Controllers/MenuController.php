@@ -6,6 +6,7 @@ use App\Services\HocPhanService;
 use App\Services\KhoaService;
 use App\Services\MenuService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class MenuController extends Controller
 {
@@ -38,5 +39,61 @@ class MenuController extends Controller
             'admin.modules.menu.them',
             compact('listMenu', 'listLoaiMenu', 'listKhoa', 'listHocPhan')
         );
+    }
+
+    function them(Request $request)
+    {
+        $data = $request->validate(
+            [
+                'ten' => 'required|string|max:100|unique:menu,ten',
+                'id_loai_menu' => 'required|exists:loai_menu,id',
+                'id_menu_cha' => 'nullable|exists:menu,id',
+                'gia_tri' => 'string|max:255',
+                'thu_tu' => 'nullable'
+            ],
+            [
+                'ten.required' => 'Vui lòng nhập tên menu',
+                'ten.max' => 'Tên menu tối đa 100 kí tự',
+                'ten.unique' => 'Tên menu đã tồn tại',
+                'id_loai_menu.required' => 'Vui lòng chọn loại menu',
+                'id_loai_menu.exists' => 'Loại menu bạn chọn không tồn tại',
+                'id_menu_cha.exists' => 'Menu bạn chọn không tồn tại để thuộc về'
+            ]
+        );
+
+        $result = $this->menuService->them($data);
+
+        if ($result['success']) {
+            return redirect()->route('list-menu')->with([
+                'message' => $result['message'],
+                'status' => 'success'
+            ]);
+        }
+
+        return redirect()->back()
+            ->with([
+                'message' => $result['message'],
+                'status' => 'danger'
+            ])->withInput();
+    }
+
+    function giaoDienChinhSua($id)
+    {
+        $menu = $this->menuService->layMenu($id);
+
+        $listMenu = $this->menuService->dataTree();
+        $listLoaiMenu = $this->menuService->layListLoaiMenu();
+        $listKhoa = $this->khoaService->layListKhoa();
+        $listHocPhan = $this->hocPhanService->laylistHocPhan();
+
+        return view(
+            'admin.modules.menu.chinh-sua',
+            compact('menu', 'listMenu', 'listLoaiMenu', 'listKhoa', 'listHocPhan')
+        );
+    }
+
+    function chinhSua(Request $request)
+    {
+        return $request;
     }
 }
