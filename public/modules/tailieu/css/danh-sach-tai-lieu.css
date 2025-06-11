@@ -1,0 +1,69 @@
+.document-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.document-card {
+  background-color: #ffffff;
+  border: 1px solid #dee2e6;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+}
+
+.document-card .document-img {
+  display: block;
+  overflow: hidden;
+}
+
+.document-card .document-img:hover img {
+  transform: scale(1.1);
+  transition: all 0.25s ease-in-out;
+}
+
+.document-card .document-name {
+  font-size: 20px;
+  display: inline-block;
+  text-decoration: none;
+  margin-bottom: 8px;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+}
+
+.document-card .document-name:hover {
+  color: #0dcaf0 !important;
+}
+
+.document-action-btn {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
+
+.dropdown-toggle::after {
+  display: none !important;
+}
+
+@media (max-width: 1120px) {
+  .document-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .document-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.document-add-btn {
+  position: absolute;
+  bottom: 20px;
+  right: 30px;
+  padding: 12px 16px;
+  z-index: 1001;
+}

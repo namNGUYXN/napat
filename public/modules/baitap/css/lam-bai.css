@@ -1,0 +1,79 @@
+.question-card {
+  background: white;
+  border: 1px solid #ddd;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.question-nav {
+  position: sticky;
+  top: 1rem;
+  background: #fff;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: .5rem;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.question-number {
+  width: 40px;
+  height: 40px;
+  border-radius: .5rem;
+  border: 1px solid #ccc;
+  text-align: center;
+  line-height: 40px;
+  margin: 4px;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.question-number.selected {
+  background-color: #28a745;
+  color: white;
+  border-color: #28a745;
+}
+
+/* Mobile answer nav */
+#mobileNavToggle {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #007bff;
+  color: white;
+  text-align: center;
+  padding: .75rem;
+  z-index: 1000;
+  cursor: pointer;
+}
+
+#mobileQuestionNav {
+  position: fixed;
+  bottom: 3rem;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-top: 1px solid #ccc;
+  padding: 1rem;
+  display: none;
+  z-index: 1000;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+.listQuestions {
+  max-height: calc(100vh - 80px);
+  /* Trừ chiều cao header */
+  overflow-y: scroll;
+  height: 100%;
+}
+
+@media (min-width: 768px) {
+
+  #mobileNavToggle,
+  #mobileQuestionNav {
+    display: none !important;
+  }
+}

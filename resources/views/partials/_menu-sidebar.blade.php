@@ -42,7 +42,7 @@
       </ul>
     </li>
     <li>
-      <a href="#" class="nav-link">
+      <a href="/tai-lieu" class="nav-link">
         <i class="fas fa-folder-open me-2 fs-5"></i>
         <span class="nav-text">Quản lý bài giảng</span>
       </a>

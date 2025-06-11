@@ -27,6 +27,11 @@ Route::post('/dat-lai-mat-khau', 'AuthController@datLaiMatKhau')->name('dat-lai-
 Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien+sinh-vien']], function () {
     Route::get('/', 'HomeController@home')->name('home');
     Route::get('/trang-chu', 'HomeController@home');
+    Route::get('/tai-lieu/bai-giang/chinh-sua-bai-giang/{id}', 'BaiGiangController@chinhSua')->name('bai-giang.chinh-sua');
+    Route::get('/tai-lieu/danh-sach-bai-giang/{id}', 'TaiLieuController@chiTiet')->name('muc-bai-giang.chi-tiet');
+    Route::get('/tai-lieu', 'TaiLieuController@danhSachTheoGiangVien')->name('danhsachtailieu');
+    Route::get('/bai-tap/lam-bai', 'BaiTapController@lamBai')->name('lambai');
+    Route::post('/bai-tap', 'BaiTapController@themBaiTap')->name('bai_tap.them');
 });
 
 

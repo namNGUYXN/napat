@@ -31,7 +31,7 @@
           <li><a href="#" class="nav-link"><span class="nav-text">Cơ Khí</span></a></li>
         </ul>
       </li>
-      <li><a href="#" class="nav-link"><span class="nav-text">Quản lý bài giảng</span></a></li>
+      <li><a href="/tai-lieu" class="nav-link"><span class="nav-text">Quản lý bài giảng</span></a></li>
     </ul>
   </div>
 </div>
