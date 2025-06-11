@@ -31,14 +31,14 @@ class MenuSeeder extends Seeder
                 'ten' => 'Công Nghệ Thông Tin',
                 'id_loai_menu' => 4,
                 'id_menu_cha' => 2,
-                'gia_tri' => '',
+                'gia_tri' => '1',
                 'thu_tu' => 1
             ],
             [
                 'ten' => 'Giáo Dục Đại Cương',
                 'id_loai_menu' => 4,
                 'id_menu_cha' => 2,
-                'gia_tri' => '',
+                'gia_tri' => '2',
                 'thu_tu' => 2
             ],
             [
@@ -52,12 +52,12 @@ class MenuSeeder extends Seeder
                 'ten' => 'Công Nghệ Ô Tô',
                 'id_loai_menu' => 4,
                 'id_menu_cha' => 2,
-                'gia_tri' => '',
+                'gia_tri' => '3',
                 'thu_tu' => 4
             ],
             [
                 'ten' => 'Quản lý mục bài giảng',
-                'id_loai_menu' => 5,
+                'id_loai_menu' => 6,
                 'id_menu_cha' => null,
                 'gia_tri' => '',
                 'thu_tu' => 4
@@ -66,28 +66,28 @@ class MenuSeeder extends Seeder
                 'ten' => 'Điện Tử',
                 'id_loai_menu' => 4,
                 'id_menu_cha' => 2,
-                'gia_tri' => '',
+                'gia_tri' => '4',
                 'thu_tu' => 3
             ],
             [
                 'ten' => 'Thiết kế website',
-                'id_loai_menu' => 6,
+                'id_loai_menu' => 5,
                 'id_menu_cha' => 3,
                 'gia_tri' => '1',
                 'thu_tu' => 1
             ],
             [
                 'ten' => 'Vật lý đại cương',
-                'id_loai_menu' => 6,
+                'id_loai_menu' => 5,
                 'id_menu_cha' => 4,
-                'gia_tri' => '2',
+                'gia_tri' => '3',
                 'thu_tu' => 1
             ],
             [
                 'ten' => 'Cơ sở dữ liệu',
-                'id_loai_menu' => 6,
+                'id_loai_menu' => 5,
                 'id_menu_cha' => 3,
-                'gia_tri' => '3',
+                'gia_tri' => '2',
                 'thu_tu' => 2
             ],
         ];

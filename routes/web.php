@@ -38,10 +38,14 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien+sinh-vien']], 
 // Các route phía admin
 Route::group(['middleware' => ['auth.custom', 'vai_tro:admin']], function () {
 
+    // Dashboard
     Route::get('/admin', 'HomeController@dashboard')->name('dashboard');
     Route::get('/admin/dashboard', 'HomeController@dashboard');
 
+    // Menu
     Route::get('/admin/menu', 'MenuController@giaoDienQuanLy')->name('list-menu');
-    Route::get('/admin/them-menu', 'MenuController@giaoDienThem')->name('them-menu');
-    Route::post('/admin/them-menu', 'MenuController@them');
+    Route::get('/admin/menu/them', 'MenuController@giaoDienThem')->name('them-menu');
+    Route::post('/admin/menu/them', 'MenuController@them');
+    Route::get('/admin/menu/chinh-sua/{id}', 'MenuController@giaoDienChinhSua')->name('giao-dien-chinh-sua-menu');
+    Route::post('/admin/menu/chinh-sua', 'MenuController@chinhSua')->name('chinh-sua-menu');
 });

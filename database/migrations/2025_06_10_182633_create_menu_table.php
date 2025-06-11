@@ -15,7 +15,7 @@ class CreateMenuTable extends Migration
     {
         Schema::create('menu', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('ten', 100);
+            $table->string('ten', 100)->unique();
             $table->unsignedInteger('id_loai_menu');
             $table->unsignedInteger('id_menu_cha')->nullable();
 

@@ -8,7 +8,7 @@ class LoaiMenu extends Model
 {
     protected $table = 'loai_menu';
 
-    function menu() {
+    function list_menu() {
         return $this->hasMany('App\Menu', 'id_loai_menu');
     }
 }

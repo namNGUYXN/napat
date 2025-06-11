@@ -25,18 +25,18 @@ class LoaiMenuSeeder extends Seeder
                 'thu_tu' => 2
             ],
             [
-                'ten' => 'Khoa',
-                'slug' => Str::slug('Khoa'),
+                'ten' => 'Danh mục khoa',
+                'slug' => Str::slug('Danh mục khoa'),
                 'thu_tu' => 3
             ],
             [
-                'ten' => 'Chỉ mục khoa',
-                'slug' => Str::slug('Chỉ mục khoa'),
+                'ten' => 'Khoa',
+                'slug' => Str::slug('Khoa'),
                 'thu_tu' => 4
             ],
             [
-                'ten' => 'Chỉ mục học phần',
-                'slug' => Str::slug('Chỉ mục học phần'),
+                'ten' => 'Học phần',
+                'slug' => Str::slug('Học phần'),
                 'thu_tu' => 5
             ],
             [

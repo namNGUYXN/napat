@@ -5,6 +5,12 @@
   <div class="col bg-light p-4 overflow-auto custom-scrollbar">
     <h2 class="mb-3">Quản lý menu</h2>
 
+    @if (session('message'))
+      <div class="alert alert-{{ session('status') }} alert-dismissible fade show" role="alert">
+        {{ session('message') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    @endif
 
     <div class="card shadow-sm">
       <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
@@ -42,7 +48,7 @@
                     </div>
                   </td>
                   <td class="align-middle text-center">
-                    <a href="#" class="btn btn-warning btn-sm me-1 edit-lesson-btn">
+                    <a href="{{ route('giao-dien-chinh-sua-menu', $menu['id']) }}" class="btn btn-warning btn-sm me-1">
                       <i class="fas fa-edit"></i>
                     </a>
                     <button class="btn btn-danger btn-sm">

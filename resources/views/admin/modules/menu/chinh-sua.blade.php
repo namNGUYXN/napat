@@ -2,7 +2,7 @@
 
 @section('content')
   <div class="col bg-light p-4 overflow-auto custom-scrollbar">
-    <h2 class="mb-4">Thêm Menu mới</h2>
+    <h2 class="mb-4">Chỉnh sửa Menu</h2>
 
     <a href="{{ route('list-menu') }}" class="btn btn-outline-secondary mb-4">
       <i class="fas fa-arrow-alt-circle-left me-2"></i>Danh sách Menu
@@ -16,16 +16,17 @@
     @endif
 
     <div class="card shadow-sm">
-      <div class="card-header bg-success text-white">
-        <h5 class="mb-0">Thông tin Menu mới</h5>
+      <div class="card-header bg-warning text-white">
+        <h5 class="mb-0">Thông tin Menu</h5>
       </div>
       <div class="card-body">
-        <form id="form-them-menu" action="{{ route('them-menu') }}" method="POST">
+        <form id="form-them-menu" action="{{ route('chinh-sua-menu') }}" method="POST">
           @csrf
+          <input type="hidden" name="id" value="{{ $menu->id }}">
           <div class="mb-3">
             <label for="" class="form-label">Tên menu: <span class="text-danger">*</span></label>
             <input type="text" class="form-control @error('ten') is-invalid @enderror" name="ten"
-              value="{{ old('ten') }}">
+              value="{{ old('ten', $menu->ten) }}">
             @error('ten')
               <span class="invalid-feedback">{{ $message }}</span>
             @enderror
@@ -35,9 +36,10 @@
             <label for="" class="form-label">Thuộc menu:</label>
             <select class="form-select" name="id_menu_cha">
               <option selected value="0">Là menu chính</option>
-              @foreach ($listMenu as $menu)
-                <option value="{{ $menu['id'] }}" {{ old('id_menu_cha') == $menu['id'] ? 'selected' : '' }}>
-                  {{ $menu['ten'] }}</option>
+              @foreach ($listMenu as $v)
+                <option value="{{ $v['id'] }}"
+                  {{ old('id_menu_cha', $menu->id_menu_cha) == $v['id'] ? 'selected' : '' }}>
+                  {{ $v['ten'] }}</option>
               @endforeach
             </select>
           </div>
@@ -48,7 +50,8 @@
               name="id_loai_menu">
               <option selected disabled value="">--- Chọn loại menu ---</option>
               @foreach ($listLoaiMenu as $loaiMenu)
-                <option value="{{ $loaiMenu->id }}" {{ old('id_loai_menu') == $loaiMenu->id ? 'selected' : '' }}>
+                <option value="{{ $loaiMenu->id }}"
+                  {{ old('id_loai_menu', $menu->id_loai_menu) == $loaiMenu->id ? 'selected' : '' }}>
                   {{ $loaiMenu->ten }}</option>
               @endforeach
             </select>
@@ -71,13 +74,17 @@
 
 @section('scripts')
   <script>
+    $('button[type="reset"]').on('click', function() {
+      $('#sub-box-select').html('');
+    });
+
     // Lấy list từ MenuController truyền qua
     var listKhoa = @php echo $listKhoa @endphp;
     var listHocPhan = @php echo $listHocPhan @endphp;
+    // Menu đang thao tác
+    var menu = @php echo $menu @endphp;
 
-    // Tạo chuỗi html list option
-    const listKhoaOption = createListOption('khoa', listKhoa);
-    const listHocPhanOption = createListOption('học phần', listHocPhan);
+    var listKhoaOption = '';
 
     $('#select-loai-menu').on('change', function() {
       const menuType = Number($(this).val());
@@ -90,12 +97,19 @@
       xuLySelectLoaiMenuChange(menuType);
     }
 
-    $('button[type="reset"]').on('click', function() {
-      $('#sub-box-select').html('');
-    });
-
     $('#form-them-menu').on('change', '#select-khoa', function() {
       const idKhoa = $(this).val();
+      xuLySelectKhoaChange(idKhoa);
+    });
+
+    // Khi có option khoa được chọn
+    if ($('#select-khoa').val()) {
+      const idKhoa = Number($('#select-khoa').val());
+      xuLySelectKhoaChange(idKhoa, menu.gia_tri);
+    }
+
+    // Hàm xử lý chọn khoa
+    function xuLySelectKhoaChange(idKhoa, giaTri = "") {
       const listHocPhanTheoId = [];
 
       for (let hocPhan of listHocPhan) {
@@ -104,18 +118,29 @@
         }
       }
 
-      const listHocPhanTheoIdOption = createListOption('học phần', listHocPhanTheoId);
+      const listHocPhanTheoIdOption = createListOption('học phần', listHocPhanTheoId, giaTri);
 
       $('#select-hoc-phan').html(listHocPhanTheoIdOption);
-    });
+    }
 
     // Hàm xử lý chọn loại menu khoa, học phần
     function xuLySelectLoaiMenuChange(menuType) {
       switch (menuType) {
         case 4: // Chỉ mục khoa
+          listKhoaOption = createListOption('khoa', listKhoa, menu.gia_tri);
           $('#sub-box-select').html(renderBoxSelect('khoa'));
           break;
         case 5: // Chỉ mục học phần
+          let idKhoa = -1;
+
+          for (let hocPhan of listHocPhan) {
+            if (menu.gia_tri == hocPhan.id) {
+              idKhoa = hocPhan.id_khoa;
+            }
+          }
+
+          listKhoaOption = createListOption('khoa', listKhoa, idKhoa);
+
           $('#sub-box-select').html(renderBoxSelect('học phần'));
           break;
         default:
@@ -124,10 +149,10 @@
     }
 
     // Hàm tạo list thẻ option
-    function createListOption(item, list) {
+    function createListOption(item, list, giaTri = "") {
       const mapList = $.map(list, function(element, index) {
         return `
-         <option value="${element.id}">${element.ten}</option>
+         <option value="${element.id}"${element.id == giaTri ? ' selected' : ''}>${element.ten}</option>
         `;
       });
       mapList.unshift(`<option selected disabled value="">--- Chọn một ${item} ---</option>`);

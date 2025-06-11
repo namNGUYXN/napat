@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\LoaiMenu;
 use App\Menu;
+use Illuminate\Support\Facades\DB;
 
 class MenuService
 {
@@ -44,5 +45,46 @@ class MenuService
   function layListLoaiMenu()
   {
     return LoaiMenu::all();
+  }
+
+  function them(array $data)
+  {
+    try {
+      $maxThuTu = Menu::where('id_menu_cha', $data['id_menu_cha'])
+        ->max('thu_tu');
+      
+      DB::beginTransaction();
+
+      $menu = Menu::create([
+        'ten' => $data['ten'],
+        'id_loai_menu' => $data['id_loai_menu'],
+        'id_menu_cha' => $data['id_menu_cha'],
+        'gia_tri' => $data['gia_tri'] ?? '',
+        'thu_tu' => $data['thu_tu'] ?? $maxThuTu + 1,
+      ]);
+
+      DB::commit();
+      return [
+        'success' => true,
+        'message' => 'Thêm menu thành công',
+        'data' => $menu
+      ];
+    } catch (\Exception $e) {
+      DB::rollBack();
+      return [
+        'success' => false,
+        'message' => 'Lỗi khi thêm menu: ' . $e->getMessage()
+      ];
+    }
+  }
+
+  function layMenu($id)
+  {
+    return Menu::find($id);
+  }
+
+  function chinhSua()
+  {
+    
   }
 }
