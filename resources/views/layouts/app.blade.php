@@ -2,44 +2,46 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>@yield('title')</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-  <link href="{{ asset('css/bootstrap-5.3.3.min.css') }}" rel="stylesheet">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>@yield('title')</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="{{ asset('css/bootstrap-5.3.3.min.css') }}" rel="stylesheet">
 
-  <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
-  <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-  <link rel="stylesheet" href="{{ asset('modules/home/css/home.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('modules/home/css/home.css') }}">
+    @yield('styles')
 </head>
 
 <body>
 
-  <div id="wrapper">
-    
-    @include('partials._header')
+    <div id="wrapper">
 
-    @include('partials._menu-sidebar-mobile')
+        @include('partials._header')
 
-    <main class="container-fluid">
-      <div class="row flex-nowrap content-row">
-        
-        @include('partials._menu-sidebar')
+        @include('partials._menu-sidebar-mobile')
 
-        @yield('content')
-        
-      </div>
-    </main>
+        <main class="container-fluid">
+            <div class="row flex-nowrap content-row">
 
-    @include('partials._footer')
+                @include('partials._menu-sidebar')
 
-  </div>
+                @yield('content')
 
-  <script src="{{ asset('js/jquery-3.7.1.js') }}"></script>
-  <script src="{{ asset('js/bootstrap-5.3.3.bundle.min.js') }}"></script>
-  <script src="{{ asset('js/main.js') }}"></script>
-  
-  <script src="{{ asset('modules/home/js/home.js') }}"></script>
+            </div>
+        </main>
+
+        @include('partials._footer')
+
+    </div>
+
+    <script src="{{ asset('js/jquery-3.7.1.js') }}"></script>
+    <script src="{{ asset('js/bootstrap-5.3.3.bundle.min.js') }}"></script>
+    <script src="{{ asset('js/main.js') }}"></script>
+    <script src="{{ asset('modules/home/js/home.js') }}"></script>
+    @yield('scripts')
 </body>
 
 </html>

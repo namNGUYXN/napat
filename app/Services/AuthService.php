@@ -61,4 +61,8 @@ class AuthService
     Cookie::queue(Cookie::forget('token_remember'));
     return ['success' => true, 'message' => 'Đã đăng xuất'];
   }
+  public function layIdNguoiDungDangNhap()
+  {
+    return session('id_nguoi_dung');
+  }
 }
