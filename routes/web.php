@@ -17,6 +17,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/dang-nhap', 'AuthController@giaoDienDangNhap')->name('dang-nhap');
 Route::post('/dang-nhap', 'AuthController@dangNhap');
 Route::post('/dang-xuat', 'AuthController@dangXuat')->name('dang-xuat');
+Route::get('/quen-mat-khau', 'AuthController@giaoDienQuenMatKhau')->name('quen-mat-khau');
+Route::post('/gui-lien-ket-dat-lai-mat-khau', 'AuthController@guiLienKetDatLaiMatKhau')->name('lien-ket-dlmk');
+Route::get('/dat-lai-mat-khau/{token}', 'AuthController@giaoDienDatLaiMatKhau')->name('dat-lai-mat-khau');
+Route::post('/dat-lai-mat-khau', 'AuthController@datLaiMatKhau')->name('dat-lai-mat-khau');
 
 
 // Các route phía client
@@ -33,6 +37,11 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien+sinh-vien']], 
 
 // Các route phía admin
 Route::group(['middleware' => ['auth.custom', 'vai_tro:admin']], function () {
+
     Route::get('/admin', 'HomeController@dashboard')->name('dashboard');
     Route::get('/admin/dashboard', 'HomeController@dashboard');
+
+    Route::get('/admin/menu', 'MenuController@giaoDienQuanLy')->name('list-menu');
+    Route::get('/admin/them-menu', 'MenuController@giaoDienThem')->name('them-menu');
+    Route::post('/admin/them-menu', 'MenuController@them');
 });
