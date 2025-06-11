@@ -17,7 +17,7 @@ class BaiTapController extends Controller
     // Trang chủ phía client - Home
     function lamBai()
     {
-        return view('lam-bai');
+        return view('modules.lop-hoc.lam-bai');
     }
 
     public function themBaiTap(Request $request)

@@ -19,12 +19,12 @@ class BaiGiangController extends Controller
     {
         $baiGiang = $this->baiGiangService->layChiTietBaiGiang($id);
 
-        return view('chinh-sua-bai-giang', compact('baiGiang'));
+        return view('modules.bai-giang.chinh-sua-bai-giang', compact('baiGiang'));
     }
 
     // Trang chủ phía admin - Dashboard
     function danhSach()
     {
-        return view('danh-sach-bai-giang');
+        return view('modules.bai-giang.danh-sach-bai-giang');
     }
 }

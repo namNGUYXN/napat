@@ -21,7 +21,7 @@ class TaiLieuController extends Controller
     {
         $idGiangVien = $this->authService->layIdNguoiDungDangNhap();
         $dsMucBaiGiang = $this->mucService->getByGiangVienId($idGiangVien);
-        return view('danh-sach-tai-lieu', compact('dsMucBaiGiang'));
+        return view('modules.muc-bai-giang.danh-sach-tai-lieu', compact('dsMucBaiGiang'));
     }
 
     public function chiTiet($id)
@@ -32,6 +32,6 @@ class TaiLieuController extends Controller
             abort(404, 'Không tìm thấy mục bài giảng');
         }
 
-        return view('danh-sach-bai-giang', compact('muc'));
+        return view('modules.bai-giang.danh-sach-bai-giang', compact('muc'));
     }
 }

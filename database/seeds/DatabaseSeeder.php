@@ -17,5 +17,7 @@ class DatabaseSeeder extends Seeder
         $this->call(MenuSeeder::class);
         $this->call(KhoaSeeder::class);
         $this->call(HocPhanSeeder::class);
+        $this->call(MucBaiGiangSeeder::class);
+        $this->call(BaiGiangSeeder::class);
     }
 }
