@@ -1,0 +1,88 @@
+.class-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.class-card {
+  background-color: #ffffff;
+  border: 1px solid #dee2e6;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+}
+
+.class-card .class-img {
+  display: block;
+  overflow: hidden;
+}
+
+.class-card .class-img:hover img {
+  transform: scale(1.1);
+  transition: all 0.25s ease-in-out;
+}
+
+.class-card .class-name {
+  font-size: 20px;
+  display: inline-block;
+  text-decoration: none;
+  margin-bottom: 8px;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+}
+
+.class-card .class-name:hover {
+  color: #0dcaf0 !important;
+}
+
+.class-action-btn {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
+
+@media (max-width: 1120px) {
+  .class-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .class-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.class-add-btn {
+  position: absolute;
+  bottom: 20px;
+  right: 30px;
+  padding: 12px 17px;
+  z-index: 1001;
+}
+
+#removeImageBtn {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  line-height: 20px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.2s ease-in-out;
+  z-index: 10;
+}
+
+#removeImageBtn:hover {
+  opacity: 1;
+}

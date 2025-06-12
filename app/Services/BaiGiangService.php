@@ -9,8 +9,7 @@ class BaiGiangService
     {
         return BaiGiang::with([
             'baiTaps' => function ($query) {
-                $query->where('is_delete', false)
-                    ->with(['cauHoiBaiTaps']);
+                $query->where('is_delete', false);
             }
         ])
         ->where('id', $id)

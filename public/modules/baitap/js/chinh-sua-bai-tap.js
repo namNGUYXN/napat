@@ -61,51 +61,65 @@ $(document).ready(function () {
     //         questions: [], // Không có câu hỏi trắc nghiệm cho loại này
     //     },
     // ];
+    let danhSachBaiTap = [];
 
-    // // --- Hàm tải danh sách Bài tập (giữ nguyên) ---
-    // function loadExerciseList(exercises) {
-    //     const $exerciseListBody = $("#exerciseListBody");
-    //     $exerciseListBody.empty();
+    const baiGiangId = $("#myTabContent").data("id-bai-giang");
 
-    //     if (exercises.length === 0) {
-    //         $exerciseListBody.append(
-    //             '<tr><td colspan="5" class="text-center">Không có bài tập nào.</td></tr>'
-    //         );
-    //         return;
-    //     }
+    if (baiGiangId) {
+        $.ajax({
+            url: `/bai-giang/${baiGiangId}/bai-tap`,
+            method: "GET",
+            dataType: "json",
+            success: function (data) {
+                danhSachBaiTap = data;
+                console.log("Đã load bài tập:", danhSachBaiTap);
+                // renderExerciseTable(baiTapList); // Gọi nếu bạn có hàm hiển thị
+            },
+            error: function (xhr, status, error) {
+                console.error("Lỗi khi load danh sách bài tập:", error);
+            },
+        });
+    }
 
-    //     exercises.forEach((exercise, index) => {
-    //         const row = `
-    //                 <tr>
-    //                     <td>${index + 1}</td>
-    //                     <td>${exercise.title}</td>
-    //                     <td>${exercise.type}</td>
-    //                     <td>${exercise.date}</td>
-    //                     <td class="text-center">
-    //                         <button class="btn btn-info btn-sm me-1 view-exercise-detail-btn" data-bs-toggle="modal" data-bs-target="#exerciseDetailModal" data-exercise-id="${
-    //                             exercise.id
-    //                         }">
-    //                             <i class="fas fa-eye"></i>
-    //                         </button>
-    //                         <button class="btn btn-warning btn-sm me-1 edit-exercise-btn" data-exercise-id="${
-    //                             exercise.id
-    //                         }">
-    //                             <i class="fas fa-edit"></i>
-    //                         </button>
-    //                         <button class="btn btn-danger btn-sm delete-exercise-btn" data-exercise-id="${
-    //                             exercise.id
-    //                         }">
-    //                             <i class="fas fa-trash-alt"></i>
-    //                         </button>
-    //                     </td>
-    //                 </tr>
-    //             `;
-    //         $exerciseListBody.append(row);
-    //     });
-    // }
+    // --- Hàm tải danh sách Bài tập (giữ nguyên) ---
+    function loadExerciseList(exercises) {
+        const $exerciseListBody = $("#exerciseListBody");
+        $exerciseListBody.empty();
 
-    // // --- Khởi tạo dữ liệu khi trang tải xong ---
-    // loadExerciseList(exercisesData);
+        if (exercises.length === 0) {
+            $exerciseListBody.append(
+                '<tr><td colspan="5" class="text-center">Không có bài tập nào.</td></tr>'
+            );
+            return;
+        }
+
+        exercises.forEach((exercise, index) => {
+            const row = `
+                            <tr>
+                                <td>${index + 1}</td>
+                                <td>${exercise.tieu_de}</td>
+                                <td>Trắc nghiệm</td>
+                                <td>2023-01-20</td> <!-- Có thể thay bằng exercise.ngay_tao nếu cần -->
+                                <td class="text-center">
+                                    <button class="btn btn-info btn-sm me-1 view-exercise-detail-btn"
+                                        data-bs-toggle="modal" data-bs-target="#exerciseDetailModal"
+                                        data-exercise-id="${exercise.id}">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-warning btn-sm me-1 edit-exercise-btn"
+                                        data-exercise-id="${exercise.id}">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn btn-danger btn-sm delete-exercise-btn"
+                                        data-exercise-id="${exercise.id}">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+            $exerciseListBody.append(row);
+        });
+    }
 
     // --- Xử lý sự kiện cho Tab Bài giảng (Form Thêm mới Bài giảng - giữ nguyên) ---
     $("#addLessonForm").on("submit", function (e) {
@@ -136,61 +150,6 @@ $(document).ready(function () {
 
     // --- Xử lý sự kiện cho Tab Bài tập ---
 
-    // --- ĐIỀU CHỈNH: Xử lý khi nhấn nút "Xem chi tiết" (icon mắt) của BÀI TẬP ---
-    $(document).on("click", ".view-exercise-detail-btn", function () {
-        const exerciseId = $(this).data("exercise-id");
-        const exercise = exercisesData.find((ex) => ex.id === exerciseId);
-
-        if (exercise) {
-            $("#modalExerciseTitle").text(exercise.title);
-            $("#exerciseDetailId").text(exercise.id);
-            $("#exerciseDetailTitle").text(exercise.title);
-            $("#exerciseDetailType").text(exercise.type);
-            $("#exerciseDetailDate").text(exercise.date);
-            $("#exerciseDetailContent").html(exercise.content);
-
-            const $questionsContainer = $("#exerciseQuestionsContainer");
-            $questionsContainer.empty(); // Xóa nội dung câu hỏi cũ
-
-            if (
-                exercise.type === "Trắc nghiệm" &&
-                exercise.questions &&
-                exercise.questions.length > 0
-            ) {
-                $questionsContainer.append(
-                    '<h6 class="mt-3">Câu hỏi trắc nghiệm:</h6>'
-                );
-                exercise.questions.forEach((q, qIndex) => {
-                    const questionHtml = `
-                            <div class="mb-3 border p-3 rounded bg-light">
-                                <p><strong>Câu ${qIndex + 1}: ${
-                        q.questionText
-                    }</strong></p>
-                                <ul class="list-unstyled">
-                        `;
-                    let optionsHtml = "";
-                    q.options.forEach((opt, optIndex) => {
-                        optionsHtml += `<li>${String.fromCharCode(
-                            65 + optIndex
-                        )}. ${opt}</li>`; // A, B, C...
-                    });
-                    const correctAnswerHtml = `
-                                </ul>
-                                <p class="text-success fw-bold">Đáp án đúng: ${q.correctAnswer}</p>
-                            </div>
-                        `;
-                    $questionsContainer.append(
-                        questionHtml + optionsHtml + correctAnswerHtml
-                    );
-                });
-            } else {
-                $questionsContainer.append(
-                    '<p class="text-muted mt-3">Không có câu hỏi trắc nghiệm cho bài tập này.</p>'
-                );
-            }
-        }
-    });
-
     // Xử lý khi nhấn nút "Xóa" (icon thùng rác) của BÀI TẬP (giữ nguyên)
     // $(document).on('click', '.delete-exercise-btn', function () {
     //   const exerciseId = $(this).data('exercise-id');
@@ -198,6 +157,63 @@ $(document).ready(function () {
     //     alert('Đã xóa bài tập có ID: ' + exerciseId + '.');
     //   }
     // });
+
+    // --- XỬ LÝ XEM CHI TIẾT BÀI TẬP ---
+    $(document).on("click", ".view-exercise-detail-btn", function () {
+        const exerciseId = $(this).data("exercise-id");
+        const exercise = danhSachBaiTap.find((ex) => ex.id === exerciseId);
+
+        if (!exercise) return;
+
+        // Set thông tin bài tập cơ bản
+        $("#modalExerciseTitle").text(exercise.tieu_de);
+        $("#exerciseDetailTitle").text(exercise.tieu_de);
+        $("#exerciseDetailType").text("Trắc nghiệm");
+        $("#exerciseDetailDate").text("");
+        $("#exerciseDetailContent").html("");
+
+        // Xử lý danh sách câu hỏi nếu có
+        renderExerciseQuestions(exercise);
+    });
+
+    // Hàm render giao diên danh sách câu hỏi cho Detail Bài tập
+    function renderExerciseQuestions(exercise) {
+        const $container = $("#exerciseQuestionsContainer");
+        $container.empty();
+
+        const questions = exercise.cau_hoi_bai_taps || [];
+
+        if (questions.length > 0) {
+            $container.append('<h6 class="mt-3">Câu hỏi trắc nghiệm:</h6>');
+
+            questions.forEach((q, idx) => {
+                const options = [
+                    `A. ${q.dap_an_a}`,
+                    `B. ${q.dap_an_b}`,
+                    `C. ${q.dap_an_c}`,
+                    `D. ${q.dap_an_d}`,
+                ]
+                    .map((opt) => `<li>${opt}</li>`)
+                    .join("");
+
+                const questionHtml = `
+                <div class="mb-3 border p-3 rounded bg-light">
+                    <p><strong>Câu ${idx + 1}: ${q.tieu_de}</strong></p>
+                    <ul class="list-unstyled">${options}</ul>
+                    <p class="text-success fw-bold">Đáp án đúng: ${
+                        q.dap_an_dung
+                    }</p>
+                </div>
+            `;
+
+                $container.append(questionHtml);
+            });
+        } else {
+            $container.append(
+                '<p class="text-muted mt-3">Không có câu hỏi trắc nghiệm cho bài tập này.</p>'
+            );
+        }
+    }
 
     let questionCounter = 1; // Biến đếm số câu hỏi
 
@@ -316,117 +332,7 @@ $(document).ready(function () {
         }
     });
 
-    // // --- Xử lý submit form thêm bài tập mới ---
-    // $("#newExerciseForm").on("submit", function (e) {
-    //     e.preventDefault();
-    //     // Kiểm tra validate của Bootstrap
-    //     if (!this.checkValidity()) {
-    //         e.stopPropagation();
-    //         $(this).addClass("was-validated");
-    //         return;
-    //     }
-
-    //     // Kiểm tra xem có ít nhất một câu hỏi không
-    //     if ($("#questionsFormContainer .question-item").length === 0) {
-    //         $("#noQuestionsMessage").show();
-    //         alert("Vui lòng thêm ít nhất một câu hỏi cho bài tập.");
-    //         return;
-    //     } else {
-    //         $("#noQuestionsMessage").hide();
-    //     }
-
-    //     // Thu thập dữ liệu bài tập
-    //     const newExercise = {
-    //         title: $("#newExerciseTitle").val(),
-    //         maxScore: $("#newExerciseMaxScore").val()
-    //             ? parseInt($("#newExerciseMaxScore").val())
-    //             : null,
-    //         description: $("#newExerciseDescription").val(), // THÊM DÒNG NÀY
-    //         type: "Trắc nghiệm", // Mặc định là trắc nghiệm vì có form câu hỏi
-    //         date: new Date().toISOString().slice(0, 10), // Ngày hiện tại
-    //         questions: [],
-    //     };
-
-    //     // Thu thập dữ liệu câu hỏi
-    //     $("#questionsFormContainer .question-item").each(function (index) {
-    //         const $thisQuestion = $(this);
-    //         const questionText = $thisQuestion.find(".question-text").val();
-    //         const options = [];
-    //         let correctAnswer = "";
-
-    //         $thisQuestion.find(".answer-option").each(function (optIndex) {
-    //             const optionText = $(this).val();
-    //             options.push(optionText);
-
-    //             // Kiểm tra radio button nào được chọn
-    //             if (
-    //                 $thisQuestion
-    //                     .find(
-    //                         `.correct-answer-radio[value="option${String.fromCharCode(
-    //                             65 + optIndex
-    //                         )}"]`
-    //                     )
-    //                     .is(":checked")
-    //             ) {
-    //                 correctAnswer = optionText;
-    //             }
-    //         });
-
-    //         // Kiểm tra nếu nội dung câu hỏi hoặc đáp án rỗng
-    //         if (!questionText.trim()) {
-    //             alert(`Vui lòng nhập nội dung cho Câu hỏi ${index + 1}.`);
-    //             return false; // Dừng vòng lặp và không submit
-    //         }
-
-    //         if (options.some((opt) => !opt.trim())) {
-    //             alert(
-    //                 `Vui lòng nhập đầy đủ 4 đáp án cho Câu hỏi ${index + 1}.`
-    //             );
-    //             return false;
-    //         }
-
-    //         if (!correctAnswer) {
-    //             alert(`Vui lòng chọn đáp án đúng cho Câu hỏi ${index + 1}.`);
-    //             return false;
-    //         }
-
-    //         newExercise.questions.push({
-    //             id: index + 1, // ID tạm thời
-    //             questionText: questionText,
-    //             options: options,
-    //             correctAnswer: correctAnswer,
-    //         });
-    //     });
-
-    //     // Nếu có lỗi trong quá trình thu thập câu hỏi, không submit form
-    //     if (
-    //         newExercise.questions.length !==
-    //         $("#questionsFormContainer .question-item").length
-    //     ) {
-    //         return;
-    //     }
-
-    //     console.log("Bài tập mới:", newExercise);
-    //     alert(
-    //         'Bài tập "' +
-    //             newExercise.title +
-    //             '" đã được tạo thành công (demo)! Xem console để thấy dữ liệu.'
-    //     );
-
-    //     // Đóng modal và reset form
-    //     $("#addExerciseModal").modal("hide");
-    //     $("#newExerciseForm")[0].reset();
-    //     $("#newExerciseForm").removeClass("was-validated");
-    //     $("#questionsFormContainer").empty(); // Xóa tất cả câu hỏi đã tạo
-    //     questionCounter = 0; // Đặt lại bộ đếm
-    //     $("#noQuestionsMessage").show();
-
-    //     // Trong ứng dụng thực tế, bạn sẽ gửi `newExercise` này đến server
-    //     // Sau khi thành công, bạn có thể thêm bài tập mới vào danh sách hiển thị
-    //     // hoặc tải lại danh sách bài tập.
-    // });
-
-    // Xử lý h nhấn nút Lưu bài tập Trong Modal thêm bài tập
+    // Xử lý nhấn nút Lưu bài tập Trong Modal thêm bài tập
     $("#newExerciseForm").on("submit", function (e) {
         e.preventDefault();
 
@@ -511,105 +417,26 @@ $(document).ready(function () {
                 "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
             },
             success: function (response) {
-                alert("Bài tập đã được tạo thành công!");
-                $("#addExerciseModal").modal("hide");
-                $("#newExerciseForm")[0].reset();
-                $("#newExerciseForm").removeClass("was-validated");
-                $("#questionsFormContainer").empty();
-                $("#noQuestionsMessage").show();
-                questionCounter = 0;
-
-                // Có thể gọi reload danh sách bài tập tại đây
+                if (response.success) {
+                    alert(response.message);
+                    $("#addExerciseModal").modal("hide");
+                    $("#newExerciseForm")[0].reset();
+                    $("#newExerciseForm").removeClass("was-validated");
+                    $("#questionsFormContainer").empty();
+                    $("#noQuestionsMessage").show();
+                    questionCounter = 0;
+                    // Cập nhật lại danh sách và hiển thị
+                    danhSachBaiTap = response.data;
+                    loadExerciseList(danhSachBaiTap);
+                } else {
+                    alert("Tạo thất bại: " + response.message);
+                }
             },
-            error: function (xhr, status, error) {
-                console.error("Lỗi khi thêm bài tập:", xhr.responseText);
-                alert("Đã xảy ra lỗi khi thêm bài tập. Vui lòng thử lại.");
+            error: function (xhr) {
+                alert("Đã xảy ra lỗi phía server.");
+                console.error(xhr.responseText);
             },
         });
-    });
-
-    // document
-    //     .getElementById("newExerciseForm")
-    //     .addEventListener("submit", async function (e) {
-    //         e.preventDefault();
-
-    //         const form = this;
-    //         const formData = new FormData();
-
-    //         // Lấy dữ liệu bài tập
-    //         const tieuDe = form.querySelector("#newExerciseTitle").value;
-    //         const diemToiDa = form.querySelector("#newExerciseMaxScore").value;
-    //         const moTa = form.querySelector("#newExerciseDescription").value;
-    //         const idBaiGiang = form.querySelector(
-    //             'input[name="id_bai_giang"]'
-    //         ).value;
-
-    //         formData.append("tieu_de", tieuDe);
-    //         formData.append("diem_toi_da", diemToiDa);
-    //         formData.append("mo_ta", moTa);
-    //         formData.append("id_bai_giang", idBaiGiang);
-
-    //         // Danh sách câu hỏi
-    //         const questions = [];
-    //         document
-    //             .querySelectorAll(".question-item")
-    //             .forEach((item, index) => {
-    //                 const tieuDe = item.querySelector(".question-text").value;
-    //                 const answers = item.querySelectorAll(".answer-option");
-    //                 const dapAnA = answers[0].value;
-    //                 const dapAnB = answers[1].value;
-    //                 const dapAnC = answers[2].value;
-    //                 const dapAnD = answers[3].value;
-    //                 const correct = item.querySelector(
-    //                     ".correct-answer-radio:checked"
-    //                 );
-    //                 const dapAnDung = correct ? correct.value : null;
-
-    //                 questions.push({
-    //                     tieu_de: tieuDe,
-    //                     dap_an_a: dapAnA,
-    //                     dap_an_b: dapAnB,
-    //                     dap_an_c: dapAnC,
-    //                     dap_an_d: dapAnD,
-    //                     dap_an_dung: dapAnDung,
-    //                 });
-    //             });
-
-    //         formData.append("questions", JSON.stringify(questions));
-
-    //         try {
-    //             const res = await fetch(form.dataset.url, {
-    //                 method: "POST",
-    //                 headers: {
-    //                     "X-CSRF-TOKEN": document.querySelector(
-    //                         'meta[name="csrf-token"]'
-    //                     ).content,
-    //                 },
-    //                 body: formData,
-    //             });
-
-    //             const data = await res.json();
-    //             if (res.ok) {
-    //                 alert("Thêm bài tập thành công!");
-    //                 // Reset form hoặc đóng modal tại đây
-    //             } else {
-    //                 alert("Lỗi: " + (data.message || "Không xác định"));
-    //             }
-    //         } catch (err) {
-    //             alert("Lỗi khi gửi dữ liệu");
-    //             console.error(err);
-    //         }
-    //     });
-
-    // Xử lý khi tab "Bài tập" được chọn để tạo một bài tập mới (nếu cần)
-    // Lưu ý: Nếu nút "Tạo mới bài tập" đã có sẵn trong tab, bạn không cần hàm này.
-    // Đây là ví dụ nếu bạn muốn modal tự động hiển thị khi chuyển tab.
-    $("#exercise-tab").on("shown.bs.tab", function (e) {
-        // Có thể mở modal tự động ở đây nếu bạn muốn, ví dụ:
-        // $('#addExerciseModal').modal('show');
-        // Hoặc giữ nguyên logic click vào nút "Tạo mới bài tập" như bạn đã có.
-        // Về cơ bản, đoạn mã JS này sẽ giúp nút "Tạo mới bài tập" trong tab Exercise gọi modal
-        // mà không cần sửa đổi thêm, miễn là data-bs-target của nút trỏ đúng đến #addExerciseModal.
     });
 
     // Kích hoạt nút "Tạo mới bài tập" để mở modal này
@@ -621,50 +448,6 @@ $(document).ready(function () {
     // questionCounter = 1;
     // $('#questionsFormContainer').append(questionTemplate(questionCounter));
     updateQuestionNumbers(); // Gọi lần đầu để xử lý trạng thái ban đầu
-
-    // // --- Dữ liệu giả định cho bài tập (thay thế bằng dữ liệu từ API của bạn) ---
-    // const exercises = [
-    //   {
-    //     id: 1,
-    //     title: "Bài tập HTML cơ bản",
-    //     type: "Trắc nghiệm",
-    //     date: "2023-01-20",
-    //     maxScore: 100,
-    //     description: "Tổng hợp các kiến thức cơ bản về HTML.",
-    //     questions: [
-    //       {
-    //         id: 1,
-    //         questionText: "Thẻ nào được dùng để tạo tiêu đề lớn nhất trong HTML?",
-    //         options: ["<h1>", "<h2>", "<p>", "<div>"],
-    //         correctAnswer: "<h1>"
-    //       },
-    //       {
-    //         id: 2,
-    //         questionText: "Phần tử HTML nào dùng để tạo một đoạn văn bản?",
-    //         options: ["<a>", "<p>", "<span>", "<div>"],
-    //         correctAnswer: "<p>"
-    //       }
-    //     ]
-    //   },
-    //   {
-    //     id: 2,
-    //     title: "Bài tập CSS Flexbox",
-    //     type: "Điền khuyết", // Loại bài tập này sẽ không có câu hỏi trắc nghiệm trong modal này
-    //     date: "2023-02-25",
-    //     maxScore: 50,
-    //     description: "Kiểm tra hiểu biết về Flexbox trong CSS.",
-    //     questions: [] // Không có câu hỏi trắc nghiệm
-    //   },
-    //   {
-    //     id: 3,
-    //     title: "Bài tập JavaScript mảng",
-    //     type: "Tự luận",
-    //     date: "2023-03-15",
-    //     maxScore: 80,
-    //     description: "Các câu hỏi tự luận về thao tác với mảng trong JavaScript.",
-    //     questions: [] // Không có câu hỏi trắc nghiệm
-    //   }
-    // ];
 
     // // Hàm để tạo HTML cho một câu hỏi trong modal chỉnh sửa
     const editQuestionTemplate = (question, index, totalQuestions) => `
