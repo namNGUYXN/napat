@@ -22,7 +22,7 @@ class CreateBaiTapTable extends Migration
             $table->boolean('is_delete')->default(false); // trạng thái xóa (mặc định false)
 
             // Khóa ngoại
-            //$table->foreign('id_bai_giang')->references('id')->on('bai_giang')->onDelete('cascade');
+            $table->foreign('id_bai_giang')->references('id')->on('bai_giang')->onDelete('cascade');
         });
     }
 

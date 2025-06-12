@@ -3,6 +3,7 @@
 namespace App;
 
 use App\CauHoiBaiTap;
+use App\BaiGiang;
 use Illuminate\Database\Eloquent\Model;
 
 class BaiTap extends Model
@@ -14,6 +15,10 @@ class BaiTap extends Model
     public function cauHoiBaiTaps()          // 1 bài tập có nhiều câu hỏi
     {
         return $this->hasMany(CauHoiBaiTap::class, 'id_bai_tap');
+    } 
+    public function bai_giang()          // 1 bài tập thuộc 1 bài giảng
+    {
+        return $this->belongsTo(BaiGiangClass::class, 'id_bai_giang');
     } 
 }
  

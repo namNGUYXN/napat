@@ -71,6 +71,15 @@ class AuthService
     return session('id_nguoi_dung');
   }
 
+  public function layNguoiDungDangNhap()
+  {
+    return (object)[
+        'id' => session('id_nguoi_dung'),
+        'ho_ten' => session('ho_ten'),
+        'vai_tro' => session('vai_tro')
+    ];
+  }
+
   function guiLienKetDatLaiMatKhau(string $email)
   {
     $nguoiDung = NguoiDung::where('email', $email)->first();
