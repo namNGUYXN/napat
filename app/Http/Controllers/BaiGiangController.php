@@ -110,4 +110,30 @@ class BaiGiangController extends Controller
                 'status' => 'danger'
             ])->withInput();
     }
+
+    function chiTiet($id)
+    {
+        $baiGiang = $this->baiGiangService->layTheoId($id);
+
+        return response()->json([
+            'data' => $baiGiang
+        ]);
+    }
+
+    function xoa(Request $request, $id) {
+        $idMucBaiGiang = $request->id_muc_bai_giang;
+        $result = $this->baiGiangService->xoa($id);
+
+        if ($result['success']) {
+            return redirect()->route('muc-bai-giang.detail', $idMucBaiGiang)->with([
+            'message' => 'Xóa bài giảng thành công',
+            'status' => 'success'
+        ]);
+        }
+        
+        return redirect()->route('muc-bai-giang.detail', $idMucBaiGiang)->with([
+            'message' => $result['message'],
+            'status' => 'danger'
+        ]);
+    }
 }

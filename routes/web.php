@@ -24,14 +24,13 @@ Route::post('/gui-lien-ket-dat-lai-mat-khau', 'AuthController@guiLienKetDatLaiMa
 Route::get('/dat-lai-mat-khau/{token}', 'AuthController@giaoDienDatLaiMatKhau')->name('dat-lai-mat-khau');
 Route::post('/dat-lai-mat-khau', 'AuthController@datLaiMatKhau')->name('dat-lai-mat-khau');
 
-
+// Các route về laravel file manager
 Route::group([
     'prefix' => 'laravel-filemanager',
     'middleware' => ['web', 'auth.custom', 'vai_tro:giang-vien+admin']
 ], function () {
     \UniSharp\LaravelFilemanager\Lfm::routes();
 });
-
 Route::group(['middleware' => ['auth.custom']], function () {
     Route::get('/storage/files/{id_nguoi_dung}/thumbs/{ten_file}', 'SecureFileController@download')->name('secure.file');
     Route::get('/storage/files/{id_nguoi_dung}/{ten_file}', 'SecureFileController@download')->name('secure.file');
@@ -73,6 +72,8 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien']], function (
     Route::post('/bai-giang/them', 'BaiGiangController@them')->name('bai-giang.store');
     Route::get('/bai-giang/{id}/chinh-sua', 'BaiGiangController@giaoDienChinhSua')->name('bai-giang.edit');
     Route::put('/bai-giang/{id}/chinh-sua', 'BaiGiangController@chinhSua_nam')->name('bai-giang.update');
+    Route::post('/bai-giang/{id}/chi-tiet', 'BaiGiangController@chiTiet')->name('bai-giang.detail');
+    Route::delete('/bai-giang/{id}/xoa', 'BaiGiangController@xoa')->name('bai-giang.delete');
 });
 
 

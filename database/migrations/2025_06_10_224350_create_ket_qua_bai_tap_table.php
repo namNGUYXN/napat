@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateKetQuaLamBaiTable extends Migration
+class CreateKetQuaBaiTapTable extends Migration
 {
     /**
      * Run the migrations.
@@ -34,6 +34,6 @@ class CreateKetQuaLamBaiTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ket_qua_lam_bai');
+        Schema::dropIfExists('ket_qua_bai_tap');
     }
 }

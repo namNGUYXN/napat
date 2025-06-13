@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\BaiGiang;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -52,7 +53,7 @@ class BaiGiangService
 
     function layTheoId($id)
     {
-        return BaiGiang::find($id);
+        return BaiGiang::findOrFail($id);
     }
 
     function chinhSua($id, array $data)
@@ -83,6 +84,39 @@ class BaiGiangService
             return [
                 'success' => false,
                 'message' => 'Lỗi khi cập nhật bài giảng: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    function xoa($id)
+    {
+        try {
+            DB::beginTransaction();
+
+            $baiGiang = BaiGiang::findOrFail($id);
+
+            // Kiểm tra bài giảng có lớp học liên kết
+            // if (false) {
+            //     throw new \Exception('Không thể xóa menu vì có menu con phụ thuộc.');
+            // }
+
+            $baiGiang->delete();
+
+            DB::commit();
+            return [
+                'success' => true,
+                'message' => 'Xóa bài giảng thành công'
+            ];
+        } catch (ModelNotFoundException $e) {
+            return [
+                'success' => false,
+                'message' => 'Không tìm thấy bài giảng với ID: ' . $id
+            ];
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return [
+                'success' => false,
+                'message' => 'Lỗi khi xóa bài giảng: ' . $e->getMessage()
             ];
         }
     }
