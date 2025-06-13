@@ -15,4 +15,9 @@ class NguoiDung extends Model
     {
         $this->attributes['mat_khau'] = Hash::make($value);
     }
+
+    function listMucBaiGiang()
+    {
+        return $this->hasMany('App\MucBaiGiang', 'id_giang_vien');
+    }
 }

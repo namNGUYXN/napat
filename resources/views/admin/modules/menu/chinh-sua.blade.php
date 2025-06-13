@@ -4,7 +4,7 @@
   <div class="col bg-light p-4 overflow-auto custom-scrollbar">
     <h2 class="mb-4">Chỉnh sửa Menu</h2>
 
-    <a href="{{ route('list-menu') }}" class="btn btn-outline-secondary mb-4">
+    <a href="{{ route('menu.index') }}" class="btn btn-outline-secondary mb-4">
       <i class="fas fa-arrow-alt-circle-left me-2"></i>Danh sách Menu
     </a>
 
@@ -20,7 +20,8 @@
         <h5 class="mb-0">Thông tin Menu</h5>
       </div>
       <div class="card-body">
-        <form id="form-them-menu" action="{{ route('chinh-sua-menu') }}" method="POST">
+        <form id="form-them-menu" action="{{ route('menu.update', $menu->id) }}" method="POST">
+          @method('PUT')
           @csrf
           <input type="hidden" name="id" value="{{ $menu->id }}">
           <div class="mb-3">
@@ -64,7 +65,7 @@
 
           <div class="d-flex justify-content-end">
             <button type="reset" class="btn btn-secondary me-2">Đặt lại</button>
-            <button type="submit" class="btn btn-primary">Tạo mới</button>
+            <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
           </div>
         </form>
       </div>

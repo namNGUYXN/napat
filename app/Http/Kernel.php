@@ -66,5 +66,7 @@ class Kernel extends HttpKernel
 
         'auth.custom' => \App\Http\Middleware\AuthMiddleware::class,
         'vai_tro' => \App\Http\Middleware\VaiTroMiddleware::class,
+        'muc_bai_giang' => \App\Http\Middleware\MucBaiGiangMiddleware::class,
+        'bai_giang' => \App\Http\Middleware\BaiGiangMiddleware::class,
     ];
 }

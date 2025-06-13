@@ -11,7 +11,7 @@
 
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    <link rel="stylesheet" href="{{ asset('modules/home/css/home.css') }}">
+    
     @yield('styles')
 </head>
 
@@ -24,7 +24,7 @@
         @include('partials._menu-sidebar-mobile')
 
         <main class="container-fluid">
-            <div class="row flex-nowrap content-row">
+            <div class="row flex-nowrap content-row position-relative">
 
                 @include('partials._menu-sidebar')
 
@@ -40,7 +40,7 @@
     <script src="{{ asset('js/jquery-3.7.1.js') }}"></script>
     <script src="{{ asset('js/bootstrap-5.3.3.bundle.min.js') }}"></script>
     <script src="{{ asset('js/main.js') }}"></script>
-    <script src="{{ asset('modules/home/js/home.js') }}"></script>
+    
     @yield('scripts')
 </body>
 

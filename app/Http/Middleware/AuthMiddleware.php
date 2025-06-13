@@ -16,10 +16,12 @@ class AuthMiddleware
      */
     public function handle($request, Closure $next)
     {
+        // Kiểm tra session
         if ($request->session()->has('id_nguoi_dung')) {
             return $next($request);
         }
 
+        // Kiểm tra cookie token_remember
         if ($request->hasCookie('token_remember')) {
             $token_tu_cookie = hash('sha256', $request->cookie('token_remember'));
             $nguoiDung = NguoiDung::where('token_remember', $token_tu_cookie)->first();
@@ -30,11 +32,13 @@ class AuthMiddleware
                     'ho_ten' => $nguoiDung->ho_ten,
                     'vai_tro' => $nguoiDung->vai_tro
                 ]);
-
                 return $next($request);
             }
         }
 
-        return redirect()->route('dang-nhap');
+        return redirect()->route('dang-nhap')->with([
+                'message' => 'Vui lòng đăng nhập.',
+                'status' => 'danger'
+            ]);
     }
 }

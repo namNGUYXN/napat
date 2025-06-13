@@ -18,16 +18,13 @@ class VaiTroMiddleware
     {
         // Lấy vai trò của người login
         $vaiTroHienTai = Str::slug(session('vai_tro'));
-        // Chuyển chuỗi thành mảng
+        // chuỗi -> mảng
         $vaiTroChoPhep = explode('+', $vaiTro);
 
         if (in_array($vaiTroHienTai, $vaiTroChoPhep)) {
             return $next($request);
         }
 
-        if (session('vai_tro') == 'Admin') {
-            return redirect()->route('dashboard');
-        }
-        else return redirect()->route('home');
+        abort(403, 'Bạn không có quyền truy cập.');
     }
 }

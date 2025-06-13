@@ -4,7 +4,7 @@
   <div class="col bg-light p-4 overflow-auto custom-scrollbar">
     <h2 class="mb-4">Thêm Menu mới</h2>
 
-    <a href="{{ route('list-menu') }}" class="btn btn-outline-secondary mb-4">
+    <a href="{{ route('menu.index') }}" class="btn btn-outline-secondary mb-4">
       <i class="fas fa-arrow-alt-circle-left me-2"></i>Danh sách Menu
     </a>
 
@@ -20,7 +20,7 @@
         <h5 class="mb-0">Thông tin Menu mới</h5>
       </div>
       <div class="card-body">
-        <form id="form-them-menu" action="{{ route('them-menu') }}" method="POST">
+        <form id="form-them-menu" action="{{ route('menu.store') }}" method="POST">
           @csrf
           <div class="mb-3">
             <label for="" class="form-label">Tên menu: <span class="text-danger">*</span></label>
@@ -34,7 +34,7 @@
           <div class="mb-3">
             <label for="" class="form-label">Thuộc menu:</label>
             <select class="form-select" name="id_menu_cha">
-              <option selected value="0">Là menu chính</option>
+              <option selected value="">Là menu chính</option>
               @foreach ($listMenu as $menu)
                 <option value="{{ $menu['id'] }}" {{ old('id_menu_cha') == $menu['id'] ? 'selected' : '' }}>
                   {{ $menu['ten'] }}</option>

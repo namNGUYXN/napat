@@ -20,6 +20,11 @@ class MucBaiGiang extends Model
         'is_delete',
     ];
 
+    public function getNgayTaoAttribute()
+    {
+        return $this->created_at ? $this->created_at->format('d/m/Y') : null;
+    }
+
     public function baiGiangs()
     {
         return $this->hasMany(BaiGiang::class, 'id_muc_bai_giang');

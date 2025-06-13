@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\MucBaiGiang;
+use App\NguoiDung;
 
 class MucBaiGiangService
 {
@@ -54,5 +55,27 @@ class MucBaiGiangService
         ->where('id', $idMuc)
         ->where('is_delete', false)
         ->first();
+    }
+
+    function layListTheoGiangVien()
+    {
+        $idNguoiDungHienTai = session('id_nguoi_dung');
+        $nguoiDung = NguoiDung::find($idNguoiDungHienTai);
+
+        $nguoiDung->load(['listMucBaiGiang' => function ($query) {
+            $query->where('is_delete', false)
+                  ->withCount(['baiGiangs as so_bai_giang']);
+        }]);
+
+        return $nguoiDung->listMucBaiGiang;
+    }
+
+    function layTheoId($id)
+    {
+        return MucBaiGiang::where('id', $id)
+            ->where('is_delete', false)
+            ->withCount(['baiGiangs as so_bai_giang'])
+            ->with('baiGiangs')
+            ->firstOrFail();
     }
 }

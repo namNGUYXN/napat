@@ -15,7 +15,7 @@
     <div class="card shadow-sm">
       <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Danh sách Menu</h5>
-        <a href="{{ route('them-menu') }}" class="btn btn-light btn-sm">
+        <a href="{{ route('menu.create') }}" class="btn btn-light btn-sm">
           <i class="fas fa-plus-circle me-2"></i>Thêm Menu mới
         </a>
       </div>
@@ -48,12 +48,18 @@
                     </div>
                   </td>
                   <td class="align-middle text-center">
-                    <a href="{{ route('giao-dien-chinh-sua-menu', $menu['id']) }}" class="btn btn-warning btn-sm me-1">
+                    <a href="{{ route('menu.edit', $menu['id']) }}" class="btn btn-warning btn-sm me-1">
                       <i class="fas fa-edit"></i>
                     </a>
-                    <button class="btn btn-danger btn-sm">
-                      <i class="fas fa-trash-alt"></i>
-                    </button>
+                    <form action="{{ route('menu.delete', $menu['id']) }}" method="POST" class="d-inline-block"
+                      onsubmit="return confirm('Bạn có chắc chắn muốn xóa menu này?');">
+                      @csrf
+                      @method('DELETE')
+                      <button class="btn btn-danger btn-sm">
+                        <i class="fas fa-trash-alt"></i>
+                      </button>
+                    </form>
+
                   </td>
                 </tr>
               @endforeach
