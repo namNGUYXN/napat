@@ -18,7 +18,7 @@
             </li>
         </ul>
 
-        <div class="tab-content" id="myTabContent">
+        <div class="tab-content" id="myTabContent" data-id-bai-giang="{{ $baiGiang->id }}">
             <div class="tab-pane fade show active" id="lesson-pane" role="tabpanel" aria-labelledby="lesson-tab"
                 tabindex="0">
                 <div class="card shadow-sm">
@@ -98,15 +98,15 @@
                                             <td class="text-center">
                                                 <button class="btn btn-info btn-sm me-1 view-exercise-detail-btn"
                                                     data-bs-toggle="modal" data-bs-target="#exerciseDetailModal"
-                                                    data-exercise-id="1">
+                                                    data-exercise-id="{{ $baiTap->id }}">
                                                     <i class="fas fa-eye"></i>
                                                 </button>
                                                 <button class="btn btn-warning btn-sm me-1 edit-exercise-btn"
-                                                    data-exercise-id="1">
+                                                    data-exercise-id="{{ $baiTap->id }}">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
                                                 <button class="btn btn-danger btn-sm delete-exercise-btn"
-                                                    data-exercise-id="1">
+                                                    data-exercise-id="{{ $baiTap->id }}">
                                                     <i class="fas fa-trash-alt"></i>
                                                 </button>
                                             </td>
@@ -136,7 +136,6 @@
                         aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="modalExerciseContent">
-                    <p><strong>ID Bài tập:</strong> <span id="exerciseDetailId"></span></p>
                     <p><strong>Tên bài tập:</strong> <span id="exerciseDetailTitle"></span></p>
                     <p><strong>Loại bài tập:</strong> <span id="exerciseDetailType"></span></p>
                     <p><strong>Ngày tạo:</strong> <span id="exerciseDetailDate"></span></p>

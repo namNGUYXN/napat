@@ -14,4 +14,8 @@ class HocPhan extends Model
     {
         return $this->belongsTo('App\Khoa', 'id_khoa');
     }
+    function lop_hoc()
+    {
+        return $this->hasMany('App\LopHoc', 'id_hoc_phan');
+    }
 }

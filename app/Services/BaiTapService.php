@@ -24,9 +24,10 @@ class BaiTapService
     // Lấy danh sách bài tập theo id bài giảng
     public function getByBaiGiangId($id_bai_giang)
     {
-        return BaiTap::where('id_bai_giang', $id_bai_giang)
-                     ->where('is_delete', false)
-                     ->get();
+        return BaiTap::with('cauHoiBaiTaps') // eager load quan hệ câu hỏi
+                    ->where('id_bai_giang', $id_bai_giang)
+                    ->where('is_delete', false)
+                    ->get();
     }
 
     // Tạo mới bài tập

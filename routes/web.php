@@ -54,6 +54,10 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien+sinh-vien']], 
     Route::get('/tai-lieu', 'TaiLieuController@danhSachTheoGiangVien')->name('danhsachtailieu');
     Route::get('/bai-tap/lam-bai', 'BaiTapController@lamBai')->name('lambai');
     Route::post('/bai-tap', 'BaiTapController@themBaiTap')->name('bai_tap.them');
+    Route::get('/bai-giang/{id}/bai-tap', 'BaiTapController@danhSachBaiTap')->name('bai-tap.by-bai-giang');
+    Route::get('lop-hoc','LopHocController@lopHocCuaToi')->name('lop-hoc.lop-hoc-cua-toi');
+    Route::get('/lop-hoc/{slug}', 'LopHocController@chiTietLopHoc')->name('lop-hoc.chi-tiet');
+
 });
 
 
