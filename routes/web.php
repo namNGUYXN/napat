@@ -60,7 +60,8 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien']], function (
 
     // Mục bài giảng
     Route::get('/muc-bai-giang', 'MucBaiGiangController@giaoDienQuanLy')->name('muc-bai-giang.index');
-    Route::get('/muc-bai-giang/{id}/chi-tiet', 'MucBaiGiangController@chiTiet')->name('muc-bai-giang.detail');
+    Route::get('/muc-bai-giang/{id}/chi-tiet', 'MucBaiGiangController@chiTiet')
+    ->name('muc-bai-giang.detail');
 
     // Bài giảng
     Route::get('/muc-bai-giang/{id}/bai-giang/them', 'BaiGiangController@giaoDienThem')->name('bai-giang.create');
