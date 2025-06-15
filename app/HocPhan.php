@@ -12,10 +12,16 @@ class HocPhan extends Model
 
     function khoa()
     {
-        return $this->belongsTo('App\Khoa', 'id_khoa');
+        return $this->belongsTo(Khoa::class, 'id_khoa');
     }
-    function lop_hoc()
+
+    function list_chuong()
     {
-        return $this->hasMany('App\LopHoc', 'id_hoc_phan');
+        return $this->hasMany(Chuong::class, 'id_hoc_phan');
+    }
+
+    function list_lop_hoc()
+    {
+        return $this->hasMany(LopHoc::class, 'id_hoc_phan');
     }
 }

@@ -2,10 +2,7 @@
 
 namespace App;
 
-use App\MucBaiGiang;
-use App\BaiTap;
 use Illuminate\Database\Eloquent\Model;
-
 
 class BaiGiang extends Model
 {
@@ -25,12 +22,12 @@ class BaiGiang extends Model
         return $this->created_at ? $this->created_at->format('d/m/Y') : null;
     }
 
-    public function mucBaiGiang()
+    public function muc_bai_giang()
     {
         return $this->belongsTo(MucBaiGiang::class, 'id_muc_bai_giang');
     }
     
-    public function baiTaps()          
+    public function list_bai_tap()          
     {
         return $this->hasMany(BaiTap::class, 'id_bai_giang');
     }

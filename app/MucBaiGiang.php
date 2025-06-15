@@ -25,13 +25,13 @@ class MucBaiGiang extends Model
         return $this->created_at ? $this->created_at->format('d/m/Y') : null;
     }
 
-    public function baiGiangs()
+    public function list_bai_giang()
     {
         return $this->hasMany(BaiGiang::class, 'id_muc_bai_giang');
     }
 
-    public function giangVien()
+    public function giang_vien()
     {
-        return $this->belongsTo(NguoiDung::class, 'id_giang_vien'); // tùy bảng người dùng bạn đặt tên là gì
+        return $this->belongsTo(NguoiDung::class, 'id_giang_vien');
     }
 }

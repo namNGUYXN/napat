@@ -17,12 +17,12 @@ class BaiGiangController extends Controller
     }
 
     // Hiển thị form chỉnh sửa bài giảng
-    public function chinhSua($id)
-    {
-        $baiGiang = $this->baiGiangService->layChiTietBaiGiang($id);
+    // public function chinhSua($id)
+    // {
+    //     $baiGiang = $this->baiGiangService->layChiTietBaiGiang($id);
 
-        return view('modules.bai-giang.chinh-sua-bai-giang', compact('baiGiang'));
-    }
+    //     return view('modules.bai-giang.chinh-sua-bai-giang', compact('baiGiang'));
+    // }
 
     // Trang chủ phía admin - Dashboard
     function danhSach()

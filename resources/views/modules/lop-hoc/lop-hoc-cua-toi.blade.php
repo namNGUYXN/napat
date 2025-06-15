@@ -11,11 +11,11 @@
         <div class="class-grid">
             @foreach ($dsLopHoc as $lop)
                 <div class="class-card rounded">
-                    <a href="{{ route('lop-hoc.chi-tiet', ['slug' => $lop->slug]) }}" class="class-img">
+                    <a href="{{ route('lop-hoc.detail', ['slug' => $lop->slug]) }}" class="class-img">
                         <img src="https://picsum.photos/id/1/1000/600" class="img-fluid rounded-top" alt="">
                     </a>
                     <div class="p-3">
-                        <a href="{{ route('lop-hoc.chi-tiet', ['slug' => $lop->slug]) }}"
+                        <a href="{{ route('lop-hoc.detail', ['slug' => $lop->slug]) }}"
                             class="text-dark class-name">{{ $lop->ten }}</a>
                         <p class="mb-1"><b>Học phần: </b>{{ $lop->hoc_phan->ten }}</p>
                         <p class="mb-1"><b>Giảng viên: </b>{{ $lop->giang_vien->ho_ten }}</p>
@@ -28,7 +28,7 @@
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li><a class="dropdown-item"
-                                            href="{{ route('lop-hoc.chi-tiet', ['slug' => $lop->slug]) }}">Xem lớp học</a>
+                                            href="{{ route('lop-hoc.detail', ['slug' => $lop->slug]) }}">Xem lớp học</a>
                                     </li>
                                     <li><button class="dropdown-item class-update-btn" type="button">Chỉnh sửa lớp
                                             học</button>

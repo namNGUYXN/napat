@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use App\LopHoc;
+use App\ThanhVienLop;
 
 class LopHocService
 {
@@ -15,7 +16,7 @@ class LopHocService
         }
 
         if ($nguoiDung->vai_tro === 'Sinh viên') {
-            $idLopHoc = SinhVienLop::where('id_sinh_vien', $nguoiDung->id)
+            $idLopHoc = ThanhVienLop::where('id_sinh_vien', $nguoiDung->id)
                                     ->pluck('id_lop_hoc');
 
             return LopHoc::with(['hoc_phan', 'giang_vien'])

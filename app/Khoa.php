@@ -7,11 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class Khoa extends Model
 {
     protected $table = 'khoa';
+
     public $timestamps = false;
+    
     // protected $fillable = [];
 
-    function hoc_phan()
+    function list_hoc_phan()
     {
-        return $this->hasMany('App\HocPhan', 'id_khoa');
+        return $this->hasMany(HocPhan::class, 'id_hoc_phan');
     }
 }

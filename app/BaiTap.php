@@ -2,8 +2,6 @@
 
 namespace App;
 
-use App\CauHoiBaiTap;
-use App\BaiGiang;
 use Illuminate\Database\Eloquent\Model;
 
 class BaiTap extends Model
@@ -12,13 +10,19 @@ class BaiTap extends Model
     public $timestamps = false;
     protected $fillable = ['tieu_de', 'slug', 'diem_toi_da', 'id_bai_giang', 'is_delete'];
 
-    public function cauHoiBaiTaps()          // 1 bài tập có nhiều câu hỏi
+    public function list_cau_hoi()
     {
         return $this->hasMany(CauHoiBaiTap::class, 'id_bai_tap');
-    } 
-    public function bai_giang()          // 1 bài tập thuộc 1 bài giảng
+    }
+
+    public function bai_giang()
     {
-        return $this->belongsTo(BaiGiangClass::class, 'id_bai_giang');
-    } 
+        return $this->belongsTo(BaiGiang::class, 'id_bai_giang');
+    }
+
+    public function list_sinh_vien()
+    {
+        return $this->belongsToMany(NguoiDung::class, 'ket_qua_bai_tap', 'id_bai_tap', 'id_sinh_vien');
+    }
 }
  

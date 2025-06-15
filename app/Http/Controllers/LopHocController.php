@@ -27,12 +27,12 @@ class LopHocController extends Controller
 
         return view('modules.lop-hoc.lop-hoc-cua-toi', compact('dsLopHoc'));
     }
-    public function chiTietLopHoc($slug)
+    public function chiTiet($slug)
     {
         $lop = $this->lopService->layChiTietLopHoc($slug);
         $banTin = $this->tinService->layBanTinLopHoc($lop->id);
         $thanhVien = $this->thanhVienService->getAcceptedMembersByLopId($lop->id);
         $yeuCau = $this->thanhVienService->getPendingMembersByLopId($lop->id);
-        return view('modules.lop-hoc.chi-tiet-lop-hoc', compact('lop', 'banTin','thanhVien','yeuCau'));
+        return view('modules.lop-hoc.chi-tiet', compact('lop', 'banTin','thanhVien','yeuCau'));
     }
 }

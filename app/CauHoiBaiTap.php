@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\BaiTap;
 use Illuminate\Database\Eloquent\Model;
 
 class CauHoiBaiTap extends Model
@@ -11,7 +10,7 @@ class CauHoiBaiTap extends Model
     public $timestamps = false;
     protected $fillable = ['tieu_de', 'dap_an_a','dap_an_b','dap_an_c','dap_an_d','dap_an_dung', 'id_bai_tap'];
     
-    public function baiTap()
+    public function bai_tap()
     {
         return $this->belongsTo(BaiTap::class);
     }

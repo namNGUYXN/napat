@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCauHoiBaiTapTable extends Migration
+class CreateCauHoiBaiKiemTraTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateCauHoiBaiTapTable extends Migration
      */
     public function up()
     {
-        Schema::create('cau_hoi_bai_tap', function (Blueprint $table) {
+        Schema::create('cau_hoi_bai_kiem_tra', function (Blueprint $table) {
             $table->id();
             $table->text('tieu_de');
             $table->text('dap_an_a');
@@ -21,10 +21,10 @@ class CreateCauHoiBaiTapTable extends Migration
             $table->text('dap_an_c');
             $table->text('dap_an_d');
             $table->string('dap_an_dung', 2);
-            $table->unsignedBigInteger('id_bai_tap');
+            $table->unsignedBigInteger('id_bai_kiem_tra');
 
             // Khóa ngoại
-            $table->foreign('id_bai_tap')->references('id')->on('bai_tap')->onDelete('cascade');
+            $table->foreign('id_bai_kiem_tra')->references('id')->on('bai_kiem_tra')->onDelete('cascade');
         });
     }
 
@@ -35,6 +35,6 @@ class CreateCauHoiBaiTapTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('cau_hoi_bai_tap');
+        Schema::dropIfExists('cau_hoi_bai_kiem_tra');
     }
 }

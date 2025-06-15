@@ -10,7 +10,7 @@
     <h2 class="mb-4">Chi tiết tài liệu bài giảng</h2>
 
     <a href="{{ route('muc-bai-giang.index') }}" class="btn btn-outline-secondary mb-4">
-      <i class="fas fa-arrow-alt-circle-left me-2"></i>Danh sách tài liệu
+      <i class="fas fa-arrow-alt-circle-left me-2"></i>Danh sách mục bài giảng
     </a>
 
     <div class="row">
@@ -64,7 +64,7 @@
                   </tr>
                 </thead>
                 <tbody id="lessonListBody">
-                  @foreach ($mucBaiGiang->baiGiangs as $baiGiang)
+                  @foreach ($mucBaiGiang->list_bai_giang as $baiGiang)
                     <tr>
                       <th scope="row">1</th>
                       <td>{{ $baiGiang->tieu_de }}</td>

@@ -9,7 +9,7 @@ class BanTinService
     {
         return BanTin::with([
             'nguoi_dung',
-            'binh_luan.nguoi_dung' // load người dùng của từng bình luận
+            'list_ban_tin_con.nguoi_dung' // load người dùng của từng bình luận
         ])
         ->whereNull('id_ban_tin_cha') // chỉ bản tin cha
         ->where('id_lop_hoc', $idLopHoc)

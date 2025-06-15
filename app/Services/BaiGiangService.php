@@ -12,7 +12,7 @@ class BaiGiangService
     public function layChiTietBaiGiang($id)
     {
         return BaiGiang::with([
-            'baiTaps' => function ($query) {
+            'list_bai_tap' => function ($query) {
                 $query->where('is_delete', false);
             }
         ])

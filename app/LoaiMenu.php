@@ -9,6 +9,6 @@ class LoaiMenu extends Model
     protected $table = 'loai_menu';
 
     function list_menu() {
-        return $this->hasMany('App\Menu', 'id_loai_menu');
+        return $this->hasMany(Menu::class, 'id_loai_menu');
     }
 }

@@ -16,11 +16,11 @@ class ThanhVienLop extends Model
 
     public function lop_hoc()
     {
-        return $this->belongsTo('App\LopHoc', 'id_lop_hoc');
+        return $this->belongsTo(LopHoc::class, 'id_lop_hoc');
     }
 
     public function sinh_vien()
     {
-        return $this->belongsTo('App\NguoiDung', 'id_sinh_vien');
+        return $this->belongsTo(NguoiDung::class, 'id_sinh_vien');
     }
 }

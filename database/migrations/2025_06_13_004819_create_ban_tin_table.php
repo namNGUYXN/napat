@@ -14,7 +14,7 @@ class CreateBanTinTable extends Migration
     public function up()
     {
          Schema::create('ban_tin', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->id();
             $table->text('noi_dung');
             $table->timestamp('ngay_dang')->useCurrent();
             $table->unsignedBigInteger('id_nguoi_dung');

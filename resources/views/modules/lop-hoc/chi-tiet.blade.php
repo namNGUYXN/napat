@@ -90,10 +90,10 @@
 
                                 <!-- Nút hiển thị số phản hồi -->
                                 <div class="mt-2">
-                                    @if (count($item->binh_luan) > 0)
+                                    @if (count($item->list_ban_tin_con) > 0)
                                         <a href="javascript:void(0)" class="text-primary toggle-comments"
                                             data-bs-toggle="collapse" data-bs-target="#comments-{{ $item->id }}">
-                                            {{ count($item->binh_luan) }} phản hồi
+                                            {{ count($item->list_ban_tin_con) }} phản hồi
                                         </a>
                                     @endif
 
@@ -119,7 +119,7 @@
                             <!-- Danh sách bình luận - collapse -->
                             <div class="collapse" id="comments-{{ $item->id }}">
                                 <!-- Bình luận 1 -->
-                                @foreach ($item->binh_luan as $cmt)
+                                @foreach ($item->list_ban_tin_con as $cmt)
                                     <div class="d-flex align-items-start mb-3">
                                         <img src="https://picsum.photos/id/54/400/400"
                                             class="border border-secondary rounded-circle me-2" alt="Avatar"

@@ -4,9 +4,9 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class BanTin extends Model
+class BinhLuan extends Model
 {
-    protected $table = 'ban_tin';
+    protected $table = 'binh_luan';
 
     public $timestamps = false;
 
@@ -14,12 +14,22 @@ class BanTin extends Model
         'noi_dung',
         'ngay_dang',
         'id_nguoi_dung',
+        'id_bai_giang',
         'id_lop_hoc',
-        'id_ban_tin_cha',
+        'id_binh_luan_cha',
         'is_delete'
     ];
 
-    // Quan hệ
+    public function binh_luan_cha()
+    {
+        return $this->belongsTo(BinhLuan::class, 'id_binh_luan_cha');
+    }
+
+    public function list_binh_luan_con()
+    {
+        return $this->hasMany(BinhLuan::class, 'id_binh_luan_cha');
+    }
+
     public function nguoi_dung()
     {
         return $this->belongsTo(NguoiDung::class, 'id_nguoi_dung');
@@ -30,13 +40,8 @@ class BanTin extends Model
         return $this->belongsTo(LopHoc::class, 'id_lop_hoc');
     }
 
-    public function ban_tin_cha()
+    public function bai_giang()
     {
-        return $this->belongsTo(BanTin::class, 'id_ban_tin_cha');
-    }
-
-    public function list_ban_tin_con()
-    {
-        return $this->hasMany(BanTin::class, 'id_ban_tin_cha');
+        return $this->belongsTo(BaiGiang::class, 'id_bai_giang');
     }
 }

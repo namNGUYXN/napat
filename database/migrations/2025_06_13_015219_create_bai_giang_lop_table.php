@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateThanhVienLopTable extends Migration
+class CreateBaiGiangLopTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,15 @@ class CreateThanhVienLopTable extends Migration
      */
     public function up()
     {
-        Schema::create('thanh_vien_lop', function (Blueprint $table) {
+        Schema::create('bai_giang_lop', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('id_lop_hoc');
-            $table->unsignedBigInteger('id_sinh_vien');
-            $table->boolean('is_accept')->default(false);
-            $table->timestamps();
-            
+            $table->unsignedBigInteger('id_bai_giang');
+            $table->unsignedBigInteger('id_chuong');
+
             $table->foreign('id_lop_hoc')->references('id')->on('lop_hoc')->onDelete('cascade');
-            $table->foreign('id_sinh_vien')->references('id')->on('nguoi_dung')->onDelete('cascade');
+            $table->foreign('id_bai_giang')->references('id')->on('bai_giang');
+            $table->foreign('id_chuong')->references('id')->on('chuong')->onDelete('cascade');
         });
     }
 
@@ -32,6 +32,6 @@ class CreateThanhVienLopTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('thanh_vien_lop');
+        Schema::dropIfExists('bai_giang_lop');
     }
 }

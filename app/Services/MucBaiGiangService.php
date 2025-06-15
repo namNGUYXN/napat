@@ -10,7 +10,7 @@ class MucBaiGiangService
     public function getAll()
     {
         return MucBaiGiang::where('is_delete', false)
-            ->withCount('baiGiangs')
+            ->withCount('list_bai_giang')
             ->orderBy('ten')
             ->get();
     }
@@ -19,7 +19,7 @@ class MucBaiGiangService
     {
         return MucBaiGiang::where('id_giang_vien', $idGiangVien)
             ->where('is_delete', false)
-            ->withCount('baiGiangs')
+            ->withCount('list_bai_giang')
             ->orderBy('ten')
             ->get();
     }
@@ -27,7 +27,7 @@ class MucBaiGiangService
     public function getBySlugWithBaiGiangs(string $slug)
     {
         return MucBaiGiang::where('slug', $slug)
-            ->with('baiGiangs')
+            ->with('list_bai_giang')
             ->firstOrFail();
     }
 
@@ -38,18 +38,18 @@ class MucBaiGiangService
     {
         return MucBaiGiang::where('id', $id)
             ->where('is_delete', false)
-            ->with('baiGiangs')
+            ->with('list_bai_giang')
             ->firstOrFail();
     }
     
     public function layChiTietVaDanhSachBaiGiang($idMuc)
     {
         return MucBaiGiang::with([
-            'baiGiangs' => function ($query) {
+            'list_bai_giang' => function ($query) {
                 $query->where('is_delete', false);
             }
         ])
-        ->withCount(['baiGiangs as so_luong_bai_giang' => function ($query) {
+        ->withCount(['list_bai_giang as so_luong_bai_giang' => function ($query) {
             $query->where('is_delete', false);
         }])
         ->where('id', $idMuc)
@@ -62,20 +62,20 @@ class MucBaiGiangService
         $idNguoiDungHienTai = session('id_nguoi_dung');
         $nguoiDung = NguoiDung::find($idNguoiDungHienTai);
 
-        $nguoiDung->load(['listMucBaiGiang' => function ($query) {
+        $nguoiDung->load(['list_muc_bai_giang' => function ($query) {
             $query->where('is_delete', false)
-                  ->withCount(['baiGiangs as so_bai_giang']);
+                  ->withCount(['list_bai_giang as so_bai_giang']);
         }]);
 
-        return $nguoiDung->listMucBaiGiang;
+        return $nguoiDung->list_muc_bai_giang;
     }
 
     function layTheoId($id)
     {
         return MucBaiGiang::where('id', $id)
             ->where('is_delete', false)
-            ->withCount(['baiGiangs as so_bai_giang'])
-            ->with('baiGiangs')
+            ->withCount(['list_bai_giang as so_bai_giang'])
+            ->with('list_bai_giang')
             ->firstOrFail();
     }
 }
