@@ -46,27 +46,32 @@
             </a>
           </div>
           <div class="card-body">
-            <div class="input-group mb-3">
-              <input type="text" class="form-control" placeholder="Tìm kiếm bài giảng theo tên..."
-                id="lessonSearchInput">
-              <button class="btn btn-outline-secondary" type="button" id="searchLessonBtn">
-                <i class="fas fa-search"></i> </button>
-            </div>
+            <form action="{{ route('muc-bai-giang.detail', $mucBaiGiang->id) }}" method="GET">
+              <div class="input-group mb-3">
+                <input type="text" class="form-control" name="search" value="{{ request()->input('search') }}" placeholder="Tìm kiếm bài giảng theo tên..." id="">
+                <button class="btn btn-outline-secondary">
+                  <i class="fas fa-search"></i> </button>
+              </div>
+            </form>
 
             <div class="table-responsive">
               <table class="table table-hover table-striped">
                 <thead>
                   <tr>
-                    <th scope="col">#</th>
+                    <th scope="col">STT</th>
                     <th scope="col">Tiêu đề bài giảng</th>
                     <th scope="col">Ngày tạo</th>
                     <th scope="col" class="text-center">Thao tác</th>
                   </tr>
                 </thead>
                 <tbody id="lessonListBody">
-                  @foreach ($mucBaiGiang->list_bai_giang as $baiGiang)
+                  @php
+                    $page = request()->query('page') ?: 1;
+                    $start = ($page - 1) * $numPerPage;
+                  @endphp
+                  @foreach ($listBaiGiang as $baiGiang)
                     <tr>
-                      <th scope="row">1</th>
+                      <th scope="row">{{ ++$start }}</th>
                       <td>{{ $baiGiang->tieu_de }}</td>
                       <td>{{ $baiGiang->ngay_tao }}</td>
                       <td class="text-center">
@@ -88,23 +93,10 @@
                 </tbody>
               </table>
             </div>
-            <nav aria-label="" class="mt-4">
-              <ul class="pagination justify-content-center">
-                <li class="page-item">
-                  <a class="page-link" href="#" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                  </a>
-                </li>
-                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                  <a class="page-link" href="#" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                  </a>
-                </li>
-              </ul>
-            </nav>
+
+            {{-- Dấu : báo hiệu cho blade đây là biểu thứ php --}}
+            <x-pagination :paginator="$listBaiGiang" base-url="{{ route('muc-bai-giang.detail', $mucBaiGiang->id) }}" />
+
           </div>
         </div>
       </div>
@@ -139,8 +131,7 @@
       <div class="modal-content">
         <div class="modal-header bg-danger text-white">
           <h5 class="modal-title" id="XoaBaiGiangModalLabel">Xác nhận xóa bài giảng</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-            aria-label="Close"></button>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <p>Bạn có chắc chắn muốn xóa Bài Giảng này không?</p>

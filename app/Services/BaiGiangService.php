@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\BaiGiang;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -19,6 +20,20 @@ class BaiGiangService
             ->where('id', $id)
             ->where('is_delete', false)
             ->firstOrFail();
+    }
+
+    public function layListBaiGiangTheoMucBaiGiang(Request $request, $id, $perPage = -1)
+    {
+        $listBaiGiang = BaiGiang::where('id_muc_bai_giang', $id);
+
+        if ($search = $request->input('search')) {
+            $listBaiGiang->where('tieu_de', 'like', '%' . $search . '%');
+        }
+        
+        if ($perPage > 0)
+            return $listBaiGiang->paginate($perPage);
+
+        return $listBaiGiang->get();
     }
 
     function them(array $data)

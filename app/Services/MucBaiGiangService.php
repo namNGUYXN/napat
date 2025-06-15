@@ -41,7 +41,7 @@ class MucBaiGiangService
             ->with('list_bai_giang')
             ->firstOrFail();
     }
-    
+
     public function layChiTietVaDanhSachBaiGiang($idMuc)
     {
         return MucBaiGiang::with([
@@ -49,12 +49,12 @@ class MucBaiGiangService
                 $query->where('is_delete', false);
             }
         ])
-        ->withCount(['list_bai_giang as so_luong_bai_giang' => function ($query) {
-            $query->where('is_delete', false);
-        }])
-        ->where('id', $idMuc)
-        ->where('is_delete', false)
-        ->first();
+            ->withCount(['list_bai_giang as so_luong_bai_giang' => function ($query) {
+                $query->where('is_delete', false);
+            }])
+            ->where('id', $idMuc)
+            ->where('is_delete', false)
+            ->first();
     }
 
     function layListTheoGiangVien()
@@ -64,18 +64,32 @@ class MucBaiGiangService
 
         $nguoiDung->load(['list_muc_bai_giang' => function ($query) {
             $query->where('is_delete', false)
-                  ->withCount(['list_bai_giang as so_bai_giang']);
+                ->withCount(['list_bai_giang as so_bai_giang']);
         }]);
 
         return $nguoiDung->list_muc_bai_giang;
     }
 
-    function layTheoId($id)
+    function layTheoId($id, $perPage = 5)
     {
         return MucBaiGiang::where('id', $id)
             ->where('is_delete', false)
             ->withCount(['list_bai_giang as so_bai_giang'])
-            ->with('list_bai_giang')
             ->firstOrFail();
+
+        // // Lấy mục bài giảng
+        // $mucBaiGiang = MucBaiGiang::where('id', $id)
+        //     ->where('is_delete', false)
+        //     ->withCount(['list_bai_giang as so_bai_giang'])
+        //     ->firstOrFail();
+
+        // // Lấy danh sách bài giảng phân trang
+        // $listBaiGiang = $mucBaiGiang->list_bai_giang()
+        //     ->paginate($perPage);
+
+        // return [
+        //     'mucBaiGiang' => $mucBaiGiang,
+        //     'listBaiGiang' => $listBaiGiang
+        // ];
     }
 }
