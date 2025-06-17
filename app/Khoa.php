@@ -14,6 +14,6 @@ class Khoa extends Model
 
     function list_hoc_phan()
     {
-        return $this->hasMany(HocPhan::class, 'id_hoc_phan');
+        return $this->hasMany(HocPhan::class, 'id_khoa');
     }
 }
