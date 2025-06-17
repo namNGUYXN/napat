@@ -60,8 +60,12 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien']], function (
 
     // Mục bài giảng
     Route::get('/muc-bai-giang', 'MucBaiGiangController@giaoDienQuanLy')->name('muc-bai-giang.index');
-    Route::get('/muc-bai-giang/{id}/chi-tiet', 'MucBaiGiangController@chiTiet')
-    ->name('muc-bai-giang.detail');
+    Route::get('/muc-bai-giang/{id}/chi-tiet', 'MucBaiGiangController@chiTiet')->name('muc-bai-giang.detail');
+    Route::post('/muc-bai-giang/them', 'MucBaiGiangController@them')->name('muc-bai-giang.store');
+    Route::post('/muc-bai-giang/{id}/modal-chi-tiet', 'MucBaiGiangController@modalChiTiet')->name('muc-bai-giang.detail-modal');
+    Route::put('/muc-bai-giang/{id}/modal-chinh-sua', 'MucBaiGiangController@modalChinhSua')->name('muc-bai-giang.update-modal');
+    Route::put('/muc-bai-giang/{id}/chinh-sua', 'MucBaiGiangController@chinhSua')->name('muc-bai-giang.update');
+    Route::delete('/muc-bai-giang/{id}/xoa', 'MucBaiGiangController@xoa')->name('muc-bai-giang.delete');
 
     // Bài giảng
     Route::get('/muc-bai-giang/{id}/bai-giang/them', 'BaiGiangController@giaoDienThem')->name('bai-giang.create');

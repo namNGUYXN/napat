@@ -126,7 +126,7 @@ class BaiGiangController extends Controller
 
         if ($result['success']) {
             return redirect()->route('muc-bai-giang.detail', $idMucBaiGiang)->with([
-            'message' => 'Xóa bài giảng thành công',
+            'message' => $result['message'],
             'status' => 'success'
         ]);
         }

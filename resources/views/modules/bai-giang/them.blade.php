@@ -9,7 +9,7 @@
       <i class="fas fa-arrow-alt-circle-left me-2"></i>Danh sách bài giảng
     </a>
 
-    @error ('id_muc_bai_giang')
+    @error('id_muc_bai_giang')
       <div class="alert alert-danger alert-dismissible fade show" role="alert">
         {{ $message }}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -26,8 +26,8 @@
           <input type="hidden" name="id_muc_bai_giang" value="{{ $idMucBaiGiang }}">
           <div class="mb-3">
             <label for="lecture-title" class="form-label">Tiêu đề bài giảng <span class="text-danger">*</span></label>
-            <input type="text" class="form-control @error ('tieu_de') is-invalid @enderror" name="tieu_de" value="{{ old('tieu_de') }}"
-              placeholder="Nhập tên bài giảng" id="lecture-title">
+            <input type="text" class="form-control @error('tieu_de') is-invalid @enderror" name="tieu_de"
+              value="{{ old('tieu_de') }}" placeholder="Nhập tên bài giảng" id="lecture-title">
             @error('tieu_de')
               <div class="invalid-feedback">
                 {{ $message }}
@@ -36,7 +36,7 @@
           </div>
           <div class="mb-3">
             <label for="lecture-content" class="form-label">Nội dung bài giảng <span class="text-danger">*</span></label>
-            <textarea class="form-control textarea-tiny @error ('noi_dung') is-invalid @enderror" name="noi_dung" rows="10"
+            <textarea class="form-control textarea-tiny @error('noi_dung') is-invalid @enderror" name="noi_dung" rows="10"
               placeholder="Nhập nội dung chi tiết bài giảng" id="lecture-content">
               {{ old('noi_dung') }}
             </textarea>
@@ -63,5 +63,6 @@
 @endsection
 
 @section('scripts')
+  <script src="{{ asset('js/tiny-mce.js') }}"></script>
   <script src="{{ asset('modules/baigiang/js/them-bai-giang.js') }}"></script>
 @endsection
