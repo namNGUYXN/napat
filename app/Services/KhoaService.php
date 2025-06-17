@@ -10,4 +10,8 @@ class KhoaService
   {
     return Khoa::all();
   }
+  function layListKhoaWithHocPhans()
+  {
+    return Khoa::with('list_hoc_phan')->get();
+  }
 }

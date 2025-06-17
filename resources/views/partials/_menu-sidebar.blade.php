@@ -5,7 +5,7 @@
     </button>
     <ul class="menu-sidebar mt-5">
         <li>
-            <a href="#" class="nav-link">
+            <a href="{{ route('home') }}" class="nav-link">
                 <i class="fas fa-house-user me-2 fs-5"></i>
                 <span class="nav-text">Trang chủ</span>
             </a>

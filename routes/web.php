@@ -51,7 +51,7 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien+sinh-vien']], 
     Route::get('/bai-giang/{id}/bai-tap', 'BaiTapController@danhSachBaiTap')->name('bai-tap.by-bai-giang');
     Route::get('lop-hoc','LopHocController@lopHocCuaToi')->name('lop-hoc.lop-hoc-cua-toi');
     Route::get('/lop-hoc/{slug}', 'LopHocController@chiTiet')->name('lop-hoc.detail');
-
+    Route::get('/hoc-phan/{id}/lop-hoc', 'LopHocController@lopHocTheoHocPhan')->name('lop-hoc.theo-hoc-phan');
 });
 
 

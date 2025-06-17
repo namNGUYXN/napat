@@ -35,4 +35,10 @@ class LopHocController extends Controller
         $yeuCau = $this->thanhVienService->getPendingMembersByLopId($lop->id);
         return view('modules.lop-hoc.chi-tiet', compact('lop', 'banTin','thanhVien','yeuCau'));
     }
+    public function lopHocTheoHocPhan($id)
+    {
+        $dsLopHoc = $this->lopService->layLopHocTheoHocPhan($id);
+
+        return view('modules.lop-hoc.danh-sach', compact('dsLopHoc'));
+    }
 }
