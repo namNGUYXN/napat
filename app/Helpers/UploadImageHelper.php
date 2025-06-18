@@ -10,7 +10,7 @@ class UploadImageHelper
   {
     $fileName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
     $fileExtension = pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION);
-    $newFileName = hash('sha256', $fileName) . '.' . $fileExtension;
+    $newFileName = hash('sha256', $fileName . time()) . '.' . $fileExtension;
     // up ảnh
     $path = $file->storeAs("images/{$module}", $newFileName, 'public');
 

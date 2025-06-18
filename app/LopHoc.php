@@ -44,4 +44,9 @@ class LopHoc extends Model
     {
         return $this->belongsToMany(NguoiDung::class, 'thanh_vien_lop', 'id_lop_hoc', 'id_sinh_vien');
     }
+
+    public function bai_giang_lop()
+    {
+        return $this->hasMany(BaiGiangLop::class, 'id_lop_hoc');
+    }
 }

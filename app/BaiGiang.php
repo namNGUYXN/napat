@@ -31,5 +31,10 @@ class BaiGiang extends Model
     {
         return $this->hasMany(BaiTap::class, 'id_bai_giang');
     }
+
+    public function bai_giang_lop()
+    {
+        return $this->hasMany(BaiGiangLop::class, 'id_bai_giang');
+    }
 }
 

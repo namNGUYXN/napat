@@ -13,7 +13,6 @@ $(document).on('click', '.btn-detail-bai-giang', function () {
   if (cache[url]) {
     const baiGiang = cache[url];
     $('#tieu-de-bai-giang').text(baiGiang.tieu_de);
-    $('#ngay-tao-bai-giang').text(baiGiang.ngay_tao);
     $('#noi-dung-bai-giang').html(baiGiang.noi_dung);
     $('#modal-chi-tiet-bai-giang').modal('show');
     return;
@@ -27,7 +26,6 @@ $(document).on('click', '.btn-detail-bai-giang', function () {
       const baiGiang = response.data;
       cache[url] = baiGiang; // Lưu vào cache
       $('#tieu-de-bai-giang').text(baiGiang.tieu_de);
-      $('#ngay-tao-bai-giang').text(baiGiang.ngay_tao);
       $('#noi-dung-bai-giang').html(baiGiang.noi_dung);
       $('#modal-chi-tiet-bai-giang').modal('show');
     },

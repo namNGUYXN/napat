@@ -136,4 +136,13 @@ class BaiGiangController extends Controller
             'status' => 'danger'
         ]);
     }
+
+    public function layListTheoMucBaiGiang(Request $request, $idMucBaiGiang)
+    {
+        $data = $this->baiGiangService->layListBaiGiangTheoMucBaiGiang($request, $idMucBaiGiang);
+        
+        return response()->json([
+            'data' => $data
+        ]);
+    }
 }

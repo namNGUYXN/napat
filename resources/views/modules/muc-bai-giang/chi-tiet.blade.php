@@ -130,7 +130,6 @@
           </div>
           <div class="modal-body">
             <p><strong>Tên bài giảng:</strong> <span id="tieu-de-bai-giang"></span></p>
-            <p><strong>Ngày tạo:</strong> <span id="ngay-tao-bai-giang"></span></p>
             <hr>
             <h6>Nội dung:</h6>
             <div id="noi-dung-bai-giang"></div>
