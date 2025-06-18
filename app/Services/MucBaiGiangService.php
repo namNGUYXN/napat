@@ -4,6 +4,9 @@ namespace App\Services;
 
 use App\MucBaiGiang;
 use App\NguoiDung;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class MucBaiGiangService
 {
@@ -57,39 +60,125 @@ class MucBaiGiangService
             ->first();
     }
 
-    function layListTheoGiangVien()
+    function layListTheoGiangVien($perPage = -1)
     {
         $idNguoiDungHienTai = session('id_nguoi_dung');
-        $nguoiDung = NguoiDung::find($idNguoiDungHienTai);
+        $listMucBaiGiang = MucBaiGiang::where([
+            ['id_giang_vien', $idNguoiDungHienTai],
+            ['is_delete', false]
+        ])->withCount(['list_bai_giang as so_bai_giang'])
+          ->orderBy('created_at', 'desc');
 
-        $nguoiDung->load(['list_muc_bai_giang' => function ($query) {
-            $query->where('is_delete', false)
-                ->withCount(['list_bai_giang as so_bai_giang']);
-        }]);
+        if ($perPage > 0) {
+            return $listMucBaiGiang->paginate($perPage);
+        }
 
-        return $nguoiDung->list_muc_bai_giang;
+        return $listMucBaiGiang->get();
     }
 
-    function layTheoId($id, $perPage = 5)
+    function layTheoId($id)
     {
         return MucBaiGiang::where('id', $id)
             ->where('is_delete', false)
             ->withCount(['list_bai_giang as so_bai_giang'])
             ->firstOrFail();
+    }
 
-        // // Lấy mục bài giảng
-        // $mucBaiGiang = MucBaiGiang::where('id', $id)
-        //     ->where('is_delete', false)
-        //     ->withCount(['list_bai_giang as so_bai_giang'])
-        //     ->firstOrFail();
+    public function them(array $data)
+    {
+        try {
+            DB::beginTransaction();
 
-        // // Lấy danh sách bài giảng phân trang
-        // $listBaiGiang = $mucBaiGiang->list_bai_giang()
-        //     ->paginate($perPage);
+            $slug = Str::slug($data['ten']) . '-' . Str::random(5);
 
-        // return [
-        //     'mucBaiGiang' => $mucBaiGiang,
-        //     'listBaiGiang' => $listBaiGiang
-        // ];
+            $mucBaiGiang = MucBaiGiang::create([
+                'ten' => $data['ten'],
+                'slug' => $slug,
+                'mo_ta_ngan' => $data['mo_ta_ngan'],
+                'hinh_anh' => $data['hinh_anh'] ?? 'images/muc-bai-giang/no-image.png',
+                'id_giang_vien' => session('id_nguoi_dung')
+            ]);
+
+            DB::commit();
+
+            return [
+                'success' => true,
+                'message' => 'Thêm mục bài giảng thành công'
+            ];
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return [
+                'success' => false,
+                'message' => 'Lỗi khi thêm mục bài giảng: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    public function chinhSua($id, array $data)
+    {
+        try {
+            DB::beginTransaction();
+
+            $mucBaiGiang = MucBaiGiang::findOrFail($id);
+            $slug = null;
+            if ($mucBaiGiang->ten != $data['ten']) {
+                $slug = Str::slug($data['ten']) . '-' . Str::random(5);
+            }
+
+            $mucBaiGiang->update([
+                'ten' => $data['ten'] ?? $mucBaiGiang->ten,
+                'slug' => $slug ?? $mucBaiGiang->slug,
+                'mo_ta_ngan' => $data['mo_ta_ngan'] ?? $mucBaiGiang->mo_ta_ngan,
+                'hinh_anh' => $data['hinh_anh'] ?? $mucBaiGiang->hinh_anh
+            ]);
+
+            DB::commit();
+            return [
+                'success' => true,
+                'message' => 'Cập nhật mục bài giảng thành công',
+                'data' => $mucBaiGiang->fresh()
+            ];
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return [
+                'success' => false,
+                'message' => 'Lỗi khi cập nhật mục bài giảng: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    function xoa($id)
+    {
+        try {
+            DB::beginTransaction();
+
+            $mucBaiGiang = MucBaiGiang::findOrFail($id);
+
+            $soBaiGiang = $mucBaiGiang->list_bai_giang()->count();
+
+            // Kiểm tra mục bài giảng có bài giảng không
+            if ($soBaiGiang > 0) {
+                throw new \Exception('Không thể xóa vì có bài giảng trong mục');
+            }
+
+            $mucBaiGiang->delete();
+
+            DB::commit();
+            return [
+                'success' => true,
+                'message' => 'Xóa mục bài giảng thành công'
+            ];
+        } catch (ModelNotFoundException $e) {
+            return [
+                'success' => false,
+                'message' => 'Không tìm thấy mục bài giảng để xóa'
+            ];
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return [
+                'success' => false,
+                'message' => 'Lỗi khi xóa mục bài giảng: ' . $e->getMessage()
+            ];
+        }
     }
 }

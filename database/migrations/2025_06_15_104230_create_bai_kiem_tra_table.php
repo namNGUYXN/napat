@@ -18,10 +18,10 @@ class CreateBaiKiemTraTable extends Migration
             $table->string('tieu_de', 255);
             $table->string('slug', 255)->unique();
             $table->smallInteger('diem_toi_da');
-            $table->timestamp('ngay_bat_dat');
-            $table->timestamp('ngay_ket_thuc');
+            $table->timestamp('ngay_bat_dau')->nullable();
+            $table->timestamp('ngay_ket_thuc')->nullable();
             $table->unsignedBigInteger('id_lop_hoc');
-            $table->timestamp('ngay_tao');
+            $table->timestamps();
             $table->boolean('is_delete')->default(false);
 
             $table->foreign('id_lop_hoc')->references('id')->on('lop_hoc')->onDelete('cascade');

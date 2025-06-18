@@ -126,7 +126,7 @@ class BaiGiangController extends Controller
 
         if ($result['success']) {
             return redirect()->route('muc-bai-giang.detail', $idMucBaiGiang)->with([
-            'message' => 'Xóa bài giảng thành công',
+            'message' => $result['message'],
             'status' => 'success'
         ]);
         }
@@ -134,6 +134,15 @@ class BaiGiangController extends Controller
         return redirect()->route('muc-bai-giang.detail', $idMucBaiGiang)->with([
             'message' => $result['message'],
             'status' => 'danger'
+        ]);
+    }
+
+    public function layListTheoMucBaiGiang(Request $request, $idMucBaiGiang)
+    {
+        $data = $this->baiGiangService->layListBaiGiangTheoMucBaiGiang($request, $idMucBaiGiang);
+        
+        return response()->json([
+            'data' => $data
         ]);
     }
 }
