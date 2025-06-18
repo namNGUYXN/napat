@@ -47,4 +47,5 @@ class LopHocService
             ->where('is_delete', false)
             ->get();
     }
+    
 }
