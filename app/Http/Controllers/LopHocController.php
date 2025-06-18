@@ -111,4 +111,10 @@ class LopHocController extends Controller
             'message' => $result['message']
         ]);
     }
+    public function lopHocTheoHocPhan($id)
+    {
+        $dsLopHoc = $this->lopService->layLopHocTheoHocPhan($id);
+
+        return view('modules.lop-hoc.danh-sach', compact('dsLopHoc'));
+    }
 }

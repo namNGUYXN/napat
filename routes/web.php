@@ -60,6 +60,8 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien+sinh-vien']], 
     Route::post('/lop-hoc/{idLopHoc}/chuong/{idChuong}/bai-giang/gan', 'LopHocController@ganBaiGiang');
     Route::post('/lop-hoc/{idLopHoc}/chuong/{idChuong}/bai-giang/list', 'LopHocController@layListBaiGiangTheoChuongTrongLop');
     Route::delete('/lop-hoc/{idLopHoc}/chuong/{idChuong}/bai-giang/{id}/go', 'LopHocController@goBaiGiang');
+
+    Route::get('/hoc-phan/{id}/lop-hoc', 'LopHocController@lopHocTheoHocPhan')->name('lop-hoc.theo-hoc-phan');
 });
 
 

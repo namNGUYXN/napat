@@ -57,4 +57,15 @@ class LopHocService
 
         return $listBaiGiang;
     }
+
+    public function layLopHocTheoHocPhan($id)
+    {
+        return LopHoc::with([
+                'hoc_phan',
+                'giang_vien',
+            ])
+            ->where('id_hoc_phan', $id)
+            ->where('is_delete', false)
+            ->get();
+    }
 }
