@@ -1,8 +1,84 @@
 $(document).ready(function () {
 
+    // --- Dữ liệu giả định ---
+    // (Trong thực tế, bạn sẽ tải dữ liệu này từ API)
+    // $(".btn-accept-request").click(function () {
+    //     let id = $(this).data("id");
+    //     $.ajax({
+    //         url: `/thanh-vien-lop/${id}/chap-nhan`,
+    //         method: "POST",
+    //         data: {
+    //             _token: "{{ csrf_token() }}",
+    //         },
+    //         success: function (res) {
+    //             location.reload(); // hoặc xóa phần tử DOM nếu muốn mượt hơn
+    //         },
+    //     });
+    // });
+    $(".btn-accept-request").click(function () {
+        let id = $(this).data("id");
+
+        $.ajax({
+            url: `/thanh-vien-lop/${id}/chap-nhan`,
+            method: "POST",
+            data: {
+                _token: $('meta[name="csrf-token"]').attr("content"),
+            },
+            success: function (res) {
+                if (res.status) {
+                    $(".card-body").html(res.html);
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Thất bại",
+                        text: res.message || "Đã xảy ra lỗi",
+                    });
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    icon: "error",
+                    title: "Lỗi hệ thống",
+                    text: "Không thể kết nối đến máy chủ.",
+                });
+            },
+        });
+    });
+
+    $(".btn-reject-request").click(function () {
+        let id = $(this).data("id");
+
+        $.ajax({
+            url: `/thanh-vien-lop/${id}/tu-choi`,
+            method: "POST",
+            data: {
+                _token: $('meta[name="csrf-token"]').attr("content"),
+            },
+            success: function (res) {
+                if (res.status) {
+                    $(".yeuCau").html(res.html);
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Thất bại",
+                        text: res.message || "Đã xảy ra lỗi",
+                    });
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    icon: "error",
+                    title: "Lỗi hệ thống",
+                    text: "Không thể kết nối đến máy chủ.",
+                });
+            },
+        });
+    });
+
   // --- Sự kiện click nút "Chèn bài giảng đã chọn" ---
   // $('#insertSelectedLecturesBtn').on('click', function () {
   //   const chuongId = $('#chuongIdToInsert').val();
+
 
   //   if (!currentSelectedLectures.length) {
   //     alert('Vui lòng chọn ít nhất một bài giảng để chèn.');

@@ -40,7 +40,7 @@
     <script src="{{ asset('js/jquery-3.7.1.js') }}"></script>
     <script src="{{ asset('js/bootstrap-5.3.3.bundle.min.js') }}"></script>
     <script src="{{ asset('js/main.js') }}"></script>
-    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @yield('scripts')
 </body>
 

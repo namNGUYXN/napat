@@ -27,4 +27,61 @@ class ThanhVienLopService
             ->where('is_accept', false)
             ->get();
     }
+    
+    public function chapNhanYeuCau(int $id): array
+    {
+        $thanhVien = ThanhVienLop::find($id);
+
+        if (!$thanhVien) {
+            return [
+                'status' => false,
+                'message' => 'Không tìm thấy yêu cầu tham gia.'
+            ];
+        }
+
+        if ($thanhVien->is_accept) {
+            return [
+                'status' => false,
+                'message' => 'Yêu cầu đã được chấp nhận trước đó.'
+            ];
+        }
+
+        $thanhVien->is_accept = true;
+        $thanhVien->save();
+
+        return [
+            'status' => true,
+            'message' => 'Đã chấp nhận yêu cầu thành công.',
+            'lop_id' => $thanhVien->id_lop_hoc, 
+        ];
+    }
+    public function tuChoiYeuCau(int $id): array
+    {
+        $thanhVien = ThanhVienLop::find($id);
+
+        if (!$thanhVien) {
+            return [
+                'status' => false,
+                'message' => 'Không tìm thấy yêu cầu tham gia.'
+            ];
+        }
+
+        if ($thanhVien->is_accept) {
+            return [
+                'status' => false,
+                'message' => 'Yêu cầu đã được chấp nhận trước đó.'
+            ];
+        }
+
+        $lopId = $thanhVien->lop_hoc_id;
+
+        // Xóa yêu cầu
+        $thanhVien->delete();
+
+        return [
+            'status' => true,
+            'message' => 'Đã từ chối yêu cầu thành công.',
+            'lop_id' => $lopId
+        ];
+    }
 }

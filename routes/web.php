@@ -85,6 +85,10 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien']], function (
     Route::put('/bai-giang/{id}/chinh-sua', 'BaiGiangController@chinhSua_nam')->name('bai-giang.update');
     Route::post('/bai-giang/{id}/chi-tiet', 'BaiGiangController@chiTiet')->name('bai-giang.detail');
     Route::delete('/bai-giang/{id}/xoa', 'BaiGiangController@xoa')->name('bai-giang.delete');
+
+    //Thành viên lớp
+    Route::post('/thanh-vien-lop/{id}/chap-nhan', 'ThanhVienLopController@chapNhan');
+    Route::post('/thanh-vien-lop/{id}/tu-choi', 'ThanhVienLopController@tuChoi');
 });
 
 
