@@ -14,10 +14,11 @@ class CreateBaiGiangLopTable extends Migration
     public function up()
     {
         Schema::create('bai_giang_lop', function (Blueprint $table) {
-            $table->id();
             $table->unsignedBigInteger('id_lop_hoc');
             $table->unsignedBigInteger('id_bai_giang');
             $table->unsignedBigInteger('id_chuong');
+
+            $table->primary(['id_lop_hoc', 'id_bai_giang', 'id_chuong']);
 
             $table->foreign('id_lop_hoc')->references('id')->on('lop_hoc')->onDelete('cascade');
             $table->foreign('id_bai_giang')->references('id')->on('bai_giang');

@@ -24,7 +24,7 @@ class BaiGiangService
 
     public function layListBaiGiangTheoMucBaiGiang(Request $request, $id, $perPage = -1)
     {
-        $listBaiGiang = BaiGiang::where('id_muc_bai_giang', $id);
+        $listBaiGiang = BaiGiang::where('id_muc_bai_giang', $id)->orderBy('created_at', 'desc');
 
         if ($search = $request->input('search')) {
             $listBaiGiang->where('tieu_de', 'like', '%' . $search . '%');
