@@ -145,4 +145,10 @@ class BaiGiangController extends Controller
             'data' => $data
         ]);
     }
+
+    function chiTietBaiGiang()
+    {
+        return view('modules.bai-giang.chi-tiet');
+    }
+
 }

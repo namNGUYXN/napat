@@ -11,7 +11,7 @@
           <i class="fas fa-user"></i>
         </button>
         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-          <li><a class="dropdown-item" href="#">Tài khoản của tôi</a></li>
+          <li><a class="dropdown-item" href="{{ route('tai-khoan.chi-tiet') }}">Tài khoản của tôi</a></li>
           <li>
             <hr class="dropdown-divider">
           </li>
