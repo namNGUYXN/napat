@@ -360,5 +360,5 @@
 @endsection
 
 @section('scripts')
-  <script src="{{ asset('modules/baitap/js/chinh-sua-bai-tap.js') }}"></script>
+  <script src="{{ asset('modules/bai-tap/js/chinh-sua-bai-tap.js') }}"></script>
 @endsection

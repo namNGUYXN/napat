@@ -9,51 +9,13 @@
   <!-- Main Content -->
   <div class="col bg-light p-4 overflow-auto custom-scrollbar">
 
-    <!-- PHẦN TRÊN: THÔNG TIN LỚP HỌC -->
     <div id="info-lop-hoc" class="d-none" data-id-lop-hoc="{{ $lop->id }}" data-id-hoc-phan="{{ $hocPhan->id }}"></div>
-    <div class="card mb-4">
-      <div class="row g-0">
-        <div class="col-md-6">
-          <img src="{{ asset('storage/' . $lop->hinh_anh) }}" class="img-fluid rounded-start" alt="">
-        </div>
-        <div class="col-md-6 position-relative">
-          <div class="card-body">
-            <h5 class="card-title mb-3">{{ $lop->ten }} - {{ $lop->ma }}</h5>
-            <p class="card-text mb-1"><strong>Học phần:</strong> {{ $lop->hoc_phan->ten }}</p>
-            <p class="card-text mb-1"><strong>Giảng viên:</strong> {{ $lop->giang_vien->ho_ten }}</p>
-            <p class="card-text mb-1"><strong>Học kì:</strong> 2024 - 2025</p>
-            <p class="card-text mt-3 mb-0">
-              <small class="text-muted">{{ $lop->mo_ta_ngan }}</small>
-            </p>
-
-            <div class="class-action-btn">
-              <div class="dropdown">
-                <button class="btn btn-transparent dropdown-toggle remove-arrow-down" type="button"
-                  data-bs-toggle="dropdown" aria-expanded="false">
-                  <i class="fas fa-ellipsis-v"></i>
-                </button>
-                <ul class="dropdown-menu">
-                  <!-- Sinh viên -->
-                  <li><button class="dropdown-item" type="button">Đăng ký lớp học</button></li>
-                  <li><button class="dropdown-item" type="button">Rời lớp học</button></li>
-                  <!-- Giảng viên -->
-                  <li><button class="dropdown-item" type="button" data-bs-toggle="modal"
-                      data-bs-target="#updateClassModal">Chỉnh sửa lớp học</button>
-                  </li>
-                  <li><button class="dropdown-item" type="button">Xóa lớp học</button></li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
 
     <!-- PHẦN DƯỚI: TAB NỘI DUNG -->
     <ul class="nav nav-tabs mb-3" id="classTab" role="tablist">
       <li class="nav-item" role="presentation">
         <button class="nav-link active" id="news-tab" data-bs-toggle="tab" data-bs-target="#news" type="button"
-          role="tab">Bản tin <span class="badge text-bg-danger">4</span>
+          role="tab">Bảng tin <span class="badge text-bg-danger">4</span>
         </button>
       </li>
       <li class="nav-item" role="presentation">
@@ -75,6 +37,45 @@
 
       <!--Bản tin-->
       <div class="tab-pane fade show active" id="news" role="tabpanel">
+        <!-- PHẦN TRÊN: THÔNG TIN LỚP HỌC -->
+        <div class="card mb-4">
+          <div class="row g-0">
+            <div class="col-md-4">
+              <img src="{{ asset('storage/' . $lop->hinh_anh) }}" class="img-fluid rounded-start" alt="">
+            </div>
+            <div class="col-md-8 position-relative">
+              <div class="card-body">
+                <h5 class="card-title mb-3">{{ $lop->ten }} - {{ $lop->ma }}</h5>
+                <p class="card-text mb-1"><strong>Học phần:</strong> {{ $lop->hoc_phan->ten }}</p>
+                <p class="card-text mb-1"><strong>Giảng viên:</strong> {{ $lop->giang_vien->ho_ten }}</p>
+                <p class="card-text mb-1"><strong>Học kì:</strong> 2024 - 2025</p>
+                <p class="card-text mt-3 mb-0">
+                  <small class="text-muted">{{ $lop->mo_ta_ngan }}</small>
+                </p>
+
+                <div class="class-action-btn">
+                  <div class="dropdown">
+                    <button class="btn btn-transparent dropdown-toggle remove-arrow-down" type="button"
+                      data-bs-toggle="dropdown" aria-expanded="false">
+                      <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                      <!-- Sinh viên -->
+                      <li><button class="dropdown-item" type="button">Đăng ký lớp học</button></li>
+                      <li><button class="dropdown-item" type="button">Rời lớp học</button></li>
+                      <!-- Giảng viên -->
+                      <li><button class="dropdown-item" type="button" data-bs-toggle="modal"
+                          data-bs-target="#updateClassModal">Chỉnh sửa lớp học</button>
+                      </li>
+                      <li><button class="dropdown-item" type="button">Xóa lớp học</button></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         @foreach ($banTin as $item)
           <!-- Mỗi bản tin là một thẻ -->
           <div class="card news-item overflow-hidden mb-5" style="cursor: pointer;">
@@ -481,12 +482,12 @@
 @endsection
 
 @section('styles')
-  <link rel="stylesheet" href="{{ asset('modules/lophoc/css/chi-tiet-lop-hoc.css') }}">
+  <link rel="stylesheet" href="{{ asset('modules/lop-hoc/css/chi-tiet-lop-hoc.css') }}">
   <script src="https://cdn.tiny.cloud/1/49cqngm4aad2mfsqcxldsfyni14qw3mjr893daq7kzrqa40a/tinymce/5/tinymce.min.js"
     referrerpolicy="origin"></script>
 @endsection
 
 @section('scripts')
   <script src="{{ asset('js/tiny-mce.js') }}"></script>
-  <script src="{{ asset('modules/lophoc/js/chi-tiet-lop-hoc.js') }}"></script>
+  <script src="{{ asset('modules/lop-hoc/js/chi-tiet-lop-hoc.js') }}"></script>
 @endsection

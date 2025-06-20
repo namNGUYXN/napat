@@ -9,32 +9,36 @@ class BaiGiang extends Model
 
     protected $table = 'bai_giang';
 
+    public $timestamps = false;
+
     protected $fillable = [
-        'tieu_de',
+        'ten',
         'slug',
-        'noi_dung',
-        'id_muc_bai_giang',
+        'mo_ta_ngan',
+        'hinh_anh',
+        'id_giang_vien',
+        'id_hoc_phan',
+        'ngay_tao',
         'is_delete',
     ];
 
     public function getNgayTaoAttribute()
     {
-        return $this->created_at ? $this->created_at->format('d/m/Y') : null;
+        return $this->ngay_tao ? $this->ngay_tao->format('d/m/Y') : null;
     }
 
-    public function muc_bai_giang()
+    public function hoc_phan()
     {
-        return $this->belongsTo(MucBaiGiang::class, 'id_muc_bai_giang');
-    }
-    
-    public function list_bai_tap()          
-    {
-        return $this->hasMany(BaiTap::class, 'id_bai_giang');
+        return $this->belongsTo(HocPhan::class, 'id_hoc_phan');
     }
 
-    public function bai_giang_lop()
+    public function list_chuong()
     {
-        return $this->hasMany(BaiGiangLop::class, 'id_bai_giang');
+        return $this->hasMany(Chuong::class, 'id_bai_giang');
+    }
+
+    public function giang_vien()
+    {
+        return $this->belongsTo(NguoiDung::class, 'id_giang_vien');
     }
 }
-

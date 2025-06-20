@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateKhoaTable extends Migration
+class CreateBaiTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,17 @@ class CreateKhoaTable extends Migration
      */
     public function up()
     {
-        Schema::create('khoa', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('ma', 20)->unique();
-            $table->string('ten', 100);
-            $table->string('slug', 100)->unique();
-            $table->string('mo_ta_ngan', 100)->nullable();
-            $table->string('email', 100)->unique()->nullable();
+        Schema::create('bai', function (Blueprint $table) {
+            $table->id();
+            $table->string('tieu_de', 100);
+            $table->string('slug')->unique();
+            $table->text('noi_dung');
+            $table->unsignedBigInteger('id_chuong'); 
             $table->timestamp('ngay_tao')->useCurrent();
             $table->boolean('is_delete')->default(false);
+
+            //FK
+            $table->foreign('id_chuong')->references('id')->on('chuong');
         });
     }
 
@@ -32,6 +34,6 @@ class CreateKhoaTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('khoa');
+        Schema::dropIfExists('bai');
     }
 }

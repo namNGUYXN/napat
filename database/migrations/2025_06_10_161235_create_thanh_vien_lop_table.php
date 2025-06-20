@@ -15,13 +15,15 @@ class CreateThanhVienLopTable extends Migration
     {
         Schema::create('thanh_vien_lop', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('id_lop_hoc');
-            $table->unsignedBigInteger('id_sinh_vien');
-            $table->boolean('is_accept')->default(false);
-            $table->timestamps();
-            
-            $table->foreign('id_lop_hoc')->references('id')->on('lop_hoc')->onDelete('cascade');
-            $table->foreign('id_sinh_vien')->references('id')->on('nguoi_dung')->onDelete('cascade');
+            $table->unsignedBigInteger('id_lop_hoc_phan');
+            $table->unsignedBigInteger('id_nguoi_dung');
+            $table->boolean('is_accept')->nullable()->default(false);
+
+            $table->unique(['id_lop_hoc_phan', 'id_nguoi_dung']);
+            // FK
+            $table->foreign('id_lop_hoc_phan')->references('id')->on('lop_hoc_phan')->onDelete('cascade');
+            // KF
+            $table->foreign('id_nguoi_dung')->references('id')->on('nguoi_dung')->onDelete('cascade');
         });
     }
 

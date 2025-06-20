@@ -2,153 +2,205 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\UploadImageHelper;
+use App\Services\BaiService;
 use App\Services\BaiGiangService;
+use App\Services\ChuongService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class BaiGiangController extends Controller
 {
     protected $baiGiangService;
+    protected $baiService;
+    protected $uploadImageHelper;
+    protected $chuongService;
 
-    public function __construct(BaiGiangService $baiGiangService)
+    function __construct(BaiGiangService $baiGiangService, BaiService $baiService,
+    UploadImageHelper $uploadImageHelper, ChuongService $chuongService)
     {
         $this->baiGiangService = $baiGiangService;
-        $this->middleware('muc_bai_giang')->only('giaoDienThem');
-        $this->middleware('bai_giang')->only('giaoDienChinhSua');
+        $this->baiService = $baiService;
+        $this->uploadImageHelper = $uploadImageHelper;
+        $this->chuongService = $chuongService;
+        $this->middleware('bai_giang')->only('chiTiet');
     }
 
-    // Hiển thị form chỉnh sửa bài giảng
-    // public function chinhSua($id)
-    // {
-    //     $baiGiang = $this->baiGiangService->layChiTietBaiGiang($id);
+    function giaoDienQuanLy(Request $request)
+    {
+        $numPerPage = 3;
+        $listBaiGiang = $this->baiGiangService->layListTheoGiangVien($numPerPage);
 
-    //     return view('modules.bai-giang.chinh-sua-bai-giang', compact('baiGiang'));
+        // Kiểm tra số trang
+        $page = (int) $request->input('page', 1);
+        $lastPage = $listBaiGiang->lastPage();
+
+        if ($page > $lastPage && $lastPage > 0) {
+            return redirect()->route('bai-giang.index', array_merge(
+                $request->except('page'),
+                ['page' => $lastPage]
+            ));
+        }
+
+        return view('modules.bai-giang.danh-sach', compact('listBaiGiang'));
+    }
+
+    public function chiTiet(Request $request, $id)
+    {
+        $baiGiang = $this->baiGiangService->layTheoId($id);
+        $numPerPage = 5;
+        $listChuong = $this->chuongService->layListTheoBaiGiang($request, $id, $numPerPage);
+
+        // Kiểm tra số trang
+        $page = (int) $request->input('page', 1);
+        $lastPage = $listChuong->lastPage();
+
+        if ($page > $lastPage && $lastPage > 0) {
+            return redirect()->route('bai-giang.detail', array_merge(
+                ['id' => $id],
+                $request->except('page'),
+                ['page' => $lastPage]
+            ));
+        }
+
+        return view(
+            'modules.bai-giang.chi-tiet',
+            compact('baiGiang', 'listChuong', 'numPerPage')
+        );
+    }
+
+    // public function them(Request $request)
+    // {
+    //     $data = $request->validate(
+    //         [
+    //             'ten' => 'required|string|max:255',
+    //             'mo_ta_ngan' => 'nullable|string|max:255',
+    //             'hinh_anh' => 'image'
+    //         ],
+    //         [
+    //             'ten.required' => 'Vui lòng nhập tên mục bài giảng',
+    //             'ten.max' => 'Tên mục bài giảng tối đa 255 ký tự',
+    //             'mo_ta_ngan.max' => 'Mô tả tối đa 255 ký tự',
+    //             'hinh_anh.image' => 'Hình ảnh không hợp lệ'
+    //         ]
+    //     );
+    //     $data['hinh_anh'] = NULL;
+
+    //     // var_dump($request->file('hinh_anh'));
+    //     if ($request->hasFile('hinh_anh')) {
+    //         $file = $request->file('hinh_anh');
+    //         $data['hinh_anh'] = $this->uploadImageHelper->upload($file, 'muc-bai-giang');
+    //     }
+
+    //     $result = $this->mucBaiGiangService->them($data);
+
+    //     if ($result['success']) {
+    //         return redirect()->route('muc-bai-giang.index')->with([
+    //             'message' => $result['message'],
+    //             'status' => 'success'
+    //         ]);
+    //     }
+
+    //     return redirect()->back()->with([
+    //         'message' => $result['message'],
+    //         'status' => 'danger'
+    //     ]);
+
+    //     // echo "<pre>";
+    //     // print_r($data);
+    //     // echo "</pre>";
     // }
 
-    // Trang chủ phía admin - Dashboard
-    function danhSach()
-    {
-        return view('modules.bai-giang.danh-sach-bai-giang');
-    }
+    // public function modalChiTiet($id)
+    // {
+    //     $mucBaiGiang = $this->mucBaiGiangService->layTheoId($id);
 
+    //     return response()->json([
+    //         'data' => $mucBaiGiang
+    //     ]);
+    // }
 
+    // public function handleChinhSua(Request $request, $id)
+    // {
+    //     $data = $request->validate(
+    //         [
+    //             'ten' => 'required|string|max:255',
+    //             'mo_ta_ngan' => 'nullable|string|max:255',
+    //             'hinh_anh' => 'image'
+    //         ],
+    //         [
+    //             'ten.required' => 'Vui lòng nhập tên mục bài giảng',
+    //             'ten.max' => 'Tên mục bài giảng tối đa 255 ký tự',
+    //             'mo_ta_ngan.max' => 'Mô tả tối đa 255 ký tự',
+    //             'hinh_anh.image' => 'Hình ảnh không hợp lệ'
+    //         ]
+    //     );
 
-    // Nam
-    function giaoDienThem($id)
-    {
-        $idMucBaiGiang = $id;
-        return view('modules.bai-giang.them', compact('idMucBaiGiang'));
-    }
+    //     $data['hinh_anh'] = NULL;
 
-    function them(Request $request)
-    {
-        $data = $request->validate(
-            [
-                'tieu_de' => 'required|string|max:255',
-                'noi_dung' => 'required|string',
-                'id_muc_bai_giang' => 'required|exists:muc_bai_giang,id',
-                'is_delete' => 'nullable|boolean'
-            ],
-            [
-                'tieu_de.required' => 'Vui lòng nhập tiêu đề',
-                'tieu_de.max' => 'Tiêu đề tối đa 255 kí tự',
-                'noi_dung.required' => 'Vui lòng nhập nội dung',
-                'id_muc_bai_giang.exists' => 'Không tồn tại mục bài giảng này'
-            ]
-        );
+    //     if ($request->hasFile('hinh_anh')) {
+    //         $file = $request->file('hinh_anh');
 
-        $result = $this->baiGiangService->them($data);
+    //         // Xóa ảnh trong storage (nếu ảnh mặc định thì ko xóa)
+    //         $hinh_anh_goc = $this->mucBaiGiangService->layTheoId($id)->hinh_anh;
+    //         if (!Str::contains($hinh_anh_goc, 'no-image.png')) {
+    //             $this->uploadImageHelper->delete($hinh_anh_goc);
+    //         }
 
-        if ($result['success']) {
-            return redirect()->route('muc-bai-giang.detail', $request['id_muc_bai_giang'])
-                ->with([
-                    'message' => $result['message'],
-                    'status' => 'success'
-                ]);
-        }
+    //         $data['hinh_anh'] = $this->uploadImageHelper->upload($file, 'muc-bai-giang');
+    //     }
 
-        return redirect()->back()
-            ->with([
-                'message' => $result['message'],
-                'status' => 'danger'
-            ])->withInput();
-    }
+    //     return $this->mucBaiGiangService->chinhSua($id, $data);
+    // }
 
-    function giaoDienChinhSua($id)
-    {
-        $baiGiang = $this->baiGiangService->layTheoId($id);
+    // public function modalChinhSua(Request $request, $id)
+    // {
+    //     $result = $this->handleChinhSua($request, $id);
 
-        return view('modules.bai-giang.chinh-sua', compact('baiGiang'));
-    }
+    //     if ($result['success']) {
+    //         return redirect()->route('muc-bai-giang.index')->with([
+    //             'message' => $result['message'],
+    //             'status' => 'success'
+    //         ]);
+    //     }
 
-    function chinhSua_nam(Request $request, $id)
-    {
-        $data = $request->validate(
-            [
-                'tieu_de' => 'required|string|max:255',
-                'noi_dung' => 'required|string',
-            ],
-            [
-                'tieu_de.required' => 'Vui lòng nhập tiêu đề',
-                'tieu_de.max' => 'Tiêu đề tối đa 255 kí tự',
-                'noi_dung.required' => 'Vui lòng nhập nội dung',
-            ]
-        );
+    //     return redirect()->back()->with([
+    //         'message' => $result['message'],
+    //         'status' => 'danger'
+    //     ]);
+    // }
 
-        $result = $this->baiGiangService->chinhSua($id, $data);
+    // public function xoa($id)
+    // {
+    //     $result = $this->mucBaiGiangService->xoa($id);
 
-        if ($result['success']) {
-            return redirect()->route('muc-bai-giang.detail', $result['data']->id_muc_bai_giang)
-                ->with([
-                    'message' => $result['message'],
-                    'status' => 'success'
-                ]);
-        }
+    //     if ($result['success']) {
+    //         return redirect()->route('muc-bai-giang.index')->with([
+    //             'message' => $result['message'],
+    //             'status' => 'success'
+    //         ]);
+    //     }
 
-        return redirect()->back()
-            ->with([
-                'message' => $result['message'],
-                'status' => 'danger'
-            ])->withInput();
-    }
+    //     return redirect()->route('muc-bai-giang.index')->with([
+    //         'message' => $result['message'],
+    //         'status' => 'danger'
+    //     ]);
+    // }
 
-    function chiTiet($id)
-    {
-        $baiGiang = $this->baiGiangService->layTheoId($id);
+    // public function chinhSua(Request $request, $id)
+    // {
+    //     $result = $this->handleChinhSua($request, $id);
 
-        return response()->json([
-            'data' => $baiGiang
-        ]);
-    }
+    //     if ($result['success']) {
+    //         return redirect()->route('muc-bai-giang.detail', $id)->with([
+    //             'message' => $result['message'],
+    //             'status' => 'success'
+    //         ]);
+    //     }
 
-    function xoa(Request $request, $id) {
-        $idMucBaiGiang = $request->id_muc_bai_giang;
-        $result = $this->baiGiangService->xoa($id);
-
-        if ($result['success']) {
-            return redirect()->route('muc-bai-giang.detail', $idMucBaiGiang)->with([
-            'message' => $result['message'],
-            'status' => 'success'
-        ]);
-        }
-        
-        return redirect()->route('muc-bai-giang.detail', $idMucBaiGiang)->with([
-            'message' => $result['message'],
-            'status' => 'danger'
-        ]);
-    }
-
-    public function layListTheoMucBaiGiang(Request $request, $idMucBaiGiang)
-    {
-        $data = $this->baiGiangService->layListBaiGiangTheoMucBaiGiang($request, $idMucBaiGiang);
-        
-        return response()->json([
-            'data' => $data
-        ]);
-    }
-
-    function chiTietBaiGiang()
-    {
-        return view('modules.bai-giang.chi-tiet');
-    }
-
+    //     return redirect()->back()->with([
+    //         'message' => $result['message'],
+    //         'status' => 'danger'
+    //     ]);
+    // }
 }

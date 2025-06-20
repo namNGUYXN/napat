@@ -144,5 +144,5 @@
 @endsection
 
 @section('scripts')
-    <script src="{{ asset('modules/taikhoan/js/chi-tiet.js') }}"></script>
+    <script src="{{ asset('modules/tai-khoan/js/chi-tiet.js') }}"></script>
 @endsection

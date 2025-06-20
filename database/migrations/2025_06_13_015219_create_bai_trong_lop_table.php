@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBaiKiemTraTable extends Migration
+class CreateBaiTrongLopTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,18 +13,16 @@ class CreateBaiKiemTraTable extends Migration
      */
     public function up()
     {
-        Schema::create('bai_kiem_tra', function (Blueprint $table) {
+        Schema::create('bai_trong_lop', function (Blueprint $table) {
             $table->id();
-            $table->string('tieu_de', 100);
-            $table->string('slug')->unique();
-            $table->smallInteger('diem_toi_da');
-            $table->timestamp('ngay_bat_dau')->nullable();
-            $table->timestamp('ngay_ket_thuc')->nullable();
             $table->unsignedBigInteger('id_lop_hoc_phan');
-            $table->timestamp('ngay_tao')->useCurrent();
-            $table->boolean('is_delete')->default(false);
+            $table->unsignedBigInteger('id_bai');
 
+            $table->unique(['id_lop_hoc_phan', 'id_bai']);
+            // FK
             $table->foreign('id_lop_hoc_phan')->references('id')->on('lop_hoc_phan')->onDelete('cascade');
+            //FK
+            $table->foreign('id_bai')->references('id')->on('bai');
         });
     }
 
@@ -35,6 +33,6 @@ class CreateBaiKiemTraTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('bai_kiem_tra');
+        Schema::dropIfExists('bai_trong_lop');
     }
 }

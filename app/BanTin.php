@@ -12,22 +12,25 @@ class BanTin extends Model
 
     protected $fillable = [
         'noi_dung',
-        'ngay_dang',
-        'id_nguoi_dung',
-        'id_lop_hoc',
         'id_ban_tin_cha',
-        'is_delete'
+        'id_thanh_vien_lop',
+        'ngay_tao',
+        'is_delete',
     ];
 
-    // Quan hệ
+    public function getNgayTaoAttribute()
+    {
+        return $this->ngay_tao ? $this->ngay_tao->format('d/m/Y') : null;
+    }
+
     public function nguoi_dung()
     {
         return $this->belongsTo(NguoiDung::class, 'id_nguoi_dung');
     }
 
-    public function lop_hoc()
+    public function lop_hoc_phan()
     {
-        return $this->belongsTo(LopHoc::class, 'id_lop_hoc');
+        return $this->belongsTo(LopHocPhan::class, 'id_lop_hoc');
     }
 
     public function ban_tin_cha()
@@ -38,5 +41,10 @@ class BanTin extends Model
     public function list_ban_tin_con()
     {
         return $this->hasMany(BanTin::class, 'id_ban_tin_cha');
+    }
+
+    public function thanh_vien_lop()
+    {
+        return $this->belongsTo(ThanhVienLop::class, 'id_thanh_vien_lop');
     }
 }

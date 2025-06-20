@@ -172,9 +172,9 @@
 @endsection
 
 @section('styles')
-    <link rel="stylesheet" href="{{ asset('modules/baitap/css/lam-bai.css') }}">
+    <link rel="stylesheet" href="{{ asset('modules/bai-tap/css/lam-bai.css') }}">
 @endsection
 
 @section('scripts')
-    <script src="{{ asset('modules/baitap/js/lam-bai.js') }}"></script>
+    <script src="{{ asset('modules/bai-tap/js/lam-bai.js') }}"></script>
 @endsection

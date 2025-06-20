@@ -10,15 +10,20 @@ class Chuong extends Model
 
     public $timestamps = false;
 
-    // protected $fillable = [];
+    protected $fillable = [
+        'tieu_de',
+        'mo_ta_ngan',
+        'id_bai_giang',
+        'is_delete',
+    ];
 
-    function hoc_phan()
+    public function bai_giang()
     {
-        return $this->belongsTo(HocPhan::class, 'id_hoc_phan');
+        return $this->belongsTo(BaiGiang::class, 'id_bai_giang');
     }
 
-    public function bai_giang_lop()
+    public function list_bai()
     {
-        return $this->hasMany(BaiGiangLop::class, 'id_chuong');
+        return $this->hasMany(Bai::class, 'id_chuong');
     }
 }

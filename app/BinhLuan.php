@@ -12,13 +12,17 @@ class BinhLuan extends Model
 
     protected $fillable = [
         'noi_dung',
-        'ngay_dang',
-        'id_nguoi_dung',
-        'id_bai_giang',
-        'id_lop_hoc',
         'id_binh_luan_cha',
-        'is_delete'
+        'id_thanh_vien_lop',
+        'id_bai_trong_lop',
+        'ngay_tao',
+        'is_delete',
     ];
+
+    public function getNgayTaoAttribute()
+    {
+        return $this->ngay_tao ? $this->ngay_tao->format('d/m/Y') : null;
+    }
 
     public function binh_luan_cha()
     {
@@ -37,11 +41,16 @@ class BinhLuan extends Model
 
     public function lop_hoc()
     {
-        return $this->belongsTo(LopHoc::class, 'id_lop_hoc');
+        return $this->belongsTo(LopHocPhan::class, 'id_lop_hoc');
     }
 
     public function bai_giang()
     {
         return $this->belongsTo(BaiGiang::class, 'id_bai_giang');
+    }
+
+    public function thanh_vien_lop()
+    {
+        return $this->belongsTo(ThanhVienLop::class, 'id_thanh_vien_lop');
     }
 }

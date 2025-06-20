@@ -166,9 +166,9 @@
 @endsection
 
 @section('styles')
-    <link rel="stylesheet" href="{{ asset('modules/lophoc/css/lop-hoc-cua-toi.css') }}">
+    <link rel="stylesheet" href="{{ asset('modules/lop-hoc/css/lop-hoc-cua-toi.css') }}">
 @endsection
 
 @section('scripts')
-    <script src="{{ asset('modules/lophoc/js/lop-hoc-cua-toi.js') }}"></script>
+    <script src="{{ asset('modules/lop-hoc/js/lop-hoc-cua-toi.js') }}"></script>
 @endsection

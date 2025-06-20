@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -13,6 +14,8 @@ class NguoiDungSeeder extends Seeder
      */
     public function run()
     {
+        $now = Carbon::now();
+        
         $listNguoiDung = [
             [
                 'ho_ten' => 'Nguyễn Phương Nam',
@@ -22,6 +25,7 @@ class NguoiDungSeeder extends Seeder
                 'mat_khau' => Hash::make('Nam1234!'),
                 'vai_tro' => 'Admin',
                 'is_active' => true,
+                'ngay_tao' => $now,
             ],
             [
                 'ho_ten' => 'Trần Hoài Ân',
@@ -31,6 +35,7 @@ class NguoiDungSeeder extends Seeder
                 'mat_khau' => Hash::make('Mk123!'),
                 'vai_tro' => 'Giảng viên',
                 'is_active' => true,
+                'ngay_tao' => $now,
             ],
             [
                 'ho_ten' => 'Nguyễn Tấn Phát',
@@ -40,6 +45,7 @@ class NguoiDungSeeder extends Seeder
                 'mat_khau' => Hash::make('Mk123!'),
                 'vai_tro' => 'Giảng viên',
                 'is_active' => true,
+                'ngay_tao' => $now,
             ],
             [
                 'ho_ten' => 'Lê Gia Nghi',
@@ -49,6 +55,7 @@ class NguoiDungSeeder extends Seeder
                 'mat_khau' => Hash::make('Mk123!'),
                 'vai_tro' => 'Sinh viên',
                 'is_active' => true,
+                'ngay_tao' => $now,
             ],
             [
                 'ho_ten' => 'Võ Thị Ánh',
@@ -58,6 +65,7 @@ class NguoiDungSeeder extends Seeder
                 'mat_khau' => Hash::make('Mk123!'),
                 'vai_tro' => 'Sinh viên',
                 'is_active' => true,
+                'ngay_tao' => $now,
             ]
         ];
 
@@ -70,6 +78,7 @@ class NguoiDungSeeder extends Seeder
                 'mat_khau' => $nguoiDung['mat_khau'],
                 'vai_tro' => $nguoiDung['vai_tro'],
                 'is_active' => $nguoiDung['is_active'],
+                'ngay_tao' => $nguoiDung['ngay_tao']
             ]);
         }
     }

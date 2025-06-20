@@ -73,18 +73,18 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien+sinh-vien']], 
 // Các route cho giảng viên
 Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien']], function () {
 
-    // Mục bài giảng
-    Route::get('/muc-bai-giang', 'MucBaiGiangController@giaoDienQuanLy')->name('muc-bai-giang.index');
-    Route::get('/muc-bai-giang/{id}/chi-tiet', 'MucBaiGiangController@chiTiet')->name('muc-bai-giang.detail');
-    Route::post('/muc-bai-giang/them', 'MucBaiGiangController@them')->name('muc-bai-giang.store');
-    Route::post('/muc-bai-giang/{id}/modal-chi-tiet', 'MucBaiGiangController@modalChiTiet')->name('muc-bai-giang.detail-modal');
-    Route::put('/muc-bai-giang/{id}/modal-chinh-sua', 'MucBaiGiangController@modalChinhSua')->name('muc-bai-giang.update-modal');
-    Route::put('/muc-bai-giang/{id}/chinh-sua', 'MucBaiGiangController@chinhSua')->name('muc-bai-giang.update');
-    Route::delete('/muc-bai-giang/{id}/xoa', 'MucBaiGiangController@xoa')->name('muc-bai-giang.delete');
-
     // Bài giảng
-    Route::post('/muc-bai-giang/{id}/bai-giang/list', 'BaiGiangController@layListTheoMucBaiGiang')->name('bai-giang.list');
-    Route::get('/muc-bai-giang/{id}/bai-giang/them', 'BaiGiangController@giaoDienThem')->name('bai-giang.create');
+    Route::get('/bai-giang', 'BaiGiangController@giaoDienQuanLy')->name('bai-giang.index');
+    Route::get('/bai-giang/{id}/chi-tiet', 'BaiGiangController@chiTiet')->name('bai-giang.detail');
+    Route::post('/bai-giang/them', 'BaiGiangController@them')->name('bai-giang.store');
+    Route::post('/bai-giang/{id}/modal-chi-tiet', 'BaiGiangController@modalChiTiet')->name('bai-giang.detail-modal');
+    Route::put('/bai-giang/{id}/modal-chinh-sua', 'BaiGiangController@modalChinhSua')->name('bai-giang.update-modal');
+    Route::put('/bai-giang/{id}/chinh-sua', 'BaiGiangController@chinhSua')->name('bai-giang.update');
+    Route::delete('/bai-giang/{id}/xoa', 'BaiGiangController@xoa')->name('bai-giang.delete');
+
+    // Bài
+    Route::post('/bai-giang/{id}/bai-giang/list', 'BaiGiangController@layListTheoMucBaiGiang')->name('bai-giang.list');
+    Route::get('/bai-giang/{id}/bai-giang/them', 'BaiGiangController@giaoDienThem')->name('bai-giang.create');
     Route::post('/bai-giang/them', 'BaiGiangController@them')->name('bai-giang.store');
     Route::get('/bai-giang/{id}/chinh-sua', 'BaiGiangController@giaoDienChinhSua')->name('bai-giang.edit');
     Route::put('/bai-giang/{id}/chinh-sua', 'BaiGiangController@chinhSua_nam')->name('bai-giang.update');

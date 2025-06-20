@@ -15,11 +15,13 @@ class CreateChuongTable extends Migration
     {
         Schema::create('chuong', function (Blueprint $table) {
             $table->id();
-            $table->string('tieu_de');
+            $table->string('tieu_de', 100);
             $table->string('mo_ta_ngan');
-            $table->unsignedInteger('id_hoc_phan');
+            $table->unsignedBigInteger('id_bai_giang');
+            $table->boolean('is_delete')->default(false);
             
-            $table->foreign('id_hoc_phan')->references('id')->on('hoc_phan')->onDelete('cascade');
+            // FK
+            $table->foreign('id_bai_giang')->references('id')->on('bai_giang');
         });
     }
 
