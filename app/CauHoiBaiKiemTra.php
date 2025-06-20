@@ -17,11 +17,16 @@ class CauHoiBaiKiemTra extends Model
         'dap_an_c',
         'dap_an_d',
         'dap_an_dung',
-        'id_bai_kiem_tra'
+        'id_bai_kiem_tra',
     ];
 
     public function bai_kiem_tra()
     {
         return $this->belongsTo(BaiKiemTra::class, 'id_bai_kiem_tra');
+    }
+
+    public function list_thanh_vien_lop()
+    {
+        return $this->belongsToMany(ThanhVienLop::class, 'chi_tiet_lam_bai_kiem_tra', 'id_cau_hoi', 'id_thanh_vien_lop');
     }
 }

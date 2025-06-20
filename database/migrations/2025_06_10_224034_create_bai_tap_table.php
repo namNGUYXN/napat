@@ -13,16 +13,16 @@ class CreateBaiTapTable extends Migration
      */
     public function up()
     {
-         Schema::create('bai_tap', function (Blueprint $table) {
-            $table->id(); // id - primary key, auto increment
-            $table->string('tieu_de', 255); // tiêu đề bài tập
-            $table->string('slug', 255)->unique(); // slug - unique
-            $table->smallInteger('diem_toi_da'); // điểm tối đa
-            $table->unsignedBigInteger('id_bai_giang'); // foreign key đến bài giảng
-            $table->boolean('is_delete')->default(false); // trạng thái xóa (mặc định false)
+        Schema::create('bai_tap', function (Blueprint $table) {
+            $table->id();
+            $table->string('tieu_de', 100);
+            $table->string('slug')->unique();
+            $table->smallInteger('diem_toi_da');
+            $table->unsignedBigInteger('id_bai');
+            $table->boolean('is_delete')->default(false);
 
-            // Khóa ngoại
-            $table->foreign('id_bai_giang')->references('id')->on('bai_giang')->onDelete('cascade');
+            // FK
+            $table->foreign('id_bai')->references('id')->on('bai')->onDelete('cascade');
         });
     }
 

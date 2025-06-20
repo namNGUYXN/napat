@@ -16,15 +16,17 @@ class CreateBinhLuanTable extends Migration
         Schema::create('binh_luan', function (Blueprint $table) {
             $table->id();
             $table->text('noi_dung');
-            $table->timestamp('ngay_dang')->useCurrent();
-            $table->unsignedBigInteger('id_nguoi_dung');
-            $table->unsignedBigInteger('id_bai_giang');
-            $table->unsignedBigInteger('id_lop_hoc');
             $table->unsignedBigInteger('id_binh_luan_cha')->nullable();
+            $table->unsignedBigInteger('id_thanh_vien_lop');
+            $table->unsignedBigInteger('id_bai_trong_lop');
+            $table->timestamp('ngay_tao')->useCurrent();
+            $table->boolean('is_delete')->default(false);
 
-            $table->foreign('id_nguoi_dung')->references('id')->on('nguoi_dung')->onDelete('cascade');
-            $table->foreign('id_bai_giang')->references('id')->on('bai_giang')->onDelete('cascade');
-            $table->foreign('id_lop_hoc')->references('id')->on('lop_hoc')->onDelete('cascade');
+            // FK
+            $table->foreign('id_thanh_vien_lop')->references('id')->on('thanh_vien_lop')->onDelete('cascade');
+            // FK
+            $table->foreign('id_bai_trong_lop')->references('id')->on('bai_trong_lop')->onDelete('cascade');
+            // FK
             $table->foreign('id_binh_luan_cha')->references('id')->on('binh_luan')->onDelete('cascade');
         });
     }

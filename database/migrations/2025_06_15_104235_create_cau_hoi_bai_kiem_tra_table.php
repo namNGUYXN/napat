@@ -23,7 +23,7 @@ class CreateCauHoiBaiKiemTraTable extends Migration
             $table->string('dap_an_dung', 2);
             $table->unsignedBigInteger('id_bai_kiem_tra');
 
-            // Khóa ngoại
+            // FK
             $table->foreign('id_bai_kiem_tra')->references('id')->on('bai_kiem_tra')->onDelete('cascade');
         });
     }

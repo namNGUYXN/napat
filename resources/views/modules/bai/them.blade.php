@@ -64,5 +64,5 @@
 
 @section('scripts')
   <script src="{{ asset('js/tiny-mce.js') }}"></script>
-  <script src="{{ asset('modules/baigiang/js/them-bai-giang.js') }}"></script>
+  <script src="{{ asset('modules/bai/js/them-bai-giang.js') }}"></script>
 @endsection

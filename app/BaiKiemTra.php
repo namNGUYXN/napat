@@ -13,16 +13,22 @@ class BaiKiemTra extends Model
     protected $fillable = [
         'tieu_de',
         'slug',
+        'diem_toi_da',
         'ngay_bat_dau',
         'ngay_ket_thuc',
-        'id_lop_hoc',
+        'id_lop_hoc_phan',
         'ngay_tao',
-        'is_delete'
+        'is_delete',
     ];
 
-    public function lop_hoc()
+    public function getNgayTaoAttribute()
     {
-        return $this->belongsTo(LopHoc::class, 'id_lop_hoc');
+        return $this->ngay_tao ? $this->ngay_tao->format('d/m/Y') : null;
+    }
+
+    public function lop_hoc_phan()
+    {
+        return $this->belongsTo(LopHocPhan::class, 'id_lop_hoc_phan');
     }
 
     public function list_cau_hoi()
@@ -30,8 +36,9 @@ class BaiKiemTra extends Model
         return $this->hasMany(CauHoiBaiKiemTra::class, 'id_bai_kiem_tra');
     }
 
-    public function list_sinh_vien()
+    public function list_thanh_vien_lop()
     {
-        return $this->belongsToMany(NguoiDung::class, 'ket_qua_bai_kiem_tra', 'id_bai_kiem_tra', 'id_sinh_vien');
+        return $this->belongsToMany(ThanhVienLop::class, 'ket_qua_bai_kiem_tra', 'id_bai_kiem_tra', 'id_thanh_vien_lop')
+                ->withPivot('so_cau_dung', 'ngay_lam');
     }
 }

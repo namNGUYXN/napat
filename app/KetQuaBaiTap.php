@@ -11,5 +11,15 @@ class KetQuaBaiTap extends Model
 
     public $timestamps = false;
 
-    protected $fillable = ['id_sinh_vien', 'id_bai_tap', 'ngay_lam', 'so_cau_dung'];
+    protected $fillable = [
+        'id_thanh_vien_lop',
+        'id_bai_tap',
+        'so_cau_dung',
+        'ngay_lam',
+    ];
+
+    public function getNgayTaoAttribute()
+    {
+        return $this->ngay_lam ? $this->ngay_lam->format('d/m/Y') : null;
+    }
 }

@@ -1,11 +1,11 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\LopHoc;
+use App\LopHocPhan;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 
-class LopHocSeeder extends Seeder
+class LopHocPhanSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -42,7 +42,7 @@ class LopHocSeeder extends Seeder
         ];
 
         foreach ($data as $item) {
-            LopHoc::create($item);
+            LopHocPhan::create($item);
         }
     }
 }

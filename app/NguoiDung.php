@@ -8,36 +8,42 @@ use Illuminate\Support\Facades\Hash;
 class NguoiDung extends Model
 {
     protected $table = 'nguoi_dung';
+
     public $timestamps = false;
-    protected $fillable = ['ho_ten', 'email', 'sdt', 'hinh_anh', 'mat_khau', 'vai_tro', 'is_active'];
+
+    protected $fillable = [
+        'ho_ten',
+        'email',
+        'sdt',
+        'hinh_anh',
+        'mat_khau',
+        'vai_tro',
+        'is_active',
+        'ngay_tao'
+    ];
+
+    public function getNgayTaoAttribute()
+    {
+        return $this->ngay_tao ? $this->ngay_tao->format('d/m/Y') : null;
+    }
 
     function setMatKhauAttribute($value)
     {
         $this->attributes['mat_khau'] = Hash::make($value);
     }
 
-    function list_muc_bai_giang()
+    function list_bai_giang()
     {
-        return $this->hasMany(MucBaiGiang::class, 'id_giang_vien');
+        return $this->hasMany(BaiGiang::class, 'id_giang_vien');
     }
 
-    public function list_lop_hoc_sv()
+    public function list_lop_hoc_phan_sv()
     {
-        return $this->belongsToMany(LopHoc::class, 'thanh_vien_lop', 'id_sinh_vien', 'id_lop_hoc');
+        return $this->belongsToMany(LopHocPhan::class, 'thanh_vien_lop', 'id_nguoi_dung', 'id_lop_hoc_phan');
     }
 
-    public function list_lop_hoc_gv()
+    public function list_lop_hoc_phan_gv()
     {
-        return $this->hasMany(LopHoc::class, 'id_giang_vien');
-    }
-
-    public function list_bai_kiem_tra()
-    {
-        return $this->belongsToMany(BaiKiemTra::class, 'ket_qua_bai_kiem_tra', 'id_sinh_vien', 'id_bai_kiem_tra');
-    }
-
-    public function list_bai_tap()
-    {
-        return $this->belongsToMany(BaiTap::class, 'ket_qua_bai_tap', 'id_sinh_vien', 'id_bai_tap');
+        return $this->hasMany(LopHocPhan::class, 'id_giang_vien');
     }
 }

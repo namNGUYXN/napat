@@ -8,12 +8,12 @@ use Closure;
 class BaiGiangMiddleware
 {
     protected $baiGiangService;
-
+    
     function __construct(BaiGiangService $baiGiangService)
     {
         $this->baiGiangService = $baiGiangService;
     }
-
+    
     /**
      * Handle an incoming request.
      *
@@ -24,9 +24,8 @@ class BaiGiangMiddleware
     public function handle($request, Closure $next)
     {
         $baiGiang = $this->baiGiangService->layTheoId($request->id);
-        $mucBaiGiang = $baiGiang->muc_bai_giang;
 
-        if ($mucBaiGiang->id_giang_vien == session('id_nguoi_dung')) {
+        if ($baiGiang->id_giang_vien == session('id_nguoi_dung')) {
             return $next($request);
         }
 

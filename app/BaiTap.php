@@ -7,8 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 class BaiTap extends Model
 {
     protected $table = 'bai_tap';
+
     public $timestamps = false;
-    protected $fillable = ['tieu_de', 'slug', 'diem_toi_da', 'id_bai_giang', 'is_delete'];
+
+    protected $fillable = [
+        'tieu_de',
+        'slug',
+        'diem_toi_da',
+        'id_bai',
+        'is_delete',
+    ];
 
     public function list_cau_hoi()
     {
@@ -20,9 +28,9 @@ class BaiTap extends Model
         return $this->belongsTo(BaiGiang::class, 'id_bai_giang');
     }
 
-    public function list_sinh_vien()
+    public function list_thanh_vien_lop()
     {
-        return $this->belongsToMany(NguoiDung::class, 'ket_qua_bai_tap', 'id_bai_tap', 'id_sinh_vien');
+        return $this->belongsToMany(ThanhVienLop::class, 'ket_qua_bai_tap', 'id_bai_tap', 'id_thanh_vien_lop')
+                ->withPivot('so_cau_dung', 'ngay_lam');
     }
 }
- 

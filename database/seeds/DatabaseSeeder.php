@@ -17,9 +17,10 @@ class DatabaseSeeder extends Seeder
         $this->call(MenuSeeder::class);
         $this->call(KhoaSeeder::class);
         $this->call(HocPhanSeeder::class);
-        $this->call(MucBaiGiangSeeder::class);
         $this->call(BaiGiangSeeder::class);
-        $this->call(LopHocSeeder::class);
+        $this->call(ChuongSeeder::class);
+        $this->call(BaiSeeder::class);
+        $this->call(LopHocPhanSeeder::class);
         $this->call(BanTinSeeder::class);
         $this->call(ThanhVienLopSeeder::class);
     }

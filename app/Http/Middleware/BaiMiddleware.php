@@ -2,18 +2,18 @@
 
 namespace App\Http\Middleware;
 
-use App\Services\MucBaiGiangService;
+use App\Services\BaiService;
 use Closure;
 
-class MucBaiGiangMiddleware
+class BaiMiddleware
 {
-    protected $mucBaiGiangService;
-    
-    function __construct(MucBaiGiangService $mucBaiGiangService)
+    protected $baiService;
+
+    function __construct(BaiService $baiService)
     {
-        $this->mucBaiGiangService = $mucBaiGiangService;
+        $this->baiService = $baiService;
     }
-    
+
     /**
      * Handle an incoming request.
      *
@@ -23,9 +23,10 @@ class MucBaiGiangMiddleware
      */
     public function handle($request, Closure $next)
     {
-        $mucBaiGiang = $this->mucBaiGiangService->layTheoId($request->id);
+        $bai = $this->baiService->layTheoId($request->id);
+        $baiGiang = $bai->bai_giang;
 
-        if ($mucBaiGiang->id_giang_vien == session('id_nguoi_dung')) {
+        if ($baiGiang->id_giang_vien == session('id_nguoi_dung')) {
             return $next($request);
         }
 

@@ -15,23 +15,33 @@ class ThanhVienLopSeeder extends Seeder
     {
         $data = [
             [
-                'id_lop_hoc' => 1,
-                'id_sinh_vien' => 4, // Lê Gia Nghi
+                'id_lop_hoc_phan' => 1,
+                'id_nguoi_dung' => 4, // Lê Gia Nghi
                 'is_accept' => true,
             ],
             [
-                'id_lop_hoc' => 1,
-                'id_sinh_vien' => 5, // Võ Thị Ánh
+                'id_lop_hoc_phan' => 1,
+                'id_nguoi_dung' => 2,
+                'is_accept' => null,
+            ],
+            [
+                'id_lop_hoc_phan' => 1,
+                'id_nguoi_dung' => 3,
+                'is_accept' => null,
+            ],
+            [
+                'id_lop_hoc_phan' => 2,
+                'id_nguoi_dung' => 4, // Lê Gia Nghi
+                'is_accept' => true,
+            ],
+            [
+                'id_lop_hoc_phan' => 1,
+                'id_nguoi_dung' => 5, // Võ Thị Ánh
                 'is_accept' => false,
             ],
             [
-                'id_lop_hoc' => 2,
-                'id_sinh_vien' => 4, // Lê Gia Nghi
-                'is_accept' => true,
-            ],
-            [
-                'id_lop_hoc' => 2,
-                'id_sinh_vien' => 5, // Võ Thị Ánh
+                'id_lop_hoc_phan' => 2,
+                'id_nguoi_dung' => 5, // Võ Thị Ánh
                 'is_accept' => false,
             ],
         ];

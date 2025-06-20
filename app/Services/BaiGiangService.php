@@ -3,136 +3,185 @@
 namespace App\Services;
 
 use App\BaiGiang;
+use App\NguoiDung;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class BaiGiangService
 {
-    public function layChiTietBaiGiang($id)
-    {
-        return BaiGiang::with([
-            'list_bai_tap' => function ($query) {
-                $query->where('is_delete', false);
-            }
-        ])
-            ->where('id', $id)
-            ->where('is_delete', false)
-            ->firstOrFail();
-    }
+    // public function getAll()
+    // {
+    //     return BaiGiang::where('is_delete', false)
+    //         ->withCount('list_chuong')
+    //         ->orderBy('ten')
+    //         ->get();
+    // }
 
-    public function layListBaiGiangTheoMucBaiGiang(Request $request, $id, $perPage = -1)
-    {
-        $listBaiGiang = BaiGiang::where('id_muc_bai_giang', $id)->orderBy('created_at', 'desc');
+    // public function getByGiangVienId($idGiangVien)
+    // {
+    //     return BaiGiang::where('id_giang_vien', $idGiangVien)
+    //         ->where('is_delete', false)
+    //         ->withCount('list_bai_giang')
+    //         ->orderBy('ten')
+    //         ->get();
+    // }
 
-        if ($search = $request->input('search')) {
-            $listBaiGiang->where('tieu_de', 'like', '%' . $search . '%');
-        }
-        
-        if ($perPage > 0)
+    // public function getBySlugWithBaiGiangs(string $slug)
+    // {
+    //     return BaiGiang::where('slug', $slug)
+    //         ->with('list_bai_giang')
+    //         ->firstOrFail();
+    // }
+
+    // /**
+    //  * Lấy mục bài giảng theo ID
+    //  */
+    // public function getById($id)
+    // {
+    //     return BaiGiang::where('id', $id)
+    //         ->where('is_delete', false)
+    //         ->with('list_bai_giang')
+    //         ->firstOrFail();
+    // }
+
+
+
+    // public function layChiTietVaDanhSachChuong($id)
+    // {
+    //     return BaiGiang::with([
+    //         'list_chuong' => function ($query) {
+    //             $query->where('is_delete', false);
+    //         }
+    //     ])
+    //         ->withCount(['list_chuong as so_luong_chuong' => function ($query) {
+    //             $query->where('is_delete', false);
+    //         }])
+    //         ->where([
+    //             ['id', $id],
+    //             ['is_delete', false]
+    //         ])->first();
+    // }
+
+    function layListTheoGiangVien($perPage = -1)
+    {
+        $idNguoiDungHienTai = session('id_nguoi_dung');
+        $listBaiGiang = BaiGiang::where([
+            ['id_giang_vien', $idNguoiDungHienTai],
+            ['is_delete', false]
+        ])->withCount(['list_chuong as so_chuong'])
+            ->orderBy('created_at', 'desc');
+
+        if ($perPage > 0) {
             return $listBaiGiang->paginate($perPage);
+        }
 
         return $listBaiGiang->get();
     }
 
-    function them(array $data)
-    {
-        try {
-            DB::beginTransaction();
-
-            $slug = Str::slug($data['tieu_de']) . '-' . Str::random(5);
-
-            $baiGiang = BaiGiang::create([
-                'tieu_de' => $data['tieu_de'],
-                'slug' => $slug,
-                'noi_dung' => $data['noi_dung'],
-                'id_muc_bai_giang' => $data['id_muc_bai_giang'] ?? '',
-                'is_delete' => false,
-            ]);
-
-            DB::commit();
-            return [
-                'success' => true,
-                'message' => 'Thêm bài giảng thành công',
-                'id_muc_bai_giang' => $data['id_muc_bai_giang']
-            ];
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return [
-                'success' => false,
-                'message' => 'Lỗi khi thêm bài giảng: ' . $e->getMessage()
-            ];
-        }
-    }
-
     function layTheoId($id)
     {
-        return BaiGiang::findOrFail($id);
+        return BaiGiang::where('id', $id)
+            ->where('is_delete', false)
+            ->withCount(['list_chuong as so_chuong'])
+            ->firstOrFail();
     }
 
-    function chinhSua($id, array $data)
-    {
-        try {
-            DB::beginTransaction();
+    // public function them(array $data)
+    // {
+    //     try {
+    //         DB::beginTransaction();
 
-            $baiGiang = BaiGiang::findOrFail($id);
-            $slug = null;
-            if ($baiGiang->tieu_de != $data['tieu_de']) {
-                $slug = Str::slug($data['tieu_de']) . '-' . Str::random(5);
-            }
+    //         $slug = Str::slug($data['ten']) . '-' . Str::random(5);
 
-            $baiGiang->update([
-                'tieu_de' => $data['tieu_de'] ?? $baiGiang->tieu_de,
-                'slug' => $slug ?? $baiGiang->slug,
-                'noi_dung' => $data['noi_dung'] ?? $baiGiang->noi_dung
-            ]);
+    //         $baiGiang = BaiGiang::create([
+    //             'ten' => $data['ten'],
+    //             'slug' => $slug,
+    //             'mo_ta_ngan' => $data['mo_ta_ngan'],
+    //             'hinh_anh' => $data['hinh_anh'] ?? 'images/muc-bai-giang/no-image.png',
+    //             'id_giang_vien' => session('id_nguoi_dung')
+    //         ]);
 
-            DB::commit();
-            return [
-                'success' => true,
-                'message' => 'Cập nhật bài giảng thành công',
-                'data' => $baiGiang->fresh()
-            ];
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return [
-                'success' => false,
-                'message' => 'Lỗi khi cập nhật bài giảng: ' . $e->getMessage()
-            ];
-        }
-    }
+    //         DB::commit();
 
-    function xoa($id)
-    {
-        try {
-            DB::beginTransaction();
+    //         return [
+    //             'success' => true,
+    //             'message' => 'Thêm bài giảng thành công'
+    //         ];
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         return [
+    //             'success' => false,
+    //             'message' => 'Lỗi khi thêm bài giảng: ' . $e->getMessage()
+    //         ];
+    //     }
+    // }
 
-            $baiGiang = BaiGiang::findOrFail($id);
+    // public function chinhSua($id, array $data)
+    // {
+    //     try {
+    //         DB::beginTransaction();
 
-            // Kiểm tra bài giảng có lớp học liên kết
-            // if (false) {
-            //     throw new \Exception('Không thể xóa menu vì có menu con phụ thuộc.');
-            // }
+    //         $baiGiang = BaiGiang::findOrFail($id);
+    //         $slug = null;
+    //         if ($baiGiang->ten != $data['ten']) {
+    //             $slug = Str::slug($data['ten']) . '-' . Str::random(5);
+    //         }
 
-            $baiGiang->delete();
+    //         $baiGiang->update([
+    //             'ten' => $data['ten'] ?? $baiGiang->ten,
+    //             'slug' => $slug ?? $baiGiang->slug,
+    //             'mo_ta_ngan' => $data['mo_ta_ngan'] ?? $baiGiang->mo_ta_ngan,
+    //             'hinh_anh' => $data['hinh_anh'] ?? $baiGiang->hinh_anh
+    //         ]);
 
-            DB::commit();
-            return [
-                'success' => true,
-                'message' => 'Xóa bài giảng thành công'
-            ];
-        } catch (ModelNotFoundException $e) {
-            return [
-                'success' => false,
-                'message' => 'Không tìm thấy bài giảng với ID: ' . $id
-            ];
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return [
-                'success' => false,
-                'message' => 'Lỗi khi xóa bài giảng: ' . $e->getMessage()
-            ];
-        }
-    }
+    //         DB::commit();
+    //         return [
+    //             'success' => true,
+    //             'message' => 'Cập nhật bài giảng thành công',
+    //             'data' => $baiGiang->fresh()
+    //         ];
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         return [
+    //             'success' => false,
+    //             'message' => 'Lỗi khi cập nhật bài giảng: ' . $e->getMessage()
+    //         ];
+    //     }
+    // }
+
+    // function xoa($id)
+    // {
+    //     try {
+    //         DB::beginTransaction();
+
+    //         $baiGiang = BaiGiang::findOrFail($id);
+
+    //         $soChuong = $baiGiang->list_chuong()->count();
+
+    //         // Kiểm tra mục bài giảng có bài giảng không
+    //         if ($soChuong > 0) {
+    //             throw new \Exception('Không thể xóa vì có chương trong bài giảng');
+    //         }
+
+    //         $baiGiang->delete();
+
+    //         DB::commit();
+    //         return [
+    //             'success' => true,
+    //             'message' => 'Xóa bài giảng thành công'
+    //         ];
+    //     } catch (ModelNotFoundException $e) {
+    //         return [
+    //             'success' => false,
+    //             'message' => 'Không tìm thấy bài giảng để xóa'
+    //         ];
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         return [
+    //             'success' => false,
+    //             'message' => 'Lỗi khi xóa bài giảng: ' . $e->getMessage()
+    //         ];
+    //     }
+    // }
 }
