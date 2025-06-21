@@ -30,7 +30,7 @@ class BaiGiangController extends Controller
         $this->uploadImageHelper = $uploadImageHelper;
         $this->chuongService = $chuongService;
         $this->hocPhanService = $hocPhanService;
-        $this->middleware('bai_giang')->only('chiTiet');
+        $this->middleware('bai_giang')->only('chiTiet', 'xoa');
     }
 
     function giaoDienQuanLy(Request $request)

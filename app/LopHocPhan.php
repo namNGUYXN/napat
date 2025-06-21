@@ -47,6 +47,6 @@ class LopHocPhan extends Model
 
     public function list_ban_tin()
     {
-        return $this->hasMany(BanTin::class, 'id_lop_hoc')->where('is_delete', false)->orderByDesc('ngay_dang');
+        return $this->hasMany(BanTin::class, 'id_lop_hoc_phan')->where('is_delete', false)->orderByDesc('ngay_dang');
     }
 }

@@ -37,16 +37,20 @@
           <img src="{{ asset('storage/' . $baiGiang->hinh_anh) }}" class="card-img-top" alt="">
           <div class="card-body">
             <h4 id="courseTitle">{{ $baiGiang->ten }}</h4>
-            <p class="mb-1"><strong>Học phần:</strong> {{ $baiGiang->hoc_phan->ten }}</p>
-            <p class="mb-1"><strong>Ngày tạo:</strong> {{ $baiGiang->ngay_tao }}</p>
-            <p class="mb-1 mt-2"><strong>Mô tả:</strong> {{ $baiGiang->mo_ta_ngan }}</p>
+            <p class="mb-1"><b>Học phần:</b> {{ $baiGiang->hoc_phan->ten }}</p>
+            <p class="mb-1">
+              <b>Số chương: </b>{{ $baiGiang->so_chuong }}
+              / <b>Số bài: </b>{{ $baiGiang->tong_so_bai }}
+            </p>
+            <p class="mb-1"><b>Ngày tạo:</b> {{ $baiGiang->ngay_tao }}</p>
+            <p class="mb-1 mt-2"><b>Mô tả:</b> {{ $baiGiang->mo_ta_ngan }}</p>
             <hr>
             <button class="btn btn-warning btn-sm me-2" data-bs-toggle="modal"
               data-bs-target="#modal-chinh-sua-bai-giang">
               <i class="fas fa-edit me-1"></i>Chỉnh sửa
             </button>
             <button class="btn btn-danger btn-sm" id="delete-doc-btn" data-bs-toggle="modal"
-              data-bs-target="#modal-xoa-muc-bai-giang">
+              data-bs-target="#modal-xoa-bai-giang">
               <i class="fas fa-trash-alt me-1"></i>Xóa
             </button>
           </div>
@@ -95,27 +99,16 @@
                       <td>{{ $chuong->tieu_de }}</td>
                       <td>{{ $chuong->mo_ta_ngan }}</td>
                       <td class="text-center">
-                        <button class="btn btn-info btn-sm me-1 btn-detail-bai-giang" data-url="">
+                        <button class="btn btn-info btn-sm me-1 btn-detail-chuong" data-tieu-de="{{ $chuong->tieu_de }}"
+                          data-url="{{ route('bai.list', $chuong->id) }}">
                           <i class="fas fa-eye"></i>
                         </button>
-                        {{-- <button class="btn btn-info btn-sm me-1 btn-detail-bai-giang"
-                          data-url="{{ route('bai-giang.detail', $chuong->id) }}">
-                          <i class="fas fa-eye"></i>
-                        </button> --}}
                         <a href="{{ route('chuong.edit', $chuong->id) }}" class="btn btn-warning btn-sm me-1">
-                          <i class="fas fa-edit"></i>
+                          <i class="fas fa-edit"></i> 
                         </a>
-                        {{-- <a href="{{ route('bai-giang.edit', $chuong->id) }}"
-                          class="btn btn-warning btn-sm me-1 edit-lesson-btn">
-                          <i class="fas fa-edit"></i>
-                        </a> --}}
-                        <button class="btn btn-danger btn-sm btn-xoa-bai-giang" data-url="">
+                        <button class="btn btn-danger btn-sm btn-xoa-chuong" data-url="{{ route('chuong.delete', $chuong->id) }}">
                           <i class="fas fa-trash-alt"></i>
                         </button>
-                        {{-- <button class="btn btn-danger btn-sm btn-xoa-bai-giang"
-                          data-url="{{ route('bai-giang.delete', $chuong->id) }}">
-                          <i class="fas fa-trash-alt"></i>
-                        </button> --}}
                       </td>
                     </tr>
                   @endforeach
@@ -167,80 +160,64 @@
       </div>
     </form>
 
-    <div class="modal fade" id="modal-chi-tiet-chuong" tabindex="-1" aria-labelledby="ChiTietBaiGiangModalLabel"
-      aria-hidden="true">
-      <div class="modal-dialog modal-xl modal-dialog-scrollable modal-dialog-centered">
+    <div class="modal fade" id="modal-chi-tiet-chuong" tabindex="-1" aria-labelledby="" aria-hidden="true"
+      data-bs-focus="false">
+      <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header bg-info text-white">
-            <h5 class="modal-title" id="ChiTietBaiGiangModalLabel">Chi tiết chương</h5>
+            <h5 class="modal-title" id="">Chi tiết chương</h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
               aria-label="Close"></button>
           </div>
-          <div class="modal-body">
-            {{-- <p><strong>Tên bài giảng:</strong> <span id="tieu-de-bai-giang"></span></p>
+          <div class="modal-body custom-scrollbar">
+            <h5>Danh sách các bài trong Chương <span class="fst-italic text-secondary" id="tieu-de-chuong"></span></h5>
             <hr>
-            <h6>Nội dung:</h6>
-            <div id="noi-dung-bai-giang"></div> --}}
+            <div class="table-responsive custom-scrollbar">
+              <table class="table table-hover table-striped" style="min-width: 600px;">
+                <thead>
+                  <tr>
+                    <th scope="col">STT</th>
+                    <th scope="col">Tiêu đề</th>
+                    <th scope="col">Ngày tạo</th>
+                  </tr>
+                </thead>
+                <tbody id="section-list-bai">
+                  <tr class="text-center">
+                    <td colspan="3">Không có bài nào trong chương</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-            <button class="btn btn-primary" data-bs-target="#modal-chi-tiet-bai-giang" data-bs-toggle="modal">Open
-              second modal</button>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="modal fade" id="modal-chi-tiet-bai-giang" tabindex="-1" aria-labelledby="ChiTietBaiGiangModalLabel"
-      aria-hidden="true">
-      <div class="modal-dialog modal-xl modal-dialog-scrollable modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header bg-info text-white">
-            <h5 class="modal-title" id="ChiTietBaiGiangModalLabel">Chi tiết bài giảng</h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-              aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <p><strong>Tên bài giảng:</strong> <span id="tieu-de-bai-giang"></span></p>
-            <hr>
-            <h6>Nội dung:</h6>
-            <div id="noi-dung-bai-giang"></div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-            <button class="btn btn-primary" data-bs-target="#modal-chi-tiet-chuong" data-bs-toggle="modal">Back to
-              first</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    {{-- <div class="modal fade" id="modal-xoa-bai-giang" tabindex="-1" aria-labelledby="XoaBaiGiangModalLabel"
-      aria-hidden="true">
+    <div class="modal fade" id="modal-xoa-chuong" tabindex="-1" aria-labelledby="" aria-hidden="true" data-bs-focus="false">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header bg-danger text-white">
-            <h5 class="modal-title" id="XoaBaiGiangModalLabel">Xác nhận xóa bài giảng</h5>
+            <h5 class="modal-title" id="">Xác nhận xóa Chương</h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
               aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <p>Bạn có chắc chắn muốn xóa Bài Giảng này không?</p>
-            <p class="text-danger">Hành động này sẽ xóa bài giảng trong mục bài giảng và không thể hoàn tác!</p>
+            <p>Bạn có chắc chắn muốn xóa chương này không?</p>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
             <form action="" method="POST" class="d-inline-block">
               @csrf
               @method('DELETE')
-              <input type="hidden" name="id_muc_bai_giang" value="{{ $baiGiang->id }}">
-              <button type="submit" class="btn btn-danger" id="btn-confirm-xoa-bai-giang">Xóa Bài
-                Giảng</button>
+              <button type="submit" class="btn btn-danger" id="btn-confirm-xoa-chuong">Xóa chương</button>
             </form>
           </div>
         </div>
       </div>
-    </div> --}}
+    </div>
 
     <form action="{{ route('bai-giang.update', $baiGiang->id) }}" method="POST" enctype="multipart/form-data">
       @csrf
@@ -308,31 +285,31 @@
       </div>
     </form>
 
-    {{-- <form action="{{ route('muc-bai-giang.delete', $baiGiang->id) }}" method="POST">
+    <form action="{{ route('bai-giang.delete', $baiGiang->id) }}" method="POST">
       @csrf
       @method('DELETE')
-      <div class="modal fade" id="modal-xoa-muc-bai-giang" tabindex="-1" aria-labelledby="" aria-hidden="true"
+      <div class="modal fade" id="modal-xoa-bai-giang" tabindex="-1" aria-labelledby="" aria-hidden="true"
         data-bs-focus="false">
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
             <div class="modal-header bg-danger text-white">
               <h5 class="modal-title">
-                <i class="fas fa-trash-alt me-2"></i>Xác nhận xóa Mục bài giảng
+                <i class="fas fa-trash-alt me-2"></i>Xác nhận xóa Bài giảng
               </h5>
               <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                 aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <p>Bạn có chắc chắn muốn xóa Mục bài giảng này không?</p>
+              <p>Bạn có chắc chắn muốn xóa bài giảng này không?</p>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-              <button type="submit" class="btn btn-danger">Xóa Mục bài giảng</button>
+              <button type="submit" class="btn btn-danger">Xóa bài giảng</button>
             </div>
           </div>
         </div>
       </div>
-    </form> --}}
+    </form>
   </div>
 @endsection
 
@@ -342,5 +319,5 @@
 
 @section('scripts')
   <script src="{{ asset('modules/bai-giang/js/chi-tiet.js') }}"></script>
-  <script src="{{ asset('modules/bai/js/danh-sach-bai-giang.js') }}"></script>
+  {{-- <script src="{{ asset('modules/bai/js/danh-sach-bai-giang.js') }}"></script> --}}
 @endsection

@@ -22,19 +22,19 @@ class BaiService
     //         ->firstOrFail();
     // }
 
-    // public function layListTheoChuong(Request $request, $id, $perPage = -1)
-    // {
-    //     $listBai = Bai::where('id_chuong', $id)->orderBy('created_at', 'desc');
+    public function layListTheoChuong(Request $request, $id, $perPage = -1)
+    {
+        $listBai = Bai::where('id_chuong', $id)->orderBy('ngay_tao', 'desc');
 
-    //     if ($search = $request->input('search')) {
-    //         $listBai->where('tieu_de', 'like', '%' . $search . '%');
-    //     }
+        if ($search = $request->input('search')) {
+            $listBai->where('tieu_de', 'like', '%' . $search . '%');
+        }
         
-    //     if ($perPage > 0)
-    //         return $listBai->paginate($perPage);
+        if ($perPage > 0)
+            return $listBai->paginate($perPage);
 
-    //     return $listBai->get();
-    // }
+        return $listBai->get();
+    }
 
     public function them($idChuong, array $data)
     {

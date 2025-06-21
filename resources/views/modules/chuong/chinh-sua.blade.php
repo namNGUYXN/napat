@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+  <form id="csrfForm" class="d-none">
+    @csrf
+  </form>
   <div class="col bg-light px-4 pt-4 overflow-auto custom-scrollbar">
     <h2 class="mb-4">Chỉnh sửa chương</h2>
 
@@ -55,13 +58,10 @@
       <div class="col-lg-8 mb-4">
         <div class="card shadow-sm">
           <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Danh sách bài trong chương</h5>
+            <h5 class="mb-0">Danh sách các bài trong chương</h5>
             <a href="{{ route('bai.create', $chuong->id) }}" class="btn btn-light btn-sm">
               <i class="fas fa-plus-circle me-2"></i>Thêm bài
             </a>
-            {{-- <a href="{{ route('bai-giang.create', $baiGiang->id) }}" class="btn btn-light btn-sm">
-              <i class="fas fa-plus-circle me-2"></i>Thêm chương
-            </a> --}}
           </div>
           <div class="card-body">
             <form action="" method="GET">
@@ -94,7 +94,7 @@
                       <td>{{ $bai->tieu_de }}</td>
                       <td>{{ $bai->ngay_tao }}</td>
                       <td class="text-center">
-                        <button class="btn btn-info btn-sm me-1 btn-detail-bai-giang" data-url="">
+                        <button class="btn btn-info btn-sm me-1 btn-detail-bai" data-url="{{ route('bai.detail', $bai->id) }}">
                           <i class="fas fa-eye"></i>
                         </button>
                         {{-- <button class="btn btn-info btn-sm me-1 btn-detail-bai-giang"
@@ -130,23 +130,22 @@
       </div>
     </div>
 
-    <div class="modal fade" id="modal-chi-tiet-bai" tabindex="-1" aria-labelledby="" aria-hidden="true" data-bs-focus="false">
+    <div class="modal fade" id="modal-chi-tiet-bai" tabindex="-1" aria-labelledby="" aria-hidden="true"
+      data-bs-focus="false">
       <div class="modal-dialog modal-xl modal-dialog-scrollable modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header bg-info text-white">
-            <h5 class="modal-title">Chi tiết chương</h5>
+            <h5 class="modal-title">Chi tiết bài</h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
-          <div class="modal-body">
-            {{-- <p><strong>Tên bài giảng:</strong> <span id="tieu-de-bai-giang"></span></p>
+          <div class="modal-body custom-scrollbar">
+            <p><strong>Tiêu đề bài:</strong> <span id="tieu-de-bai"></span></p>
             <hr>
             <h6>Nội dung:</h6>
-            <div id="noi-dung-bai-giang"></div> --}}
+            <div id="noi-dung-bai"></div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-            <button class="btn btn-primary" data-bs-target="#modal-chi-tiet-bai-giang" data-bs-toggle="modal">Open
-              second modal</button>
           </div>
         </div>
       </div>
@@ -155,5 +154,9 @@
 @endsection
 
 @section('styles')
-  <link rel="stylesheet" href="{{ asset('modules/bai-giang/css/chi-tiet.css') }}">
+  {{-- <link rel="stylesheet" href="{{ asset('modules/bai-giang/css/chi-tiet.css') }}"> --}}
+@endsection
+
+@section('scripts')
+  <script src="{{ asset('modules/chuong/js/chinh-sua.js') }}"></script>
 @endsection

@@ -86,14 +86,15 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien']], function (
     Route::post('/bai-giang/{id}/chuong/them', 'ChuongController@them')->name('chuong.store');
     Route::get('/chuong/{id}/chinh-sua', 'ChuongController@giaoDienChinhSua')->name('chuong.edit');
     Route::put('/chuong/{id}/chinh-sua', 'ChuongController@chinhSua')->name('chuong.update');
+    Route::delete('chuong/{id}/xoa', 'ChuongController@xoa')->name('chuong.delete');
 
     // Bài
-    // Route::post('/bai-giang/{id}/bai-giang/list', 'BaiGiangController@layListTheoMucBaiGiang')->name('bai-giang.list');
+    Route::post('/chuong/{id}/bai/list', 'BaiController@layListTheoChuong')->name('bai.list');
     Route::get('/chuong/{id}/bai/them', 'BaiController@giaoDienThem')->name('bai.create');
     Route::post('/chuong{id}/bai/them', 'BaiController@them')->name('bai.store');
     Route::get('/bai/{id}/chinh-sua', 'BaiController@giaoDienChinhSua')->name('bai.edit');
-    Route::put('/bai/{id}/chinh-sua', 'BaiGiangController@chinhSua')->name('bai.update');
-    // Route::post('/bai-giang/{id}/chi-tiet', 'BaiGiangController@chiTiet')->name('bai-giang.detail');
+    Route::put('/bai/{id}/chinh-sua', 'BaiController@chinhSua')->name('bai.update');
+    Route::post('/bai/{id}/chi-tiet', 'BaiController@chiTiet')->name('bai.detail');
     // Route::delete('/bai-giang/{id}/xoa', 'BaiGiangController@xoa')->name('bai-giang.delete');
 
     //Thành viên lớp

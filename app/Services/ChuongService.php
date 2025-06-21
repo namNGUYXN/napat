@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Chuong;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -76,6 +77,41 @@ class ChuongService
       return [
         'success' => false,
         'message' => 'Lỗi khi cập nhật chương: ' . $e->getMessage()
+      ];
+    }
+  }
+
+  public function xoa($id)
+  {
+    try {
+      DB::beginTransaction();
+
+      $chuong = Chuong::findOrFail($id);
+
+      $soBai = $chuong->list_bai()->count();
+
+      // Kiểm tra chương có bài không
+      if ($soBai > 0) {
+        throw new \Exception('Không thể xóa vì có bài trong chương');
+      }
+
+      $chuong->delete();
+
+      DB::commit();
+      return [
+        'success' => true,
+        'message' => 'Xóa chương thành công'
+      ];
+    } catch (ModelNotFoundException $e) {
+      return [
+        'success' => false,
+        'message' => 'Không tìm thấy chương để xóa'
+      ];
+    } catch (\Exception $e) {
+      DB::rollBack();
+      return [
+        'success' => false,
+        'message' => 'Lỗi khi xóa chương: ' . $e->getMessage()
       ];
     }
   }
