@@ -58,14 +58,14 @@ class BaiController extends Controller
             ])->withInput();
     }
 
-    function giaoDienChinhSua($id)
+    public function giaoDienChinhSua($id)
     {
         $bai = $this->baiService->layTheoId($id);
 
         return view('modules.bai.chinh-sua', compact('bai'));
     }
 
-    // function chinhSua_nam(Request $request, $id)
+    // public function chinhSua_nam(Request $request, $id)
     // {
     //     $data = $request->validate(
     //         [
@@ -96,14 +96,14 @@ class BaiController extends Controller
     //         ])->withInput();
     // }
 
-    // function chiTiet($id)
-    // {
-    //     $baiGiang = $this->baiGiangService->layTheoId($id);
+    public function chiTiet($id)
+    {
+        $bai = $this->baiService->layTheoId($id);
 
-    //     return response()->json([
-    //         'data' => $baiGiang
-    //     ]);
-    // }
+        return response()->json([
+            'data' => $bai
+        ]);
+    }
 
     // function xoa(Request $request, $id) {
     //     $idMucBaiGiang = $request->id_muc_bai_giang;
@@ -122,14 +122,14 @@ class BaiController extends Controller
     //     ]);
     // }
 
-    // public function layListTheoMucBaiGiang(Request $request, $idMucBaiGiang)
-    // {
-    //     $data = $this->baiGiangService->layListBaiGiangTheoMucBaiGiang($request, $idMucBaiGiang);
+    public function layListTheoChuong(Request $request, $idMucBaiGiang)
+    {
+        $data = $this->baiService->layListTheoChuong($request, $idMucBaiGiang);
         
-    //     return response()->json([
-    //         'data' => $data
-    //     ]);
-    // }
+        return response()->json([
+            'data' => $data
+        ]);
+    }
 
     // function chiTietBaiGiang()
     // {

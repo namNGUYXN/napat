@@ -13,7 +13,7 @@ class ChuongController extends Controller
     {
         $this->chuongService = $chuongService;
         $this->middleware('bai_giang')->only('them');
-        $this->middleware('chuong')->only('giaoDienChinhSua', 'chinhSua');
+        $this->middleware('chuong')->only('giaoDienChinhSua', 'chinhSua', 'xoa');
     }
 
     public function them(Request $request, $id)
@@ -78,6 +78,25 @@ class ChuongController extends Controller
         }
 
         return redirect()->back()->with([
+            'message' => $result['message'],
+            'status' => 'danger'
+        ]);
+    }
+
+    public function xoa($id)
+    {
+        $baiGiang = $this->chuongService->layTheoId($id)->bai_giang;
+        
+        $result = $this->chuongService->xoa($id);
+        
+        if ($result['success']) {
+            return redirect()->route('bai-giang.detail', $baiGiang->id)->with([
+                'message' => $result['message'],
+                'status' => 'success'
+            ]);
+        }
+
+        return redirect()->route('bai-giang.detail', $baiGiang->id)->with([
             'message' => $result['message'],
             'status' => 'danger'
         ]);

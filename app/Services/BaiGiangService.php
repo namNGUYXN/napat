@@ -63,7 +63,7 @@ class BaiGiangService
     //         ])->first();
     // }
 
-    function layListTheoGiangVien($perPage = -1)
+    public function layListTheoGiangVien($perPage = -1)
     {
         $idNguoiDungHienTai = session('id_nguoi_dung');
         $listBaiGiang = BaiGiang::where([
@@ -79,7 +79,7 @@ class BaiGiangService
         return $listBaiGiang->get();
     }
 
-    function layTheoId($id)
+    public function layTheoId($id)
     {
         return BaiGiang::where('id', $id)
             ->where('is_delete', false)
@@ -152,7 +152,7 @@ class BaiGiangService
         }
     }
 
-    function xoa($id)
+    public function xoa($id)
     {
         try {
             DB::beginTransaction();
@@ -161,7 +161,7 @@ class BaiGiangService
 
             $soChuong = $baiGiang->list_chuong()->count();
 
-            // Kiểm tra mục bài giảng có bài giảng không
+            // Kiểm tra bài giảng có chương không
             if ($soChuong > 0) {
                 throw new \Exception('Không thể xóa vì có chương trong bài giảng');
             }

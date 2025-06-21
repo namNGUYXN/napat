@@ -33,14 +33,13 @@ $(document).on('click', '.btn-detail-bai-giang', function () {
   //     alert('Đã xảy ra lỗi: ' + xhr.status + ' ' + xhr.statusText);
   //   }
   // });
-  $('#modal-chi-tiet-chuong').modal('show');
 });
 
 // Xử lý modal xóa bài giảng
-$(document).on('click', '.btn-xoa-bai-giang', function () {
-  const url = $(this).data('url');
-  const formXoaBaiGiang = $('#btn-confirm-xoa-bai-giang').parent('form');
+// $(document).on('click', '.btn-xoa-bai-giang', function () {
+//   const url = $(this).data('url');
+//   const formXoaBaiGiang = $('#btn-confirm-xoa-bai-giang').parent('form');
 
-  formXoaBaiGiang.attr('action', url);
-  $('#modal-xoa-bai-giang').modal('show');
-});
+//   formXoaBaiGiang.attr('action', url);
+//   $('#modal-xoa-bai-giang').modal('show');
+// });
