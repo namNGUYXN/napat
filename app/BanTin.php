@@ -15,6 +15,7 @@ class BanTin extends Model
         'noi_dung',
         'id_ban_tin_cha',
         'id_thanh_vien_lop',
+        'id_lop_hoc_phan',
         'ngay_tao',
         'is_delete',
     ];
@@ -31,7 +32,7 @@ class BanTin extends Model
 
     public function lop_hoc_phan()
     {
-        return $this->belongsTo(LopHocPhan::class, 'id_lop_hoc');
+        return $this->belongsTo(LopHocPhan::class, 'id_lop_hoc_phan');
     }
 
     public function ban_tin_cha()

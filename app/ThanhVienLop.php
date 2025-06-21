@@ -23,7 +23,7 @@ class ThanhVienLop extends Model
 
     public function nguoi_dung()
     {
-        return $this->belongsTo(NguoiDung::class, 'nguoi_dung');
+        return $this->belongsTo(NguoiDung::class, 'id_nguoi_dung');
     }
 
     public function list_bai_tap()

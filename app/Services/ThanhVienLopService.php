@@ -6,28 +6,31 @@ use App\ThanhVienLop;
 
 class ThanhVienLopService
 {
-    // /**
-    //  * Lấy danh sách sinh viên đã được duyệt vào lớp
-    //  */
-    // public function getAcceptedMembersByLopId($idLopHoc)
-    // {
-    //     return ThanhVienLop::with('sinh_vien')
-    //         ->where('id_lop_hoc', $idLopHoc)
-    //         ->where('is_accept', true)
-    //         ->get();
-    // }
+    /**
+     * Lấy danh sách sinh viên đã được duyệt vào lớp
+     */
+    public function getAcceptedMembersByLopId($idLopHoc)
+    {
+        return ThanhVienLop::with('nguoi_dung')
+            ->where('id_lop_hoc_phan', $idLopHoc)
+            ->where(function ($query) {
+                $query->where('is_accept', true)
+                    ->orWhereNull('is_accept');
+            })
+            ->get();
+    }
 
-    // /**
-    //  * Lấy danh sách sinh viên đang chờ duyệt vào lớp
-    //  */
-    // public function getPendingMembersByLopId($idLopHoc)
-    // {
-    //     return ThanhVienLop::with('sinh_vien')
-    //         ->where('id_lop_hoc', $idLopHoc)
-    //         ->where('is_accept', false)
-    //         ->get();
-    // }
-    
+    /**
+     * Lấy danh sách sinh viên đang chờ duyệt vào lớp
+     */
+    public function getPendingMembersByLopId($idLopHoc)
+    {
+        return ThanhVienLop::with('nguoi_dung')
+            ->where('id_lop_hoc_phan', $idLopHoc)
+            ->where('is_accept', false)
+            ->get();
+    }
+
     // public function chapNhanYeuCau(int $id): array
     // {
     //     $thanhVien = ThanhVienLop::find($id);

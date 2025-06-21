@@ -8,11 +8,11 @@
 <div class="list-group">
     @forelse($thanhVien as $tv)
         <div class="list-group-item d-flex align-items-center">
-            <img src="{{ $tv->sinh_vien->hinh_anh ?? 'https://picsum.photos/40/40' }}" alt="Avatar"
+            <img src="{{ $tv->nguoi_dung->hinh_anh ?? 'https://picsum.photos/40/40' }}" alt="Avatar"
                 class="border border-secondary rounded-circle me-2" width="40" height="40">
             <div>
-                <strong>{{ $tv->sinh_vien->ho_ten }}</strong><br>
-                <small>{{ $tv->sinh_vien->email }}</small>
+                <strong>{{ $tv->nguoi_dung->ho_ten }}</strong><br>
+                <small>{{ $tv->nguoi_dung->email }}</small>
             </div>
             <div class="flex-grow-1 text-end">
                 <div class="dropdown">
