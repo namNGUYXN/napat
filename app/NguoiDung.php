@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 
@@ -22,9 +23,9 @@ class NguoiDung extends Model
         'ngay_tao'
     ];
 
-    public function getNgayTaoAttribute()
+    public function getNgayTaoAttribute($value)
     {
-        return $this->ngay_tao ? $this->ngay_tao->format('d/m/Y') : null;
+        return $value ? Carbon::parse($value)->format('d/m/Y') : null;
     }
 
     function setMatKhauAttribute($value)

@@ -11,10 +11,8 @@ class HocPhanService
     return HocPhan::all();
   }
 
-  public function layListChuong($id)
+  function layList()
   {
-    $hocPhan = HocPhan::find($id);
-
-    return $hocPhan->list_chuong;
+    return HocPhan::all();
   }
 }

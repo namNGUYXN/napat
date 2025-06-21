@@ -4,6 +4,7 @@ namespace App;
 
 use App\HocPhan;
 use App\NguoiDung;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class LopHocPhan extends Model
@@ -24,9 +25,9 @@ class LopHocPhan extends Model
         'is_delete',
     ];
 
-    public function getNgayTaoAttribute()
+    public function getNgayTaoAttribute($value)
     {
-        return $this->ngay_tao ? $this->ngay_tao->format('d/m/Y') : null;
+        return $value ? Carbon::parse($value)->format('d/m/Y') : null;
     }
 
     public function hoc_phan()

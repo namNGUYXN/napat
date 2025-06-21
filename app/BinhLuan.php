@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class BinhLuan extends Model
@@ -19,9 +20,9 @@ class BinhLuan extends Model
         'is_delete',
     ];
 
-    public function getNgayTaoAttribute()
+    public function getNgayTaoAttribute($value)
     {
-        return $this->ngay_tao ? $this->ngay_tao->format('d/m/Y') : null;
+        return $value ? Carbon::parse($value)->format('d/m/Y') : null;
     }
 
     public function binh_luan_cha()

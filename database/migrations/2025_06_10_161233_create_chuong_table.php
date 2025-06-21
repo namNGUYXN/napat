@@ -16,7 +16,7 @@ class CreateChuongTable extends Migration
         Schema::create('chuong', function (Blueprint $table) {
             $table->id();
             $table->string('tieu_de', 100);
-            $table->string('mo_ta_ngan');
+            $table->string('mo_ta_ngan')->nullable();
             $table->unsignedBigInteger('id_bai_giang');
             $table->boolean('is_delete')->default(false);
             

@@ -13,13 +13,4 @@ class HocPhanController extends Controller
     {
         $this->hocPhanService = $hocPhanService;
     }
-    
-    // public function layListChuong($id)
-    // {
-    //     $listChuong = $this->hocPhanService->layListChuong($id);
-
-    //     return response()->json([
-    //         'data' => $listChuong
-    //     ]);
-    // }
 }

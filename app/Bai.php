@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Bai extends Model
@@ -19,9 +20,9 @@ class Bai extends Model
         'is_delete',
     ];
 
-    public function getNgayTaoAttribute()
+    public function getNgayTaoAttribute($value)
     {
-        return $this->ngay_tao ? $this->ngay_tao->format('d/m/Y') : null;
+        return $value ? Carbon::parse($value)->format('d/m/Y') : null;
     }
 
     public function chuong()
@@ -31,7 +32,7 @@ class Bai extends Model
     
     public function list_bai_tap()          
     {
-        return $this->hasMany(BaiTap::class, 'id_bai_giang');
+        return $this->hasMany(BaiTap::class, 'id_bai');
     }
 
     public function list_lop_hoc_phan()

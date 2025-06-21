@@ -64,24 +64,28 @@ $.ajaxSetup({
   }
 });
 
-
-
 let cache = {};
 
-// Xử lý modal chỉnh sửa mục bài giảng
+// Xử lý modal chỉnh sửa bài giảng
 $('.document-edit-btn').on('click', function () {
-  const pathStorage = $('#hinh-anh-muc-bai-giang').data('url') + '/';
+  const pathStorage = $('#hinh-anh-bai-giang').data('url') + '/';
   const urlDetail = $(this).data('url-detail');
   const urlUpdate = $(this).data('url-update');
-  const formUpdate = $('#modal-chinh-sua-muc-bai-giang').parent('form');
+  const formUpdate = $('#modal-chinh-sua-bai-giang').parent('form');
+  const selectHocPhan = $('#modal-chinh-sua-bai-giang select');
 
   if (cache[urlDetail]) {
-    const mucBaiGiang = cache[urlDetail];
-    $('#ten-muc-bai-giang').val(mucBaiGiang.ten);
-    $('#mo-ta-muc-bai-giang').val(mucBaiGiang.mo_ta_ngan);
-    $('#hinh-anh-muc-bai-giang').attr('src', pathStorage + mucBaiGiang.hinh_anh);
+    const baiGiang = cache[urlDetail];
+    const optionHocPhan = selectHocPhan.find('option');
+    const optionHocPhanSelected = selectHocPhan.find(`option[value="${baiGiang.id_hoc_phan}"]`);
+
+    $('#ten-bai-giang').val(baiGiang.ten);
+    optionHocPhan.removeAttr('selected');
+    optionHocPhanSelected.attr('selected', true);
+    $('#mo-ta-bai-giang').val(baiGiang.mo_ta_ngan);
+    $('#hinh-anh-bai-giang').attr('src', pathStorage + baiGiang.hinh_anh);
     formUpdate.attr('action', urlUpdate);
-    $('#modal-chinh-sua-muc-bai-giang').modal('show');
+    $('#modal-chinh-sua-bai-giang').modal('show');
     return;
   }
 
@@ -90,14 +94,18 @@ $('.document-edit-btn').on('click', function () {
     type: 'POST',
     dataType: 'json',
     success: function (response) {
-      const mucBaiGiang = response.data;
+      const baiGiang = response.data;
+      const optionHocPhan = selectHocPhan.find('option');
+      const optionHocPhanSelected = selectHocPhan.find(`option[value="${baiGiang.id_hoc_phan}"]`);
 
-      cache[urlDetail] = mucBaiGiang; // Lưu vào cache
-      $('#ten-muc-bai-giang').val(mucBaiGiang.ten);
-      $('#mo-ta-muc-bai-giang').val(mucBaiGiang.mo_ta_ngan);
-      $('#hinh-anh-muc-bai-giang').attr('src', pathStorage + mucBaiGiang.hinh_anh);
+      cache[urlDetail] = baiGiang; // Lưu vào cache
+      $('#ten-bai-giang').val(baiGiang.ten);
+      optionHocPhan.removeAttr('selected');
+      optionHocPhanSelected.attr('selected', true);
+      $('#mo-ta-bai-giang').val(baiGiang.mo_ta_ngan);
+      $('#hinh-anh-bai-giang').attr('src', pathStorage + baiGiang.hinh_anh);
       formUpdate.attr('action', urlUpdate);
-      $('#modal-chinh-sua-muc-bai-giang').modal('show');
+      $('#modal-chinh-sua-bai-giang').modal('show');
     },
     error: function (xhr) {
       alert('Đã xảy ra lỗi: ' + xhr.status + ' ' + xhr.statusText);
@@ -106,18 +114,18 @@ $('.document-edit-btn').on('click', function () {
 });
 
 
-// Xử lý modal xóa  mục bài giảng
+// Xử lý modal xóa bài giảng
 $('.document-delete-btn').on('click', function () {
   // console.log($(this).data('url-delete'));
   const urlDelete = $(this).data('url-delete');
-  const formDelete = $('#modal-xoa-muc-bai-giang').parent('form');
+  const formDelete = $('#modal-xoa-bai-giang').parent('form');
 
   formDelete.attr('action', urlDelete);
-  $('#modal-xoa-muc-bai-giang').modal('show');
+  $('#modal-xoa-bai-giang').modal('show');
 });
 
 // Xử lý xóa dữ liệu khi modal thêm ẩn
-$('#modal-them-muc-bai-giang').on('hidden.bs.modal', function () {
+$('#modal-them-bai-giang').on('hidden.bs.modal', function () {
   const imgPreview = $('#img-preview-container-modal-them .img-preview');
   const imgUpload = $('#img-upload-modal-them');
   const imgRemoveBtn = $('#img-preview-container-modal-them .img-remove-btn');

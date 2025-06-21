@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 
@@ -18,8 +19,8 @@ class KetQuaBaiTap extends Model
         'ngay_lam',
     ];
 
-    public function getNgayTaoAttribute()
+    public function getNgayLamAttribute($value)
     {
-        return $this->ngay_lam ? $this->ngay_lam->format('d/m/Y') : null;
+        return $value ? Carbon::parse($value)->format('d/m/Y') : null;
     }
 }
