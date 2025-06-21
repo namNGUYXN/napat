@@ -1,11 +1,11 @@
 @forelse($yeuCau as $yeuCauItem)
     <div class="list-group-item d-flex align-items-center justify-content-between">
         <div class="d-flex align-items-center">
-            <img src="{{ $yeuCauItem->sinh_vien->hinh_anh ?? 'https://picsum.photos/40/40' }}" alt="Avatar"
+            <img src="{{ $yeuCauItem->nguoi_dung->hinh_anh ?? 'https://picsum.photos/40/40' }}" alt="Avatar"
                 class="border border-secondary rounded-circle me-2" width="40" height="40">
             <div>
-                <strong>{{ $yeuCauItem->sinh_vien->ho_ten }}</strong><br>
-                <small>{{ $yeuCauItem->sinh_vien->email }}</small>
+                <strong>{{ $yeuCauItem->nguoi_dung->ho_ten }}</strong><br>
+                <small>{{ $yeuCauItem->nguoi_dung->email }}</small>
             </div>
         </div>
         <div>

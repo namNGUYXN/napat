@@ -84,8 +84,8 @@
               <img src="https://picsum.photos/id/54/400/400" class="border border-secondary rounded-circle me-3"
                 alt="Avatar" width="40" height="40">
               <div class="flex-grow-1">
-                <h6 class="card-title mb-3">{{ $item->nguoi_dung->vai_tro ?? '' }}
-                  {{ $item->nguoi_dung->ho_ten }}</h6>
+                <h6 class="card-title mb-3">{{ $item->thanh_vien_lop->nguoi_dung->vai_tro ?? '' }}
+                  : {{ $item->thanh_vien_lop->nguoi_dung->ho_ten }}</h6>
                 <div class="news-content">
                   {!! $item->noi_dung !!}
                 </div>
@@ -126,7 +126,7 @@
                     <img src="https://picsum.photos/id/54/400/400" class="border border-secondary rounded-circle me-2"
                       alt="Avatar" width="36" height="36">
                     <div class="bg-light rounded p-2 flex-grow-1">
-                      <strong>{{ $cmt->nguoi_dung->ho_ten }}</strong>
+                      <strong>{{ $cmt->thanh_vien_lop->nguoi_dung->ho_ten }}</strong>
                       <p class="mb-0">{{ $cmt->noi_dung }}</p>
                     </div>
                   </div>
@@ -144,7 +144,7 @@
         @endif
       </div>
 
-      <!--Bài giảng-->
+      {{-- <!--Bài giảng-->
       <div class="tab-pane fade" id="lecture" role="tabpanel">
         <div class="card">
           <h5 class="card-header bg-dark text-white">Danh sách bài giảng</h5>
@@ -234,7 +234,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> --}}
 
       <!--Thành viên lớp-->
       <div class="tab-pane fade" id="member" role="tabpanel">
@@ -338,7 +338,7 @@
     @endif
 
     {{-- Modal gán bài giảng --}}
-    <div class="modal fade" id="modal-gan-bai-giang" tabindex="-1" aria-labelledby="" aria-hidden="true"
+    {{-- <div class="modal fade" id="modal-gan-bai-giang" tabindex="-1" aria-labelledby="" aria-hidden="true"
       data-bs-focus="false">
       <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
@@ -402,10 +402,10 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> --}}
 
     {{-- Modal xem chi tiết bài giảng --}}
-    <div class="modal fade" id="modal-chi-tiet-bai-giang" tabindex="-1" aria-labelledby="" aria-hidden="true"
+    {{-- <div class="modal fade" id="modal-chi-tiet-bai-giang" tabindex="-1" aria-labelledby="" aria-hidden="true"
       data-bs-focus="false">
       <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
@@ -428,7 +428,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> --}}
 
     {{-- Modal chỉnh sửa lớp học --}}
     {{-- <div class="modal fade" id="updateClassModal" tabindex="-1" aria-labelledby="updateClassModalLabel"

@@ -21,12 +21,12 @@ class ThanhVienLopSeeder extends Seeder
             ],
             [
                 'id_lop_hoc_phan' => 1,
-                'id_nguoi_dung' => 2,
+                'id_nguoi_dung' => 2, // Trần Hoài Ân
                 'is_accept' => null,
             ],
             [
-                'id_lop_hoc_phan' => 1,
-                'id_nguoi_dung' => 3,
+                'id_lop_hoc_phan' => 2,
+                'id_nguoi_dung' => 3, // Nguyễn Tấn Phát
                 'is_accept' => null,
             ],
             [
