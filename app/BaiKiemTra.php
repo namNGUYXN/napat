@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class BaiKiemTra extends Model
@@ -21,9 +22,9 @@ class BaiKiemTra extends Model
         'is_delete',
     ];
 
-    public function getNgayTaoAttribute()
+    public function getNgayTaoAttribute($value)
     {
-        return $this->ngay_tao ? $this->ngay_tao->format('d/m/Y') : null;
+        return $value ? Carbon::parse($value)->format('d/m/Y') : null;
     }
 
     public function lop_hoc_phan()
@@ -39,6 +40,6 @@ class BaiKiemTra extends Model
     public function list_thanh_vien_lop()
     {
         return $this->belongsToMany(ThanhVienLop::class, 'ket_qua_bai_kiem_tra', 'id_bai_kiem_tra', 'id_thanh_vien_lop')
-                ->withPivot('so_cau_dung', 'ngay_lam');
+            ->withPivot('so_cau_dung', 'ngay_lam');
     }
 }

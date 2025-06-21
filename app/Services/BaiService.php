@@ -36,40 +36,38 @@ class BaiService
     //     return $listBai->get();
     // }
 
-    // function them(array $data)
-    // {
-    //     try {
-    //         DB::beginTransaction();
+    public function them($idChuong, array $data)
+    {
+        try {
+            DB::beginTransaction();
 
-    //         $slug = Str::slug($data['tieu_de']) . '-' . Str::random(5);
+            $slug = Str::slug($data['tieu_de']) . '-' . Str::random(5);
 
-    //         $bai= Bai::create([
-    //             'tieu_de' => $data['tieu_de'],
-    //             'slug' => $slug,
-    //             'noi_dung' => $data['noi_dung'],
-    //             'id_chuong' => $data['id_chuong'] ?? '',
-    //             'is_delete' => false,
-    //         ]);
+            $bai= Bai::create([
+                'tieu_de' => $data['tieu_de'],
+                'slug' => $slug,
+                'noi_dung' => $data['noi_dung'],
+                'id_chuong' => $idChuong
+            ]);
 
-    //         DB::commit();
-    //         return [
-    //             'success' => true,
-    //             'message' => 'Thêm bài thành công',
-    //             'id_muc_bai_giang' => $data['id_muc_bai_giang']
-    //         ];
-    //     } catch (\Exception $e) {
-    //         DB::rollBack();
-    //         return [
-    //             'success' => false,
-    //             'message' => 'Lỗi khi thêm bài: ' . $e->getMessage()
-    //         ];
-    //     }
-    // }
+            DB::commit();
+            return [
+                'success' => true,
+                'message' => 'Thêm bài thành công',
+            ];
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return [
+                'success' => false,
+                'message' => 'Lỗi khi thêm bài: ' . $e->getMessage()
+            ];
+        }
+    }
 
-    // function layTheoId($id)
-    // {
-    //     return Bai::findOrFail($id);
-    // }
+    function layTheoId($id)
+    {
+        return Bai::findOrFail($id);
+    }
 
     // function chinhSua($id, array $data)
     // {

@@ -8,7 +8,7 @@
   </form>
   <!-- Main Content -->
   <div class="col bg-light p-4 overflow-auto custom-scrollbar">
-    <h2 class="mb-3">Danh sách mục bài giảng</h2>
+    <h2 class="mb-3">Danh sách bài giảng cá nhân</h2>
 
     @if ($errors->any())
       <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -37,7 +37,11 @@
           <div class="p-3">
             <a href="{{ route('bai-giang.detail', $baiGiang->id) }}"
               class="text-dark document-name">{{ $baiGiang->ten }}</a>
-            <p class="mb-1"><b>Số lượng chương: </b>{{ $baiGiang->so_chuong }}</p>
+            <p class="mb-1"><b>Học phần: </b>{{ $baiGiang->hoc_phan->ten }}</p>
+            <p class="mb-1">
+              <b>Số chương: </b>{{ $baiGiang->so_chuong }}
+              / <b>Số bài: </b>{{ $baiGiang->tong_so_bai }}
+            </p>
             <p class="mb-1"><b>Ngày tạo: </b> {{ $baiGiang->ngay_tao }}</p>
             <small class="text-secondary fst-italic" title="{{ $baiGiang->mo_ta_ngan }}">
               {{ Str::of($baiGiang->mo_ta_ngan)->limit(100) }}
@@ -71,16 +75,16 @@
     <x-pagination :paginator="$listBaiGiang" base-url="{{ route('bai-giang.index') }}" />
 
     <button type="button" class="btn btn-primary rounded-circle document-add-btn" data-bs-toggle="modal"
-      data-bs-target="#modal-them-muc-bai-giang">
+      data-bs-target="#modal-them-bai-giang">
       <i class="fas fa-plus"></i>
     </button>
 
     {{-- Modal thêm --}}
     <form action="{{ route('bai-giang.store') }}" method="POST" enctype="multipart/form-data">
       @csrf
-      <div class="modal fade" id="modal-them-muc-bai-giang" tabindex="-1" aria-labelledby="" aria-hidden="true"
+      <div class="modal fade" id="modal-them-bai-giang" tabindex="-1" aria-labelledby="" aria-hidden="true"
         data-bs-focus="false">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
           <div class="modal-content">
             <div class="modal-header bg-primary text-white">
               <h5 class="modal-title">
@@ -91,18 +95,31 @@
             </div>
             <div class="modal-body custom-scrollbar">
               <div class="mb-3">
-                <label for="" class="form-label">Tên bài giảng <abbr class="text-danger"
+                <label for="" class="form-label">
+                  Tên bài giảng
+                  <span class="text-muted">(100 từ)</span>
+                  <abbr class="text-danger" title="Bắt buộc">*</abbr>
+                </label>
+                <input type="text" name="ten" class="form-control" id="" required maxlength="100">
+              </div>
+              <div class="mb-3">
+                <label for="" class="form-label">Chọn học phần <abbr class="text-danger"
                     title="Bắt buộc">*</abbr></label>
-                <input type="text" name="ten" class="form-control" id="" required maxlength="255">
+                <select name="id_hoc_phan" id="" required class="form-control">
+                  <option value="" selected disabled>-- Chọn một học phần --</option>
+                  @foreach ($listHocPhan as $hocPhan)
+                    <option value="{{ $hocPhan->id }}">{{ $hocPhan->ten }}</option>
+                  @endforeach
+                </select>
               </div>
               <div class="mb-3">
                 <label for="" class="form-label">Mô tả ngắn <span class="text-muted">(255 từ)</span></label>
                 <textarea name="mo_ta_ngan" id="" class="form-control" rows="6" maxlength="255"></textarea>
               </div>
               <div class="mb-3">
-                <label for="img-upload-modal-them" class="form-label">Hình ảnh <span class="text-muted">(không bắt
-                    buộc)</span></label>
-                <input class="form-control" type="file" name="hinh_anh" id="img-upload-modal-them" accept="image/*">
+                <label for="img-upload-modal-them" class="form-label">Hình ảnh</label>
+                <input class="form-control" type="file" name="hinh_anh" id="img-upload-modal-them"
+                  accept="image/*">
                 <div id="img-preview-container-modal-them" class="mt-3 position-relative d-inline-block">
                   <img src="#" alt="Ảnh xem trước" class="img-preview img-thumbnail"
                     style="display: none; max-width: 200px; max-height: 200px;">
@@ -123,7 +140,7 @@
     <form action="" method="POST" enctype="multipart/form-data">
       @csrf
       @method('PUT')
-      <div class="modal fade" id="modal-chinh-sua-muc-bai-giang" tabindex="-1" aria-labelledby="" aria-hidden="true"
+      <div class="modal fade" id="modal-chinh-sua-bai-giang" tabindex="-1" aria-labelledby="" aria-hidden="true"
         data-bs-focus="false">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
           <div class="modal-content">
@@ -136,17 +153,29 @@
             </div>
             <div class="modal-body custom-scrollbar">
               <div class="mb-3">
-                <label for="" class="form-label">Tên bài giảng <abbr class="text-danger"
+                <label for="" class="form-label">
+                  Tên bài giảng
+                  <span class="text-muted">(100 từ)</span>
+                  <abbr class="text-danger" title="Bắt buộc">*</abbr>
+                </label>
+                <input type="text" name="ten" class="form-control" id="ten-bai-giang">
+              </div>
+              <div class="mb-3">
+                <label for="" class="form-label">Chọn học phần <abbr class="text-danger"
                     title="Bắt buộc">*</abbr></label>
-                <input type="text" name="ten" class="form-control" id="ten-muc-bai-giang">
+                <select name="id_hoc_phan" id="" required class="form-control">
+                  <option value="" selected disabled>-- Chọn một học phần --</option>
+                  @foreach ($listHocPhan as $hocPhan)
+                    <option value="{{ $hocPhan->id }}">{{ $hocPhan->ten }}</option>
+                  @endforeach
+                </select>
               </div>
               <div class="mb-3">
                 <label for="" class="form-label">Mô tả ngắn <span class="text-muted">(255 từ)</span></label>
-                <textarea name="mo_ta_ngan" id="mo-ta-muc-bai-giang" class="form-control" rows="6"></textarea>
+                <textarea name="mo_ta_ngan" id="mo-ta-bai-giang" class="form-control" rows="6"></textarea>
               </div>
               <div class="mb-3">
-                <label for="img-upload-modal-chinh-sua" class="form-label">Hình ảnh <span class="text-muted">(không bắt
-                    buộc)</span></label>
+                <label for="img-upload-modal-chinh-sua" class="form-label">Hình ảnh</label>
                 <input class="form-control" type="file" name="hinh_anh" id="img-upload-modal-chinh-sua"
                   accept="image/*">
                 <div id="img-preview-container-modal-chinh-sua" class="mt-3 position-relative d-inline-block">
@@ -155,7 +184,7 @@
                   <span class="img-remove-btn close-btn" style="display: none;">&times;</span>
                 </div>
                 <div class="mt-3 d-inline-block">
-                  <img src="" id="hinh-anh-muc-bai-giang" data-url="{{ asset('storage/') }}"
+                  <img src="" id="hinh-anh-bai-giang" data-url="{{ asset('storage/') }}"
                     class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
                 </div>
               </div>
@@ -173,7 +202,7 @@
     <form action="" method="POST">
       @csrf
       @method('DELETE')
-      <div class="modal fade" id="modal-xoa-muc-bai-giang" tabindex="-1" aria-labelledby="" aria-hidden="true"
+      <div class="modal fade" id="modal-xoa-bai-giang" tabindex="-1" aria-labelledby="" aria-hidden="true"
         data-bs-focus="false">
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">

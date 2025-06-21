@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class BaiGiang extends Model
@@ -22,9 +23,16 @@ class BaiGiang extends Model
         'is_delete',
     ];
 
-    public function getNgayTaoAttribute()
+    public function getNgayTaoAttribute($value)
     {
-        return $this->ngay_tao ? $this->ngay_tao->format('d/m/Y') : null;
+        return $value ? Carbon::parse($value)->format('d/m/Y') : null;
+    }
+
+    public function getTongSoBaiAttribute()
+    {
+        return $this->list_chuong->sum(function ($chuong) {
+            return $chuong->list_bai->count();
+        });
     }
 
     public function hoc_phan()

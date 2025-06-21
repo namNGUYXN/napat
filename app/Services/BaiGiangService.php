@@ -70,7 +70,7 @@ class BaiGiangService
             ['id_giang_vien', $idNguoiDungHienTai],
             ['is_delete', false]
         ])->withCount(['list_chuong as so_chuong'])
-            ->orderBy('created_at', 'desc');
+            ->orderBy('ngay_tao', 'desc');
 
         if ($perPage > 0) {
             return $listBaiGiang->paginate($perPage);
@@ -87,101 +87,103 @@ class BaiGiangService
             ->firstOrFail();
     }
 
-    // public function them(array $data)
-    // {
-    //     try {
-    //         DB::beginTransaction();
+    public function them(array $data)
+    {
+        try {
+            DB::beginTransaction();
 
-    //         $slug = Str::slug($data['ten']) . '-' . Str::random(5);
+            $slug = Str::slug($data['ten']) . '-' . Str::random(5);
 
-    //         $baiGiang = BaiGiang::create([
-    //             'ten' => $data['ten'],
-    //             'slug' => $slug,
-    //             'mo_ta_ngan' => $data['mo_ta_ngan'],
-    //             'hinh_anh' => $data['hinh_anh'] ?? 'images/muc-bai-giang/no-image.png',
-    //             'id_giang_vien' => session('id_nguoi_dung')
-    //         ]);
+            $baiGiang = BaiGiang::create([
+                'ten' => $data['ten'],
+                'slug' => $slug,
+                'mo_ta_ngan' => $data['mo_ta_ngan'],
+                'hinh_anh' => $data['hinh_anh'] ?? 'images/bai-giang/no-image.png',
+                'id_giang_vien' => session('id_nguoi_dung'),
+                'id_hoc_phan' => $data['id_hoc_phan']
+            ]);
 
-    //         DB::commit();
+            DB::commit();
 
-    //         return [
-    //             'success' => true,
-    //             'message' => 'Thêm bài giảng thành công'
-    //         ];
-    //     } catch (\Exception $e) {
-    //         DB::rollBack();
-    //         return [
-    //             'success' => false,
-    //             'message' => 'Lỗi khi thêm bài giảng: ' . $e->getMessage()
-    //         ];
-    //     }
-    // }
+            return [
+                'success' => true,
+                'message' => 'Thêm bài giảng thành công'
+            ];
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return [
+                'success' => false,
+                'message' => 'Lỗi khi thêm bài giảng: ' . $e->getMessage()
+            ];
+        }
+    }
 
-    // public function chinhSua($id, array $data)
-    // {
-    //     try {
-    //         DB::beginTransaction();
+    public function chinhSua($id, array $data)
+    {
+        try {
+            DB::beginTransaction();
 
-    //         $baiGiang = BaiGiang::findOrFail($id);
-    //         $slug = null;
-    //         if ($baiGiang->ten != $data['ten']) {
-    //             $slug = Str::slug($data['ten']) . '-' . Str::random(5);
-    //         }
+            $baiGiang = BaiGiang::findOrFail($id);
+            $slug = null;
+            if ($baiGiang->ten != $data['ten']) {
+                $slug = Str::slug($data['ten']) . '-' . Str::random(5);
+            }
 
-    //         $baiGiang->update([
-    //             'ten' => $data['ten'] ?? $baiGiang->ten,
-    //             'slug' => $slug ?? $baiGiang->slug,
-    //             'mo_ta_ngan' => $data['mo_ta_ngan'] ?? $baiGiang->mo_ta_ngan,
-    //             'hinh_anh' => $data['hinh_anh'] ?? $baiGiang->hinh_anh
-    //         ]);
+            $baiGiang->update([
+                'ten' => $data['ten'] ?? $baiGiang->ten,
+                'slug' => $slug ?? $baiGiang->slug,
+                'mo_ta_ngan' => $data['mo_ta_ngan'] ?? $baiGiang->mo_ta_ngan,
+                'hinh_anh' => $data['hinh_anh'] ?? $baiGiang->hinh_anh,
+                'id_hoc_phan' => $data['id_hoc_phan'] ?? $baiGiang->id_hoc_phan
+            ]);
 
-    //         DB::commit();
-    //         return [
-    //             'success' => true,
-    //             'message' => 'Cập nhật bài giảng thành công',
-    //             'data' => $baiGiang->fresh()
-    //         ];
-    //     } catch (\Exception $e) {
-    //         DB::rollBack();
-    //         return [
-    //             'success' => false,
-    //             'message' => 'Lỗi khi cập nhật bài giảng: ' . $e->getMessage()
-    //         ];
-    //     }
-    // }
+            DB::commit();
+            return [
+                'success' => true,
+                'message' => 'Cập nhật bài giảng thành công',
+                'data' => $baiGiang->fresh()
+            ];
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return [
+                'success' => false,
+                'message' => 'Lỗi khi cập nhật bài giảng: ' . $e->getMessage()
+            ];
+        }
+    }
 
-    // function xoa($id)
-    // {
-    //     try {
-    //         DB::beginTransaction();
+    function xoa($id)
+    {
+        try {
+            DB::beginTransaction();
 
-    //         $baiGiang = BaiGiang::findOrFail($id);
+            $baiGiang = BaiGiang::findOrFail($id);
 
-    //         $soChuong = $baiGiang->list_chuong()->count();
+            $soChuong = $baiGiang->list_chuong()->count();
 
-    //         // Kiểm tra mục bài giảng có bài giảng không
-    //         if ($soChuong > 0) {
-    //             throw new \Exception('Không thể xóa vì có chương trong bài giảng');
-    //         }
+            // Kiểm tra mục bài giảng có bài giảng không
+            if ($soChuong > 0) {
+                throw new \Exception('Không thể xóa vì có chương trong bài giảng');
+            }
 
-    //         $baiGiang->delete();
+            $baiGiang->delete();
 
-    //         DB::commit();
-    //         return [
-    //             'success' => true,
-    //             'message' => 'Xóa bài giảng thành công'
-    //         ];
-    //     } catch (ModelNotFoundException $e) {
-    //         return [
-    //             'success' => false,
-    //             'message' => 'Không tìm thấy bài giảng để xóa'
-    //         ];
-    //     } catch (\Exception $e) {
-    //         DB::rollBack();
-    //         return [
-    //             'success' => false,
-    //             'message' => 'Lỗi khi xóa bài giảng: ' . $e->getMessage()
-    //         ];
-    //     }
-    // }
+            DB::commit();
+            return [
+                'success' => true,
+                'message' => 'Xóa bài giảng thành công'
+            ];
+        } catch (ModelNotFoundException $e) {
+            return [
+                'success' => false,
+                'message' => 'Không tìm thấy bài giảng để xóa'
+            ];
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return [
+                'success' => false,
+                'message' => 'Lỗi khi xóa bài giảng: ' . $e->getMessage()
+            ];
+        }
+    }
 }

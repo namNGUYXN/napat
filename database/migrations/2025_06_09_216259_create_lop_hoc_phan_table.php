@@ -18,7 +18,7 @@ class CreateLopHocPhanTable extends Migration
             $table->string('ma', 20)->unique();
             $table->string('ten', 100);
             $table->string('slug')->unique();
-            $table->string('mo_ta_ngan');
+            $table->string('mo_ta_ngan')->nullable();
             $table->string('hinh_anh')->nullable();
             $table->unsignedInteger('id_hoc_phan');
             $table->unsignedBigInteger('id_giang_vien');

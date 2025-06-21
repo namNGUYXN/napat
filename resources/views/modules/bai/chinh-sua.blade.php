@@ -3,10 +3,13 @@
 @section('content')
   <!-- Main Content -->
   <div class="col bg-light p-4 overflow-auto custom-scrollbar">
-    <h2 class="mb-4">Chỉnh sửa bài giảng & Quản lý bài tập</h2>
+    <h2 class="mb-4">
+      Chỉnh sửa bài thuộc Chương <span class="fst-italic text-secondary">"{{ $bai->chuong->tieu_de }}"</span>
+      - Bài giảng <span class="fst-italic text-secondary">"{{ $bai->chuong->bai_giang->ten }}"</span>
+    </h2>
 
-    <a href="{{ route('muc-bai-giang.detail', $baiGiang->id_muc_bai_giang) }}" class="btn btn-outline-secondary mb-4">
-      <i class="fas fa-arrow-alt-circle-left me-2"></i>Danh sách bài giảng
+    <a href="{{ route('chuong.edit', $bai->chuong->id) }}" class="btn btn-outline-secondary mb-4">
+      <i class="fas fa-arrow-alt-circle-left me-2"></i>Danh sách bài của chương
     </a>
 
     @if (session('message'))
@@ -19,11 +22,11 @@
     <ul class="nav nav-tabs mb-3" id="myTab" role="tablist">
       <li class="nav-item" role="presentation">
         <button class="nav-link active" id="lesson-tab" data-bs-toggle="tab" data-bs-target="#lesson-pane" type="button"
-          role="tab" aria-controls="lesson-pane" aria-selected="true">Bài giảng</button>
+          role="tab" aria-controls="lesson-pane" aria-selected="true">Bài</button>
       </li>
       <li class="nav-item" role="presentation">
         <button class="nav-link" id="exercise-tab" data-bs-toggle="tab" data-bs-target="#exercise-pane" type="button"
-          role="tab" aria-controls="exercise-pane" aria-selected="false">Bài tập</button>
+          role="tab" aria-controls="exercise-pane" aria-selected="false">Bài tập của bài</button>
       </li>
     </ul>
 
@@ -31,16 +34,19 @@
       <div class="tab-pane fade show active" id="lesson-pane" role="tabpanel" aria-labelledby="lesson-tab" tabindex="0">
         <div class="card shadow-sm">
           <div class="card-header bg-success text-white">
-            <h5 class="mb-0">Chỉnh sửa bài giảng</h5>
+            <h5 class="mb-0">Thông tin bài</h5>
           </div>
           <div class="card-body">
-            <form action="{{ route('bai-giang.update', $baiGiang->id) }}" method="POST">
+            <form action="{{ route('bai.update', $bai->id) }}" method="POST">
               @csrf
               @method('PUT')
               <div class="mb-3">
-                <label for="lecture-title" class="form-label">Tiêu đề bài giảng <span class="text-danger">*</span></label>
+                <label for="lecture-title" class="form-label">
+                  Tiêu đề bài
+                  <span class="text-muted">(100 từ)</span>
+                </label>
                 <input type="text" class="form-control @error('tieu_de') is-invalid @enderror" name="tieu_de"
-                  value="{{ old('tieu_de', $baiGiang->tieu_de) }}" placeholder="Nhập tên bài giảng" id="lecture-title">
+                  value="{{ old('tieu_de', $bai->tieu_de) }}" placeholder="Nhập tiêu đề bài" id="lecture-title">
                 @error('tieu_de')
                   <div class="invalid-feedback">
                     {{ $message }}
@@ -50,9 +56,9 @@
               <div class="mb-3">
                 <label for="lecture-content" class="form-label">Nội dung bài giảng <span
                     class="text-danger">*</span></label>
-                <textarea class="form-control textarea-tiny @error('noi_dung') is-invalid @enderror" name="noi_dung" rows="10"
-                  placeholder="Nhập nội dung chi tiết bài giảng" id="lecture-content">
-                  {{ old('noi_dung', $baiGiang->noi_dung) }}
+                <textarea class="form-control textarea-tiny" name="noi_dung" rows="10"
+                  placeholder="Nhập nội dung chi tiết bài" id="lecture-content">
+                  {{ old('noi_dung', $bai->noi_dung) }}
                 </textarea>
                 @error('noi_dung')
                   <div class="invalid-feedback">
@@ -91,7 +97,7 @@
                   </tr>
                 </thead>
                 <tbody id="exerciseListBody">
-                  @forelse ($baiGiang->list_bai_tap as $index => $baiTap)
+                  @forelse ($bai->list_bai_tap as $index => $baiTap)
                     <tr>
                       <td>{{ $index + 1 }}</td>
                       <td>{{ $baiTap->tieu_de }}</td>
@@ -188,7 +194,7 @@
             </div>
             <hr>
 
-            <input type="hidden" name="idBaiGiang" id="idBaiGiang" value="{{ $baiGiang->id }}">
+            <input type="hidden" name="idBaiGiang" id="idBaiGiang" value="{{ $bai->id }}">
 
             <div id="questionsFormContainer">
               <h6>Danh sách câu hỏi:</h6>

@@ -82,14 +82,19 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien']], function (
     Route::put('/bai-giang/{id}/chinh-sua', 'BaiGiangController@chinhSua')->name('bai-giang.update');
     Route::delete('/bai-giang/{id}/xoa', 'BaiGiangController@xoa')->name('bai-giang.delete');
 
+    // Chương
+    Route::post('/bai-giang/{id}/chuong/them', 'ChuongController@them')->name('chuong.store');
+    Route::get('/chuong/{id}/chinh-sua', 'ChuongController@giaoDienChinhSua')->name('chuong.edit');
+    Route::put('/chuong/{id}/chinh-sua', 'ChuongController@chinhSua')->name('chuong.update');
+
     // Bài
-    Route::post('/bai-giang/{id}/bai-giang/list', 'BaiGiangController@layListTheoMucBaiGiang')->name('bai-giang.list');
-    Route::get('/bai-giang/{id}/bai-giang/them', 'BaiGiangController@giaoDienThem')->name('bai-giang.create');
-    Route::post('/bai-giang/them', 'BaiGiangController@them')->name('bai-giang.store');
-    Route::get('/bai-giang/{id}/chinh-sua', 'BaiGiangController@giaoDienChinhSua')->name('bai-giang.edit');
-    Route::put('/bai-giang/{id}/chinh-sua', 'BaiGiangController@chinhSua_nam')->name('bai-giang.update');
-    Route::post('/bai-giang/{id}/chi-tiet', 'BaiGiangController@chiTiet')->name('bai-giang.detail');
-    Route::delete('/bai-giang/{id}/xoa', 'BaiGiangController@xoa')->name('bai-giang.delete');
+    // Route::post('/bai-giang/{id}/bai-giang/list', 'BaiGiangController@layListTheoMucBaiGiang')->name('bai-giang.list');
+    Route::get('/chuong/{id}/bai/them', 'BaiController@giaoDienThem')->name('bai.create');
+    Route::post('/chuong{id}/bai/them', 'BaiController@them')->name('bai.store');
+    Route::get('/bai/{id}/chinh-sua', 'BaiController@giaoDienChinhSua')->name('bai.edit');
+    Route::put('/bai/{id}/chinh-sua', 'BaiGiangController@chinhSua')->name('bai.update');
+    // Route::post('/bai-giang/{id}/chi-tiet', 'BaiGiangController@chiTiet')->name('bai-giang.detail');
+    // Route::delete('/bai-giang/{id}/xoa', 'BaiGiangController@xoa')->name('bai-giang.delete');
 
     //Thành viên lớp
     Route::post('/thanh-vien-lop/{id}/chap-nhan', 'ThanhVienLopController@chapNhan');
