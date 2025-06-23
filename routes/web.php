@@ -46,10 +46,10 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien+sinh-vien']], 
     Route::get('/', 'HomeController@home')->name('home');
     Route::get('/trang-chu', 'HomeController@home');
 
-    Route::get('/bai-tap/lam-bai', 'BaiTapController@lamBai')->name('lambai');
+    Route::get('/lam-bai/{id}', 'BaiKiemTraController@lamBai')->name('lambai');
     Route::post('/bai-tap', 'BaiTapController@themBaiTap')->name('bai_tap.them');
     Route::get('/bai-giang/{id}/bai-tap', 'BaiTapController@danhSachBaiTap')->name('bai-tap.by-bai-giang');
-    Route::get('lop-hoc','LopHocController@lopHocCuaToi')->name('lop-hoc.lop-hoc-cua-toi');
+    Route::get('lop-hoc', 'LopHocController@lopHocCuaToi')->name('lop-hoc.lop-hoc-cua-toi');
     Route::get('/lop-hoc/{slug}', 'LopHocController@chiTiet')->name('lop-hoc.detail');
 
     // Lớp học
@@ -65,8 +65,11 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien+sinh-vien']], 
     Route::get('/hoc-phan/{id}/lop-hoc', 'LopHocController@lopHocTheoHocPhan')->name('lop-hoc.theo-hoc-phan');
 
     //Tài khoản
-    Route::get('/tai-khoan/chi-tiet', 'NguoiDungController@chiTiet')->name('tai-khoan.chi-tiet');  
+    Route::get('/tai-khoan/chi-tiet', 'NguoiDungController@chiTiet')->name('tai-khoan.chi-tiet');
     Route::post('/tai-khoan/doi-mat-khau', 'NguoiDungController@doiMatKhau')->name('tai-khoan.doi-mat-khau');
+
+    //Bài kiểm tra
+    Route::get('/bai-kiem-tra/{idLopHoc}', 'BaiKiemTraController@danhSachBaiKiemTra');
 });
 
 
@@ -100,6 +103,9 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien']], function (
     //Thành viên lớp
     Route::post('/thanh-vien-lop/{id}/chap-nhan', 'ThanhVienLopController@chapNhan');
     Route::post('/thanh-vien-lop/{id}/tu-choi', 'ThanhVienLopController@tuChoi');
+
+    //Bài kiểm tra
+    Route::post('/bai-kiem-tra', 'BaiKiemTraController@themBaiKiemTra')->name('bai_kiem_tra.them');
 });
 
 

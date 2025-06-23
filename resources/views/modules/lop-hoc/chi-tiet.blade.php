@@ -192,49 +192,163 @@
 
           </div>
         </div>
-      </div>
+      </div>--}}
 
       <!--Bài kiểm tra-->
       <div class="tab-pane fade" id="exam" role="tabpanel">
         <div class="card">
           <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Danh sách bài kiểm tra</h5>
-            <button class="btn btn-light btn-sm">
+            <button class="btn btn-light btn-sm" id="addNewExerciseBtn">
               <i class="fas fa-plus-circle me-2"></i>Tạo bài kiểm tra
             </button>
           </div>
           <div class="card-body">
             <!-- Danh sách bài kiểm tra -->
-            <div class="row row-cols-1 row-cols-md-2 g-3 mt-2">
-              <!-- Bài kiểm tra 1 -->
-              <div class="col">
-                <div class="card shadow-sm h-100">
-                  <div class="card-body">
-                    <h5 class="card-title">Bài kiểm tra chương 1</h5>
-                    <p class="card-text mb-1"><i class="bi bi-calendar-check"></i> Ngày đăng:
-                      01/06/2025</p>
-                    <p class="card-text"><i class="bi bi-clock"></i> Hạn chót: 05/06/2025</p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Bài kiểm tra 2 -->
-              <div class="col">
-                <div class="card shadow-sm h-100">
-                  <div class="card-body">
-                    <h5 class="card-title">Bài kiểm tra chương 2</h5>
-                    <p class="card-text mb-1"><i class="bi bi-calendar-check"></i> Ngày đăng:
-                      03/06/2025</p>
-                    <p class="card-text"><i class="bi bi-clock"></i> Hạn chót: 07/06/2025</p>
-                  </div>
-                </div>
-              </div>
-
+            <div class="row row-cols-1 row-cols-md-2 g-3 mt-2" id="danhSachBaiKiemTra">
+              
               <!-- Các bài kiểm tra khác -->
             </div>
           </div>
+          <!-- Modal chi tiết bài kiểm tra -->
+<div class="modal fade" id="baiKiemTraModal" tabindex="-1" aria-labelledby="baiKiemTraModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Chi tiết bài kiểm tra</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Tiêu đề:</strong> <span id="modalTieuDe"></span></p>
+        <p><strong>Số câu hỏi:</strong> <span id="modalSoCau"></span></p>
+        <p><strong>Hạn chót:</strong> <span id="modalHanChot"></span></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+        <a id="btnLamBai" href="#" class="btn btn-primary">Làm bài</a>
+      </div>
+    </div>
+  </div>
+</div>
+          <div class="modal fade" id="addExerciseModal" tabindex="-1" aria-labelledby="addExerciseModalLabel"
+          aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+              <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                  <h5 class="modal-title" id="addExerciseModalLabel">Tạo mới bài kiểm tra</h5>
+                  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <form id="newExerciseForm">
+                    <div class="row mb-3">
+                      <div class="col-sm-9 col-lg-10">
+                        <label for="newExerciseTitle" class="form-label">Tiêu đề 
+                          <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="tieu_de" id="newExerciseTitle"
+                          placeholder="Nhập tiêu đề bài tập" required>
+                        <div class="invalid-feedback">
+                          Vui lòng nhập tiêu đề cho bài kiểm tra.
+                        </div>
+                      </div>
+                      <div class="col-sm-3 col-lg-2 mt-3 mt-sm-0"> <label for="newExerciseMaxScore" class="form-label">Điểm tối
+                          đa</label>
+                        <input type="number" class="form-control" name="diem_toi_da" id="newExerciseMaxScore"
+                          placeholder="100" min="0">
+                      </div>
+                    </div>
+
+                    <div class="mb-3"> <label for="newExerciseDescription" class="form-label">Mô tả</label>
+                      <textarea class="form-control" name="mo_ta" id="newExerciseDescription" rows="3"
+                        placeholder="Nhập mô tả"></textarea>
+                    </div>
+                    <hr>
+
+                    <input type="hidden" name="idLopHoc" id="idLopHoc" value="{{ $lop->id }}">
+
+                    <div id="questionsFormContainer">
+                      <h6>Danh sách câu hỏi:</h6>
+                      <div class="question-item mb-4 p-3 border rounded bg-light">
+                        <h7 class="d-flex justify-content-between align-items-center mb-3">
+                          <strong>Câu hỏi 1</strong>
+                          <button type="button" class="btn btn-sm btn-outline-danger remove-question-btn">
+                            <i class="fas fa-times"></i> Xóa
+                          </button>
+                        </h7>
+                        <div class="mb-3">
+                          <label for="question1Text" class="form-label">Nội dung câu hỏi <span
+                              class="text-danger">*</span></label>
+                          <textarea class="form-control question-text" id="question1Text" rows="2" placeholder="Nhập nội dung câu hỏi"
+                            required></textarea>
+                          <div class="invalid-feedback">
+                            Vui lòng nhập nội dung câu hỏi.
+                          </div>
+                        </div>
+                        <div class="row g-2 mb-3">
+                          <label class="form-label">Đáp án: <span class="text-danger">*</span></label>
+                          <div class="col-md-6">
+                            <div class="input-group">
+                              <div class="input-group-text">
+                                <input class="form-check-input mt-0 correct-answer-radio" type="radio" name="correctAnswer_1"
+                                  value="optionA" aria-label="Đáp án A" required>
+                              </div>
+                              <input type="text" class="form-control answer-option" placeholder="Đáp án A" required>
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="input-group">
+                              <div class="input-group-text">
+                                <input class="form-check-input mt-0 correct-answer-radio" type="radio" name="correctAnswer_1"
+                                  value="optionB" aria-label="Đáp án B" required>
+                              </div>
+                              <input type="text" class="form-control answer-option" placeholder="Đáp án B" required>
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="input-group">
+                              <div class="input-group-text">
+                                <input class="form-check-input mt-0 correct-answer-radio" type="radio" name="correctAnswer_1"
+                                  value="optionC" aria-label="Đáp án C" required>
+                              </div>
+                              <input type="text" class="form-control answer-option" placeholder="Đáp án C" required>
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="input-group">
+                              <div class="input-group-text">
+                                <input class="form-check-input mt-0 correct-answer-radio" type="radio" name="correctAnswer_1"
+                                  value="optionD" aria-label="Đáp án D" required>
+                              </div>
+                              <input type="text" class="form-control answer-option" placeholder="Đáp án D" required>
+                            </div>
+                          </div>
+                          <div class="col-12">
+                            <div class="invalid-feedback d-block">
+                              Vui lòng chọn một đáp án đúng cho câu hỏi này.
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <button type="button" class="btn btn-outline-primary w-100 mb-3" id="addQuestionBtn">
+                      <i class="fas fa-plus me-2"></i>Thêm câu hỏi mới
+                    </button>
+                    <div class="text-center text-muted mb-3" id="noQuestionsMessage" style="display: none;">
+                      Vui lòng thêm ít nhất một câu hỏi.
+                    </div>
+
+                    <div class="d-flex justify-content-end mt-4">
+                      <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Hủy</button>
+                      <button type="submit" class="btn btn-primary">Lưu bài kiểm tra</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div> --}}
+      </div> 
 
       <!--Thành viên lớp-->
       <div class="tab-pane fade" id="member" role="tabpanel">
