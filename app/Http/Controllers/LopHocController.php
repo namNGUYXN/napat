@@ -7,6 +7,7 @@ use App\Services\AuthService;
 use App\Services\BaiGiangLopService;
 use App\Services\LopHocService;
 use App\Services\BanTinService;
+use App\Services\BaiKiemTraService;
 use App\Services\NguoiDungService;
 use App\Services\ThanhVienLopService;
 use Ramsey\Uuid\Type\Integer;
@@ -17,6 +18,7 @@ class LopHocController extends Controller
     protected $lopService;
     protected $tinService;
     protected $thanhVienService;
+    protected $baiKiemTraService;
     // protected $nguoiDungService;
     // protected $baiGiangLopService;
 
@@ -24,7 +26,8 @@ class LopHocController extends Controller
         AuthService $authService,
         LopHocService $lopService,
         BanTinService $tinService,
-        ThanhVienLopService $thanhVienService
+        ThanhVienLopService $thanhVienService,
+        BaiKiemTraService $baiKiemTraService
         //, NguoiDungService $nguoiDungService,
         // BaiGiangLopService $baiGiangLopService
     ) {
@@ -32,6 +35,7 @@ class LopHocController extends Controller
         $this->lopService = $lopService;
         $this->tinService = $tinService;
         $this->thanhVienService = $thanhVienService;
+        $this->baiKiemTraService = $baiKiemTraService;
         //     $this->nguoiDungService = $nguoiDungService;
         //     $this->baiGiangLopService = $baiGiangLopService;
     }
@@ -49,6 +53,7 @@ class LopHocController extends Controller
         $banTin = $this->tinService->layBanTinLopHoc($lop->id);
         $thanhVien = $this->thanhVienService->getAcceptedMembersByLopId($lop->id);
         $yeuCau = $this->thanhVienService->getPendingMembersByLopId($lop->id);
+        $baiKiemTra = $this->baiKiemTraService->getByLopHocId($lop->id);
         //$nguoiDung = $this->nguoiDungService->layTheoId(session('id_nguoi_dung'));
         //$listMucBaiGiang = $nguoiDung->list_muc_bai_giang;
         $hocPhan = $lop->hoc_phan;
@@ -67,7 +72,8 @@ class LopHocController extends Controller
                 'thanhVien',
                 'yeuCau',
                 //'listMucBaiGiang',
-                'hocPhan'
+                'hocPhan',
+                'baiKiemTra'
                 //'listChuong',
                 //'listBaiGiang'
             )
