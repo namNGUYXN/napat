@@ -30,7 +30,7 @@
     @endif
 
     <div class="row align-items-start">
-      <div class="col-lg-4 mb-4 mb-md-0">
+      <div class="col-lg-4">
         <div class="card h-100 shadow-sm p-3">
           <form action="{{ route('chuong.update', $chuong->id) }}" method="POST">
             @csrf
@@ -38,15 +38,15 @@
             <div class="mb-3">
               <label for="" class="form-label">
                 Tiêu đề chương
-                <span class="text-muted">(100 từ)</span>
+                <span class="text-muted">(100 ký tự)</span>
                 <abbr class="text-danger" title="Bắt buộc">*</abbr>
               </label>
               <input type="text" name="tieu_de" class="form-control" id="" required maxlength="100"
-                value="{{ $chuong->tieu_de }}">
+                value="{{ $chuong->tieu_de }}" placeholder="Nhập tiêu đề chương...">
             </div>
             <div class="mb-3">
-              <label for="" class="form-label">Mô tả ngắn <span class="text-muted">(255 từ)</span></label>
-              <textarea name="mo_ta_ngan" id="" class="form-control" rows="6" maxlength="255">{{ $chuong->mo_ta_ngan }}</textarea>
+              <label for="" class="form-label">Mô tả ngắn <span class="text-muted">(255 ký tự)</span></label>
+              <textarea name="mo_ta_ngan" id="" class="form-control" rows="6" maxlength="255" placeholder="Nhập nội dung mô tả chương...">{{ $chuong->mo_ta_ngan }}</textarea>
             </div>
             <div class="text-end">
               <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
@@ -55,7 +55,7 @@
         </div>
       </div>
 
-      <div class="col-lg-8 mb-4 mb-md-0">
+      <div class="col-lg-8 my-4 mt-md-0">
         <div class="card shadow-sm">
           <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Danh sách các bài trong chương</h5>
@@ -67,14 +67,16 @@
             <form action="" method="GET">
               <div class="input-group mb-3">
                 <input type="text" class="form-control" name="search" value="{{ request()->input('search') }}"
-                  placeholder="Nhập tiêu đề bài..." autocomplete="off">
+                  placeholder="Nhập tiêu đề của bài cần tìm..." autocomplete="off">
                 <button class="btn btn-outline-secondary">
                   <i class="fas fa-search"></i> </button>
               </div>
             </form>
 
             <div class="table-responsive custom-scrollbar">
-              <form action="#" method="POST">
+              <form action="{{ route('thu-tu-bai.update', $chuong->id) }}" method="POST">
+                @csrf
+                @method('PUT')
                 <table class="table table-hover table-striped caption-top" style="min-width: 600px;">
                   <caption>Có {{ $listBai->count() }} bản ghi bài trong chương</caption>
                   <thead>
@@ -100,7 +102,7 @@
                         </th>
                         <td class="align-middle">
                           <div style="max-width: 60px;">
-                            <input type="number" name="" id="" value="{{ $bai->thu_tu }}"
+                            <input type="number" name="thu_tu[{{ $bai->id }}]" min="1" max="1000" value="{{ $bai->thu_tu }}"
                               class="form-control text-center no-spinner">
                           </div>
                         </td>
@@ -132,9 +134,9 @@
 
                 @if ($listBai->count() > 0)
                   <div class="input-group ms-1 mb-3" style="max-width: 210px;">
-                    <select class="form-select">
-                      <option value="1">Cập nhật</option>
-                      <option value="2">Xóa</option>
+                    <select class="form-select" name="action">
+                      <option value="cap-nhat">Cập nhật</option>
+                      <option value="xoa">Xóa</option>
                     </select>
                     <button type="submit" class="btn btn-success">Thực hiện</button>
                   </div>

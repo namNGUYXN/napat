@@ -9,7 +9,7 @@ class NguoiDungService
 {
   public function layTheoId($id)
   {
-    return NguoiDung::find($id);
+    return NguoiDung::findOrFail($id);
   }
 
   public function doiMatKhau(NguoiDung $nguoiDung, string $currentPassword, string $newPassword): array

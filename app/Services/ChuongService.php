@@ -16,11 +16,11 @@ class ChuongService
 
   public function layListTheoBaiGiang(Request $request, $id, $perPage = -1)
   {
-    $listChuong = Chuong::where('id_bai_giang', $id)->orderBy('thu_tu');
+    $listChuong = Chuong::where('id_bai_giang', $id)->orderBy('thu_tu')->orderBy('id', 'desc');
 
     if ($search = $request->input('search')) {
       $listChuong->where('tieu_de', 'like', '%' . $search . '%')
-          ->orWhere('mo_ta_ngan', 'like', '%' . $search . '%');
+        ->orWhere('mo_ta_ngan', 'like', '%' . $search . '%');
     }
 
     if ($perPage > 0)
@@ -34,10 +34,13 @@ class ChuongService
     try {
       DB::beginTransaction();
 
-      $baiGiang = Chuong::create([
+      $thuTuMax = Chuong::where('id_bai_giang', $idBaiGiang)->max('thu_tu');
+
+      $chuong = Chuong::create([
         'tieu_de' => $data['tieu_de'],
         'mo_ta_ngan' => $data['mo_ta_ngan'],
-        'id_bai_giang' => $idBaiGiang
+        'id_bai_giang' => $idBaiGiang,
+        'thu_tu' => $thuTuMax + 1
       ]);
 
       DB::commit();
@@ -113,6 +116,31 @@ class ChuongService
       return [
         'success' => false,
         'message' => 'Lỗi khi xóa chương: ' . $e->getMessage()
+      ];
+    }
+  }
+
+  public function capNhatThuTu(array $data)
+  {
+    try {
+      DB::beginTransaction();
+
+      foreach ($data as $idChuong => $thuTu) {
+        Chuong::where('id', $idChuong)->update([
+          'thu_tu' => $thuTu
+        ]);
+      }
+
+      DB::commit();
+      return [
+        'success' => true,
+        'message' => 'Cập nhật thứ tự chương thành công'
+      ];
+    } catch (\Exception $e) {
+      DB::rollBack();
+      return [
+        'success' => false,
+        'message' => 'Lỗi khi cập nhật thứ tự chương: ' . $e->getMessage()
       ];
     }
   }

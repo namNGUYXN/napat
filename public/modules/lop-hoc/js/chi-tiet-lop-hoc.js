@@ -265,6 +265,8 @@ $(document).on('change', '.check-all', function () {
 });
 
 
+handleCheckAllSelected($('.row-checkbox:checked'));
+
 $(document).on('change', '.row-checkbox', function () {
   // const tbody = $(this).parents('tbody');
   // const thead = tbody.prev('thead');
@@ -276,15 +278,16 @@ $(document).on('change', '.row-checkbox', function () {
   handleCheckAllSelected($(this));
 });
 
-handleCheckAllSelected($('.row-checkbox:checked'));
+function handleCheckAllSelected(checkbox) {
+  checkbox.each(function (index, element) {
+    // console.log(element.parents());
+    const tbody = $(element).parents('tbody');
+    const thead = tbody.prev('thead');
+    const total = tbody.find('.row-checkbox').length;
+    const checked = tbody.find('.row-checkbox:checked').length;
 
-function handleCheckAllSelected(element) {
-  const tbody = element.parents('tbody');
-  const thead = tbody.prev('thead');
-  const total = tbody.find('.row-checkbox').length;
-  const checked = tbody.find('.row-checkbox:checked').length;
-
-  thead.find('.check-all').prop('checked', total === checked);
+    thead.find('.check-all').prop('checked', total === checked);
+  });
 }
 
 

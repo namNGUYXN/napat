@@ -15,6 +15,7 @@ class Chuong extends Model
         'mo_ta_ngan',
         'id_bai_giang',
         'is_delete',
+        'thu_tu',
     ];
 
     public function bai_giang()

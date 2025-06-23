@@ -18,6 +18,7 @@ class Bai extends Model
         'id_chuong',
         'ngay_tao',
         'is_delete',
+        'thu_tu',
     ];
 
     public function getNgayTaoAttribute($value)

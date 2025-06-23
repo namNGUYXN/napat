@@ -69,5 +69,6 @@ class Kernel extends HttpKernel
         'bai_giang' => \App\Http\Middleware\BaiGiangMiddleware::class,
         'bai' => \App\Http\Middleware\BaiMiddleware::class,
         'chuong' => \App\Http\Middleware\ChuongMiddleware::class,
+        'lop_hoc_phan' => \App\Http\Middleware\LopHocPhanMiddleware::class,
     ];
 }

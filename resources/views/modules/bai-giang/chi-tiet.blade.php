@@ -32,7 +32,7 @@
     @endif
 
     <div class="row align-items-start">
-      <div class="col-lg-4 mb-4 mb-md-0">
+      <div class="col-lg-4">
         <div class="card h-100 shadow-sm">
           <img src="{{ asset('storage/' . $baiGiang->hinh_anh) }}" class="card-img-top" alt="">
           <div class="card-body">
@@ -57,7 +57,7 @@
         </div>
       </div>
 
-      <div class="col-lg-8 mb-4 mb-md-0">
+      <div class="col-lg-8 my-4 mt-md-0">
         <div class="card shadow-sm">
           <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Danh sách các chương</h5>
@@ -72,14 +72,14 @@
             <form action="{{ route('bai-giang.detail', $baiGiang->id) }}" method="GET">
               <div class="input-group mb-3">
                 <input type="text" class="form-control" name="search" value="{{ request()->input('search') }}"
-                  placeholder="Nhập tiêu đề hoặc mô tả chương cần tìm..." autocomplete="off">
+                  placeholder="Nhập tiêu đề hoặc mô tả của chương cần tìm..." autocomplete="off">
                 <button class="btn btn-outline-secondary">
                   <i class="fas fa-search"></i> </button>
               </div>
             </form>
 
             <div class="table-responsive custom-scrollbar">
-              <form action="#" method="POST">
+              <form action="{{ route('thu-tu-chuong.update', $baiGiang->id) }}" method="POST">
                 @csrf
                 @method('PUT')
                 <table class="table table-hover table-striped caption-top" style="min-width: 600px;">
@@ -108,8 +108,8 @@
                         </th>
                         <td class="align-middle">
                           <div style="max-width: 60px;">
-                            <input type="number" name="" id="" value="{{ $chuong->thu_tu }}"
-                              class="form-control text-center no-spinner">
+                            <input type="number" name="thu_tu[{{ $chuong->id }}]" min="1" max="1000"
+                              value="{{ $chuong->thu_tu }}" class="form-control text-center no-spinner">
                           </div>
                         </td>
                         <td class="align-middle">{{ $chuong->tieu_de }}</td>
@@ -139,13 +139,13 @@
                 </table>
 
                 @if ($listChuong->count() > 0)
-                <div class="input-group ms-1 mb-3" style="max-width: 210px;">
-                  <select class="form-select">
-                    <option value="1">Cập nhật</option>
-                    <option value="2">Xóa</option>
-                  </select>
-                  <button type="submit" class="btn btn-success">Thực hiện</button>
-                </div>
+                  <div class="input-group ms-1 mb-3" style="max-width: 210px;">
+                    <select class="form-select" name="action">
+                      <option value="cap-nhat">Cập nhật</option>
+                      <option value="xoa">Xóa</option>
+                    </select>
+                    <button type="submit" class="btn btn-success">Thực hiện</button>
+                  </div>
                 @endif
               </form>
             </div>
@@ -175,14 +175,16 @@
               <div class="mb-3">
                 <label for="" class="form-label">
                   Tiêu đề chương
-                  <span class="text-muted">(100 từ)</span>
+                  <span class="text-muted">(100 ký tự)</span>
                   <abbr class="text-danger" title="Bắt buộc">*</abbr>
                 </label>
-                <input type="text" name="tieu_de" class="form-control" id="" required maxlength="100">
+                <input type="text" name="tieu_de" class="form-control" id="" required maxlength="100"
+                  placeholder="Nhập tiêu đề chương...">
               </div>
               <div class="mb-3">
-                <label for="" class="form-label">Mô tả ngắn <span class="text-muted">(255 từ)</span></label>
-                <textarea name="mo_ta_ngan" id="" class="form-control" rows="6" maxlength="255"></textarea>
+                <label for="" class="form-label">Mô tả ngắn <span class="text-muted">(255 ký tự)</span></label>
+                <textarea name="mo_ta_ngan" id="" class="form-control" rows="6" maxlength="255"
+                  placeholder="Nhập nội dung mô tả chương..."></textarea>
               </div>
             </div>
             <div class="modal-footer">
@@ -272,11 +274,11 @@
               <div class="mb-3">
                 <label for="" class="form-label">
                   Tên bài giảng
-                  <span class="text-muted">(100 từ)</span>
+                  <span class="text-muted">(100 ký tự)</span>
                   <abbr class="text-danger" title="Bắt buộc">*</abbr>
                 </label>
                 <input type="text" name="ten" class="form-control" id="ten-bai-giang"
-                  value="{{ $baiGiang->ten }}">
+                  value="{{ $baiGiang->ten }}" placeholder="Nhập tên bài giảng...">
               </div>
               <div class="mb-3">
                 <label for="" class="form-label">Chọn học phần <abbr class="text-danger"
@@ -291,13 +293,12 @@
                 </select>
               </div>
               <div class="mb-3">
-                <label for="" class="form-label">Mô tả ngắn <span class="text-muted">(255 từ)</span></label>
-                <textarea name="mo_ta_ngan" id="mo-ta-bai-giang" class="form-control" rows="6">{{ $baiGiang->mo_ta_ngan }}</textarea>
+                <label for="" class="form-label">Mô tả ngắn <span class="text-muted">(255 ký tự)</span></label>
+                <textarea name="mo_ta_ngan" id="mo-ta-bai-giang" class="form-control" rows="6"
+                  placeholder="Nhập nội dung mô tả bài giảng...">{{ $baiGiang->mo_ta_ngan }}</textarea>
               </div>
               <div class="mb-3">
-                <label for="img-upload-modal-chinh-sua" class="form-label">
-                  Hình ảnh <span class="text-muted">(không bắt buộc)</span>
-                </label>
+                <label for="img-upload-modal-chinh-sua" class="form-label">Hình ảnh</label>
                 <input class="form-control" type="file" name="hinh_anh" id="img-upload-modal-chinh-sua"
                   accept="image/*">
                 <div id="img-preview-container-modal-chinh-sua" class="mt-3 position-relative d-inline-block">

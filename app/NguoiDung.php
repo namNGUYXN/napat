@@ -38,9 +38,10 @@ class NguoiDung extends Model
         return $this->hasMany(BaiGiang::class, 'id_giang_vien');
     }
 
-    public function list_lop_hoc_phan_sv()
+    public function list_lop_hoc_phan()
     {
-        return $this->belongsToMany(LopHocPhan::class, 'thanh_vien_lop', 'id_nguoi_dung', 'id_lop_hoc_phan');
+        return $this->belongsToMany(LopHocPhan::class, 'thanh_vien_lop', 'id_nguoi_dung', 'id_lop_hoc_phan')
+                ->withPivot('is_accept');
     }
 
     public function list_lop_hoc_phan_gv()

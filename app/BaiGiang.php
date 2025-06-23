@@ -42,7 +42,7 @@ class BaiGiang extends Model
 
     public function list_chuong()
     {
-        return $this->hasMany(Chuong::class, 'id_bai_giang')->orderBy('thu_tu');
+        return $this->hasMany(Chuong::class, 'id_bai_giang')->orderBy('thu_tu')->orderBy('id', 'desc');
     }
 
     public function giang_vien()

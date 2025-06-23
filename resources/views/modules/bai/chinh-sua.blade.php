@@ -43,10 +43,11 @@
               <div class="mb-3">
                 <label for="lecture-title" class="form-label">
                   Tiêu đề bài
-                  <span class="text-muted">(100 từ)</span>
+                  <span class="text-muted">(100 ký tự)</span>
+                  <abbr class="text-danger" title="Bắt buộc">*</abbr>
                 </label>
                 <input type="text" class="form-control @error('tieu_de') is-invalid @enderror" name="tieu_de"
-                  value="{{ old('tieu_de', $bai->tieu_de) }}" placeholder="Nhập tiêu đề bài" id="lecture-title">
+                  value="{{ old('tieu_de', $bai->tieu_de) }}" placeholder="Nhập tiêu đề bài..." id="lecture-title">
                 @error('tieu_de')
                   <div class="invalid-feedback">
                     {{ $message }}
@@ -54,10 +55,10 @@
                 @enderror
               </div>
               <div class="mb-3">
-                <label for="lecture-content" class="form-label">Nội dung bài giảng <span
-                    class="text-danger">*</span></label>
-                <textarea class="form-control tinymce" name="noi_dung" rows="10"
-                  placeholder="Nhập nội dung chi tiết bài" id="lecture-content">
+                <label for="lecture-content" class="form-label">Nội dung bài giảng <abbr class="text-danger"
+                    title="Bắt buộc">*</abbr></label>
+                <textarea class="form-control tinymce" name="noi_dung" rows="10" placeholder="Nhập nội dung chi tiết bài..."
+                  id="lecture-content">
                   {{ old('noi_dung', $bai->noi_dung) }}
                 </textarea>
                 @error('noi_dung')
@@ -361,7 +362,6 @@
 @endsection
 
 @section('styles')
-
 @endsection
 
 @section('scripts')

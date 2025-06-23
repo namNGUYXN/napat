@@ -18,7 +18,7 @@ class LopHocPhanController extends Controller
     protected $lopHocPhanService;
     protected $tinService;
     protected $thanhVienService;
-    // protected $nguoiDungService;
+    protected $nguoiDungService;
     protected $baiService;
     protected $baiTrongLopService;
 
@@ -28,8 +28,8 @@ class LopHocPhanController extends Controller
         BanTinService $tinService,
         ThanhVienLopService $thanhVienService,
         BaiService $baiService,
-        BaiTrongLopService $baiTrongLopService
-        //, NguoiDungService $nguoiDungService,
+        BaiTrongLopService $baiTrongLopService,
+        NguoiDungService $nguoiDungService
     ) {
         $this->authService = $authService;
         $this->lopHocPhanService = $lopHocPhanService;
@@ -37,12 +37,18 @@ class LopHocPhanController extends Controller
         $this->thanhVienService = $thanhVienService;
         $this->baiService = $baiService;
         $this->baiTrongLopService = $baiTrongLopService;
-        //     $this->nguoiDungService = $nguoiDungService;
+        $this->nguoiDungService = $nguoiDungService;
+        $this->middleware('lop_hoc_phan')->only('chiTiet');
     }
     public function lopHocCuaToi()
     {
-        $nguoiDung = $this->authService->layNguoiDungDangNhap();
-        $dsLopHoc = $this->lopHocPhanService->getLopHocCuaToi($nguoiDung);
+        // $nguoiDung = $this->authService->layNguoiDungDangNhap();
+        // $dsLopHoc = $this->lopHocPhanService->getLopHocCuaToi($nguoiDung);
+
+        // return view('modules.lop-hoc.lop-hoc-cua-toi', compact('dsLopHoc'));
+
+        $nguoiDung = $this->nguoiDungService->layTheoId(session('id_nguoi_dung'));
+        $dsLopHoc = $nguoiDung->list_lop_hoc_phan;
 
         return view('modules.lop-hoc.lop-hoc-cua-toi', compact('dsLopHoc'));
     }
@@ -85,7 +91,7 @@ class LopHocPhanController extends Controller
         $lopHocPhan = $this->lopHocPhanService->layTheoSlug($slug);
         $data = $request->input('listBaiTrongLop');
 
-        $result = $this->baiTrongLopService->congKhaiBaiTrongLop($lopHocPhan->id, $data);
+        $result = $this->baiTrongLopService->congKhaiBai($lopHocPhan->id, $data);
 
         return response()->json([
             'success' => $result['success'],
@@ -96,55 +102,11 @@ class LopHocPhanController extends Controller
     public function xemNoiDungBai($id, $slug)
     {
         $bai = $this->baiService->layTheoSlug($slug);
-        $baiTrongLop = $this->baiTrongLopService->layBaiTrongLop($id, $bai->id);
+        $baiGiang = $bai->chuong->bai_giang;
+        $giangVienXem = session('id_nguoi_dung') == $baiGiang->id_giang_vien;
+
+        $baiTrongLop = $this->baiTrongLopService->layBaiTrongLop($id, $bai->id, $giangVienXem);
 
         return view('modules.bai.chi-tiet', compact('baiTrongLop'));
     }
-
-    // public function layListBaiGiangTrongLop($id)
-    // {
-    //     $lopHoc = $this->lopService->layListBaiGiangTrongLop($id);
-    //     return response()->json([
-    //         'data' => $lopHoc
-    //     ]);
-    // }
-
-    // public function ganBaiGiang(Request $request, $idLopHoc, $idChuong)
-    // {
-    //     $input = $request->input('listIdBaiGiang');
-
-    //     $listIdBaiGiang = array_map('intval', $input);
-
-    //     $result = $this->baiGiangLopService->them($listIdBaiGiang, $idLopHoc, $idChuong);
-
-    //     return response()->json([
-    //         'success' => $result['success'],
-    //         'message' => $result['message']
-    //     ]);
-    // }
-
-    // public function layListBaiGiangTheoChuongTrongLop($idLopHoc, $idChuong)
-    // {
-    //     $listBaiGiang = $this->lopService->layListBaiGiangTheoChuongTrongLop($idLopHoc, $idChuong);
-
-    //     return response()->json([
-    //         'data' => $listBaiGiang
-    //     ]);
-    // }
-
-    // public function goBaiGiang($idLopHoc, $idChuong, $id)
-    // {
-    //     $result = $this->baiGiangLopService->goBaiGiang($idLopHoc, $idChuong, $id);
-
-    //     return response()->json([
-    //         'success' => $result['success'],
-    //         'message' => $result['message']
-    //     ]);
-    // }
-    // public function lopHocTheoHocPhan($id)
-    // {
-    //     $dsLopHoc = $this->lopService->layLopHocTheoHocPhan($id);
-
-    //     return view('modules.lop-hoc.danh-sach', compact('dsLopHoc'));
-    // }
 }

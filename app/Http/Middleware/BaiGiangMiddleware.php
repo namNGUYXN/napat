@@ -3,17 +3,21 @@
 namespace App\Http\Middleware;
 
 use App\Services\BaiGiangService;
+use App\Services\ChuongService;
 use Closure;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class BaiGiangMiddleware
 {
     protected $baiGiangService;
-    
-    function __construct(BaiGiangService $baiGiangService)
+    protected $chuongService;
+
+    function __construct(BaiGiangService $baiGiangService, ChuongService $chuongService)
     {
         $this->baiGiangService = $baiGiangService;
+        $this->chuongService = $chuongService;
     }
-    
+
     /**
      * Handle an incoming request.
      *

@@ -23,7 +23,7 @@ class CreateBaiTrongLopTable extends Migration
             // FK
             $table->foreign('id_lop_hoc_phan')->references('id')->on('lop_hoc_phan')->onDelete('cascade');
             //FK
-            $table->foreign('id_bai')->references('id')->on('bai');
+            $table->foreign('id_bai')->references('id')->on('bai')->onDelete('cascade');
         });
     }
 

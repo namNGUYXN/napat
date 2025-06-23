@@ -161,7 +161,7 @@
 
               @foreach ($listChuong as $key => $chuong)
                 @php
-                  $chuongTrongLop = $listChuongTrongLop[$chuong->id];
+                  $chuongTrongLop = isset($listChuongTrongLop[$chuong->id]) ? $listChuongTrongLop[$chuong->id] : collect([]);
                   $soBaiCongKhai = $chuongTrongLop
                       ->filter(function ($bai) {
                           return $bai->pivot->cong_khai == true;

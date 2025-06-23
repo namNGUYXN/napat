@@ -89,6 +89,7 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien']], function (
     Route::post('/bai-giang/{id}/chuong/them', 'ChuongController@them')->name('chuong.store');
     Route::get('/chuong/{id}/chinh-sua', 'ChuongController@giaoDienChinhSua')->name('chuong.edit');
     Route::put('/chuong/{id}/chinh-sua', 'ChuongController@chinhSua')->name('chuong.update');
+    Route::put('/bai-giang/{id}/chuong/cap-nhat-thu-tu', 'ChuongController@capNhatThuTu')->name('thu-tu-chuong.update');
     Route::delete('chuong/{id}/xoa', 'ChuongController@xoa')->name('chuong.delete');
 
     // Bài
@@ -97,6 +98,7 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien']], function (
     Route::post('/chuong{id}/bai/them', 'BaiController@them')->name('bai.store');
     Route::get('/bai/{id}/chinh-sua', 'BaiController@giaoDienChinhSua')->name('bai.edit');
     Route::put('/bai/{id}/chinh-sua', 'BaiController@chinhSua')->name('bai.update');
+    Route::put('/chuong/{id}/bai/cap-nhat-thu-tu', 'BaiController@capNhatThuTu')->name('thu-tu-bai.update');
     Route::post('/bai/{id}/chi-tiet', 'BaiController@chiTiet')->name('bai.detail');
     Route::delete('/bai/{id}/xoa', 'BaiController@xoa')->name('bai.delete');
 

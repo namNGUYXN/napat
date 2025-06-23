@@ -43,7 +43,8 @@ class LopHocPhan extends Model
 
     public function list_thanh_vien()
     {
-        return $this->belongsToMany(NguoiDung::class, 'thanh_vien_lop', 'id_lop_hoc_phan', 'id_nguoi_dung');
+        return $this->belongsToMany(NguoiDung::class, 'thanh_vien_lop', 'id_lop_hoc_phan', 'id_nguoi_dung')
+                ->withPivot('is_accept');
     }
 
     public function list_ban_tin()

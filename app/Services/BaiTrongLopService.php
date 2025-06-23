@@ -8,23 +8,26 @@ use Illuminate\Support\Facades\DB;
 
 class BaiTrongLopService
 {
-  public function congKhaiBaiTrongLop($idLopHocPhan, array $listBaiTrongLop)
+  public function congKhaiBai($idLopHocPhan, array $listBaiTrongLop)
   {
     try {
       DB::beginTransaction();
 
-      $data = [];
-
       foreach ($listBaiTrongLop as $idBai => $congKhai) {
-        BaiTrongLop::updateOrInsert(
-          [
-            'id_lop_hoc_phan' => $idLopHocPhan,
-            'id_bai' => $idBai,
-          ],
-          [
-            'cong_khai' => $congKhai ?? false,
-          ]
-        );
+        // BaiTrongLop::updateOrInsert(
+        //   [
+        //     'id_lop_hoc_phan' => $idLopHocPhan,
+        //     'id_bai' => $idBai,
+        //   ],
+        //   [
+        //     'cong_khai' => $congKhai ?? false,
+        //   ]
+        // );
+
+        BaiTrongLop::where([
+          ['id_lop_hoc_phan', $idLopHocPhan],
+          ['id_bai', $idBai]
+        ])->update(['cong_khai' => $congKhai ?? false]);
       }
 
       DB::commit();
@@ -41,13 +44,41 @@ class BaiTrongLopService
     }
   }
 
-  public function layBaiTrongLop($idLopHocPhan, $idBai)
+  public function layBaiTrongLop($idLopHocPhan, $idBai, $giangVienXem = false)
   {
-    return BaiTrongLop::where([
+    $query = [
       ['id_lop_hoc_phan', $idLopHocPhan],
       ['id_bai', $idBai],
-      ['cong_khai', true]
-    ])->firstOrFail();
+    ];
+
+    if (!$giangVienXem) $query[] = ['cong_khai', true];
+
+    return BaiTrongLop::where($query)->firstOrFail();
+  }
+
+  public function capNhatLaiListBai($listLopHocPhan, $idBai)
+  {
+    try {
+      DB::beginTransaction();
+
+      foreach ($listLopHocPhan as $lopHocPhan) {
+        BaiTrongLop::insert([
+          'id_lop_hoc_phan' => $lopHocPhan->id,
+          'id_bai' => $idBai
+        ]);
+      }
+
+      DB::commit();
+      return [
+        'success' => true
+      ];
+    } catch (\Exception $e) {
+      DB::rollBack();
+      return [
+        'success' => false,
+        'message' => $e->getMessage()
+      ];
+    }
   }
 
   // public function them(array $listIdBaiGiang, $idLopHoc, $idChuong)
