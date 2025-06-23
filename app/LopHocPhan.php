@@ -21,6 +21,7 @@ class LopHocPhan extends Model
         'hinh_anh',
         'id_hoc_phan',
         'id_giang_vien',
+        'id_bai_giang',
         'ngay_tao',
         'is_delete',
     ];
@@ -48,5 +49,16 @@ class LopHocPhan extends Model
     public function list_ban_tin()
     {
         return $this->hasMany(BanTin::class, 'id_lop_hoc_phan')->where('is_delete', false)->orderByDesc('ngay_dang');
+    }
+
+    public function bai_giang()
+    {
+        return $this->belongsTo(BaiGiang::class, 'id_bai_giang');
+    }
+
+    public function list_bai()
+    {
+        return $this->belongsToMany(Bai::class, 'bai_trong_lop', 'id_lop_hoc_phan', 'id_bai')
+                ->withPivot('cong_khai')->orderBy('thu_tu')->orderBy('ngay_tao', 'desc');
     }
 }

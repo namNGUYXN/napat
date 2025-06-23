@@ -1,5 +1,6 @@
 <?php
 
+use App\Khoa;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -13,7 +14,7 @@ class KhoaSeeder extends Seeder
      */
     public function run()
     {
-        $listKhoa = [
+        $data = [
             [
                 'ma' => 'CNTT',
                 'ten' => 'Công Nghệ Thông Tin',
@@ -44,14 +45,6 @@ class KhoaSeeder extends Seeder
             ]
         ];
 
-        foreach ($listKhoa as $khoa) {
-            DB::table('khoa')->insert([
-                'ma' => $khoa['ma'],
-                'ten' => $khoa['ten'],
-                'slug' => $khoa['slug'],
-                'mo_ta_ngan' => $khoa['mo_ta_ngan'],
-                'email' => $khoa['email']
-            ]);
-        }
+        Khoa::insert($data);
     }
 }

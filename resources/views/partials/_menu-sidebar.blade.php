@@ -11,7 +11,7 @@
             </a>
         </li>
         <li>
-            <a href="/lop-hoc" class="nav-link">
+            <a href="{{ route('lop-hoc.lop-hoc-cua-toi') }}" class="nav-link">
                 <i class="fas fa-users me-2 fs-5"></i>
                 <span class="nav-text">Lớp học của tôi</span>
             </a>

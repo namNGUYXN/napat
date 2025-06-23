@@ -1,5 +1,6 @@
 <?php
 
+use App\NguoiDung;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -16,7 +17,7 @@ class NguoiDungSeeder extends Seeder
     {
         $now = Carbon::now();
         
-        $listNguoiDung = [
+        $data = [
             [
                 'ho_ten' => 'Nguyễn Phương Nam',
                 'email' => '0306221252@caothang.edu.vn',
@@ -69,17 +70,6 @@ class NguoiDungSeeder extends Seeder
             ]
         ];
 
-        foreach ($listNguoiDung as $nguoiDung) {
-            DB::table('nguoi_dung')->insert([
-                'ho_ten' => $nguoiDung['ho_ten'],
-                'email' => $nguoiDung['email'],
-                'sdt' => $nguoiDung['sdt'],
-                'hinh_anh' => $nguoiDung['hinh_anh'],
-                'mat_khau' => $nguoiDung['mat_khau'],
-                'vai_tro' => $nguoiDung['vai_tro'],
-                'is_active' => $nguoiDung['is_active'],
-                'ngay_tao' => $nguoiDung['ngay_tao']
-            ]);
-        }
+        NguoiDung::insert($data);
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Menu;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -12,7 +13,7 @@ class MenuSeeder extends Seeder
      */
     public function run()
     {
-        $listMenu = [
+        $data = [
             [
                 'ten' => 'Trang chủ',
                 'id_loai_menu' => 1,
@@ -92,14 +93,6 @@ class MenuSeeder extends Seeder
             ],
         ];
 
-        foreach ($listMenu as $menu) {
-            DB::table('menu')->insert([
-                'ten' => $menu['ten'],
-                'id_loai_menu' => $menu['id_loai_menu'],
-                'id_menu_cha' => $menu['id_menu_cha'],
-                'gia_tri' => $menu['gia_tri'],
-                'thu_tu' => $menu['thu_tu']
-            ]);
-        }
+        Menu::insert($data);
     }
 }

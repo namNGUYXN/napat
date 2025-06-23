@@ -65,6 +65,10 @@ return [
                 'image/gif',
                 'application/pdf',
                 'text/plain',
+                'video/mp4',
+                'video/quicktime', // mov
+                'video/x-msvideo', // avi
+                'video/x-matroska', // mkv
             ],
         ],
         'image' => [

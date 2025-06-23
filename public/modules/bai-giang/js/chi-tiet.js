@@ -105,11 +105,24 @@ function renderListBai(listBai) {
   return html;
 }
 
-// Xử lý modal xóa bài giảng
+// Xử lý modal xóa chương
 $(document).on('click', '.btn-xoa-chuong', function () {
   const url = $(this).data('url');
   const formXoaChuong = $('#btn-confirm-xoa-chuong').parent('form');
 
   formXoaChuong.attr('action', url);
   $('#modal-xoa-chuong').modal('show');
+});
+
+// Xử lý check tất cả bản ghi
+$('#check-all').on('change', function () {
+  const isChecked = $(this).is(':checked');
+  $('.row-checkbox').prop('checked', isChecked);
+});
+
+$('.row-checkbox').on('change', function () {
+  const total = $('.row-checkbox').length;
+  const checked = $('.row-checkbox:checked').length;
+
+  $('#check-all').prop('checked', total === checked);
 });

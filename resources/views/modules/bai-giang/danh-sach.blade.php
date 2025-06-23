@@ -208,17 +208,17 @@
           <div class="modal-content">
             <div class="modal-header bg-danger text-white">
               <h5 class="modal-title">
-                <i class="fas fa-trash-alt me-2"></i>Xác nhận xóa bài giảng
+                <i class="fas fa-trash-alt me-2"></i>Xác nhận xóa Bài giảng
               </h5>
               <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                 aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <p>Bạn có chắc chắn muốn xóa Bài giảng này không?</p>
+              <p>Bạn có chắc chắn muốn xóa bài giảng này không?</p>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-              <button type="submit" class="btn btn-danger">Xóa Bài giảng</button>
+              <button type="submit" class="btn btn-danger">Xóa bài giảng</button>
             </div>
           </div>
         </div>
@@ -229,7 +229,7 @@
 @endsection
 
 @section('styles')
-  <link rel="stylesheet" href="{{ asset('modules/bai-giang/css/danh-sach-tai-lieu.css') }}">
+  <link rel="stylesheet" href="{{ asset('modules/bai-giang/css/danh-sach.css') }}">
 @endsection
 
 @section('scripts')

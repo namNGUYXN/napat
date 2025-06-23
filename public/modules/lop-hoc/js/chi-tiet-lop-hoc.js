@@ -1,79 +1,79 @@
 $(document).ready(function () {
 
-    // --- Dữ liệu giả định ---
-    // (Trong thực tế, bạn sẽ tải dữ liệu này từ API)
-    // $(".btn-accept-request").click(function () {
-    //     let id = $(this).data("id");
-    //     $.ajax({
-    //         url: `/thanh-vien-lop/${id}/chap-nhan`,
-    //         method: "POST",
-    //         data: {
-    //             _token: "{{ csrf_token() }}",
-    //         },
-    //         success: function (res) {
-    //             location.reload(); // hoặc xóa phần tử DOM nếu muốn mượt hơn
-    //         },
-    //     });
-    // });
-    $(".btn-accept-request").click(function () {
-        let id = $(this).data("id");
+  // --- Dữ liệu giả định ---
+  // (Trong thực tế, bạn sẽ tải dữ liệu này từ API)
+  // $(".btn-accept-request").click(function () {
+  //     let id = $(this).data("id");
+  //     $.ajax({
+  //         url: `/thanh-vien-lop/${id}/chap-nhan`,
+  //         method: "POST",
+  //         data: {
+  //             _token: "{{ csrf_token() }}",
+  //         },
+  //         success: function (res) {
+  //             location.reload(); // hoặc xóa phần tử DOM nếu muốn mượt hơn
+  //         },
+  //     });
+  // });
+  $(".btn-accept-request").click(function () {
+    let id = $(this).data("id");
 
-        $.ajax({
-            url: `/thanh-vien-lop/${id}/chap-nhan`,
-            method: "POST",
-            data: {
-                _token: $('meta[name="csrf-token"]').attr("content"),
-            },
-            success: function (res) {
-                if (res.status) {
-                    $(".card-body").html(res.html);
-                } else {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Thất bại",
-                        text: res.message || "Đã xảy ra lỗi",
-                    });
-                }
-            },
-            error: function () {
-                Swal.fire({
-                    icon: "error",
-                    title: "Lỗi hệ thống",
-                    text: "Không thể kết nối đến máy chủ.",
-                });
-            },
+    $.ajax({
+      url: `/thanh-vien-lop/${id}/chap-nhan`,
+      method: "POST",
+      data: {
+        _token: $('meta[name="csrf-token"]').attr("content"),
+      },
+      success: function (res) {
+        if (res.status) {
+          $(".card-body").html(res.html);
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Thất bại",
+            text: res.message || "Đã xảy ra lỗi",
+          });
+        }
+      },
+      error: function () {
+        Swal.fire({
+          icon: "error",
+          title: "Lỗi hệ thống",
+          text: "Không thể kết nối đến máy chủ.",
         });
+      },
     });
+  });
 
-    $(".btn-reject-request").click(function () {
-        let id = $(this).data("id");
+  $(".btn-reject-request").click(function () {
+    let id = $(this).data("id");
 
-        $.ajax({
-            url: `/thanh-vien-lop/${id}/tu-choi`,
-            method: "POST",
-            data: {
-                _token: $('meta[name="csrf-token"]').attr("content"),
-            },
-            success: function (res) {
-                if (res.status) {
-                    $(".yeuCau").html(res.html);
-                } else {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Thất bại",
-                        text: res.message || "Đã xảy ra lỗi",
-                    });
-                }
-            },
-            error: function () {
-                Swal.fire({
-                    icon: "error",
-                    title: "Lỗi hệ thống",
-                    text: "Không thể kết nối đến máy chủ.",
-                });
-            },
+    $.ajax({
+      url: `/thanh-vien-lop/${id}/tu-choi`,
+      method: "POST",
+      data: {
+        _token: $('meta[name="csrf-token"]').attr("content"),
+      },
+      success: function (res) {
+        if (res.status) {
+          $(".yeuCau").html(res.html);
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Thất bại",
+            text: res.message || "Đã xảy ra lỗi",
+          });
+        }
+      },
+      error: function () {
+        Swal.fire({
+          icon: "error",
+          title: "Lỗi hệ thống",
+          text: "Không thể kết nối đến máy chủ.",
         });
+      },
     });
+  });
 
   // --- Sự kiện click nút "Chèn bài giảng đã chọn" ---
   // $('#insertSelectedLecturesBtn').on('click', function () {
@@ -249,6 +249,43 @@ $(document).ready(function () {
 
 
 
+// Enable cho tooltips (bootstrap 5)
+const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
+
+let listBaiTrongLop = {};
+
+// Xử lý check tất cả bản ghi
+$(document).on('change', '.check-all', function () {
+  const isChecked = $(this).is(':checked');
+  const tbody = $(this).parents('thead').next('tbody');
+
+  tbody.find('.row-checkbox').prop('checked', isChecked);
+});
+
+
+$(document).on('change', '.row-checkbox', function () {
+  // const tbody = $(this).parents('tbody');
+  // const thead = tbody.prev('thead');
+  // const total = tbody.find('.row-checkbox').length;
+  // const checked = tbody.find('.row-checkbox:checked').length;
+
+  // thead.find('.check-all').prop('checked', total === checked);
+
+  handleCheckAllSelected($(this));
+});
+
+handleCheckAllSelected($('.row-checkbox:checked'));
+
+function handleCheckAllSelected(element) {
+  const tbody = element.parents('tbody');
+  const thead = tbody.prev('thead');
+  const total = tbody.find('.row-checkbox').length;
+  const checked = tbody.find('.row-checkbox:checked').length;
+
+  thead.find('.check-all').prop('checked', total === checked);
+}
 
 
 $.ajaxSetup({
@@ -257,329 +294,34 @@ $.ajaxSetup({
   }
 });
 
-// Xử lý bài giảng
-let cacheListBaiGiang = [];
-let listBaiGiangSelected = [];
 
-// Sự kiện khi chọn mục bài giảng
-$('#select-muc-bai-giang').on('change', function () {
-  const urlListBaiGiang = $(this).val();
+$(document).on('click', '.btn-public-bai', function (e) {
+  const checkbox = $('.row-checkbox');
+  checkbox.each(function (index, element) {
+    const idBai = parseInt($(element).data('id'));
+    const congKhai = $(element).is(':checked') ? '1' : '0';
 
-  const alertKoMucBaiGiang = $('#alert-ko-muc-bai-giang');
-  const sectionListBaiGiang = $('#section-list-bai-giang');
-
-  // Khi select mục bài giảng được chọn
-  if (urlListBaiGiang) {
-    // alert(urlListBaiGiang);
-
-    // Hiển thị list bài giảng và ẩn cảnh báo
-    alertKoMucBaiGiang.hide();
-
-    if (cacheListBaiGiang[urlListBaiGiang]) {
-      const listBaiGiang = cacheListBaiGiang[urlListBaiGiang];
-      renderListBaiGiangTheoHocPhan(listBaiGiang, urlListBaiGiang);
-      $('#input-search-bai-giang').val(''); // Reset nội dung search khi đổi mục bg
-      return;
-    }
-
-    $.ajax({
-      url: urlListBaiGiang,
-      type: 'POST',
-      dataType: 'json',
-      success: function (response) {
-        const listBaiGiang = response.data;
-        cacheListBaiGiang[urlListBaiGiang] = listBaiGiang;
-        renderListBaiGiangTheoHocPhan(listBaiGiang, urlListBaiGiang);
-        $('#input-search-bai-giang').val(''); // Reset nội dung search khi đổi mục bg
-        // console.log(cacheListBaiGiang);
-      },
-      error: function (xhr) {
-        alert('Đã xảy ra lỗi: ' + xhr.status + ' ' + xhr.statusText);
-      }
-    });
-  } else {
-    // Ẩn phần list bài giảng và hiển thị cảnh báo
-    alertKoMucBaiGiang.show();
-    $('#body-table-list-bai-giang').empty().append('<tr><td colspan="4" class="text-center">Chọn mục bài giảng để hiển thị bài giảng.</td></tr>');
-  }
-});
-
-function renderListBaiGiangTheoHocPhan(listBaiGiang, url) {
-  const idLopHoc = $('#info-lop-hoc').data('id-lop-hoc');
-  const idChuong = $('#selected-lecture-insert-btn').data('id-chuong');
-  const urlListBaiGiangTrongChuong = `/lop-hoc/${idLopHoc}/chuong/${idChuong}/bai-giang/list`;
-  const bodyTableListBaiGiang = $('#body-table-list-bai-giang');
-
-  bodyTableListBaiGiang.empty(); // Xóa nội dung cũ
-
-  if (listBaiGiang.length === 0) {
-    bodyTableListBaiGiang.append('<tr><td colspan="4" class="text-center">Không có bài giảng nào trong mục bài giảng này hoặc không tìm thấy kết quả.</td></tr>');
-    return;
-  }
-
-  $.ajax({
-    url: urlListBaiGiangTrongChuong,
-    type: 'POST',
-    dataType: 'json',
-    success: function (response) {
-      const listBaiGiangTuDB = response.data;
-      // console.log(listBaiGiang);
-
-      listBaiGiang.forEach((baiGiang, index) => {
-        // Kiểm tra xem bài giảng đã được chọn trước đó trong mảng listBaiGiangSelected chưa
-        const isChecked = listBaiGiangSelected.some(id => id === baiGiang.id);
-        const isExists = listBaiGiangTuDB.some(element => element.id_bai_giang === baiGiang.id);
-        const row = `
-        <tr>
-          <td>
-            <div class="form-check">
-              <input class="form-check-input lecture-checkbox" type="checkbox" 
-                  value="${baiGiang.id}" ${isChecked ? 'checked' : ''}>
-            </div>
-          </td>
-          <td>
-            ${isExists ? '<small class="fst-italic text-muted me-2">(Đã có trong chương)</small>' : ''}
-            ${baiGiang.tieu_de}
-          </td>
-          <td class="text-end">
-            <button type="button" class="btn btn-sm btn-info lecture-detail-btn" 
-                data-bs-toggle="modal" data-bs-target="#modal-chi-tiet-bai-giang" 
-                data-index="${index}"
-                data-url="${url}">
-                <i class="fas fa-eye"></i> </button>
-          </td>
-        </tr>
-    `;
-        bodyTableListBaiGiang.append(row);
-      });
-    },
-    error: function (xhr) {
-      alert("Đã xảy ra lỗi: " + xhr.status + ' ' + xhr.statusText);
-    }
+    listBaiTrongLop[idBai] = congKhai;
   });
 
-
-}
-
-// Sự kiện xem chi tiết bài giảng trong modal
-$(document).on('click', '.lecture-detail-btn', function () {
-  const btn = $(this);
-  const urlListBaiGiang = btn.data('url');
-  const index = btn.data('index');
-  const baiGiang = cacheListBaiGiang[urlListBaiGiang][index];
-  // console.log(baiGiang);
-
-  $('#tieu-de-bai-giang').text(baiGiang.tieu_de);
-  $('#noi-dung-bai-giang').html(baiGiang.noi_dung);
-});
-
-
-// Sự kiện tìm kiếm bài giảng
-let debounceTimer;
-
-$('#input-search-bai-giang').on('keyup', function () {
-  clearTimeout(debounceTimer);
-
-  debounceTimer = setTimeout(function () {
-    handleSearchBaiGiang(); // Gọi sau khi dừng gõ 300ms
-  }, 300);
-});
-
-function handleSearchBaiGiang() {
-  const urlListBaiGiang = $('#select-muc-bai-giang').val();
-  if (!urlListBaiGiang) return; // Không tìm kiếm nếu chưa chọn mục bg
-
-  const noiDungTimKiem = $('#input-search-bai-giang').val().toLowerCase().trim();
-  const listBaiGiang = cacheListBaiGiang[urlListBaiGiang];
-
-  const listBaiGiangSearch = listBaiGiang.filter(lecture =>
-    lecture.tieu_de.toLowerCase().includes(noiDungTimKiem)
-  );
-  renderListBaiGiangTheoHocPhan(listBaiGiangSearch, urlListBaiGiang);
-}
-
-$(document).on('click', '.lecture-insert-btn', function () {
-  resetModalGanBaiGiang();
-
-  const btnGanBaiGiang = $('#selected-lecture-insert-btn');
-  const urlGanBaiGiang = $(this).data('url');
-  const idChuong = $(this).data('id-chuong');
-  btnGanBaiGiang.data('url', urlGanBaiGiang);
-  btnGanBaiGiang.data('id-chuong', idChuong);
-
-  $('#modal-gan-bai-giang').modal('show');
-});
-
-function resetModalGanBaiGiang() {
-  $('#select-muc-bai-giang').val('');
-  $('#input-search-bai-giang').val('');
-  $('#body-table-list-bai-giang').empty().append('<tr><td colspan="4" class="text-center">Chọn mục bài giảng để hiển thị bài giảng.</td></tr>');
-  $('#alert-ko-muc-bai-giang').show();
-  listBaiGiangSelected = [];
-}
-
-
-// Sự khiện check nút chọn bài giảng để insert
-$(document).on('change', '.lecture-checkbox', function () {
-  const lectureId = parseInt($(this).val());
-  const isChecked = $(this).is(':checked');
-
-  if (isChecked) {
-    listBaiGiangSelected.push(lectureId);
-  } else {
-    listBaiGiangSelected = listBaiGiangSelected.filter(l => l.id !== lectureId);
-  }
-});
-
-
-
-// Load chương vào lớp
-loadListChuong();
-
-function loadListChuong() {
-  const idHocPhan = $('#info-lop-hoc').data('id-hoc-phan');
-  const idLopHoc = $('#info-lop-hoc').data('id-lop-hoc');
-
-  loadListBaiGiang((listBaiGiang) => {
-    $.ajax({
-      url: `/hoc-phan/${idHocPhan}/chuong/list`,
-      type: 'POST',
-      dataType: 'json',
-      success: function (response) {
-        const listChuong = response.data;
-
-        const htmlListChuong = listChuong.map((chuong, index) => {
-          // Lấy các bài giảng theo chương trong lớp
-          const listBaiGiangTheoChuong = listBaiGiang.filter(baiGiang => baiGiang.chuong.id == chuong.id);
-
-          const htmlListBaiGiang = listBaiGiangTheoChuong.map(baiGiang => {
-            const urlGoBaiGiang = window.location.origin
-              + `/lop-hoc/${idLopHoc}/chuong/${chuong.id}/bai-giang/${baiGiang.bai_giang.id}/go`;
-            
-            return `
-              <div class="list-group-item list-group-item-action list-group-item-info d-flex justify-content-between align-items-center">
-                <a href="#" class="text-decoration-none text-info-emphasis flex-grow-1">
-                  ${baiGiang.bai_giang.tieu_de}
-                </a>
-                <button type="button" class="btn btn-sm btn-outline-danger lecture-remove-btn"
-                  data-url="${urlGoBaiGiang}">
-                  <i class="fas fa-times"></i>
-                </button>
-              </div>
-            `;
-          }).join('');
-
-          return renderListChuongVaBaiGiang(index, chuong, htmlListBaiGiang);
-        });
-
-        $('#accordion-chuong').html(htmlListChuong.join(''));
-      },
-      error: function (xhr) {
-        alert('Đã xảy ra lỗi: ' + xhr.status + ' ' + xhr.statusText);
-      }
-    });
-  });
-
-}
-
-function loadListBaiGiang(callback) {
-  const idLopHoc = $('#info-lop-hoc').data('id-lop-hoc');
+  const url = window.location.pathname;
 
   $.ajax({
-    url: `/lop-hoc/${idLopHoc}/bai-giang/list`,
-    type: 'POST',
-    dataType: 'json',
-    success: function (response) {
-      const listBaiGiang = response.data;
-
-      if (callback) callback(listBaiGiang.bai_giang_lop);
-      else alert("OK");
-    },
-    error: function (xhr) {
-      alert('Đã xảy ra lỗi: ' + xhr.status + ' ' + xhr.statusText);
-    }
-  });
-}
-
-function renderListChuongVaBaiGiang(index, chuong, htmlListBaiGiang) {
-  const idLopHoc = $('#info-lop-hoc').data('id-lop-hoc');
-  const url = window.location.origin + `/lop-hoc/${idLopHoc}/chuong/${chuong.id}/bai-giang/gan`;
-
-  return `
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="heading-${index}">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-          data-bs-target="#collapse-${index}" aria-expanded="false" aria-controls="collapse-${index}">
-          ${chuong.tieu_de}
-        </button>
-      </h2>
-      <div id="collapse-${index}" class="accordion-collapse collapse" aria-labelledby="heading-${index}">
-        <div class="accordion-body">
-          <div class="list-group">
-
-            ${htmlListBaiGiang}
-
-          </div>
-          <div class="text-center mt-3">
-            <button class="btn btn-sm btn-outline-primary lecture-insert-btn"
-              data-url="${url}" data-id-chuong="${chuong.id}">
-              <i class="fas fa-plus"></i> Chèn bài giảng
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-}
-
-// $('#modal-gan-bai-giang').on('hidden.bs.modal', function () {
-//   console.log(listBaiGiangSelected);
-// });
-
-$('#selected-lecture-insert-btn').on('click', function (e) {
-  const urlGanBaiGiang = $(this).data('url');
-
-  $.ajax({
-    url: urlGanBaiGiang,
+    url: `${url}/bai/cong-khai`,
     type: 'POST',
     data: {
-      listIdBaiGiang: listBaiGiangSelected
+      listBaiTrongLop: listBaiTrongLop
     },
     dataType: 'json',
     success: function (response) {
+      window.location.reload();
       alert(response.message);
-
-      if (response.success) {
-        loadListChuong();
-      }
     },
     error: function (xhr) {
       alert("Đã xảy ra lỗi: " + xhr.status + ' ' + xhr.statusText);
     }
   });
-
-  resetModalGanBaiGiang();
-  $('#modal-gan-bai-giang').modal('hide');
-});
-
-
-// Sự kiện xóa bài giảng khỏi lớp
-$(document).on('click', '.lecture-remove-btn', function () {
-  const urlGoBaiGiang = $(this).data('url');
-
-  $.ajax({
-    url: urlGoBaiGiang,
-    type: 'DELETE',
-    dataType: 'json',
-    success: function (response) {
-      alert(response.message);
-
-      if (response.success) {
-        loadListChuong();
-      }
-    },
-    error: function (xhr) {
-      alert("Đã xảy ra lỗi: " + xhr.status + ' ' + xhr.statusText);
-    }
-  });
+  // e.preventDefault();
+  // const temp = $('.row-checkbox:checked');
+  // console.log(listBaiTrongLop);
 });

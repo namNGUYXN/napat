@@ -31,8 +31,8 @@
       </div>
     @endif
 
-    <div class="row">
-      <div class="col-lg-4 mb-4">
+    <div class="row align-items-start">
+      <div class="col-lg-4 mb-4 mb-md-0">
         <div class="card h-100 shadow-sm">
           <img src="{{ asset('storage/' . $baiGiang->hinh_anh) }}" class="card-img-top" alt="">
           <div class="card-body">
@@ -57,7 +57,7 @@
         </div>
       </div>
 
-      <div class="col-lg-8 mb-4">
+      <div class="col-lg-8 mb-4 mb-md-0">
         <div class="card shadow-sm">
           <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Danh sách các chương</h5>
@@ -72,52 +72,86 @@
             <form action="{{ route('bai-giang.detail', $baiGiang->id) }}" method="GET">
               <div class="input-group mb-3">
                 <input type="text" class="form-control" name="search" value="{{ request()->input('search') }}"
-                  placeholder="Tìm kiếm chương theo tên..." id="">
+                  placeholder="Nhập tiêu đề hoặc mô tả chương cần tìm..." autocomplete="off">
                 <button class="btn btn-outline-secondary">
                   <i class="fas fa-search"></i> </button>
               </div>
             </form>
 
             <div class="table-responsive custom-scrollbar">
-              <table class="table table-hover table-striped" style="min-width: 600px;">
-                <thead>
-                  <tr>
-                    <th scope="col">STT</th>
-                    <th scope="col">Tiêu đề</th>
-                    <th scope="col">Mô tả ngắn</th>
-                    <th scope="col" class="text-center">Thao tác</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @php
-                    $page = request()->query('page') ?: 1;
-                    $start = ($page - 1) * $numPerPage;
-                  @endphp
-                  @foreach ($listChuong as $chuong)
+              <form action="#" method="POST">
+                @csrf
+                @method('PUT')
+                <table class="table table-hover table-striped caption-top" style="min-width: 600px;">
+                  <caption>Có {{ $listChuong->count() }} bản ghi chương</caption>
+                  <thead>
                     <tr>
-                      <th scope="row">{{ ++$start }}</th>
-                      <td>{{ $chuong->tieu_de }}</td>
-                      <td>{{ $chuong->mo_ta_ngan }}</td>
-                      <td class="text-center">
-                        <button class="btn btn-info btn-sm me-1 btn-detail-chuong" data-tieu-de="{{ $chuong->tieu_de }}"
-                          data-url="{{ route('bai.list', $chuong->id) }}">
-                          <i class="fas fa-eye"></i>
-                        </button>
-                        <a href="{{ route('chuong.edit', $chuong->id) }}" class="btn btn-warning btn-sm me-1">
-                          <i class="fas fa-edit"></i> 
-                        </a>
-                        <button class="btn btn-danger btn-sm btn-xoa-chuong" data-url="{{ route('chuong.delete', $chuong->id) }}">
-                          <i class="fas fa-trash-alt"></i>
-                        </button>
-                      </td>
+                      <th scope="col">
+                        <input type="checkbox" class="form-check-input" name="" id="check-all">
+                      </th>
+                      <th scope="col">Thứ tự</th>
+                      <th scope="col">Tiêu đề</th>
+                      <th scope="col">Mô tả ngắn</th>
+                      <th scope="col" class="text-center">Thao tác</th>
                     </tr>
-                  @endforeach
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    @php
+                      $page = request()->query('page') ?: 1;
+                      $start = ($page - 1) * $numPerPage;
+                    @endphp
+
+                    @forelse ($listChuong as $chuong)
+                      <tr>
+                        <th scope="row">
+                          <input type="checkbox" class="form-check-input row-checkbox" name="" id="">
+                        </th>
+                        <td class="align-middle">
+                          <div style="max-width: 60px;">
+                            <input type="number" name="" id="" value="{{ $chuong->thu_tu }}"
+                              class="form-control text-center no-spinner">
+                          </div>
+                        </td>
+                        <td class="align-middle">{{ $chuong->tieu_de }}</td>
+                        <td class="align-middle">{{ $chuong->mo_ta_ngan }}</td>
+                        <td class="text-center align-middle" style="min-width: 140px;">
+                          <button type="button" class="btn btn-info btn-sm me-1 btn-detail-chuong"
+                            data-tieu-de="{{ $chuong->tieu_de }}" data-url="{{ route('bai.list', $chuong->id) }}">
+                            <i class="fas fa-eye"></i>
+                          </button>
+                          <a href="{{ route('chuong.edit', $chuong->id) }}" class="btn btn-warning btn-sm me-1">
+                            <i class="fas fa-edit"></i>
+                          </a>
+                          <button type="button" class="btn btn-danger btn-sm btn-xoa-chuong"
+                            data-url="{{ route('chuong.delete', $chuong->id) }}">
+                            <i class="fas fa-trash-alt"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    @empty
+                      <tr>
+                        <td colspan="5" class="text-center">
+                          Không tìm thấy chương hoặc bài giảng chưa có chương nào
+                        </td>
+                      </tr>
+                    @endforelse
+                  </tbody>
+                </table>
+
+                @if ($listChuong->count() > 0)
+                <div class="input-group ms-1 mb-3" style="max-width: 210px;">
+                  <select class="form-select">
+                    <option value="1">Cập nhật</option>
+                    <option value="2">Xóa</option>
+                  </select>
+                  <button type="submit" class="btn btn-success">Thực hiện</button>
+                </div>
+                @endif
+              </form>
             </div>
 
             {{-- Dấu : báo hiệu cho blade đây là biểu thức php --}}
-            <x-pagination :paginator="$listChuong" base-url="{{ route('bai-giang.detail', $baiGiang->id) }}" />
+            {{-- <x-pagination :paginator="$listChuong" base-url="{{ route('bai-giang.detail', $baiGiang->id) }}" /> --}}
 
           </div>
         </div>
@@ -176,7 +210,7 @@
               <table class="table table-hover table-striped" style="min-width: 600px;">
                 <thead>
                   <tr>
-                    <th scope="col">STT</th>
+                    <th scope="col">Thứ tự</th>
                     <th scope="col">Tiêu đề</th>
                     <th scope="col">Ngày tạo</th>
                   </tr>
@@ -196,7 +230,8 @@
       </div>
     </div>
 
-    <div class="modal fade" id="modal-xoa-chuong" tabindex="-1" aria-labelledby="" aria-hidden="true" data-bs-focus="false">
+    <div class="modal fade" id="modal-xoa-chuong" tabindex="-1" aria-labelledby="" aria-hidden="true"
+      data-bs-focus="false">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header bg-danger text-white">
@@ -319,5 +354,4 @@
 
 @section('scripts')
   <script src="{{ asset('modules/bai-giang/js/chi-tiet.js') }}"></script>
-  {{-- <script src="{{ asset('modules/bai/js/danh-sach-bai-giang.js') }}"></script> --}}
 @endsection

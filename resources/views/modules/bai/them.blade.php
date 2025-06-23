@@ -42,7 +42,7 @@
           </div>
           <div class="mb-3">
             <label for="lecture-content" class="form-label">Nội dung bài <span class="text-danger">*</span></label>
-            <textarea class="form-control textarea-tiny" name="noi_dung" rows="10" placeholder="Nhập nội dung chi tiết bài"
+            <textarea class="form-control tinymce" name="noi_dung" rows="10" placeholder="Nhập nội dung chi tiết bài"
               id="lecture-content">
               {{ old('noi_dung') }}
             </textarea>
@@ -64,11 +64,11 @@
 @endsection
 
 @section('styles')
-  <script src="https://cdn.tiny.cloud/1/49cqngm4aad2mfsqcxldsfyni14qw3mjr893daq7kzrqa40a/tinymce/5/tinymce.min.js"
-    referrerpolicy="origin"></script>
+
 @endsection
 
 @section('scripts')
-  <script src="{{ asset('js/tiny-mce.js') }}"></script>
+  <script src="{{ asset('vendor/tinymce-5/tinymce.min.js') }}"></script>
+  <script src="{{ asset('js/config-tinymce.js') }}"></script>
   <script src="{{ asset('modules/bai/js/them-bai-giang.js') }}"></script>
 @endsection

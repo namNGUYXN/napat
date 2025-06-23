@@ -24,7 +24,7 @@ class BaiMiddleware
     public function handle($request, Closure $next)
     {
         $bai = $this->baiService->layTheoId($request->id);
-        $baiGiang = $bai->bai_giang;
+        $baiGiang = $bai->chuong->bai_giang;
 
         if ($baiGiang->id_giang_vien == session('id_nguoi_dung')) {
             return $next($request);

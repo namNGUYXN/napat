@@ -46,8 +46,6 @@ class ThanhVienLopSeeder extends Seeder
             ],
         ];
 
-        foreach ($data as $item) {
-            ThanhVienLop::create($item);
-        }
+        ThanhVienLop::insert($data);
     }
 }

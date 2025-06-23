@@ -16,7 +16,7 @@ class BaiController extends Controller
         $this->baiService = $baiService;
         $this->chuongService = $chuongService;
         $this->middleware('chuong')->only('giaoDienThem');
-        // $this->middleware('bai')->only('giaoDienChinhSua');
+        $this->middleware('bai')->only('chinhSua', 'xoa');
     }
 
     public function giaoDienThem($id)
@@ -65,36 +65,36 @@ class BaiController extends Controller
         return view('modules.bai.chinh-sua', compact('bai'));
     }
 
-    // public function chinhSua_nam(Request $request, $id)
-    // {
-    //     $data = $request->validate(
-    //         [
-    //             'tieu_de' => 'required|string|max:255',
-    //             'noi_dung' => 'required|string',
-    //         ],
-    //         [
-    //             'tieu_de.required' => 'Vui lòng nhập tiêu đề',
-    //             'tieu_de.max' => 'Tiêu đề tối đa 255 kí tự',
-    //             'noi_dung.required' => 'Vui lòng nhập nội dung',
-    //         ]
-    //     );
+    public function chinhSua(Request $request, $id)
+    {
+        $data = $request->validate(
+            [
+                'tieu_de' => 'required|string|max:255',
+                'noi_dung' => 'required|string',
+            ],
+            [
+                'tieu_de.required' => 'Vui lòng nhập tiêu đề',
+                'tieu_de.max' => 'Tiêu đề tối đa 255 kí tự',
+                'noi_dung.required' => 'Vui lòng nhập nội dung',
+            ]
+        );
 
-    //     $result = $this->baiGiangService->chinhSua($id, $data);
+        $result = $this->baiService->chinhSua($id, $data);
 
-    //     if ($result['success']) {
-    //         return redirect()->route('muc-bai-giang.detail', $result['data']->id_muc_bai_giang)
-    //             ->with([
-    //                 'message' => $result['message'],
-    //                 'status' => 'success'
-    //             ]);
-    //     }
+        if ($result['success']) {
+            return redirect()->route('chuong.edit', $result['data']->id_chuong)
+                ->with([
+                    'message' => $result['message'],
+                    'status' => 'success'
+                ]);
+        }
 
-    //     return redirect()->back()
-    //         ->with([
-    //             'message' => $result['message'],
-    //             'status' => 'danger'
-    //         ])->withInput();
-    // }
+        return redirect()->back()
+            ->with([
+                'message' => $result['message'],
+                'status' => 'danger'
+            ])->withInput();
+    }
 
     public function chiTiet($id)
     {
@@ -105,35 +105,29 @@ class BaiController extends Controller
         ]);
     }
 
-    // function xoa(Request $request, $id) {
-    //     $idMucBaiGiang = $request->id_muc_bai_giang;
-    //     $result = $this->baiGiangService->xoa($id);
+    function xoa(Request $request, $id) {
+        $idChuong = $this->baiService->layTheoId($id)->chuong->id;
+        $result = $this->baiService->xoa($id);
 
-    //     if ($result['success']) {
-    //         return redirect()->route('muc-bai-giang.detail', $idMucBaiGiang)->with([
-    //         'message' => $result['message'],
-    //         'status' => 'success'
-    //     ]);
-    //     }
+        if ($result['success']) {
+            return redirect()->route('chuong.edit', $idChuong)->with([
+            'message' => $result['message'],
+            'status' => 'success'
+        ]);
+        }
         
-    //     return redirect()->route('muc-bai-giang.detail', $idMucBaiGiang)->with([
-    //         'message' => $result['message'],
-    //         'status' => 'danger'
-    //     ]);
-    // }
+        return redirect()->route('chuong.edit', $idChuong)->with([
+            'message' => $result['message'],
+            'status' => 'danger'
+        ]);
+    }
 
-    public function layListTheoChuong(Request $request, $idMucBaiGiang)
+    public function layListTheoChuong(Request $request, $idChuong)
     {
-        $data = $this->baiService->layListTheoChuong($request, $idMucBaiGiang);
+        $data = $this->baiService->layListTheoChuong($request, $idChuong);
         
         return response()->json([
             'data' => $data
         ]);
     }
-
-    // function chiTietBaiGiang()
-    // {
-    //     return view('modules.bai-giang.chi-tiet');
-    // }
-
 }

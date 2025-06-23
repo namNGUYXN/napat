@@ -39,5 +39,11 @@ class Bai extends Model
     {
         return $this->belongsToMany(LopHocPhan::class, 'bai_trong_lop', 'id_bai', 'id_lop_hoc_phan');
     }
+
+    public function list_lop()
+    {
+        return $this->belongsToMany(LopHocPhan::class, 'bai_trong_lop', 'id_bai', 'id_lop_hoc_phan')
+                ->withPivot('cong_khai');
+    }
 }
 

@@ -32,9 +32,9 @@ class SecureFileController extends Controller
 
     public function image($id_nguoi_dung, $ten_anh)
     {
-        if (session('id_nguoi_dung') != $id_nguoi_dung) {
-            abort(403, 'Không có quyền xem ảnh này.');
-        }
+        // if (session('id_nguoi_dung') != $id_nguoi_dung) {
+        //     abort(403, 'Không có quyền xem ảnh này.');
+        // }
 
         $path = "private/photos/{$id_nguoi_dung}/{$ten_anh}";
 

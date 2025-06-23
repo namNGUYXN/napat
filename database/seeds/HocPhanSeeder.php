@@ -1,5 +1,6 @@
 <?php
 
+use App\HocPhan;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -13,7 +14,7 @@ class HocPhanSeeder extends Seeder
      */
     public function run()
     {
-        $listKhoa = [
+        $data = [
             [
                 'ten' => 'Thiết kế website',
                 'slug' => Str::slug('Thiết kế website'),
@@ -86,14 +87,6 @@ class HocPhanSeeder extends Seeder
             ]
         ];
 
-        foreach ($listKhoa as $khoa) {
-            DB::table('hoc_phan')->insert([
-                'ten' => $khoa['ten'],
-                'slug' => $khoa['slug'],
-                'mo_ta_ngan' => $khoa['mo_ta_ngan'],
-                'so_tin_chi' => $khoa['so_tin_chi'],
-                'id_khoa' => $khoa['id_khoa']
-            ]);
-        }
+        HocPhan::insert($data);
     }
 }

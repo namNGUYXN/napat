@@ -12,7 +12,7 @@
             @foreach ($dsLopHoc as $lop)
                 <div class="class-card rounded">
                     <a href="{{ route('lop-hoc.detail', ['slug' => $lop->slug]) }}" class="class-img">
-                        <img src="https://picsum.photos/id/1/1000/600" class="img-fluid rounded-top" alt="">
+                        <img src="{{ asset('storage/' . $lop->hinh_anh) }}" class="img-fluid rounded-top" alt="">
                     </a>
                     <div class="p-3">
                         <a href="{{ route('lop-hoc.detail', ['slug' => $lop->slug]) }}"

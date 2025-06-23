@@ -22,10 +22,13 @@
       <div class="card-body">
 
         <div class="table-responsive">
-          <table class="table table-hover table-striped">
+          <table class="table table-hover caption-top table-striped">
             <caption>Có {{ count($listMenu) }} bản ghi menu</caption>
             <thead>
               <tr>
+                <th scope="col">
+                  <input type="checkbox" class="form-check-input" name="" id="check-all">
+                </th>
                 <th scope="col">Thứ tự</th>
                 <th scope="col">Tên menu</th>
                 <th scope="col">Loại menu</th>
@@ -33,14 +36,17 @@
               </tr>
             </thead>
             <tbody>
-              @foreach ($listMenu as $menu)
+              @forelse ($listMenu as $menu)
                 <tr>
-                  <th scope="row" class="align-middle">
-                    <div style="max-width: 80px;">
+                  <th scope="row">
+                    <input type="checkbox" class="form-check-input row-checkbox" name="" id="">
+                  </th>
+                  <td class="align-middle">
+                    <div style="max-width: 60px;">
                       <input type="number" name="" id="" value="{{ $menu['thu_tu'] }}"
                         class="form-control text-center no-spinner">
                     </div>
-                  </th>
+                  </td>
                   <td class="align-middle">{{ $menu['ten'] }}</td>
                   <td class="align-middle">
                     <div class="d-inline-block text-white bg-success px-2 py-1 rounded">
@@ -62,11 +68,31 @@
 
                   </td>
                 </tr>
-              @endforeach
+              @empty
+                <tr>
+                  <td colspan="5" class="text-center">
+                    Không có menu nào trên hệ thống
+                  </td>
+                </tr>
+              @endforelse
             </tbody>
           </table>
+
+          @if (count($listMenu) > 0)
+            <div class="input-group ms-1 mb-3" style="max-width: 210px;">
+              <select class="form-select">
+                <option value="1">Cập nhật</option>
+                <option value="2">Xóa</option>
+              </select>
+              <button type="submit" class="btn btn-outline-success">Thực hiện</button>
+            </div>
+          @endif
         </div>
       </div>
     </div>
   </div>
+@endsection
+
+@section('scripts')
+  <script src="{{ asset('modules/menu/js/danh-sach.js') }}"></script>
 @endsection

@@ -24,6 +24,6 @@ class Chuong extends Model
 
     public function list_bai()
     {
-        return $this->hasMany(Bai::class, 'id_chuong');
+        return $this->hasMany(Bai::class, 'id_chuong')->orderBy('thu_tu')->orderBy('ngay_tao', 'desc');
     }
 }

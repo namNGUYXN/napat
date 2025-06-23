@@ -19,8 +19,16 @@
         </button>
       </li>
       <li class="nav-item" role="presentation">
+        @php
+          $tongSoBaiCongKhai = $listChuongTrongLop
+              ->flatten(1)
+              ->filter(function ($bai) {
+                  return $bai->pivot->cong_khai == true;
+              })
+              ->count();
+        @endphp
         <button class="nav-link" id="lecture-tab" data-bs-toggle="tab" data-bs-target="#lecture" type="button"
-          role="tab">Bài giảng <span class="badge text-bg-danger">4</span></button>
+          role="tab">Bài giảng <span class="badge text-bg-danger">{{ $tongSoBaiCongKhai }}</span></button>
       </li>
       <li class="nav-item" role="presentation">
         <button class="nav-link" id="exam-tab" data-bs-toggle="tab" data-bs-target="#exam" type="button"
@@ -144,17 +152,27 @@
         @endif
       </div>
 
-      {{-- <!--Bài giảng-->
+      <!--Bài giảng-->
       <div class="tab-pane fade" id="lecture" role="tabpanel">
         <div class="card">
-          <h5 class="card-header bg-dark text-white">Danh sách bài giảng</h5>
+          <h5 class="card-header bg-dark text-white">Danh sách bài học trong chương</h5>
           <div class="card-body">
+            <div class="accordion" id="accordion-chuong">
 
-            @if (session('vai_tro') != 'Giảng viên')
-              <div class="accordion">
+              @foreach ($listChuong as $key => $chuong)
+                @php
+                  $chuongTrongLop = $listChuongTrongLop[$chuong->id];
+                  $soBaiCongKhai = $chuongTrongLop
+                      ->filter(function ($bai) {
+                          return $bai->pivot->cong_khai == true;
+                      })
+                      ->count();
+                  $hasBaiCongKhai = $chuongTrongLop->flatten(1)->contains(function ($bai) {
+                      return $bai->pivot->cong_khai == true;
+                  });
+                @endphp
 
-                @foreach ($listChuong as $key => $chuong)
-                  <!-- Chương 1 -->
+                @if ($hasBaiCongKhai || session('id_nguoi_dung') == $lop->id_giang_vien)
                   <div class="accordion-item">
                     <h2 class="accordion-header" id="heading-{{ $key }}">
                       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -164,31 +182,79 @@
                       </button>
                     </h2>
                     <div id="collapse-{{ $key }}" class="accordion-collapse collapse"
-                      aria-labelledby="heading-{{ $key }}">
+                      aria-labelledby="heading-{{ $key }}" data-bs-parent="#lectureAccordion">
                       <div class="accordion-body">
-                        <div class="list-group">
+                        <div class="table-responsive custom-scrollbar">
 
-                          @foreach ($listBaiGiang as $value)
-                            @if ($value->chuong->id == $chuong->id)
-                              <div
-                                class="list-group-item list-group-item-action list-group-item-info d-flex justify-content-between align-items-center">
-                                <a href="#" class="text-decoration-none text-info-emphasis flex-grow-1">
-                                  {{ $value->bai_giang->tieu_de }}
-                                </a>
-                              </div>
+                          <table class="table table-hover table-striped caption-top">
+                            @if (session('id_nguoi_dung') == $lop->id_giang_vien)
+                              <caption>Có {{ $chuong->list_bai->count() }} bài trong chương</caption>
+                            @else
+                              <caption>Có {{ $soBaiCongKhai }} bài trong chương</caption>
                             @endif
-                          @endforeach
+                            <thead>
+                              <tr>
+                                @if (session('id_nguoi_dung') == $lop->id_giang_vien)
+                                  <th scope="col">
+                                    <div class="form-check form-switch" style="max-width: 50px;">
+                                      <input class="form-check-input check-all" type="checkbox" role="switch"
+                                        data-bs-toggle="tooltip" data-bs-title="Công khai bài học"
+                                        data-bs-placement="left">
+                                    </div>
+                                  </th>
+                                @endif
+                                <th scope="col" class="w-100">Tiêu đề</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              @forelse ($chuongTrongLop as $index => $bai)
+                                @php
+                                  $isChecked = $bai->pivot->cong_khai;
+                                @endphp
+
+                                @if ($isChecked || session('id_nguoi_dung') == $lop->id_giang_vien)
+                                  <tr>
+                                    @if (session('id_nguoi_dung') == $lop->id_giang_vien)
+                                      <td>
+                                        <div class="form-check form-switch">
+                                          <input class="form-check-input row-checkbox" type="checkbox" role="switch"
+                                            data-bs-toggle="tooltip" data-bs-title="Công khai bài học"
+                                            data-bs-placement="left"
+                                            data-id="{{ $bai->id }}"{{ $isChecked ? ' checked' : '' }}>
+                                        </div>
+                                      </td>
+                                    @endif
+                                    <td class="align-middle">
+                                      <a href="{{ route('bai-trong-lop.detail', [$lop->id, $bai->slug]) }}"
+                                        class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
+                                        {{ $bai->tieu_de }}
+                                      </a>
+                                    </td>
+                                  </tr>
+                                @endif
+
+                              @empty
+                                <tr>
+                                  <td colspan="2">Chương chưa có bài học</td>
+                                </tr>
+                              @endforelse
+                            </tbody>
+                          </table>
 
                         </div>
                       </div>
                     </div>
                   </div>
-                @endforeach
+                @endif
+              @endforeach
 
-              </div>
-            @else
-              <div class="accordion" id="accordion-chuong"></div>
-            @endif
+              @if (session('id_nguoi_dung') == $lop->id_giang_vien)
+                <button type="button" class="btn btn-success mt-3 btn-public-bai" data-bs-toggle="tooltip"
+                  data-bs-title="Cập nhật trạng thái công khai cho các bài học" data-bs-placement="bottom">
+                  Cập nhật
+                </button>
+              @endif
+            </div>
 
           </div>
         </div>
@@ -234,7 +300,7 @@
             </div>
           </div>
         </div>
-      </div> --}}
+      </div>
 
       <!--Thành viên lớp-->
       <div class="tab-pane fade" id="member" role="tabpanel">
@@ -323,7 +389,7 @@
               <form id="newNewsletterForm" action="#" method="POST">
                 <div class="mb-3">
                   <label for="newsletterContent" class="form-label">Nội dung thông báo:</label>
-                  <textarea class="form-control textarea-tiny" id="newsletterContent" rows="8"
+                  <textarea class="form-control tinymce" id="newsletterContent" rows="8"
                     placeholder="Nhập nội dung thông báo chi tiết"></textarea>
                 </div>
               </form>
@@ -483,11 +549,10 @@
 
 @section('styles')
   <link rel="stylesheet" href="{{ asset('modules/lop-hoc/css/chi-tiet-lop-hoc.css') }}">
-  <script src="https://cdn.tiny.cloud/1/49cqngm4aad2mfsqcxldsfyni14qw3mjr893daq7kzrqa40a/tinymce/5/tinymce.min.js"
-    referrerpolicy="origin"></script>
 @endsection
 
 @section('scripts')
-  <script src="{{ asset('js/tiny-mce.js') }}"></script>
+  <script src="{{ asset('vendor/tinymce-5/tinymce.min.js') }}"></script>
+  <script src="{{ asset('js/config-tinymce.js') }}"></script>
   <script src="{{ asset('modules/lop-hoc/js/chi-tiet-lop-hoc.js') }}"></script>
 @endsection

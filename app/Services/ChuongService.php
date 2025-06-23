@@ -16,11 +16,12 @@ class ChuongService
 
   public function layListTheoBaiGiang(Request $request, $id, $perPage = -1)
   {
-    $listChuong = Chuong::where('id_bai_giang', $id);
+    $listChuong = Chuong::where('id_bai_giang', $id)->orderBy('thu_tu');
 
-    // if ($search = $request->input('search')) {
-    //   $listChuong->where('tieu_de', 'like', '%' . $search . '%');
-    // }
+    if ($search = $request->input('search')) {
+      $listChuong->where('tieu_de', 'like', '%' . $search . '%')
+          ->orWhere('mo_ta_ngan', 'like', '%' . $search . '%');
+    }
 
     if ($perPage > 0)
       return $listChuong->paginate($perPage);

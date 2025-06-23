@@ -22,9 +22,15 @@ class BaiService
     //         ->firstOrFail();
     // }
 
+    public function layTheoSlug($slug)
+    {
+        return Bai::where('slug', $slug)->firstOrFail();
+    }
+
     public function layListTheoChuong(Request $request, $id, $perPage = -1)
     {
-        $listBai = Bai::where('id_chuong', $id)->orderBy('ngay_tao', 'desc');
+        $listBai = Bai::where('id_chuong', $id)->orderBy('thu_tu')
+                ->orderBy('ngay_tao', 'desc');
 
         if ($search = $request->input('search')) {
             $listBai->where('tieu_de', 'like', '%' . $search . '%');
@@ -64,73 +70,73 @@ class BaiService
         }
     }
 
-    function layTheoId($id)
+    public function layTheoId($id)
     {
         return Bai::findOrFail($id);
     }
 
-    // function chinhSua($id, array $data)
-    // {
-    //     try {
-    //         DB::beginTransaction();
+    function chinhSua($id, array $data)
+    {
+        try {
+            DB::beginTransaction();
 
-    //         $bai= Bai::findOrFail($id);
-    //         $slug = null;
-    //         if ($bai->tieu_de != $data['tieu_de']) {
-    //             $slug = Str::slug($data['tieu_de']) . '-' . Str::random(5);
-    //         }
+            $bai= Bai::findOrFail($id);
+            $slug = null;
+            if ($bai->tieu_de != $data['tieu_de']) {
+                $slug = Str::slug($data['tieu_de']) . '-' . Str::random(5);
+            }
 
-    //         $bai->update([
-    //             'tieu_de' => $data['tieu_de'] ?? $bai->tieu_de,
-    //             'slug' => $slug ?? $bai->slug,
-    //             'noi_dung' => $data['noi_dung'] ?? $bai->noi_dung
-    //         ]);
+            $bai->update([
+                'tieu_de' => $data['tieu_de'] ?? $bai->tieu_de,
+                'slug' => $slug ?? $bai->slug,
+                'noi_dung' => $data['noi_dung'] ?? $bai->noi_dung
+            ]);
 
-    //         DB::commit();
-    //         return [
-    //             'success' => true,
-    //             'message' => 'Cập nhật bài thành công',
-    //             'data' => $bai->fresh()
-    //         ];
-    //     } catch (\Exception $e) {
-    //         DB::rollBack();
-    //         return [
-    //             'success' => false,
-    //             'message' => 'Lỗi khi cập nhật bài: ' . $e->getMessage()
-    //         ];
-    //     }
-    // }
+            DB::commit();
+            return [
+                'success' => true,
+                'message' => 'Cập nhật bài thành công',
+                'data' => $bai->fresh()
+            ];
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return [
+                'success' => false,
+                'message' => 'Lỗi khi cập nhật bài: ' . $e->getMessage()
+            ];
+        }
+    }
 
-    // function xoa($id)
-    // {
-    //     try {
-    //         DB::beginTransaction();
+    public function xoa($id)
+    {
+        try {
+            DB::beginTransaction();
 
-    //         $bai= Bai::findOrFail($id);
+            $bai= Bai::findOrFail($id);
 
-    //         // Kiểm tra bài giảng có lớp học liên kết
-    //         // if (false) {
-    //         //     throw new \Exception('Không thể xóa menu vì có menu con phụ thuộc.');
-    //         // }
+            // Kiểm tra bài có lớp học liên kết
+            // if (false) {
+            //     throw new \Exception('');
+            // }
 
-    //         $bai->delete();
+            $bai->delete();
 
-    //         DB::commit();
-    //         return [
-    //             'success' => true,
-    //             'message' => 'Xóa bài giảng thành công'
-    //         ];
-    //     } catch (ModelNotFoundException $e) {
-    //         return [
-    //             'success' => false,
-    //             'message' => 'Không tìm thấy bài giảng với ID: ' . $id
-    //         ];
-    //     } catch (\Exception $e) {
-    //         DB::rollBack();
-    //         return [
-    //             'success' => false,
-    //             'message' => 'Lỗi khi xóa bài giảng: ' . $e->getMessage()
-    //         ];
-    //     }
-    // }
+            DB::commit();
+            return [
+                'success' => true,
+                'message' => 'Xóa bài thành công'
+            ];
+        } catch (ModelNotFoundException $e) {
+            return [
+                'success' => false,
+                'message' => 'Không tìm thấy bài với ID: ' . $id
+            ];
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return [
+                'success' => false,
+                'message' => 'Lỗi khi xóa bài: ' . $e->getMessage()
+            ];
+        }
+    }
 }

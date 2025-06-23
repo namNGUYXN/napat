@@ -17,26 +17,24 @@ class BaiGiangSeeder extends Seeder
         $data = [
             [
                 'ten' => 'Lập trình Web cơ bản',
-                'slug' => Str::slug('Lập trình Web cơ bản'),
+                'slug' => Str::slug('Lập trình Web cơ bản') . '-' . Str::random(5),
                 'mo_ta_ngan' => 'Giới thiệu về HTML, CSS và JS',
-                'hinh_anh' => 'images/web-co-ban.jpg',
+                'hinh_anh' => 'images/bai-giang/no-image.png',
                 'id_giang_vien' => 2,
                 'id_hoc_phan' => 1,
                 'is_delete' => false,
             ],
             [
                 'ten' => 'Phát triển ứng dụng Laravel',
-                'slug' => Str::slug('Phát triển ứng dụng Laravel'),
+                'slug' => Str::slug('Phát triển ứng dụng Laravel') . '-' . Str::random(5),
                 'mo_ta_ngan' => 'Tài liệu và bài giảng về Laravel 10',
-                'hinh_anh' => 'images/laravel.jpg',
-                'id_giang_vien' => 2,
+                'hinh_anh' => 'images/bai-giang/no-image.png',
+                'id_giang_vien' => 3,
                 'id_hoc_phan' => 2,
                 'is_delete' => false,
             ]
         ];
 
-        foreach ($data as $item) {
-            BaiGiang::create($item);
-        }
+        BaiGiang::insert($data);
     }
 }

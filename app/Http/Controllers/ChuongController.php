@@ -2,18 +2,30 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\BaiService;
 use App\Services\ChuongService;
 use Illuminate\Http\Request;
 
 class ChuongController extends Controller
 {
     protected $chuongService;
+    protected $baiService;
 
-    public function __construct(ChuongService $chuongService)
+    public function __construct(ChuongService $chuongService, BaiService $baiService)
     {
         $this->chuongService = $chuongService;
+        $this->baiService = $baiService;
         $this->middleware('bai_giang')->only('them');
         $this->middleware('chuong')->only('giaoDienChinhSua', 'chinhSua', 'xoa');
+    }
+
+    public function layListTheoBaiGiang(Request $request, $id)
+    {
+        $listChuong = $this->chuongService->layListTheoBaiGiang($request, $id);
+
+        return response()->json([
+            'data' => $listChuong
+        ]);
     }
 
     public function them(Request $request, $id)
@@ -46,11 +58,12 @@ class ChuongController extends Controller
         ]);
     }
 
-    public function giaoDienChinhSua($id)
+    public function giaoDienChinhSua(Request $request, $id)
     {
         $chuong = $this->chuongService->layTheoId($id);
+        $listBai = $this->baiService->layListTheoChuong($request, $id);
 
-        return view('modules.chuong.chinh-sua', compact('chuong'));
+        return view('modules.chuong.chinh-sua', compact('chuong', 'listBai'));
     }
 
     public function chinhSua(Request $request, $id)

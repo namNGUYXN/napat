@@ -42,11 +42,16 @@ class BaiGiang extends Model
 
     public function list_chuong()
     {
-        return $this->hasMany(Chuong::class, 'id_bai_giang');
+        return $this->hasMany(Chuong::class, 'id_bai_giang')->orderBy('thu_tu');
     }
 
     public function giang_vien()
     {
         return $this->belongsTo(NguoiDung::class, 'id_giang_vien');
+    }
+
+    public function list_lop_hoc_phan()
+    {
+        return $this->hasMany(LopHocPhan::class, 'id_bai_giang');
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\LoaiMenu;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -13,7 +14,7 @@ class LoaiMenuSeeder extends Seeder
      */
     public function run()
     {
-        $listLoaiMenu = [
+        $data = [
             [
                 'ten' => 'Trang chủ',
                 'slug' => Str::slug('Trang chủ'),
@@ -46,12 +47,6 @@ class LoaiMenuSeeder extends Seeder
             ]
         ];
 
-        foreach ($listLoaiMenu as $menu) {
-            DB::table('loai_menu')->insert([
-                'ten' => $menu['ten'],
-                'slug' => $menu['slug'],
-                'thu_tu' => $menu['thu_tu']
-            ]);
-        }
+        LoaiMenu::insert($data);
     }
 }
