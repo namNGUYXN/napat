@@ -445,8 +445,8 @@ $(document).ready(function () {
 
     // Khởi tạo trạng thái ban đầu cho nút xóa (khi modal mở)
     // Nếu bạn muốn modal luôn có sẵn 1 câu hỏi khi mở:
-    // questionCounter = 1;
-    // $('#questionsFormContainer').append(questionTemplate(questionCounter));
+    questionCounter = 1;
+    $("#questionsFormContainer").append(questionTemplate(questionCounter));
     updateQuestionNumbers(); // Gọi lần đầu để xử lý trạng thái ban đầu
 
     // // Hàm để tạo HTML cho một câu hỏi trong modal chỉnh sửa

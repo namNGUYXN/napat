@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class CauHoiBaiKiemTra extends Model
 {
-    protected $table = 'cau_hoi_bai_tap';
+    protected $table = 'cau_hoi_bai_kiem_tra';
 
     public $timestamps = false;
-    
+
     protected $fillable = [
         'tieu_de',
         'dap_an_a',
