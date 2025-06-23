@@ -31,7 +31,7 @@ Route::group([
 ], function () {
     \UniSharp\LaravelFilemanager\Lfm::routes();
 });
-Route::group(['middleware' => ['auth.custom']], function () {
+Route::group(['middleware' => ['auth.custom', 'secure_file']], function () {
     Route::get('/storage/files/{id_nguoi_dung}/thumbs/{ten_file}', 'SecureFileController@download')->name('secure.file');
     Route::get('/storage/files/{id_nguoi_dung}/{ten_file}', 'SecureFileController@download')->name('secure.file');
     Route::get('/storage/photos/{id_nguoi_dung}/thumbs/{ten_anh}', 'SecureFileController@image')->name('secure.photo');

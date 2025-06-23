@@ -538,9 +538,6 @@ $(document).ready(function () {
 
 
 
-// Enable cho tooltips (bootstrap 5)
-const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 
 
 let listBaiTrongLop = {};

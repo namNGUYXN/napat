@@ -58,3 +58,36 @@ $('.row-checkbox').on('change', function () {
 
   $('#check-all').prop('checked', total === checked);
 });
+
+
+
+// Xử lý cập nhật thứ tự bài
+$('#list-bai').sortable({
+  group: 'list',
+  animation: 200,
+  ghostClass: 'ghost',
+  delay: 500,
+  chosenClass: 'chosen',
+  onSort: capNhatThuTu,
+});
+
+function capNhatThuTu() {
+  const sortBai = $('#list-bai').sortable('toArray');
+  const url = $('#url-cap-nhat-thu-tu-bai').data('url');
+
+  $.ajax({
+    url: url,
+    type: 'PUT',
+    data: {
+      listThuTuBai: sortBai
+    },
+    dataType: 'json',
+    success: function (response) {
+      // console.log(response.message);
+    },
+    error: function (xhr) {
+      alert("Đã xảy ra lỗi: " + xhr.status + ' ' + xhr.statusText);
+      window.location.reload();
+    }
+  });
+}

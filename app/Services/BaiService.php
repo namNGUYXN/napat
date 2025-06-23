@@ -148,9 +148,9 @@ class BaiService
     try {
       DB::beginTransaction();
 
-      foreach ($data as $idBai => $thuTu) {
+      foreach ($data as $thuTu => $idBai) {
         Bai::where('id', $idBai)->update([
-          'thu_tu' => $thuTu
+          'thu_tu' => $thuTu + 1
         ]);
       }
 

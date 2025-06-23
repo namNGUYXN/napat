@@ -24,13 +24,13 @@ class BaiMiddleware
      */
     public function handle($request, Closure $next)
     {
-        // Check cập nhật thứ tự bài
-        if (isset($request->thu_tu) && is_array($request->thu_tu)) {
-            // dd(count($request->thu_tu));
+        $inputThuTuBai = $request->input('listThuTuBai');
 
-            $listThuTuCuaBai = array_map('intval', $request->thu_tu);
+        if (isset($inputThuTuBai) && is_array($inputThuTuBai)) {
+            $listThuTuBai = array_map('intval', $inputThuTuBai);
+            // dd($request->listThuTuBai->toArray());
 
-            foreach ($listThuTuCuaBai as $idBai => $thuTu) {
+            foreach ($listThuTuBai as $idBai) {
                 try {
                     $bai = $this->baiService->layTheoId($idBai);
                     $baiGiang = $bai->chuong->bai_giang;
@@ -39,11 +39,7 @@ class BaiMiddleware
                         abort(403, 'Bạn không có quyền truy cập.');
                     }
                 } catch (ModelNotFoundException $e) {
-                    // $request->id là id của chương
-                    return redirect()->route('chuong.edit', $request->id)->with([
-                        'message' => 'Không tìm thấy bài cần cập nhật thứ tự',
-                        'status' => 'danger'
-                    ]);
+                    abort(404);
                 }
             }
 
