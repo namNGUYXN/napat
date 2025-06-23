@@ -115,43 +115,17 @@ class ChuongController extends Controller
         ]);
     }
 
-    public function capNhatThuTu(Request $request, $id)
+    public function capNhatThuTu(Request $request)
     {
-        if ($request->action != 'cap-nhat') {
-            return redirect()->back();
-        }
-
-        // dd($request->thu_tu);
-
-        $data = $request->validate(
-            [
-                'thu_tu' => 'required|array',
-                'thu_tu.*' => 'required|integer|min:1|max:1000'
-            ],
-            [
-                'thu_tu.required' => 'Danh sách thứ tự bị bỏ qua',
-                'thu_tu.array' => 'Danh sách thứ tự có kiểu không hợp lệ',
-                'thu_tu.*.required' => 'Giá trị thứ tự bị bỏ qua',
-                'thu_tu.*.integer' => 'Giá trị thứ tự phải là 1 số nguyên',
-                'thu_tu.*.min' => 'Thứ tự tối thiểu là 1',
-                'thu_tu.*.max' => 'Thứ tự tối đa là 1000'
-            ]
-        );
+        $inputThuTuChuong = $request->input('listThuTuChuong');
         
-        $listThuTuCuaChuong = array_map('intval', $data['thu_tu']);
+        $listThuTuChuong = array_map('intval', $inputThuTuChuong);
 
-        $result = $this->chuongService->capNhatThuTu($listThuTuCuaChuong);
+        $result = $this->chuongService->capNhatThuTu($listThuTuChuong);
 
-        if ($result['success']) {
-            return redirect()->route('bai-giang.detail', $id)->with([
-                'message' => $result['message'],
-                'status' => 'success'
-            ]);
-        }
-
-        return redirect()->back()->with([
-            'message' => $result['message'],
-            'status' => 'danger'
+        return response()->json([
+            'success' => $result['success'],
+            'message' => $result['message']
         ]);
     }
 }

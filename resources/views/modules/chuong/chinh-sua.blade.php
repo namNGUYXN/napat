@@ -46,7 +46,8 @@
             </div>
             <div class="mb-3">
               <label for="" class="form-label">Mô tả ngắn <span class="text-muted">(255 ký tự)</span></label>
-              <textarea name="mo_ta_ngan" id="" class="form-control" rows="6" maxlength="255" placeholder="Nhập nội dung mô tả chương...">{{ $chuong->mo_ta_ngan }}</textarea>
+              <textarea name="mo_ta_ngan" id="" class="form-control" rows="6" maxlength="255"
+                placeholder="Nhập nội dung mô tả chương...">{{ $chuong->mo_ta_ngan }}</textarea>
             </div>
             <div class="text-end">
               <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
@@ -74,7 +75,11 @@
             </form>
 
             <div class="table-responsive custom-scrollbar">
-              <form action="{{ route('thu-tu-bai.update', $chuong->id) }}" method="POST">
+              <div class="text-center text-muted fst-italic" id="url-cap-nhat-thu-tu-bai"
+                data-url="{{ route('thu-tu-bai.update', $chuong->id) }}">
+                Giữ vào một bài 0.5s sau đó có thể kéo thả để thiết lập vị trí
+              </div>
+              <form action="#" method="POST">
                 @csrf
                 @method('PUT')
                 <table class="table table-hover table-striped caption-top" style="min-width: 600px;">
@@ -84,28 +89,18 @@
                       <th scope="col">
                         <input type="checkbox" class="form-check-input" name="" id="check-all">
                       </th>
-                      <th scope="col">Thứ tự</th>
                       <th scope="col">Tiêu đề</th>
                       <th scope="col">Ngày tạo</th>
                       <th scope="col" class="text-center">Thao tác</th>
                     </tr>
                   </thead>
-                  <tbody>
-                    {{-- @php
-                      $page = request()->query('page') ?: 1;
-                      $start = ($page - 1) * $numPerPage;
-                    @endphp --}}
+                  <tbody id="list-bai">
+
                     @forelse ($listBai as $bai)
-                      <tr>
+                      <tr data-id="{{ $bai->id }}">
                         <th scope="row">
                           <input type="checkbox" class="form-check-input row-checkbox" name="" id="">
                         </th>
-                        <td class="align-middle">
-                          <div style="max-width: 60px;">
-                            <input type="number" name="thu_tu[{{ $bai->id }}]" min="1" max="1000" value="{{ $bai->thu_tu }}"
-                              class="form-control text-center no-spinner">
-                          </div>
-                        </td>
                         <td class="align-middle">{{ $bai->tieu_de }}</td>
                         <td class="align-middle">{{ $bai->ngay_tao }}</td>
                         <td class="text-center align-middle" style="min-width: 140px;">
@@ -135,7 +130,7 @@
                 @if ($listBai->count() > 0)
                   <div class="input-group ms-1 mb-3" style="max-width: 210px;">
                     <select class="form-select" name="action">
-                      <option value="cap-nhat">Cập nhật</option>
+                      {{-- <option value="cap-nhat">Cập nhật</option> --}}
                       <option value="xoa">Xóa</option>
                     </select>
                     <button type="submit" class="btn btn-success">Thực hiện</button>
@@ -143,9 +138,6 @@
                 @endif
               </form>
             </div>
-
-            {{-- Dấu : báo hiệu cho blade đây là biểu thức php --}}
-            {{-- <x-pagination :paginator="$listChuong" base-url="{{ route('bai-giang.detail', $baiGiang->id) }}" /> --}}
 
           </div>
         </div>
@@ -205,9 +197,11 @@
 @endsection
 
 @section('styles')
-  {{-- <link rel="stylesheet" href="{{ asset('modules/bai-giang/css/chi-tiet.css') }}"> --}}
+  <link rel="stylesheet" href="{{ asset('vendor/sortable/css/sortable.css') }}">
 @endsection
 
 @section('scripts')
+  <script src="{{ asset('vendor/sortable/js/sortable.min.js') }}"></script>
+  <script src="{{ asset('vendor/sortable/js/jquery-sortable.min.js') }}"></script>
   <script src="{{ asset('modules/chuong/js/chinh-sua.js') }}"></script>
 @endsection

@@ -79,7 +79,10 @@
             </form>
 
             <div class="table-responsive custom-scrollbar">
-              <form action="{{ route('thu-tu-chuong.update', $baiGiang->id) }}" method="POST">
+              <div id="url-cap-nhat-thu-tu-chuong" class="text-center text-muted fst-italic"
+                data-url="{{ route('thu-tu-chuong.update', $baiGiang->id) }}">
+                Giữ vào một chương 0.5s sau đó có thể kéo thả để thiết lập vị trí</div>
+              <form action="#" method="POST">
                 @csrf
                 @method('PUT')
                 <table class="table table-hover table-striped caption-top" style="min-width: 600px;">
@@ -89,29 +92,18 @@
                       <th scope="col">
                         <input type="checkbox" class="form-check-input" name="" id="check-all">
                       </th>
-                      <th scope="col">Thứ tự</th>
                       <th scope="col">Tiêu đề</th>
                       <th scope="col">Mô tả ngắn</th>
                       <th scope="col" class="text-center">Thao tác</th>
                     </tr>
                   </thead>
-                  <tbody>
-                    @php
-                      $page = request()->query('page') ?: 1;
-                      $start = ($page - 1) * $numPerPage;
-                    @endphp
+                  <tbody id="list-chuong">
 
                     @forelse ($listChuong as $chuong)
-                      <tr>
+                      <tr data-id="{{ $chuong->id }}">
                         <th scope="row">
                           <input type="checkbox" class="form-check-input row-checkbox" name="" id="">
                         </th>
-                        <td class="align-middle">
-                          <div style="max-width: 60px;">
-                            <input type="number" name="thu_tu[{{ $chuong->id }}]" min="1" max="1000"
-                              value="{{ $chuong->thu_tu }}" class="form-control text-center no-spinner">
-                          </div>
-                        </td>
                         <td class="align-middle">{{ $chuong->tieu_de }}</td>
                         <td class="align-middle">{{ $chuong->mo_ta_ngan }}</td>
                         <td class="text-center align-middle" style="min-width: 140px;">
@@ -141,7 +133,7 @@
                 @if ($listChuong->count() > 0)
                   <div class="input-group ms-1 mb-3" style="max-width: 210px;">
                     <select class="form-select" name="action">
-                      <option value="cap-nhat">Cập nhật</option>
+                      {{-- <option value="cap-nhat">Cập nhật</option> --}}
                       <option value="xoa">Xóa</option>
                     </select>
                     <button type="submit" class="btn btn-success">Thực hiện</button>
@@ -351,8 +343,11 @@
 
 @section('styles')
   <link rel="stylesheet" href="{{ asset('modules/bai-giang/css/chi-tiet.css') }}">
+  <link rel="stylesheet" href="{{ asset('vendor/sortable/css/sortable.css') }}">
 @endsection
 
 @section('scripts')
+  <script src="{{ asset('vendor/sortable/js/sortable.min.js') }}"></script>
+  <script src="{{ asset('vendor/sortable/js/jquery-sortable.min.js') }}"></script>
   <script src="{{ asset('modules/bai-giang/js/chi-tiet.js') }}"></script>
 @endsection

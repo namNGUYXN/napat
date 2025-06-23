@@ -49,3 +49,9 @@ function adjustContentHeight() {
 // Gọi khi trang load xong + khi resize
 window.addEventListener('load', adjustContentHeight);
 window.addEventListener('resize', adjustContentHeight);
+
+
+
+// Enable cho tooltips (bootstrap 5)
+const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))

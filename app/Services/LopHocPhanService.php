@@ -8,6 +8,11 @@ use App\ThanhVienLop;
 
 class LopHocPhanService
 {
+    public function layTheoId($id)
+    {
+        return LopHocPhan::findOrFail($id);
+    }
+    
     public function layTheoSlug($slug)
     {
         return LopHocPhan::where('slug', $slug)->firstOrFail();

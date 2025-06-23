@@ -39,6 +39,7 @@ class LopHocPhanController extends Controller
         $this->baiTrongLopService = $baiTrongLopService;
         $this->nguoiDungService = $nguoiDungService;
         $this->middleware('lop_hoc_phan')->only('chiTiet');
+        $this->middleware('bai_trong_lop')->only('xemNoiDungBai');
     }
     public function lopHocCuaToi()
     {

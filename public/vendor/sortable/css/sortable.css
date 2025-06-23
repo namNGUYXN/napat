@@ -1,0 +1,15 @@
+.ghost {
+  opacity: 0.4;
+}
+
+tr.chosen td,
+tr.chosen th {
+  /* color: #fff; */
+  background-color: var(--pink-50);
+  cursor: move;
+}
+
+tr.chosen td,
+tr.chosen th {
+  transition: all 0.3s ease-in-out;
+}

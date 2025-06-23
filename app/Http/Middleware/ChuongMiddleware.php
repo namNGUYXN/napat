@@ -24,13 +24,13 @@ class ChuongMiddleware
      */
     public function handle($request, Closure $next)
     {
-        // Check cập nhật thứ tự chương
-        if (isset($request->thu_tu) && is_array($request->thu_tu)) {
-            // dd(count($request->thu_tu));
+        $inputThuTuChuong = $request->input('listThuTuChuong');
 
-            $listThuTuCuaChuong = array_map('intval', $request->thu_tu);
+        if (isset($inputThuTuChuong) && is_array($inputThuTuChuong)) {
+            $listThuTuChuong = array_map('intval', $inputThuTuChuong);
+            // dd($request->listThuTuChuong->toArray());
 
-            foreach ($listThuTuCuaChuong as $idChuong => $thuTu) {
+            foreach ($listThuTuChuong as $idChuong) {
                 try {
                     $chuong = $this->chuongService->layTheoId($idChuong);
                     $baiGiang = $chuong->bai_giang;
@@ -39,11 +39,7 @@ class ChuongMiddleware
                         abort(403, 'Bạn không có quyền truy cập.');
                     }
                 } catch (ModelNotFoundException $e) {
-                    // $request->id là id của bài giảng
-                    return redirect()->route('bai-giang.detail', $request->id)->with([
-                        'message' => 'Không tìm thấy chương cần cập nhật thứ tự',
-                        'status' => 'danger'
-                    ]);
+                    abort(404);
                 }
             }
 

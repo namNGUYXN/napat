@@ -126,3 +126,44 @@ $('.row-checkbox').on('change', function () {
 
   $('#check-all').prop('checked', total === checked);
 });
+
+
+$('#form-cap-nhat-thu-tu-chuong').on('submit', function (e) {
+  e.preventDefault();
+
+  var sort1 = $('#list-chuong').sortable('toArray');
+  console.log(sort1);
+});
+
+
+
+// Xử lý cập nhật thứ tự chương
+$('#list-chuong').sortable({
+  group: 'list',
+  animation: 200,
+  ghostClass: 'ghost',
+  delay: 500,
+  chosenClass: 'chosen',
+  onSort: capNhatThuTu,
+});
+
+function capNhatThuTu() {
+  const sortChuong = $('#list-chuong').sortable('toArray');
+  const url = $('#url-cap-nhat-thu-tu-chuong').data('url');
+
+  $.ajax({
+    url: url,
+    type: 'PUT',
+    data: {
+      listThuTuChuong: sortChuong
+    },
+    dataType: 'json',
+    success: function (response) {
+      // console.log(response.message);
+    },
+    error: function (xhr) {
+      alert("Đã xảy ra lỗi: " + xhr.status + ' ' + xhr.statusText);
+      window.location.reload();
+    }
+  });
+}

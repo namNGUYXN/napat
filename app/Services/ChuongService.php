@@ -18,9 +18,13 @@ class ChuongService
   {
     $listChuong = Chuong::where('id_bai_giang', $id)->orderBy('thu_tu')->orderBy('id', 'desc');
 
+    
     if ($search = $request->input('search')) {
       $listChuong->where('tieu_de', 'like', '%' . $search . '%')
-        ->orWhere('mo_ta_ngan', 'like', '%' . $search . '%');
+      ->orWhere([
+        ['mo_ta_ngan', 'like', '%' . $search . '%'],
+        ['id_bai_giang', $id]
+      ]);
     }
 
     if ($perPage > 0)
@@ -125,9 +129,9 @@ class ChuongService
     try {
       DB::beginTransaction();
 
-      foreach ($data as $idChuong => $thuTu) {
+      foreach ($data as $thuTu => $idChuong) {
         Chuong::where('id', $idChuong)->update([
-          'thu_tu' => $thuTu
+          'thu_tu' => $thuTu + 1
         ]);
       }
 

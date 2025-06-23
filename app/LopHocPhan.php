@@ -62,4 +62,9 @@ class LopHocPhan extends Model
         return $this->belongsToMany(Bai::class, 'bai_trong_lop', 'id_lop_hoc_phan', 'id_bai')
                 ->withPivot('cong_khai')->orderBy('thu_tu')->orderBy('ngay_tao', 'desc');
     }
+
+    public function thanh_vien_lop()
+    {
+        return $this->hasMany(ThanhVienLop::class, 'id_lop_hoc_phan');
+    }
 }

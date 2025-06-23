@@ -87,4 +87,14 @@ class ThanhVienLopService
             'lop_id' => $lopId
         ];
     }
+
+    public function coThamGiaLopHocPhan($idGiangVien)
+    {
+        return ThanhVienLop::where('id_nguoi_dung', session('id_nguoi_dung'))
+            ->whereIn('id_lop_hoc_phan', function ($query) use ($idGiangVien) {
+                $query->select('id')
+                    ->from('lop_hoc_phan')
+                    ->where('id_giang_vien', $idGiangVien);
+            })->exists();
+    }
 }
