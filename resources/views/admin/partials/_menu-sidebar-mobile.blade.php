@@ -65,10 +65,10 @@
         </a>
         <ul class="submenu-sidebar custom-scrollbar">
           <li>
-            <a href="#" class="nav-link"><span class="nav-text">Xem danh sách</span></a>
+            <a href="{{ route('menu.index') }}" class="nav-link"><span class="nav-text">Xem danh sách</span></a>
           </li>
           <li>
-            <a href="#" class="nav-link"><span class="nav-text">Thêm Menu mới</span></a>
+            <a href="{{ route('menu.create') }}" class="nav-link"><span class="nav-text">Thêm Menu mới</span></a>
           </li>
         </ul>
       </li>

@@ -30,10 +30,10 @@ class SecureFileMiddleware
     public function handle($request, Closure $next)
     {
         $idGiangVien = $request->id_nguoi_dung;
-        
-        $coThamGia = $this->thanhVienLopService->coThamGiaLopHocPhan($idGiangVien);
 
-        if ($coThamGia) {
+        $duocPhep = $this->thanhVienLopService->duocPhepTruyCapFile($idGiangVien);
+
+        if ($duocPhep) {
             return $next($request);
         }
 

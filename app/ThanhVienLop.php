@@ -16,7 +16,7 @@ class ThanhVienLop extends Model
         'is_accept',
     ];
 
-    public function lop_hoc()
+    public function lop_hoc_phan()
     {
         return $this->belongsTo(LopHocPhan::class, 'id_lop_hoc_phan');
     }

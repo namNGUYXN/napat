@@ -32,17 +32,11 @@ class LopHocPhanMiddleware
      */
     public function handle($request, Closure $next)
     {
-        $lopHocPhanHienTai = $this->lopHocPhanService->layTheoSlug($request->slug);
-        $nguoiDung = $this->nguoiDungService->layTheoId(session('id_nguoi_dung'));
-        $listLopHocPhanCuaNguoiDung = $nguoiDung->list_lop_hoc_phan;
-
-        // dd($lopHocPhanHienTai->toArray(), $listLopHocPhanCuaNguoiDung->toArray());
+        $lopHocPhan = $this->lopHocPhanService->layTheoSlug($request->slug);
         
-        foreach ($listLopHocPhanCuaNguoiDung as $lopHocPhan) {
-            if ($lopHocPhanHienTai->id == $lopHocPhan->id) {
-                return $next($request);
-            }
-        }
+        $daThamGiaLopHoc = $this->thanhVienLopService->daThamGiaLopHocPhan($lopHocPhan->id);
+
+        if ($daThamGiaLopHoc) return $next($request);
 
         abort(403, 'Bạn không có quyền truy cập lớp này');
     }

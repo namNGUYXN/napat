@@ -18,16 +18,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div class="input-group-text">
                         <input class="form-check-input mt-0 correct-answer-radio" 
                                type="radio" name="correctAnswer_${count}" 
-                               value="${value}" ${
-                    correctAnswer === value ? "checked" : ""
-                } required>
+                               value="${value}" ${correctAnswer === value ? "checked" : ""
+                    } required>
                     </div>
                     <input type="text" class="form-control answer-option" 
-                           value="${
-                               answerOptions[index] || ""
-                           }" placeholder="Đáp án ${
-                    optionLabels[index]
-                }" required>
+                           value="${answerOptions[index] || ""
+                    }" placeholder="Đáp án ${optionLabels[index]
+                    }" required>
                 </div>
             </div>
         `
@@ -249,9 +246,8 @@ function renderChiTietBaiKiemTra(baiKiemTra, chiTiet) {
         html += `</ul>
             <div class="mt-2">
                 <small><strong>Đáp án đúng:</strong> ${dapAnDung}</small><br/>
-                <small><strong>Đáp án chọn:</strong> ${
-                    dapAnChon || "<i>Không chọn</i>"
-                }</small>
+                <small><strong>Đáp án chọn:</strong> ${dapAnChon || "<i>Không chọn</i>"
+            }</small>
             </div>
         </div>`;
     });
@@ -284,14 +280,13 @@ function renderDanhSachKetQua(baiKiemTra, dsKetQua) {
             <td>${user.email}</td>
             <td>${item.diem ?? "Chưa làm"}</td>
             <td>
-                ${
-                    item.diem !== null
-                        ? `<button class="btn btn-sm btn-primary"
+                ${item.diem !== null
+                ? `<button class="btn btn-sm btn-primary"
                             onclick="xemChiTietKetQua('${idKetQua}', '${user.ten}', ${item.diem}, '${baiKiemTra.tieu_de}')">
                             Xem
                         </button>`
-                        : ""
-                }
+                : ""
+            }
             </td>
 
         </tr>`;
@@ -377,8 +372,8 @@ $(document).ready(function () {
                         const tongCau = baiKiemTra.list_cau_hoi.length; // dùng .length thay vì count() trong JS
                         const ngayDenHan = baiKiemTra.ngay_ket_thuc
                             ? new Date(
-                                  baiKiemTra.ngay_ket_thuc
-                              ).toLocaleDateString("vi-VN")
+                                baiKiemTra.ngay_ket_thuc
+                            ).toLocaleDateString("vi-VN")
                             : "Không có";
 
                         $("#modalChiTiet .modal-title").text(
@@ -639,8 +634,7 @@ $(document).ready(function () {
                 dapAnDuocChon === null
             ) {
                 alert(
-                    `Vui lòng điền đầy đủ nội dung và chọn đáp án đúng cho Câu hỏi ${
-                        index + 1
+                    `Vui lòng điền đầy đủ nội dung và chọn đáp án đúng cho Câu hỏi ${index + 1
                     }.`
                 );
                 isValid = false;
@@ -852,9 +846,8 @@ $(document).ready(function () {
                 <tr>
                     <td>
                         <div class="form-check">
-                            <input type="checkbox" class="form-check-input student-checkbox" value="${
-                                student.id
-                            }">
+                            <input type="checkbox" class="form-check-input student-checkbox" value="${student.id
+                }">
                         </div>
                     </td>
                     <td><span class="math-inline">${student.name}</td>
@@ -938,6 +931,8 @@ $(document).ready(function () {
     });
 });
 
+
+
 let listBaiTrongLop = {};
 
 // Xử lý check tất cả bản ghi
@@ -1006,3 +1001,49 @@ $(document).on("click", ".btn-public-bai", function (e) {
         },
     });
 });
+
+
+let banTinCache = {};
+
+// Xử lý modal chỉnh sửa bản tin
+$(document).on('click', '.btn-update-ban-tin', function () {
+    const urlDetail = $(this).data('url-detail');
+    const urlUpdate = $(this).data('url-update');
+    const form = $('#modal-chinh-sua-ban-tin').parents('form');
+
+    if (banTinCache[urlDetail]) {
+        const banTin = banTinCache[urlDetail];
+
+        tinymce.get('noi-dung-ban-tin-chinh-sua').setContent(banTin.noi_dung);
+        form.attr('action', urlUpdate);
+        $('#modal-chinh-sua-ban-tin').modal('show');
+        return;
+    }
+
+    $.ajax({
+        url: urlDetail,
+        type: 'POST',
+        dataType: 'json',
+        success: function (response) {
+            const banTin = response.data;
+            banTinCache[urlDetail] = banTin;
+
+            tinymce.get('noi-dung-ban-tin-chinh-sua').setContent(banTin.noi_dung);
+            form.attr('action', urlUpdate);
+            $('#modal-chinh-sua-ban-tin').modal('show');
+        },
+        error: function (xhr) {
+            alert("Đã xảy ra lỗi: " + xhr.status + ' ' + xhr.statusText);
+        }
+    });
+});
+
+// Xử lý xóa dữ liệu khi modal ẩn
+$('#modal-them-ban-tin').on('hidden.bs.modal', function () {
+    tinymce.get('noi-dung-ban-tin-them').setContent('');
+})
+
+$('#modal-chinh-sua-ban-tin').on('hidden.bs.modal', function () {
+    tinymce.get('noi-dung-ban-tin-chinh-sua').setContent('');
+    $('#modal-chinh-sua-ban-tin').parents('form').attr('action', '');
+})

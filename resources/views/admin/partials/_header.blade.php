@@ -4,7 +4,7 @@
       <button class="btn btn-light" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas">☰</button>
     </div>
     <div class="col d-flex justify-content-between align-items-center">
-      <a href="#" class="text-white fs-4 fw-semibold text-decoration-none">NAPAT E-Learning</a>
+      <a href="{{ route('dashboard') }}" class="text-white fs-4 fw-semibold text-decoration-none">NAPAT E-Learning</a>
       <div class="dropdown">
         <button class="btn btn-secondary dropdown-toggle remove-arrow-down rounded-circle" type="button"
           id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">

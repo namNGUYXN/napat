@@ -57,7 +57,7 @@ class MenuSeeder extends Seeder
                 'thu_tu' => 4
             ],
             [
-                'ten' => 'Quản lý mục bài giảng',
+                'ten' => 'Quản lý bài giảng',
                 'id_loai_menu' => 6,
                 'id_menu_cha' => null,
                 'gia_tri' => '',
@@ -85,7 +85,7 @@ class MenuSeeder extends Seeder
                 'thu_tu' => 1
             ],
             [
-                'ten' => 'Cơ sở dữ liệu',
+                'ten' => 'Lập trình web Laravel',
                 'id_loai_menu' => 5,
                 'id_menu_cha' => 3,
                 'gia_tri' => '2',

@@ -11,7 +11,7 @@
 <div class="list-group">
     @forelse($thanhVien as $tv)
         <div class="list-group-item d-flex align-items-center">
-            <img src="{{ $tv->nguoi_dung->hinh_anh ?? 'https://picsum.photos/40/40' }}" alt="Avatar"
+            <img src="{{ asset('storage/' . $tv->nguoi_dung->hinh_anh) }}" alt="Avatar"
                 class="border border-secondary rounded-circle me-2" width="40" height="40">
             <div>
                 <strong>{{ $tv->nguoi_dung->ho_ten }}</strong><br>

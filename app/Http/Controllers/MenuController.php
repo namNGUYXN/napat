@@ -49,7 +49,6 @@ class MenuController extends Controller
                 'id_loai_menu' => 'required|exists:loai_menu,id',
                 'id_menu_cha' => 'nullable|exists:menu,id',
                 'gia_tri' => 'nullable|string|max:255',
-                'thu_tu' => 'nullable'
             ],
             [
                 'ten.required' => 'Vui lòng nhập tên menu',
@@ -99,7 +98,6 @@ class MenuController extends Controller
             'id_loai_menu' => 'sometimes|exists:loai_menu,id',
             'id_menu_cha' => 'nullable|exists:menu,id',
             'gia_tri' => 'sometimes|string|max:255',
-            'thu_tu' => 'nullable',
         ]);
 
         $result = $this->menuService->chinhSua($id, $data);
@@ -133,5 +131,22 @@ class MenuController extends Controller
                 'message' => $result['message'],
                 'status' => 'danger'
             ]);
+    }
+
+    public function capNhatThuTu(Request $request)
+    {
+        $input = $request->input('listThuTuMenu');
+
+        $listThuTuMenu = [];
+
+        foreach ($input as $v) {
+            $listThuTuMenu[$v['id']] = (int) $v['thu_tu'];
+        }
+
+        $result = $this->menuService->capNhatThuTu($listThuTuMenu);
+
+        return response()->json([
+            'message' => $result['message'],
+        ]);
     }
 }
