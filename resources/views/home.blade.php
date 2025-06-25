@@ -27,7 +27,7 @@
                                         <ul class="department-submenu-sidebar bg-info-subtle list-unstyled ps-5">
                                             @foreach ($khoa->list_hoc_phan as $hocPhan)
                                                 <li>
-                                                    <a href="{{ route('lop-hoc.theo-hoc-phan', $hocPhan->id) }}"
+                                                    <a href="{{ route('lop-hoc.list', $hocPhan->id) }}"
                                                         class="d-block text-info-emphasis py-2 text-decoration-none">
                                                         {{ $hocPhan->ten }}
                                                     </a>

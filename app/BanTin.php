@@ -22,7 +22,7 @@ class BanTin extends Model
 
     public function getNgayTaoAttribute($value)
     {
-        return $value ? Carbon::parse($value)->format('d/m/Y') : null;
+        return $value ? Carbon::parse($value)->format('d/m/Y - H:i') : null;
     }
 
     public function nguoi_dung()
@@ -42,7 +42,7 @@ class BanTin extends Model
 
     public function list_ban_tin_con()
     {
-        return $this->hasMany(BanTin::class, 'id_ban_tin_cha');
+        return $this->hasMany(BanTin::class, 'id_ban_tin_cha')->orderByDesc('ngay_tao');
     }
 
     public function thanh_vien_lop()

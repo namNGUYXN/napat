@@ -97,4 +97,12 @@ class ThanhVienLopService
                     ->where('id_giang_vien', $idGiangVien);
             })->exists();
     }
+
+    public function layTheoNguoiDungVaLopHocPhan($idLopHocPhan)
+    {
+        return ThanhVienLop::where([
+            ['id_lop_hoc_phan', $idLopHocPhan],
+            ['id_nguoi_dung', session('id_nguoi_dung')]
+        ])->firstOrFail();
+    }
 }

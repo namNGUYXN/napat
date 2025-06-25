@@ -72,5 +72,6 @@ class Kernel extends HttpKernel
         'lop_hoc_phan' => \App\Http\Middleware\LopHocPhanMiddleware::class,
         'secure_file' => \App\Http\Middleware\SecureFileMiddleware::class,
         'bai_trong_lop' => \App\Http\Middleware\BaiTrongLopMiddleware::class,
+        'ban_tin' => \App\Http\Middleware\BanTinMiddleware::class,
     ];
 }

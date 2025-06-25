@@ -11,3 +11,29 @@
   padding: 12px 17px;
   z-index: 1001;
 }
+
+.news-content * {
+  max-width: 100%;
+  height: auto;
+}
+
+.news-action-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+}
+
+.child-news-action-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+}
+
+.toggle-comments {
+  cursor: pointer;
+}
+
+.news-item .comments {
+  max-height: 400px;
+  overflow-y: auto;
+}

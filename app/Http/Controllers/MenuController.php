@@ -134,4 +134,21 @@ class MenuController extends Controller
                 'status' => 'danger'
             ]);
     }
+
+    public function capNhatThuTu(Request $request)
+    {
+        $input = $request->input('listThuTuMenu');
+
+        $listThuTuMenu = [];
+
+        foreach ($input as $v) {
+            $listThuTuMenu[$v['id']] = (int) $v['thu_tu'];
+        }
+
+        $result = $this->menuService->capNhatThuTu($listThuTuMenu);
+
+        return response()->json([
+            'message' => $result['message'],
+        ]);
+    }
 }

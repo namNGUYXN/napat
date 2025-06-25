@@ -15,7 +15,7 @@
     <ul class="nav nav-tabs mb-3" id="classTab" role="tablist">
       <li class="nav-item" role="presentation">
         <button class="nav-link active" id="news-tab" data-bs-toggle="tab" data-bs-target="#news" type="button"
-          role="tab">Bảng tin <span class="badge text-bg-danger">4</span>
+          role="tab">Bảng tin <span class="badge text-bg-danger">{{ $listBanTin->count() }}</span>
         </button>
       </li>
       <li class="nav-item" role="presentation">
@@ -45,6 +45,18 @@
 
       <!--Bản tin-->
       <div class="tab-pane fade show active" id="news" role="tabpanel">
+
+        @if ($errors->any())
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <ul class="list-unstyled m-0">
+              @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+              @endforeach
+            </ul>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        @endif
+
         <!-- PHẦN TRÊN: THÔNG TIN LỚP HỌC -->
         <div class="card mb-4">
           <div class="row g-0">
@@ -84,42 +96,70 @@
           </div>
         </div>
 
-        @foreach ($banTin as $item)
+        @foreach ($listBanTin as $banTin)
           <!-- Mỗi bản tin là một thẻ -->
-          <div class="card news-item overflow-hidden mb-5" style="cursor: pointer;">
-            <div class="card-body d-flex">
+          <div class="card news-item overflow-hidden mb-5">
+            <div class="card-body position-relative">
               <!-- Avatar người đăng -->
-              <img src="https://picsum.photos/id/54/400/400" class="border border-secondary rounded-circle me-3"
-                alt="Avatar" width="40" height="40">
-              <div class="flex-grow-1">
-                <h6 class="card-title mb-3">{{ $item->thanh_vien_lop->nguoi_dung->vai_tro ?? '' }}
-                  : {{ $item->thanh_vien_lop->nguoi_dung->ho_ten }}</h6>
-                <div class="news-content">
-                  {!! $item->noi_dung !!}
-                </div>
-
-                <!-- Nút hiển thị số phản hồi -->
-                <div class="mt-2">
-                  @if (count($item->list_ban_tin_con) > 0)
-                    <a href="javascript:void(0)" class="text-primary toggle-comments" data-bs-toggle="collapse"
-                      data-bs-target="#comments-{{ $item->id }}">
-                      {{ count($item->list_ban_tin_con) }} phản hồi
-                    </a>
-                  @endif
-
-                </div>
+              <div class="d-flex align-items-center me-4">
+                <img src="{{ asset('storage/' . $banTin->thanh_vien_lop->nguoi_dung->hinh_anh) }}"
+                  class="border border-secondary rounded-circle me-3" alt="Avatar" width="40" height="40">
+                <h6 class="card-title">
+                  {{ $banTin->thanh_vien_lop->nguoi_dung->vai_tro ?? '' }}
+                  : {{ $banTin->thanh_vien_lop->nguoi_dung->ho_ten }}
+                  <small class="text-body-tertiary fst-italic">
+                    (Đã đăng vào lúc {{ $banTin->ngay_tao }})
+                  </small>
+                </h6>
               </div>
+              <div class="news-content mt-3">
+                {!! $banTin->noi_dung !!}
+              </div>
+
+              <!-- Nút hiển thị số phản hồi -->
+              <div class="mt-2">
+                @if (count($banTin->list_ban_tin_con) > 0)
+                  <a href="javascript:void(0)" class="text-primary toggle-comments" data-bs-toggle="collapse"
+                    data-bs-target="#comments-{{ $banTin->id }}">
+                    {{ count($banTin->list_ban_tin_con) }} phản hồi
+                  </a>
+                @endif
+
+              </div>
+              @if ($nguoiDung->id == $banTin->thanh_vien_lop->nguoi_dung->id)
+                <div class="news-action-btn">
+                  <div class="dropdown">
+                    <button class="btn btn-transparent dropdown-toggle remove-arrow-down" type="button"
+                      data-bs-toggle="dropdown" aria-expanded="false">
+                      <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li>
+                        <button class="dropdown-item btn-update-ban-tin" type="button"
+                          data-url-detail="{{ route('ban-tin.detail', $banTin->id) }}"
+                          data-url-update="{{ route('ban-tin.update', $banTin->id) }}">
+                          Chỉnh sửa bản tin
+                        </button>
+                      </li>
+                      <li>
+                        <button class="dropdown-item" type="button">Xóa bản tin</button>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              @endif
             </div>
 
-            <div class="card-footer bg-white">
+            <div class="card-footer bg-white py-3">
               <!-- Form phản hồi -->
-              <form>
-                <div class="d-flex align-items-start gap-2 mb-3">
-                  <img src="https://picsum.photos/id/54/400/400" alt="Avatar" class="rounded-circle" width="40"
-                    height="40">
+              <form action="{{ route('ban-tin.reply', [$lop->id, $banTin->id]) }}" method="POST" class="mb-3">
+                @csrf
+                <div class="d-flex align-items-start gap-2">
+                  <img src="{{ asset('storage/' . $nguoiDung->hinh_anh) }}" alt="Avatar"
+                    class="border border-secondary rounded-circle me-3" width="40" height="40">
                   <div class="flex-grow-1">
                     <div class="input-group">
-                      <input type="text" class="form-control" placeholder="Nhập phản hồi...">
+                      <input type="text" class="form-control" name="noi_dung" placeholder="Nhập phản hồi...">
                       <button class="btn btn-outline-primary" type="submit">Gửi</button>
                     </div>
                   </div>
@@ -127,15 +167,35 @@
               </form>
 
               <!-- Danh sách bình luận - collapse -->
-              <div class="collapse" id="comments-{{ $item->id }}">
+              <div class="collapse comments custom-scrollbar" id="comments-{{ $banTin->id }}">
                 <!-- Bình luận 1 -->
-                @foreach ($item->list_ban_tin_con as $cmt)
-                  <div class="d-flex align-items-start mb-3">
-                    <img src="https://picsum.photos/id/54/400/400" class="border border-secondary rounded-circle me-2"
-                      alt="Avatar" width="36" height="36">
-                    <div class="bg-light rounded p-2 flex-grow-1">
-                      <strong>{{ $cmt->thanh_vien_lop->nguoi_dung->ho_ten }}</strong>
+                @foreach ($banTin->list_ban_tin_con as $cmt)
+                  <div class="d-flex align-items-start mb-4 position-relative">
+                    <img src="{{ asset('storage/' . $banTin->thanh_vien_lop->nguoi_dung->hinh_anh) }}"
+                      class="border border-secondary rounded-circle me-3" alt="Avatar" width="40"
+                      height="40">
+                    <div class="bg-body-secondary rounded p-2 flex-grow-1">
+                      <h6>
+                        {{ $cmt->thanh_vien_lop->nguoi_dung->ho_ten }}
+                        <small class="text-body-tertiary fst-italic">
+                          (Đã đăng vào lúc {{ $banTin->ngay_tao }})
+                        </small>
+                      </h6>
                       <p class="mb-0">{{ $cmt->noi_dung }}</p>
+                      @if ($nguoiDung->id == $cmt->thanh_vien_lop->nguoi_dung->id)
+                        <div class="child-news-action-btn">
+                          <div class="dropdown">
+                            <button class="btn btn-transparent dropdown-toggle remove-arrow-down" type="button"
+                              data-bs-toggle="dropdown" aria-expanded="false">
+                              <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                              <li><button class="dropdown-item" type="button">Chỉnh sửa phản hồi</button></li>
+                              <li><button class="dropdown-item" type="button">Xóa phản hồi</button></li>
+                            </ul>
+                          </div>
+                        </div>
+                      @endif
                     </div>
                   </div>
                 @endforeach
@@ -146,7 +206,7 @@
 
         @if (session('vai_tro') == 'Giảng viên')
           <button type="button" class="newsletter-add-btn btn btn-primary rounded-circle" title="Tạo bản tin mới"
-            data-bs-toggle="modal" data-bs-target="#newNewsletterModal">
+            data-bs-toggle="modal" data-bs-target="#modal-them-ban-tin">
             <i class="fas fa-plus"></i>
           </button>
         @endif
@@ -493,31 +553,71 @@
 
     {{-- Modal thêm bản tin --}}
     @if (session('vai_tro') == 'Giảng viên')
-      <div class="modal fade" id="newNewsletterModal" tabindex="-1" aria-labelledby="newNewsletterModalLabel"
-        aria-hidden="true" data-bs-focus="false">
-        <div class="modal-dialog modal-lg modal-dialog-scrollable">
-          <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-              <h5 class="modal-title" id="newNewsletterModalLabel">Tạo bản tin mới</h5>
-              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <form id="newNewsletterForm" action="#" method="POST">
+      <form action="{{ route('ban-tin.store', $lop->id) }}" method="POST">
+        @csrf
+        <div class="modal fade" id="modal-them-ban-tin" tabindex="-1" aria-labelledby="" aria-hidden="true"
+          data-bs-focus="false">
+          <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+              <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">
+                  <i class="far fa-plus-square me-2"></i>Tạo bản tin mới
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                  aria-label="Close"></button>
+              </div>
+              <div class="modal-body custom-scrollbar">
                 <div class="mb-3">
-                  <label for="newsletterContent" class="form-label">Nội dung thông báo:</label>
-                  <textarea class="form-control tinymce" id="newsletterContent" rows="8"
-                    placeholder="Nhập nội dung thông báo chi tiết"></textarea>
+                  <label for="" class="form-label">
+                    Nội dung thông báo: <abbr class="text-danger" title="Bắt buộc">*</abbr>
+                  </label>
+                  <textarea class="form-control tinymce" name="noi_dung" id="noi-dung-ban-tin-them"
+                    placeholder="Nhập nội dung thông báo chi tiết..."></textarea>
                 </div>
-              </form>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-              <button type="submit" form="newNewsletterForm" class="btn btn-primary">Đăng bản tin</button>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="submit" class="btn btn-primary">Đăng bản tin</button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </form>
+    @endif
+
+    {{-- Modal sửa bản tin --}}
+    @if (session('vai_tro') == 'Giảng viên')
+      <form action="" method="POST">
+        @csrf
+        @method('PUT')
+        <div class="modal fade" id="modal-chinh-sua-ban-tin" tabindex="-1" aria-labelledby="" aria-hidden="true"
+          data-bs-focus="false">
+          <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+              <div class="modal-header bg-warning text-white">
+                <h5 class="modal-title">
+                  <i class="fas fa-edit me-2"></i></i>Chỉnh sửa bản tin
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                  aria-label="Close"></button>
+              </div>
+              <div class="modal-body custom-scrollbar">
+                <div class="mb-3">
+                  <label for="" class="form-label">
+                    Nội dung thông báo: <abbr class="text-danger" title="Bắt buộc">*</abbr>
+                  </label>
+                  <textarea class="form-control tinymce" name="noi_dung" id="noi-dung-ban-tin-chinh-sua"
+                    placeholder="Nhập nội dung thông báo chi tiết..."></textarea>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
     @endif
 
     {{-- Modal gán bài giảng --}}
@@ -672,4 +772,26 @@
   <script src="{{ asset('vendor/tinymce-5/tinymce.min.js') }}"></script>
   <script src="{{ asset('js/config-tinymce.js') }}"></script>
   <script src="{{ asset('modules/lop-hoc/js/chi-tiet-lop-hoc.js') }}"></script>
+
+  @if (session('message'))
+    <script>
+      const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        width: 'auto',
+        showConfirmButton: false,
+        timer: 3500,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        }
+      });
+
+      Toast.fire({
+        icon: '{{ session('icon') }}',
+        title: '{{ session('message') }}'
+      });
+    </script>
+  @endif
 @endsection

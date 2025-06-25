@@ -15,4 +15,14 @@ class HocPhanService
   {
     return HocPhan::all();
   }
+
+  public function layTheoId($id)
+  {
+    return HocPhan::findOrFail($id);
+  }
+
+  public function layTheoSlug($slug)
+  {
+    return HocPhan::where('slug', $slug)->firstOrFail();
+  }
 }

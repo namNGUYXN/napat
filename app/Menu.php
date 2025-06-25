@@ -30,6 +30,6 @@ class Menu extends Model
 
     function list_menu_con()
     {
-        return $this->hasMany(Menu::class, 'id_menu_cha');
+        return $this->hasMany(Menu::class, 'id_menu_cha')->orderBy('thu_tu');
     }
 }

@@ -42,8 +42,8 @@ class BanTinSeeder extends Seeder
             [
                 'noi_dung' => 'Dạ thầy ơi có cần mang máy tính không ạ?',
                 'id_ban_tin_cha' => 3, // trả lời bản tin 3
-                'id_thanh_vien_lop' => 4, // Lê Gia Nghi (Sinh viên)
-                'id_lop_hoc_phan' => 2,
+                'id_thanh_vien_lop' => 1, // Lê Gia Nghi (Sinh viên)
+                'id_lop_hoc_phan' => 1,
                 'ngay_tao' => Carbon::now()->subHours(20),
                 'is_delete' => false,
             ],

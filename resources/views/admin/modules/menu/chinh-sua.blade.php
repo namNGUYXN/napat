@@ -8,6 +8,17 @@
       <i class="fas fa-arrow-alt-circle-left me-2"></i>Danh sách Menu
     </a>
 
+    @if ($errors->any())
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <ul class="list-unstyled m-0">
+          @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+          @endforeach
+        </ul>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    @endif
+
     @if (session('message'))
       <div class="alert alert-{{ session('status') }} alert-dismissible fade show" role="alert">
         {{ session('message') }}
@@ -36,7 +47,7 @@
           <div class="mb-3">
             <label for="" class="form-label">Thuộc menu:</label>
             <select class="form-select" name="id_menu_cha">
-              <option selected value="0">Là menu chính</option>
+              <option selected value="">Là menu chính</option>
               @foreach ($listMenu as $v)
                 <option value="{{ $v['id'] }}"
                   {{ old('id_menu_cha', $menu->id_menu_cha) == $v['id'] ? 'selected' : '' }}>

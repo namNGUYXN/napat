@@ -158,7 +158,7 @@
           <div class="modal-content">
             <div class="modal-header bg-primary text-white">
               <h5 class="modal-title">
-                <i class="fas fa-plus-square me-2"></i>Thêm chương
+                <i class="far fa-plus-square me-2"></i>Thêm chương
               </h5>
               <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                 aria-label="Close"></button>

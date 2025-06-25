@@ -31,11 +31,16 @@ Route::group([
 ], function () {
     \UniSharp\LaravelFilemanager\Lfm::routes();
 });
-Route::group(['middleware' => ['auth.custom', 'secure_file']], function () {
-    Route::get('/storage/files/{id_nguoi_dung}/thumbs/{ten_file}', 'SecureFileController@download')->name('secure.file');
-    Route::get('/storage/files/{id_nguoi_dung}/{ten_file}', 'SecureFileController@download')->name('secure.file');
-    Route::get('/storage/photos/{id_nguoi_dung}/thumbs/{ten_anh}', 'SecureFileController@image')->name('secure.photo');
-    Route::get('/storage/photos/{id_nguoi_dung}/{ten_anh}', 'SecureFileController@image')->name('secure.photo');
+Route::group(['middleware' => ['auth.custom']], function () {
+    Route::get('/storage/files/{id_nguoi_dung}/thumbs/{ten_file}', 'SecureFileController@privateFile');
+    Route::get('/storage/files/{id_nguoi_dung}/{ten_file}', 'SecureFileController@privateFile');
+    Route::get('/storage/photos/{id_nguoi_dung}/thumbs/{ten_anh}', 'SecureFileController@privateImage');
+    Route::get('/storage/photos/{id_nguoi_dung}/{ten_anh}', 'SecureFileController@privateImage');
+
+    Route::get('/storage/files/shares/thumbs/{ten_file}', 'SecureFileController@publicFile');
+    Route::get('/storage/files/shares/{ten_file}', 'SecureFileController@publicFile');
+    Route::get('/storage/photos/shares/thumbs/{ten_anh}', 'SecureFileController@publicImage');
+    Route::get('/storage/photos/shares/{ten_anh}', 'SecureFileController@publicImage');
 });
 
 
@@ -46,30 +51,30 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien+sinh-vien']], 
     Route::get('/', 'HomeController@home')->name('home');
     Route::get('/trang-chu', 'HomeController@home');
 
+
     Route::get('/lam-bai/{id}', 'BaiKiemTraController@lamBai')->name('lambai');
     Route::post('/bai-tap', 'BaiTapController@themBaiTap')->name('bai_tap.them');
     Route::get('/bai-giang/{id}/bai-tap', 'BaiTapController@danhSachBaiTap')->name('bai-tap.by-bai-giang');
-    Route::get('lop-hoc-cua-toi','LopHocPhanController@lopHocCuaToi')->name('lop-hoc.lop-hoc-cua-toi');
-    Route::get('/lop-hoc-phan/{slug}', 'LopHocPhanController@chiTiet')->name('lop-hoc.detail');
+    
 
     // Lớp học
+    Route::get('/hoc-phan/{id}', 'LopHocPhanController@lopHocTheoHocPhan')->name('lop-hoc.list');
+    Route::get('lop-hoc-cua-toi','LopHocPhanController@lopHocCuaToi')->name('lop-hoc.lop-hoc-cua-toi');
+    Route::get('/lop-hoc-phan/{slug}', 'LopHocPhanController@chiTiet')->name('lop-hoc.detail');
+    // -- Bản tin
+    Route::post('/lop-hoc-phan/{id}/ban-tin/them', 'BanTinController@them')->name('ban-tin.store');
+    Route::post('/ban-tin/{id}/chi-tiet', 'BanTinController@chiTiet')->name('ban-tin.detail');
+    Route::put('/ban-tin/{id}/chinh-sua', 'BanTinController@chinhSua')->name('ban-tin.update');
+    Route::post('/lop-hoc-phan/{idLopHocPhan}/ban-tin/{idBanTin}/phanHoi', 'BanTinController@phanHoi')->name('ban-tin.reply');
     // -- Bài
     Route::post('/lop-hoc-phan/{slug}/bai/cong-khai', 'LopHocPhanController@congKhaiBaiTrongLop')->name('bai-trong-lop.public');
-    Route::get('/lop-hoc-phan/{id}/bai/{slug}/chi-tiet', 'LopHocPhanController@xemNoiDungBai')->name('bai-trong-lop.detail');
-    // -- Chương
-    // Route::post('/bai-giang/{id}/chuong/list', 'ChuongController@layListChuong');
-    // -- Bài giảng
-    // Route::post('/lop-hoc/{id}/bai-giang/list', 'LopHocPhanController@layListBaiGiangTrongLop');
-    // Route::post('/lop-hoc/{idLopHoc}/chuong/{idChuong}/bai-giang/gan', 'LopHocPhanController@ganBaiGiang');
-    // Route::post('/lop-hoc/{idLopHoc}/chuong/{idChuong}/bai-giang/list', 'LopHocPhanController@layListBaiGiangTheoChuongTrongLop');
-    // Route::delete('/lop-hoc/{idLopHoc}/chuong/{idChuong}/bai-giang/{id}/go', 'LopHocPhanController@goBaiGiang');
-    // Route::get('/bai-giang/chi-tiet', 'BaiGiangController@chiTietBaiGiang')->name('bai-giang.chi-tiet');
+    Route::get('/lop-hoc-phan/{id}/bai/{slug}', 'LopHocPhanController@xemNoiDungBai')->name('bai-trong-lop.detail');
 
-    Route::get('/hoc-phan/{id}/lop-hoc', 'LopHocPhanController@lopHocTheoHocPhan')->name('lop-hoc.theo-hoc-phan');
 
     //Tài khoản
     Route::get('/tai-khoan/chi-tiet', 'NguoiDungController@chiTiet')->name('tai-khoan.chi-tiet');
     Route::post('/tai-khoan/doi-mat-khau', 'NguoiDungController@doiMatKhau')->name('tai-khoan.doi-mat-khau');
+
 
     //Bài kiểm tra
     Route::get('/bai-kiem-tra/{idLopHoc}', 'BaiKiemTraController@danhSachBaiKiemTra');
@@ -127,5 +132,6 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:admin']], function () {
     Route::post('/admin/menu/them', 'MenuController@them')->name('menu.store');
     Route::get('/admin/menu/{id}/chinh-sua', 'MenuController@giaoDienChinhSua')->name('menu.edit');
     Route::put('/admin/menu/{id}', 'MenuController@chinhSua')->name('menu.update');
+    Route::post('/admin/menu/cap-nhat-thu-tu', 'MenuController@capNhatThuTu')->name('thu-tu-menu.update');
     Route::delete('/admin/menu/{id}', 'MenuController@xoa')->name('menu.delete');
 });

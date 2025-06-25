@@ -7,12 +7,13 @@ use Illuminate\Support\Facades\Response;
 
 class SecureFileController extends Controller
 {
-    public function download($id_nguoi_dung, $ten_file)
+    public function __construct()
     {
-        // if (session('id_nguoi_dung') != $id_nguoi_dung) {
-        //     abort(403, 'Không có quyền tải file này.');
-        // }
+        $this->middleware('secure_file')->only('privateImage', 'privateFile');
+    }
 
+    private function downloadFile($id_nguoi_dung, $ten_file)
+    {
         $path = "private/files/{$id_nguoi_dung}/{$ten_file}";
 
         if (!Storage::exists($path)) {
@@ -30,12 +31,8 @@ class SecureFileController extends Controller
             ->header('Content-Disposition', 'inline; filename="' . $ten_file . '"');
     }
 
-    public function image($id_nguoi_dung, $ten_anh)
+    private function browseImage($id_nguoi_dung, $ten_anh)
     {
-        // if (session('id_nguoi_dung') != $id_nguoi_dung) {
-        //     abort(403, 'Không có quyền xem ảnh này.');
-        // }
-
         $path = "private/photos/{$id_nguoi_dung}/{$ten_anh}";
 
         if (!Storage::exists($path)) {
@@ -46,5 +43,25 @@ class SecureFileController extends Controller
         $mime = Storage::mimeType($path);
 
         return response($file)->header('Content-Type', $mime);
+    }
+
+    public function privateFile($id_nguoi_dung, $ten_file)
+    {
+        return $this->downloadFile($id_nguoi_dung, $ten_file);
+    }
+
+    public function privateImage($id_nguoi_dung, $ten_anh)
+    {
+        return $this->browseImage($id_nguoi_dung, $ten_anh);
+    }
+
+    public function publicFile($ten_file)
+    {
+        return $this->downloadFile('shares', $ten_file);
+    }
+
+    public function publicImage($ten_anh)
+    {
+        return $this->browseImage('shares', $ten_anh);
     }
 }

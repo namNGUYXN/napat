@@ -11,7 +11,7 @@
                 <div class="col-md-4 text-center mb-3 d-flex flex-column align-items-center">
                     <!-- Khung hình đại diện -->
                     <div style="width: 200px; height: 200px;">
-                        <img id="avatarPreview" src="https://via.placeholder.com/150" class="img-thumbnail w-100 h-100"
+                        <img id="avatarPreview" src="{{ asset('storage/' . $nguoiDung->hinh_anh) }}" class="img-thumbnail w-100 h-100"
                             style="object-fit: cover;" alt="Ảnh đại diện">
                     </div>
 

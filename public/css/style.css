@@ -41,7 +41,8 @@ ul.menu-sidebar li:not(:last-child) a {
   border-bottom: 1px solid #bababa;
 }
 
-ul.menu-sidebar li a:hover {
+ul.menu-sidebar li a:hover,
+ul.menu-sidebar>li.active>a {
   background: var(--pink-50);
 }
 
@@ -52,7 +53,7 @@ ul.submenu-sidebar {
 }
 
 ul.menu-sidebar>li>ul.submenu-sidebar {
-  max-height: 250px;
+  max-height: 350px;
   overflow-y: auto;
 }
 
