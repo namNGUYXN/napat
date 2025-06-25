@@ -36,7 +36,11 @@ class BaiKiemTra extends Model
     {
         return $this->hasMany(CauHoiBaiKiemTra::class, 'id_bai_kiem_tra');
     }
-
+    
+    public function list_ket_qua()
+    {
+        return $this->hasMany(KetQuaBaiKiemTra::class, 'id_bai_kiem_tra');
+    }
     public function list_thanh_vien_lop()
     {
         return $this->belongsToMany(ThanhVienLop::class, 'ket_qua_bai_kiem_tra', 'id_bai_kiem_tra', 'id_thanh_vien_lop')

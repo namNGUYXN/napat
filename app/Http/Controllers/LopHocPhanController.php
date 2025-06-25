@@ -47,10 +47,12 @@ class LopHocPhanController extends Controller
         // $dsLopHoc = $this->lopHocPhanService->getLopHocCuaToi($nguoiDung);
 
         // return view('modules.lop-hoc.lop-hoc-cua-toi', compact('dsLopHoc'));
+        //$dsLopHoc = $nguoiDung->list_lop_hoc_phan;
 
-        $nguoiDung = $this->nguoiDungService->layTheoId(session('id_nguoi_dung'));
-        $dsLopHoc = $nguoiDung->list_lop_hoc_phan;
 
+        $idNguoiDung = session('id_nguoi_dung');
+
+        $dsLopHoc = $this->lopHocPhanService->getLopHocCuaToi($idNguoiDung);
         return view('modules.lop-hoc.lop-hoc-cua-toi', compact('dsLopHoc'));
     }
 
