@@ -2,6 +2,7 @@
 
 use App\BaiTrongLop;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class BaiTrongLopSeeder extends Seeder
 {

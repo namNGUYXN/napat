@@ -3,20 +3,41 @@
 namespace App\Http\Controllers;
 
 use App\Services\BaiKiemTraService;
+use App\Services\ThanhVienLopService;
+use App\Services\NguoiDungService;
 use Facade\FlareClient\Http\Exceptions\NotFound;
 use Illuminate\Http\Request;
 
 class BaiKiemTraController extends Controller
 {
     protected $baiKiemTraService;
-
-    public function __construct(BaiKiemTraService $baiKiemTraService)
-    {
+    protected $nguoiDungService;
+    protected $thanhVienLopService;
+    public function __construct(
+        BaiKiemTraService $baiKiemTraService,
+        NguoiDungService $nguoiDungService,
+        ThanhVienLopService $thanhVienLopService
+    ) {
         $this->baiKiemTraService = $baiKiemTraService;
+        $this->nguoiDungService = $nguoiDungService;
+        $this->thanhVienLopService = $thanhVienLopService;
     }
     function lamBai($id)
     {
+        $idNguoiDung = session('id_nguoi_dung');
         $baiKiemTra = $this->baiKiemTraService->getById($id);
+        $thanhVienLop = $this->thanhVienLopService->layTheoLopVaNguoiDung(
+            $baiKiemTra->id_lop_hoc_phan,
+            $idNguoiDung
+        );
+
+        if ($thanhVienLop === null) {
+            return view('modules.lop-hoc.thong-bao-nop-bai', [
+                'thanhCong' => false,
+                'thongBao' => "Bạn không có quyền thực hiện yêu cầu này!!!",
+                'lop' => $baiKiemTra->lop_hoc_phan
+            ]);
+        }
         return view('modules.lop-hoc.lam-bai', compact('baiKiemTra'));
     }
 
@@ -24,6 +45,15 @@ class BaiKiemTraController extends Controller
     {
         $baiKiemTra = $this->baiKiemTraService->getByLopHocIdWithCauHoi($id);
         return response()->json($baiKiemTra);
+    }
+    public function layChiTiet($id)
+    {
+        $idNguoiDung = session('id_nguoi_dung');
+        $vaiTro = session('vai_tro');
+
+        $result = $this->baiKiemTraService->layChiTietTheoVaiTro($id, $idNguoiDung, $vaiTro);
+
+        return response()->json($result);
     }
     public function themBaiKiemTra(Request $request)
     {
@@ -46,5 +76,65 @@ class BaiKiemTraController extends Controller
                 'message' => 'Tạo bài tập thất bại: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    public function nopBai(Request $request)
+    {
+        $request->validate([
+            'id_bai_kiem_tra' => 'required|exists:bai_kiem_tra,id',
+            'answers' => 'required|array',
+        ]);
+
+        $idBaiKiemTra = $request->input('id_bai_kiem_tra');
+        $answers = $request->input('answers');
+
+        $baiKiemTra = $this->baiKiemTraService->getById($idBaiKiemTra);
+
+        $nguoiDung = $this->nguoiDungService->layTheoId(session('id_nguoi_dung'));
+
+        $thanhVienLop = $this->thanhVienLopService->layTheoLopVaNguoiDung(
+            $baiKiemTra->id_lop_hoc_phan,
+            $nguoiDung->id
+        );
+
+        if ($thanhVienLop === null) {
+            return view('modules.lop-hoc.thong-bao-nop-bai', [
+                'thanhCong' => false,
+                'thongBao' => "Bạn không có quyền thực hiện yêu cầu này!!!",
+                'lop' => $baiKiemTra->lop_hoc_phan
+            ]);
+        }
+
+        // Kiểm tra trước khi cho nộp bài
+        $kiemTra = $this->baiKiemTraService->kiemTraDaNopBai($idBaiKiemTra, $thanhVienLop->id);
+
+        if (!$kiemTra['success']) {
+            return view('modules.lop-hoc.thong-bao-nop-bai', [
+                'thanhCong' => false,
+                'thongBao' => $kiemTra['message'],
+                'lop' => $baiKiemTra->lop_hoc_phan
+            ]);
+        }
+
+        // Nếu không tìm thấy thì trả về trang 404
+        if (!$thanhVienLop) {
+            abort(404, 'Không tìm thấy thành viên lớp.');
+        }
+
+        $ketQua = $this->baiKiemTraService->nopBai($idBaiKiemTra, $thanhVienLop->id, $answers);
+
+        if (!$ketQua['success']) {
+            return view('modules.lop-hoc.thong-bao-nop-bai', [
+                'thanhCong' => false,
+                'thongBao' => $ketQua['message'],
+                'lop' => $baiKiemTra->lop_hoc_phan
+            ]);
+        }
+
+        return view('modules.lop-hoc.thong-bao-nop-bai', [
+            'thanhCong' => true,
+            'soCauDung' => $ketQua['data']->so_cau_dung,
+            'lop' => $baiKiemTra->lop_hoc_phan
+        ]);
     }
 }

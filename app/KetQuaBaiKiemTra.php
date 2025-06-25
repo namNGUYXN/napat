@@ -22,4 +22,8 @@ class KetQuaBaiKiemTra extends Model
     {
         return $value ? Carbon::parse($value)->format('d/m/Y') : null;
     }
+    public function bai_kiem_tra()
+    {
+        return $this->belongsTo(BaiKiemTra::class, 'id_bai_kiem_tra');
+    }
 }

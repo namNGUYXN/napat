@@ -1,5 +1,325 @@
+document.addEventListener("DOMContentLoaded", function () {
+    let questionCounter = 0;
+
+    //Mẫu html để load dữ liệu vào
+    const questionTemplate = (
+        count,
+        questionText = "",
+        answerOptions = ["", "", "", ""],
+        correctAnswer = ""
+    ) => {
+        const optionLabels = ["A", "B", "C", "D"];
+        const optionValues = ["optionA", "optionB", "optionC", "optionD"];
+        const optionsHTML = optionValues
+            .map(
+                (value, index) => `
+            <div class="col-md-6">
+                <div class="input-group">
+                    <div class="input-group-text">
+                        <input class="form-check-input mt-0 correct-answer-radio" 
+                               type="radio" name="correctAnswer_${count}" 
+                               value="${value}" ${
+                    correctAnswer === value ? "checked" : ""
+                } required>
+                    </div>
+                    <input type="text" class="form-control answer-option" 
+                           value="${
+                               answerOptions[index] || ""
+                           }" placeholder="Đáp án ${
+                    optionLabels[index]
+                }" required>
+                </div>
+            </div>
+        `
+            )
+            .join("");
+
+        return `
+            <div class="question-item mb-4 p-3 border rounded bg-light" data-question-index="${count}">
+                <h7 class="d-flex justify-content-between align-items-center mb-3">
+                    <strong>Câu hỏi ${count}</strong>
+                    <button type="button" class="btn btn-sm btn-outline-danger remove-question-btn">
+                        <i class="fas fa-times"></i> Xóa
+                    </button>
+                </h7>
+                <div class="mb-3">
+                    <label class="form-label">Nội dung câu hỏi <span class="text-danger">*</span></label>
+                    <textarea class="form-control question-text" rows="2" required>${questionText}</textarea>
+                    <div class="invalid-feedback">Vui lòng nhập nội dung câu hỏi.</div>
+                </div>
+                <div class="row g-2 mb-3">
+                    <label class="form-label">Đáp án: <span class="text-danger">*</span></label>
+                    ${optionsHTML}
+                    <div class="col-12">
+                        <div class="invalid-feedback d-block">
+                            Vui lòng chọn một đáp án đúng cho câu hỏi này.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    };
+
+    //Thêm câu hỏi(Thủ công và File)
+    function addQuestion(
+        questionText = "",
+        answers = ["", "", "", ""],
+        correct = ""
+    ) {
+        questionCounter++;
+        $("#questionsFormContainer").append(
+            questionTemplate(questionCounter, questionText, answers, correct)
+        );
+        updateQuestionNumbers();
+    }
+
+    //Cập nhật lại thứ tự câu hỏi cho đúng khi thêm mới hoặc xóa
+    function updateQuestionNumbers() {
+        const $questionItems = $("#questionsFormContainer .question-item");
+        if ($questionItems.length === 0) {
+            $("#noQuestionsMessage").show();
+        } else {
+            $("#noQuestionsMessage").hide();
+        }
+
+        $questionItems.each(function (index) {
+            const $this = $(this);
+            $this.find("h7 strong").text(`Câu hỏi ${index + 1}`);
+            $this
+                .find(".correct-answer-radio")
+                .attr("name", `correctAnswer_${index + 1}`);
+            if ($questionItems.length === 1) {
+                $this.find(".remove-question-btn").hide();
+            } else {
+                $this.find(".remove-question-btn").show();
+            }
+        });
+    }
+
+    $("#addNewExerciseBtn").attr("data-bs-toggle", "modal");
+    $("#addNewExerciseBtn").attr("data-bs-target", "#addExerciseModal");
+
+    //Khi mở modal thêm bài kiểm tra
+    $("#addExerciseModal").on("show.bs.modal", function () {
+        $("#newExerciseForm")[0].reset();
+        $("#newExerciseForm").removeClass("was-validated");
+        $("#questionsFormContainer").empty();
+        questionCounter = 0;
+        addQuestion(); // mặc định 1 câu hỏi
+        $("#noQuestionsMessage").show();
+    });
+
+    //Nhấn nút thêm câu hỏi
+    $("#addQuestionBtn").on("click", function () {
+        addQuestion();
+    });
+
+    //Nhấn nút xóa câu hỏi
+    $(document).on("click", ".remove-question-btn", function () {
+        const $toRemove = $(this).closest(".question-item");
+        if ($("#questionsFormContainer .question-item").length > 1) {
+            $toRemove.remove();
+            updateQuestionNumbers();
+        } else {
+            alert("Bạn phải có ít nhất một câu hỏi.");
+        }
+    });
+
+    //Đọc file được chọn và truyền dữ liệu để tạo html hiển thị danh sách câu hỏi từ file
+    $("#excelFileInput").on("change", function (e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: "array" });
+            const sheet = workbook.Sheets[workbook.SheetNames[0]];
+            const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+            for (let i = 1; i < rows.length; i++) {
+                const row = rows[i];
+                const questionText = row[0] || "";
+                const answers = [row[1], row[2], row[3], row[4]];
+                const correctLabel = (row[5] || "")
+                    .toString()
+                    .trim()
+                    .toUpperCase();
+
+                const correctValue =
+                    {
+                        A: "optionA",
+                        B: "optionB",
+                        C: "optionC",
+                        D: "optionD",
+                    }[correctLabel] || "";
+
+                if (
+                    questionText &&
+                    answers.filter((a) => !!a).length >= 2 &&
+                    correctValue
+                ) {
+                    addQuestion(questionText, answers, correctValue);
+                }
+            }
+
+            $("#excelFileInput").val("");
+        };
+
+        reader.readAsArrayBuffer(file);
+    });
+});
+
+let allChiTietTheoKetQua = {};
+
+function xemChiTietKetQua(idKetQua, tenNguoiDung, diem, tieuDeBaiKT) {
+    const chiTiet = allChiTietTheoKetQua[idKetQua];
+
+    let soCauDung = 0;
+    let tongCau = 0;
+
+    if (chiTiet && chiTiet.cauHoiVaDapAn) {
+        tongCau = chiTiet.cauHoiVaDapAn.length;
+        chiTiet.cauHoiVaDapAn.forEach((item) => {
+            item.danh_sach_dap_an.forEach((dapAn) => {
+                if (dapAn.la_dap_an_dung && dapAn.duoc_chon) {
+                    soCauDung++;
+                }
+            });
+        });
+    }
+    const title = `${tieuDeBaiKT} - ${tenNguoiDung} - ${soCauDung}/${tongCau} câu đúng`;
+    const content = renderChiTietBaiKiemTra({}, chiTiet);
+
+    // Cập nhật tiêu đề
+    $("#modalChiTiet .modal-title").text(title);
+
+    // Thay nút đóng thành nút quay lại
+    $("#modalChiTiet .modal-actions").html(`
+        <button class="btn btn-secondary" onclick="quayLaiDanhSach()">
+            ← Quay lại danh sách
+        </button>
+    `);
+
+    // Gán nội dung vào modal body
+    $("#modalChiTiet .modal-body").html(content);
+}
+
+function renderChiTietBaiKiemTra(baiKiemTra, chiTiet) {
+    if (!chiTiet || !chiTiet.cauHoiVaDapAn) {
+        return `<p>Bạn chưa làm bài kiểm tra này.</p>`;
+    }
+
+    let html = "";
+    chiTiet.cauHoiVaDapAn.forEach((item, index) => {
+        html += `<div class="mb-4 border p-3 rounded bg-light">
+            <strong>Câu ${index + 1}: ${item.cau_hoi}</strong>
+            <ul class="mt-2">`;
+
+        let dapAnDung = "";
+        let dapAnChon = "";
+
+        item.danh_sach_dap_an.forEach((dapAn) => {
+            let classes = [];
+            let icon = "";
+
+            if (dapAn.la_dap_an_dung) {
+                classes.push("text-primary", "fw-bold");
+                dapAnDung = dapAn.ma;
+            }
+
+            if (dapAn.duoc_chon) {
+                dapAnChon = dapAn.ma;
+
+                if (dapAn.la_dap_an_dung) {
+                    // Trả lời đúng
+                    icon = `<span class="ms-2 text-success">✔️</span>`;
+                } else {
+                    // Trả lời sai
+                    classes.push("text-danger", "fw-bold");
+                    icon = `<span class="ms-2 text-danger">❌</span>`;
+                }
+            }
+
+            html += `<li class="${classes.join(" ")}">
+                <strong>${dapAn.ma}.</strong> ${dapAn.noi_dung} ${icon}
+            </li>`;
+        });
+
+        html += `</ul>
+            <div class="mt-2">
+                <small><strong>Đáp án đúng:</strong> ${dapAnDung}</small><br/>
+                <small><strong>Đáp án chọn:</strong> ${
+                    dapAnChon || "<i>Không chọn</i>"
+                }</small>
+            </div>
+        </div>`;
+    });
+
+    return html;
+}
+
+function renderDanhSachKetQua(baiKiemTra, dsKetQua) {
+    let html = "<table class='table table-bordered'>";
+    html += `
+        <thead>
+            <tr>
+                <th>STT</th>
+                <th>Họ tên</th>
+                <th>Email</th>
+                <th>Điểm</th>
+                <th>Chi tiết</th>
+            </tr>
+        </thead><tbody>`;
+
+    dsKetQua.forEach((item, index) => {
+        const user = item.sinh_vien;
+        const ketQua = item.ket_qua;
+        const idKetQua = ketQua?.id || 0;
+
+        html += `
+        <tr>
+            <td>${index + 1}</td>
+            <td>${user.ten}</td>
+            <td>${user.email}</td>
+            <td>${item.diem ?? "Chưa làm"}</td>
+            <td>
+                ${
+                    item.diem !== null
+                        ? `<button class="btn btn-sm btn-primary"
+                            onclick="xemChiTietKetQua('${idKetQua}', '${user.ten}', ${item.diem}, '${baiKiemTra.tieu_de}')">
+                            Xem
+                        </button>`
+                        : ""
+                }
+            </td>
+
+        </tr>`;
+    });
+
+    html += "</tbody></table>";
+    return html;
+}
+
+function quayLaiDanhSach() {
+    if (currentBaiKiemTra && currentKetQuaList) {
+        const html = renderDanhSachKetQua(currentBaiKiemTra, currentKetQuaList);
+        $("#modalChiTiet .modal-title").text(
+            `Kết quả bài: ${currentBaiKiemTra.tieu_de}`
+        );
+        $("#modalChiTiet .modal-body").html(html);
+
+        // Khôi phục lại nút đóng mặc định
+        $("#modalChiTiet .modal-actions").html(`
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        `);
+    }
+}
+
 $(document).ready(function () {
     let danhSachBaiKiemTra = [];
+    let baiKiemTra = "";
+    let dsKetQua = "";
 
     const infoLopHoc = document.getElementById("info-lop-hoc");
     const idLopHoc = infoLopHoc.dataset.idLopHoc; // Truyền từ Blade
@@ -35,18 +355,103 @@ $(document).ready(function () {
     }
 
     function openModalChiTiet(id) {
-        const item = danhSachBaiKiemTra.find((b) => b.id === id);
-        if (!item) return;
+        $.ajax({
+            url: `/bai-kiem-tra/${id}/chi-tiet`,
+            method: "GET",
+            success: function (res) {
+                if (res.role == "sinh_vien") {
+                    const baiKiemTra = res.bai_kiem_tra;
+                    const ketQua = res.ket_qua;
+                    const chiTiet = res.chi_tiet;
 
-        $("#modalTieuDe").text(item.tieu_de);
-        $("#modalSoCau").text(item.list_cau_hoi?.length ?? 0);
-        $("#modalHanChot").text(item.ngay_ket_thuc);
-        $("#btnLamBai").attr("href", `/lam-bai/${item.id}`);
+                    // ✅ Đếm số câu đúng
+                    let soCauDung = 0;
+                    let tongCau = 0;
 
-        const modal = new bootstrap.Modal(
-            document.getElementById("baiKiemTraModal")
-        );
-        modal.show();
+                    // Nếu chưa làm bài => chỉ hiện nút làm bài
+                    if (
+                        !chiTiet ||
+                        !chiTiet.cauHoiVaDapAn ||
+                        chiTiet.cauHoiVaDapAn.length === 0
+                    ) {
+                        const tongCau = baiKiemTra.list_cau_hoi.length; // dùng .length thay vì count() trong JS
+                        const ngayDenHan = baiKiemTra.ngay_ket_thuc
+                            ? new Date(
+                                  baiKiemTra.ngay_ket_thuc
+                              ).toLocaleDateString("vi-VN")
+                            : "Không có";
+
+                        $("#modalChiTiet .modal-title").text(
+                            baiKiemTra.tieu_de
+                        );
+
+                        const lamBaiUrl = `/lam-bai/${baiKiemTra.id}`;
+
+                        $("#modalChiTiet .modal-body").html(`
+                            <div class="text-center py-4">
+                                <p><strong>Số câu hỏi:</strong> ${tongCau}</p>
+                                <p><strong>Hạn cuối làm bài:</strong> ${ngayDenHan}</p>
+                                <p>Bạn chưa làm bài kiểm tra này.</p>
+                                <a href="${lamBaiUrl}" class="btn btn-primary">
+                                    Làm bài ngay
+                                </a>
+                            </div>
+                        `);
+
+                        $("#modalChiTiet").modal("show");
+                    } else {
+                        tongCau = chiTiet.cauHoiVaDapAn.length;
+
+                        chiTiet.cauHoiVaDapAn.forEach((item) => {
+                            item.danh_sach_dap_an.forEach((dapAn) => {
+                                if (dapAn.la_dap_an_dung && dapAn.duoc_chon) {
+                                    soCauDung++;
+                                }
+                            });
+                        });
+                        // ✅ Hiển thị tiêu đề modal gồm tiêu đề + số câu đúng / tổng câu
+                        $("#modalChiTiet .modal-title").text(
+                            `${baiKiemTra.tieu_de} - Kết quả: ${soCauDung}/${tongCau} câu đúng`
+                        );
+
+                        // ✅ Render nội dung chi tiết
+                        $("#modalChiTiet .modal-body").html(
+                            renderChiTietBaiKiemTra(baiKiemTra, chiTiet)
+                        );
+
+                        // ✅ Hiển thị modal
+                        $("#modalChiTiet").modal("show");
+                    }
+                }
+                if (res.role === "giang_vien") {
+                    const baiKiemTra = res.bai_kiem_tra;
+                    const dsKetQua = res.danh_sach_ket_qua;
+
+                    // Reset object chi tiết
+                    allChiTietTheoKetQua = {};
+                    currentBaiKiemTra = baiKiemTra;
+                    currentKetQuaList = dsKetQua;
+
+                    dsKetQua.forEach((item) => {
+                        if (item.ket_qua?.id) {
+                            allChiTietTheoKetQua[item.ket_qua.id] =
+                                item.chi_tiet;
+                        }
+                    });
+
+                    const html = renderDanhSachKetQua(baiKiemTra, dsKetQua);
+
+                    $("#modalChiTiet .modal-title").text(
+                        `Kết quả bài: ${baiKiemTra.tieu_de}`
+                    );
+                    $("#modalChiTiet .modal-body").html(html);
+                    $("#modalChiTiet").modal("show");
+                }
+            },
+            error: function () {
+                alert("Không lấy được dữ liệu bài kiểm tra.");
+            },
+        });
     }
 
     $(document).on("click", ".item-bai-kiem-tra", function () {
@@ -58,123 +463,123 @@ $(document).ready(function () {
     $("#addNewExerciseBtn").attr("data-bs-toggle", "modal");
     $("#addNewExerciseBtn").attr("data-bs-target", "#addExerciseModal");
 
-    let questionCounter = 1; // Biến đếm số câu hỏi
+    // let questionCounter = 1; // Biến đếm số câu hỏi
 
     // --- Sự kiện khi modal thêm bài tập hiện lên ---
-    $("#addExerciseModal").on("show.bs.modal", function () {
-        // Đặt lại form khi modal mở
-        $("#newExerciseForm")[0].reset();
-        $("#newExerciseForm").removeClass("was-validated");
-        $("#questionsFormContainer").empty(); // Xóa tất cả câu hỏi cũ
-        questionCounter = 1; // Đặt lại bộ đếm
-        $("#questionsFormContainer").append(questionTemplate(questionCounter));
-        $("#noQuestionsMessage").show(); // Hiển thị thông báo khi không có câu hỏi
-    });
+    // $("#addExerciseModal").on("show.bs.modal", function () {
+    //     // Đặt lại form khi modal mở
+    //     $("#newExerciseForm")[0].reset();
+    //     $("#newExerciseForm").removeClass("was-validated");
+    //     $("#questionsFormContainer").empty(); // Xóa tất cả câu hỏi cũ
+    //     questionCounter = 1; // Đặt lại bộ đếm
+    //     $("#questionsFormContainer").append(questionTemplate(questionCounter));
+    //     $("#noQuestionsMessage").show(); // Hiển thị thông báo khi không có câu hỏi
+    // });
 
     // Mẫu HTML cho một câu hỏi mới
-    const questionTemplate = (count) => `
-            <div class="question-item mb-4 p-3 border rounded bg-light" data-question-index="${count}">
-                <h7 class="d-flex justify-content-between align-items-center mb-3">
-                    <strong>Câu hỏi ${count}</strong>
-                    <button type="button" class="btn btn-sm btn-outline-danger remove-question-btn">
-                        <i class="fas fa-times"></i> Xóa
-                    </button>
-                </h7>
-                <div class="mb-3">
-                    <label for="question${count}Text" class="form-label">Nội dung câu hỏi <span class="text-danger">*</span></label>
-                    <textarea class="form-control question-text" id="question${count}Text" rows="2" placeholder="Nhập nội dung câu hỏi" required></textarea>
-                    <div class="invalid-feedback">
-                        Vui lòng nhập nội dung câu hỏi.
-                    </div>
-                </div>
-                <div class="row g-2 mb-3">
-                    <label class="form-label">Đáp án: <span class="text-danger">*</span></label>
-                    <div class="col-md-6">
-                        <div class="input-group">
-                            <div class="input-group-text">
-                                <input class="form-check-input mt-0 correct-answer-radio" type="radio" name="correctAnswer_${count}" value="optionA" aria-label="Đáp án A" required>
-                            </div>
-                            <input type="text" class="form-control answer-option" placeholder="Đáp án A" required>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="input-group">
-                            <div class="input-group-text">
-                                <input class="form-check-input mt-0 correct-answer-radio" type="radio" name="correctAnswer_${count}" value="optionB" aria-label="Đáp án B" required>
-                            </div>
-                            <input type="text" class="form-control answer-option" placeholder="Đáp án B" required>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="input-group">
-                            <div class="input-group-text">
-                                <input class="form-check-input mt-0 correct-answer-radio" type="radio" name="correctAnswer_${count}" value="optionC" aria-label="Đáp án C" required>
-                            </div>
-                            <input type="text" class="form-control answer-option" placeholder="Đáp án C" required>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="input-group">
-                            <div class="input-group-text">
-                                <input class="form-check-input mt-0 correct-answer-radio" type="radio" name="correctAnswer_${count}" value="optionD" aria-label="Đáp án D" required>
-                            </div>
-                            <input type="text" class="form-control answer-option" placeholder="Đáp án D" required>
-                        </div>
-                    </div>
-                     <div class="col-12">
-                        <div class="invalid-feedback d-block">
-                            Vui lòng chọn một đáp án đúng cho câu hỏi này.
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
+    // const questionTemplate = (count) => `
+    //         <div class="question-item mb-4 p-3 border rounded bg-light" data-question-index="${count}">
+    //             <h7 class="d-flex justify-content-between align-items-center mb-3">
+    //                 <strong>Câu hỏi ${count}</strong>
+    //                 <button type="button" class="btn btn-sm btn-outline-danger remove-question-btn">
+    //                     <i class="fas fa-times"></i> Xóa
+    //                 </button>
+    //             </h7>
+    //             <div class="mb-3">
+    //                 <label for="question${count}Text" class="form-label">Nội dung câu hỏi <span class="text-danger">*</span></label>
+    //                 <textarea class="form-control question-text" id="question${count}Text" rows="2" placeholder="Nhập nội dung câu hỏi" required></textarea>
+    //                 <div class="invalid-feedback">
+    //                     Vui lòng nhập nội dung câu hỏi.
+    //                 </div>
+    //             </div>
+    //             <div class="row g-2 mb-3">
+    //                 <label class="form-label">Đáp án: <span class="text-danger">*</span></label>
+    //                 <div class="col-md-6">
+    //                     <div class="input-group">
+    //                         <div class="input-group-text">
+    //                             <input class="form-check-input mt-0 correct-answer-radio" type="radio" name="correctAnswer_${count}" value="optionA" aria-label="Đáp án A" required>
+    //                         </div>
+    //                         <input type="text" class="form-control answer-option" placeholder="Đáp án A" required>
+    //                     </div>
+    //                 </div>
+    //                 <div class="col-md-6">
+    //                     <div class="input-group">
+    //                         <div class="input-group-text">
+    //                             <input class="form-check-input mt-0 correct-answer-radio" type="radio" name="correctAnswer_${count}" value="optionB" aria-label="Đáp án B" required>
+    //                         </div>
+    //                         <input type="text" class="form-control answer-option" placeholder="Đáp án B" required>
+    //                     </div>
+    //                 </div>
+    //                 <div class="col-md-6">
+    //                     <div class="input-group">
+    //                         <div class="input-group-text">
+    //                             <input class="form-check-input mt-0 correct-answer-radio" type="radio" name="correctAnswer_${count}" value="optionC" aria-label="Đáp án C" required>
+    //                         </div>
+    //                         <input type="text" class="form-control answer-option" placeholder="Đáp án C" required>
+    //                     </div>
+    //                 </div>
+    //                 <div class="col-md-6">
+    //                     <div class="input-group">
+    //                         <div class="input-group-text">
+    //                             <input class="form-check-input mt-0 correct-answer-radio" type="radio" name="correctAnswer_${count}" value="optionD" aria-label="Đáp án D" required>
+    //                         </div>
+    //                         <input type="text" class="form-control answer-option" placeholder="Đáp án D" required>
+    //                     </div>
+    //                 </div>
+    //                  <div class="col-12">
+    //                     <div class="invalid-feedback d-block">
+    //                         Vui lòng chọn một đáp án đúng cho câu hỏi này.
+    //                     </div>
+    //                 </div>
+    //             </div>
+    //         </div>
+    //     `;
 
-    // Cập nhật số thứ tự câu hỏi và trạng thái nút xóa
-    function updateQuestionNumbers() {
-        const $questionItems = $("#questionsFormContainer .question-item");
-        if ($questionItems.length === 0) {
-            $("#noQuestionsMessage").show();
-        } else {
-            $("#noQuestionsMessage").hide();
-        }
+    // // Cập nhật số thứ tự câu hỏi và trạng thái nút xóa
+    // function updateQuestionNumbers() {
+    //     const $questionItems = $("#questionsFormContainer .question-item");
+    //     if ($questionItems.length === 0) {
+    //         $("#noQuestionsMessage").show();
+    //     } else {
+    //         $("#noQuestionsMessage").hide();
+    //     }
 
-        $questionItems.each(function (index) {
-            const $this = $(this);
-            $this.find("h7 strong").text(`Câu hỏi ${index + 1}`);
-            // Cập nhật thuộc tính name của radio button để đảm bảo chúng hoạt động độc lập
-            $this
-                .find(".correct-answer-radio")
-                .attr("name", `correctAnswer_${index + 1}`);
+    //     $questionItems.each(function (index) {
+    //         const $this = $(this);
+    //         $this.find("h7 strong").text(`Câu hỏi ${index + 1}`);
+    //         // Cập nhật thuộc tính name của radio button để đảm bảo chúng hoạt động độc lập
+    //         $this
+    //             .find(".correct-answer-radio")
+    //             .attr("name", `correctAnswer_${index + 1}`);
 
-            // Ẩn/hiện nút xóa nếu chỉ còn 1 câu hỏi
-            if ($questionItems.length === 1) {
-                $this.find(".remove-question-btn").hide();
-            } else {
-                $this.find(".remove-question-btn").show();
-            }
-        });
-    }
+    //         // Ẩn/hiện nút xóa nếu chỉ còn 1 câu hỏi
+    //         if ($questionItems.length === 1) {
+    //             $this.find(".remove-question-btn").hide();
+    //         } else {
+    //             $this.find(".remove-question-btn").show();
+    //         }
+    //     });
+    // }
 
-    // --- Xóa câu hỏi ---
-    // Sử dụng event delegation vì các nút xóa được thêm động
-    $(document).on("click", ".remove-question-btn", function () {
-        const $questionItemToRemove = $(this).closest(".question-item");
-        if ($("#questionsFormContainer .question-item").length > 1) {
-            // Chỉ xóa nếu có hơn 1 câu hỏi
-            $questionItemToRemove.remove();
-            updateQuestionNumbers();
-        } else {
-            alert("Bạn phải có ít nhất một câu hỏi.");
-        }
-    });
+    // // --- Xóa câu hỏi ---
+    // // Sử dụng event delegation vì các nút xóa được thêm động
+    // $(document).on("click", ".remove-question-btn", function () {
+    //     const $questionItemToRemove = $(this).closest(".question-item");
+    //     if ($("#questionsFormContainer .question-item").length > 1) {
+    //         // Chỉ xóa nếu có hơn 1 câu hỏi
+    //         $questionItemToRemove.remove();
+    //         updateQuestionNumbers();
+    //     } else {
+    //         alert("Bạn phải có ít nhất một câu hỏi.");
+    //     }
+    // });
 
-    // Thêm câu hỏi mới
-    $("#addQuestionBtn").on("click", function () {
-        questionCounter++;
-        $("#questionsFormContainer").append(questionTemplate(questionCounter));
-        updateQuestionNumbers();
-    });
+    // // Thêm câu hỏi mới
+    // $("#addQuestionBtn").on("click", function () {
+    //     questionCounter++;
+    //     $("#questionsFormContainer").append(questionTemplate(questionCounter));
+    //     updateQuestionNumbers();
+    // });
 
     // Xử lý nhấn nút Lưu bài kiểm tra Trong Modal thêm bài kiểm tra
     $("#newExerciseForm").on("submit", function (e) {
@@ -286,62 +691,62 @@ $(document).ready(function () {
     $(".btn-accept-request").click(function () {
         let id = $(this).data("id");
 
-    $.ajax({
-      url: `/thanh-vien-lop/${id}/chap-nhan`,
-      method: "POST",
-      data: {
-        _token: $('meta[name="csrf-token"]').attr("content"),
-      },
-      success: function (res) {
-        if (res.status) {
-          $(".card-body").html(res.html);
-        } else {
-          Swal.fire({
-            icon: "error",
-            title: "Thất bại",
-            text: res.message || "Đã xảy ra lỗi",
-          });
-        }
-      },
-      error: function () {
-        Swal.fire({
-          icon: "error",
-          title: "Lỗi hệ thống",
-          text: "Không thể kết nối đến máy chủ.",
+        $.ajax({
+            url: `/thanh-vien-lop/${id}/chap-nhan`,
+            method: "POST",
+            data: {
+                _token: $('meta[name="csrf-token"]').attr("content"),
+            },
+            success: function (res) {
+                if (res.status) {
+                    $(".card-body").html(res.html);
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Thất bại",
+                        text: res.message || "Đã xảy ra lỗi",
+                    });
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    icon: "error",
+                    title: "Lỗi hệ thống",
+                    text: "Không thể kết nối đến máy chủ.",
+                });
+            },
         });
-      },
     });
-  });
 
-  $(".btn-reject-request").click(function () {
-    let id = $(this).data("id");
+    $(".btn-reject-request").click(function () {
+        let id = $(this).data("id");
 
-    $.ajax({
-      url: `/thanh-vien-lop/${id}/tu-choi`,
-      method: "POST",
-      data: {
-        _token: $('meta[name="csrf-token"]').attr("content"),
-      },
-      success: function (res) {
-        if (res.status) {
-          $(".yeuCau").html(res.html);
-        } else {
-          Swal.fire({
-            icon: "error",
-            title: "Thất bại",
-            text: res.message || "Đã xảy ra lỗi",
-          });
-        }
-      },
-      error: function () {
-        Swal.fire({
-          icon: "error",
-          title: "Lỗi hệ thống",
-          text: "Không thể kết nối đến máy chủ.",
+        $.ajax({
+            url: `/thanh-vien-lop/${id}/tu-choi`,
+            method: "POST",
+            data: {
+                _token: $('meta[name="csrf-token"]').attr("content"),
+            },
+            success: function (res) {
+                if (res.status) {
+                    $(".yeuCau").html(res.html);
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Thất bại",
+                        text: res.message || "Đã xảy ra lỗi",
+                    });
+                }
+            },
+            error: function () {
+                Swal.fire({
+                    icon: "error",
+                    title: "Lỗi hệ thống",
+                    text: "Không thể kết nối đến máy chủ.",
+                });
+            },
         });
-      },
     });
-  });
 
     // --- Sự kiện click nút "Chèn bài giảng đã chọn" ---
     // $('#insertSelectedLecturesBtn').on('click', function () {
@@ -533,49 +938,40 @@ $(document).ready(function () {
     });
 });
 
-
-
-
-
-
-
-
 let listBaiTrongLop = {};
 
 // Xử lý check tất cả bản ghi
-$(document).on('change', '.check-all', function () {
-  const isChecked = $(this).is(':checked');
-  const tbody = $(this).parents('thead').next('tbody');
+$(document).on("change", ".check-all", function () {
+    const isChecked = $(this).is(":checked");
+    const tbody = $(this).parents("thead").next("tbody");
 
-  tbody.find('.row-checkbox').prop('checked', isChecked);
+    tbody.find(".row-checkbox").prop("checked", isChecked);
 });
 
+handleCheckAllSelected($(".row-checkbox:checked"));
 
-handleCheckAllSelected($('.row-checkbox:checked'));
+$(document).on("change", ".row-checkbox", function () {
+    // const tbody = $(this).parents('tbody');
+    // const thead = tbody.prev('thead');
+    // const total = tbody.find('.row-checkbox').length;
+    // const checked = tbody.find('.row-checkbox:checked').length;
 
-$(document).on('change', '.row-checkbox', function () {
-  // const tbody = $(this).parents('tbody');
-  // const thead = tbody.prev('thead');
-  // const total = tbody.find('.row-checkbox').length;
-  // const checked = tbody.find('.row-checkbox:checked').length;
+    // thead.find('.check-all').prop('checked', total === checked);
 
-  // thead.find('.check-all').prop('checked', total === checked);
-
-  handleCheckAllSelected($(this));
+    handleCheckAllSelected($(this));
 });
 
 function handleCheckAllSelected(checkbox) {
-  checkbox.each(function (index, element) {
-    // console.log(element.parents());
-    const tbody = $(element).parents('tbody');
-    const thead = tbody.prev('thead');
-    const total = tbody.find('.row-checkbox').length;
-    const checked = tbody.find('.row-checkbox:checked').length;
+    checkbox.each(function (index, element) {
+        // console.log(element.parents());
+        const tbody = $(element).parents("tbody");
+        const thead = tbody.prev("thead");
+        const total = tbody.find(".row-checkbox").length;
+        const checked = tbody.find(".row-checkbox:checked").length;
 
-    thead.find('.check-all').prop('checked', total === checked);
-  });
+        thead.find(".check-all").prop("checked", total === checked);
+    });
 }
-
 
 $.ajaxSetup({
     headers: {
@@ -583,31 +979,30 @@ $.ajaxSetup({
     },
 });
 
+$(document).on("click", ".btn-public-bai", function (e) {
+    const checkbox = $(".row-checkbox");
+    checkbox.each(function (index, element) {
+        const idBai = parseInt($(element).data("id"));
+        const congKhai = $(element).is(":checked") ? "1" : "0";
 
-$(document).on('click', '.btn-public-bai', function (e) {
-  const checkbox = $('.row-checkbox');
-  checkbox.each(function (index, element) {
-    const idBai = parseInt($(element).data('id'));
-    const congKhai = $(element).is(':checked') ? '1' : '0';
+        listBaiTrongLop[idBai] = congKhai;
+    });
 
-    listBaiTrongLop[idBai] = congKhai;
-  });
+    const url = window.location.pathname;
 
-  const url = window.location.pathname;
-
-  $.ajax({
-    url: `${url}/bai/cong-khai`,
-    type: 'POST',
-    data: {
-      listBaiTrongLop: listBaiTrongLop
-    },
-    dataType: 'json',
-    success: function (response) {
-      window.location.reload();
-      alert(response.message);
-    },
-    error: function (xhr) {
-      alert("Đã xảy ra lỗi: " + xhr.status + ' ' + xhr.statusText);
-    }
-  });
+    $.ajax({
+        url: `${url}/bai/cong-khai`,
+        type: "POST",
+        data: {
+            listBaiTrongLop: listBaiTrongLop,
+        },
+        dataType: "json",
+        success: function (response) {
+            window.location.reload();
+            alert(response.message);
+        },
+        error: function (xhr) {
+            alert("Đã xảy ra lỗi: " + xhr.status + " " + xhr.statusText);
+        },
+    });
 });
