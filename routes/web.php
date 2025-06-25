@@ -51,11 +51,11 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien+sinh-vien']], 
     Route::get('/', 'HomeController@home')->name('home');
     Route::get('/trang-chu', 'HomeController@home');
 
-
-    Route::get('/lam-bai/{id}', 'BaiKiemTraController@lamBai')->name('lambai');
+    
     Route::post('/bai-tap', 'BaiTapController@themBaiTap')->name('bai_tap.them');
     Route::get('/bai-giang/{id}/bai-tap', 'BaiTapController@danhSachBaiTap')->name('bai-tap.by-bai-giang');
-    
+    Route::get('lop-hoc-cua-toi', 'LopHocPhanController@lopHocCuaToi')->name('lop-hoc.lop-hoc-cua-toi');
+    Route::get('/lop-hoc-phan/{slug}', 'LopHocPhanController@chiTiet')->name('lop-hoc.detail');
 
     // Lớp học
     Route::get('/hoc-phan/{id}', 'LopHocPhanController@lopHocTheoHocPhan')->name('lop-hoc.list');
@@ -78,6 +78,9 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien+sinh-vien']], 
 
     //Bài kiểm tra
     Route::get('/bai-kiem-tra/{idLopHoc}', 'BaiKiemTraController@danhSachBaiKiemTra');
+    Route::get('/lam-bai/{id}', 'BaiKiemTraController@lamBai')->name('lambai');
+    Route::post('/bai-kiem-tra/nop-bai', 'BaiKiemTraController@nopBai')->name('bai-kiem-tra.nop-bai');
+    Route::get('/bai-kiem-tra/{id}/chi-tiet', 'BaiKiemTraController@layChiTiet');
 });
 
 

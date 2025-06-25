@@ -12,17 +12,22 @@ class LopHocPhanService
     {
         return LopHocPhan::findOrFail($id);
     }
-    
+
     public function layTheoSlug($slug)
     {
         return LopHocPhan::where('slug', $slug)->firstOrFail();
     }
-    
-    public function getLopHocCuaToi($nguoiDung)
+
+    public function getLopHocCuaToi($idNguoiDung)
     {
-        if ($nguoiDung != null) {
-            $idLopHoc = ThanhVienLop::where('id_nguoi_dung', $nguoiDung->id)
+        if ($idNguoiDung != null) {
+            $idLopHoc = ThanhVienLop::where('id_nguoi_dung', $idNguoiDung)
+                ->where(function ($query) {
+                    $query->where('is_accept', true)
+                        ->orWhereNull('is_accept');
+                })
                 ->pluck('id_lop_hoc_phan');
+
             return LopHocPhan::with(['hoc_phan', 'giang_vien'])
                 ->whereIn('id', $idLopHoc)
                 ->where('is_delete', false)

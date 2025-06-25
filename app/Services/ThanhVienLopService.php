@@ -98,11 +98,11 @@ class ThanhVienLopService
             })->exists();
     }
 
-    public function layTheoNguoiDungVaLopHocPhan($idLopHocPhan)
+    public function layTheoLopVaNguoiDung($idLopHocPhan, $idNguoiDung)
     {
-        return ThanhVienLop::where([
-            ['id_lop_hoc_phan', $idLopHocPhan],
-            ['id_nguoi_dung', session('id_nguoi_dung')]
-        ])->firstOrFail();
+        return ThanhVienLop::where('id_lop_hoc_phan', $idLopHocPhan)
+            ->where('id_nguoi_dung', $idNguoiDung)
+            ->where('is_accept', true)
+            ->first();
     }
 }

@@ -1,7 +1,10 @@
-<h6 class="mb-3">Yêu cầu vào lớp</h6>
-<div class="list-group mb-4 yeuCau">
-    @include('partials._danh-sach-yeu-cau')
-</div>
+@if (session('vai_tro') == 'Giảng viên')
+    <h6 class="mb-3">Yêu cầu vào lớp</h6>
+    <div class="list-group mb-4 yeuCau">
+        @include('partials._danh-sach-yeu-cau')
+    </div>             
+@endif 
+
 
 <!-- Phần danh sách thành viên -->
 <h6 class="mb-3">Thành viên trong lớp</h6>
