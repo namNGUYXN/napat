@@ -4,6 +4,7 @@
       $path = "{$menu->loai_menu->slug}/{$menu->gia_tri}";
       $url = url('/' . $path);
       // $active = $isActive($url) ? 'active' : '';
+      if (session('vai_tro') != 'Giảng viên' && $menu->loai_menu->slug == 'bai-giang') break;
     @endphp
     <li>
       @if ($menu->list_menu_con->count())

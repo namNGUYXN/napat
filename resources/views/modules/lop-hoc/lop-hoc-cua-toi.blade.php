@@ -45,7 +45,7 @@
     </div>
 
     {{-- Dấu : báo hiệu cho blade đây là biểu thức php --}}
-    <x-pagination :paginator="$dsLopHoc" base-url="{{ route('lop-hoc.lop-hoc-cua-toi') }}" />
+    {{-- <x-pagination :paginator="$dsLopHoc" base-url="{{ route('lop-hoc.lop-hoc-cua-toi') }}" /> --}}
 
     <button type="button" class="class-add-btn btn btn-primary rounded-circle" data-bs-toggle="modal"
       data-bs-target="#exampleModal">

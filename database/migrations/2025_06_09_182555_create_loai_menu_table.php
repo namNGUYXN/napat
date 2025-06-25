@@ -18,7 +18,7 @@ class CreateLoaiMenuTable extends Migration
             $table->string('ten', 100);
             $table->string('slug', 100)->unique();
             $table->string('icon')->default('');
-            $table->integer('thu_tu');
+            $table->integer('thu_tu')->default(1);
         });
     }
 

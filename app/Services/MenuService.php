@@ -93,7 +93,7 @@ class MenuService
             $menu->update([
                 'ten' => $data['ten'] ?? $menu->ten,
                 'id_loai_menu' => $data['id_loai_menu'] ?? $menu->id_loai_menu,
-                'id_menu_cha' => $data['id_menu_cha'] ?? $menu->id_menu_cha,
+                'id_menu_cha' => $data['id_menu_cha'],
                 'gia_tri' => $data['gia_tri'] ?? $menu->gia_tri,
                 'thu_tu' => $data['thu_tu'] ?? $menu->thu_tu,
             ]);

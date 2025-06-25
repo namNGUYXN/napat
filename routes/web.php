@@ -32,15 +32,15 @@ Route::group([
     \UniSharp\LaravelFilemanager\Lfm::routes();
 });
 Route::group(['middleware' => ['auth.custom']], function () {
-    Route::get('/storage/files/{id_nguoi_dung}/thumbs/{ten_file}', 'SecureFileController@privateFile');
-    Route::get('/storage/files/{id_nguoi_dung}/{ten_file}', 'SecureFileController@privateFile');
-    Route::get('/storage/photos/{id_nguoi_dung}/thumbs/{ten_anh}', 'SecureFileController@privateImage');
-    Route::get('/storage/photos/{id_nguoi_dung}/{ten_anh}', 'SecureFileController@privateImage');
-
     Route::get('/storage/files/shares/thumbs/{ten_file}', 'SecureFileController@publicFile');
     Route::get('/storage/files/shares/{ten_file}', 'SecureFileController@publicFile');
     Route::get('/storage/photos/shares/thumbs/{ten_anh}', 'SecureFileController@publicImage');
     Route::get('/storage/photos/shares/{ten_anh}', 'SecureFileController@publicImage');
+    
+    Route::get('/storage/files/{id_nguoi_dung}/thumbs/{ten_file}', 'SecureFileController@privateFile');
+    Route::get('/storage/files/{id_nguoi_dung}/{ten_file}', 'SecureFileController@privateFile');
+    Route::get('/storage/photos/{id_nguoi_dung}/thumbs/{ten_anh}', 'SecureFileController@privateImage');
+    Route::get('/storage/photos/{id_nguoi_dung}/{ten_anh}', 'SecureFileController@privateImage');
 });
 
 

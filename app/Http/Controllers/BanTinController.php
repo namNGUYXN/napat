@@ -29,7 +29,7 @@ class BanTinController extends Controller
             ]
         );
 
-        $thanhVienLop = $this->thanhVienLopService->layTheoNguoiDungVaLopHocPhan($id);
+        $thanhVienLop = $this->thanhVienLopService->layTheoLopVaNguoiDung($id, session('id_nguoi_dung'));
 
         $data['id_thanh_vien_lop'] = $thanhVienLop->id;
         $data['id_lop_hoc_phan'] = $id;
@@ -101,7 +101,7 @@ class BanTinController extends Controller
             ]
         );
 
-        $thanhVienLop = $this->thanhVienLopService->layTheoNguoiDungVaLopHocPhan($idLopHocPhan);
+        $thanhVienLop = $this->thanhVienLopService->layTheoLopVaNguoiDung($idLopHocPhan, session('id_nguoi_dung'));
 
         $data['id_thanh_vien_lop'] = $thanhVienLop->id;
         $data['id_lop_hoc_phan'] = $idLopHocPhan;
