@@ -26,8 +26,8 @@
       </div>
       <div class="card-body position-relative">
 
-        <div class="table-responsive">
-          <table class="table table-hover caption-top table-striped">
+        <div class="table-responsive custom-scrollbar">
+          <table class="table table-hover caption-top table-striped" style="min-width: 600px;">
             <caption>Có {{ count($listMenu) }} bản ghi menu</caption>
             <thead>
               <tr>
