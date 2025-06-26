@@ -65,14 +65,14 @@ class MenuController extends Controller
         if ($result['success']) {
             return redirect()->route('menu.index')->with([
                 'message' => $result['message'],
-                'status' => 'success'
+                'icon' => 'success'
             ]);
         }
 
         return redirect()->back()
             ->with([
                 'message' => $result['message'],
-                'status' => 'danger'
+                'icon' => 'error'
             ])->withInput();
     }
 
@@ -105,14 +105,14 @@ class MenuController extends Controller
         if ($result['success']) {
             return redirect()->route('menu.index')->with([
                 'message' => $result['message'],
-                'status' => 'success'
+                'icon' => 'success'
             ]);
         }
 
         return redirect()->back()
             ->with([
                 'message' => $result['message'],
-                'status' => 'danger'
+                'icon' => 'error'
             ])->withInput();
     }
 
@@ -123,13 +123,13 @@ class MenuController extends Controller
         if ($result['success']) {
             return redirect()->route('menu.index')->with([
                 'message' => $result['message'],
-                'status' => 'success'
+                'icon' => 'success'
             ]);
         }
 
         return redirect()->route('menu.index')->with([
                 'message' => $result['message'],
-                'status' => 'danger'
+                'icon' => 'error'
             ]);
     }
 

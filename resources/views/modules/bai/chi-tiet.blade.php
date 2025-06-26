@@ -44,8 +44,336 @@
 
       <!-- Tab Thảo luận -->
       <div class="tab-pane fade" id="discussion" role="tabpanel" aria-labelledby="discussion-tab">
-        <div class="container-fluid p-4">
-          <p><em>Khu vực thảo luận sẽ hiển thị ở đây...</em></p>
+        <div class="container-fluid">
+
+          <div class="card mb-4">
+            <div class="card-header bg-secondary text-white">
+              <h5 class="mb-0">Để lại bình luận của bạn</h5>
+            </div>
+            <div class="card-body">
+              <form id="commentForm" class="d-flex align-items-end">
+                <div class="flex-grow-1 me-2">
+                  <label for="newCommentContent" class="form-label visually-hidden">Nội dung bình luận</label>
+                  <textarea class="form-control" id="newCommentContent" rows="3" placeholder="Viết bình luận của bạn tại đây..."
+                    required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Gửi</button>
+              </form>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header bg-dark text-white">
+              <h5 class="mb-0">Danh sách bình luận</h5>
+            </div>
+            <div class="card-body">
+              <div id="commentsList" class="list-group list-group-flush">
+
+                <div class="list-group-item comment-item" data-comment-id="cmt1" data-comment-owner-id="userA"
+                  data-comment-level="0">
+                  <div class="d-flex w-100 justify-content-between align-items-center">
+                    <h6 class="mb-1 me-auto">Người dùng A</h6>
+                    <small class="text-muted me-2">2 giờ trước</small>
+
+                    <div class="dropdown comment-actions-dropdown">
+                      <button class="btn btn-transparent dropdown-toggle hide-arrow-down" type="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-ellipsis-v"></i>
+                      </button>
+                      <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item edit-comment-btn" href="#" data-comment-id="cmt1">Chỉnh sửa</a>
+                        </li>
+                        <li><a class="dropdown-item delete-comment-btn" href="#" data-comment-id="cmt1">Xóa</a></li>
+                      </ul>
+                    </div>
+
+                  </div>
+                  <p class="mb-1 comment-content-text">Đây là nội dung của bình luận đầu tiên.</p>
+
+                  <div class="edit-form-container mt-2" style="display: none;">
+                    <form class="edit-comment-form d-flex align-items-end">
+                      <div class="flex-grow-1 me-2">
+                        <textarea class="form-control form-control-sm" rows="2" required="">Đây là nội dung của bình luận đầu tiên.</textarea>
+                      </div>
+                      <button type="submit" class="btn btn-sm btn-success me-1">Lưu</button>
+                      <button type="button" class="btn btn-sm btn-secondary cancel-edit-btn">Hủy</button>
+                    </form>
+                  </div>
+
+                  <small class="comment-action-links">
+
+                    <a href="#" class="text-primary me-2 reply-btn" data-comment-id="cmt1"
+                      data-comment-author="Người dùng A" data-comment-level="0">Phản hồi</a>
+
+                  </small>
+
+
+                  <small>
+                    <a href="#" class="toggle-replies-btn text-muted" data-comment-id="cmt1"
+                      data-has-replies="true" data-toggle-state="hidden">
+                      Có 1 phản hồi <i class="fas fa-caret-down"></i>
+                    </a>
+                  </small>
+
+
+                  <div class="reply-form-container mt-2" style="display: none;">
+                    <form class="reply-form d-flex align-items-end">
+                      <div class="flex-grow-1 me-2">
+                        <textarea class="form-control form-control-sm" rows="2" placeholder="Phản hồi lại Người dùng A..."
+                          required=""></textarea>
+                      </div>
+                      <button type="submit" class="btn btn-sm btn-outline-primary">Gửi</button>
+                    </form>
+                  </div>
+
+                  <div class="replies-container mt-2 hidden-replies">
+
+                    <div class="list-group-item comment-item" data-comment-id="cmt1.1" data-comment-owner-id="userB"
+                      data-comment-level="1">
+                      <div class="d-flex w-100 justify-content-between align-items-center">
+                        <h6 class="mb-1 me-auto">Người dùng B</h6>
+                        <small class="text-muted me-2">1 giờ trước</small>
+
+                      </div>
+                      <p class="mb-1 comment-content-text">@Người dùng A: Tôi hoàn toàn đồng ý!</p>
+
+                      <div class="edit-form-container mt-2" style="display: none;">
+                        <form class="edit-comment-form d-flex align-items-end">
+                          <div class="flex-grow-1 me-2">
+                            <textarea class="form-control form-control-sm" rows="2" required="">@Người dùng A: Tôi hoàn toàn đồng ý!</textarea>
+                          </div>
+                          <button type="submit" class="btn btn-sm btn-success me-1">Lưu</button>
+                          <button type="button" class="btn btn-sm btn-secondary cancel-edit-btn">Hủy</button>
+                        </form>
+                      </div>
+
+                      <small class="comment-action-links">
+
+                        <a href="#" class="text-primary me-2 reply-btn" data-comment-id="cmt1.1"
+                          data-comment-author="Người dùng B" data-comment-level="1">Phản hồi</a>
+
+                      </small>
+
+
+                      <small>
+                        <a href="#" class="toggle-replies-btn text-muted" data-comment-id="cmt1.1"
+                          data-has-replies="true" data-toggle-state="hidden">
+                          Có 2 phản hồi <i class="fas fa-caret-down"></i>
+                        </a>
+                      </small>
+
+
+                      <div class="reply-form-container mt-2" style="display: none;">
+                        <form class="reply-form d-flex align-items-end">
+                          <div class="flex-grow-1 me-2">
+                            <textarea class="form-control form-control-sm" rows="2" placeholder="Phản hồi lại Người dùng B..."
+                              required=""></textarea>
+                          </div>
+                          <button type="submit" class="btn btn-sm btn-outline-primary">Gửi</button>
+                        </form>
+                      </div>
+
+                      <div class="replies-container mt-2 hidden-replies">
+
+                        <div class="list-group-item comment-item" data-comment-id="cmt1.1.1"
+                          data-comment-owner-id="userC" data-comment-level="2">
+                          <div class="d-flex w-100 justify-content-between align-items-center">
+                            <h6 class="mb-1 me-auto">Người dùng C</h6>
+                            <small class="text-muted me-2">30 phút trước</small>
+
+                          </div>
+                          <p class="mb-1 comment-content-text">@Người dùng B: Cảm ơn bạn đã xác nhận!</p>
+
+                          <div class="edit-form-container mt-2" style="display: none;">
+                            <form class="edit-comment-form d-flex align-items-end">
+                              <div class="flex-grow-1 me-2">
+                                <textarea class="form-control form-control-sm" rows="2" required="">@Người dùng B: Cảm ơn bạn đã xác nhận!</textarea>
+                              </div>
+                              <button type="submit" class="btn btn-sm btn-success me-1">Lưu</button>
+                              <button type="button" class="btn btn-sm btn-secondary cancel-edit-btn">Hủy</button>
+                            </form>
+                          </div>
+
+                          <small class="comment-action-links">
+
+                            <a href="#" class="text-primary me-2 reply-btn" data-comment-id="cmt1.1.1"
+                              data-comment-author="Người dùng C" data-comment-level="2">Phản hồi</a>
+
+                          </small>
+
+
+                          <small>
+                            <a href="#" class="toggle-replies-btn text-muted" data-comment-id="cmt1.1.1"
+                              data-has-replies="true" data-toggle-state="hidden">
+                              Có 1 phản hồi <i class="fas fa-caret-down"></i>
+                            </a>
+                          </small>
+
+
+                          <div class="reply-form-container mt-2" style="display: none;">
+                            <form class="reply-form d-flex align-items-end">
+                              <div class="flex-grow-1 me-2">
+                                <textarea class="form-control form-control-sm" rows="2" placeholder="Phản hồi lại Người dùng C..."
+                                  required=""></textarea>
+                              </div>
+                              <button type="submit" class="btn btn-sm btn-outline-primary">Gửi</button>
+                            </form>
+                          </div>
+
+                          <div class="replies-container mt-2 hidden-replies">
+
+                            <div class="list-group-item comment-item" data-comment-id="cmt1.1.1.1"
+                              data-comment-owner-id="userD" data-comment-level="3">
+                              <div class="d-flex w-100 justify-content-between align-items-center">
+                                <h6 class="mb-1 me-auto">Người dùng D</h6>
+                                <small class="text-muted me-2">15 phút trước</small>
+
+                              </div>
+                              <p class="mb-1 comment-content-text">@Người dùng C: Không có gì, rất vui được thảo luận.
+                              </p>
+
+                              <div class="edit-form-container mt-2" style="display: none;">
+                                <form class="edit-comment-form d-flex align-items-end">
+                                  <div class="flex-grow-1 me-2">
+                                    <textarea class="form-control form-control-sm" rows="2" required="">@Người dùng C: Không có gì, rất vui được thảo luận.</textarea>
+                                  </div>
+                                  <button type="submit" class="btn btn-sm btn-success me-1">Lưu</button>
+                                  <button type="button" class="btn btn-sm btn-secondary cancel-edit-btn">Hủy</button>
+                                </form>
+                              </div>
+
+                              <small class="comment-action-links">
+
+                              </small>
+
+
+
+                              <div class="reply-form-container mt-2" style="display: none;">
+                                <form class="reply-form d-flex align-items-end">
+                                  <div class="flex-grow-1 me-2">
+                                    <textarea class="form-control form-control-sm" rows="2" placeholder="Phản hồi lại Người dùng D..."
+                                      required=""></textarea>
+                                  </div>
+                                  <button type="submit" class="btn btn-sm btn-outline-primary">Gửi</button>
+                                </form>
+                              </div>
+
+                              <div class="replies-container mt-2 hidden-replies">
+
+                              </div>
+                            </div>
+
+                          </div>
+                        </div>
+
+                        <div class="list-group-item comment-item" data-comment-id="cmt1.1.2"
+                          data-comment-owner-id="userE" data-comment-level="2">
+                          <div class="d-flex w-100 justify-content-between align-items-center">
+                            <h6 class="mb-1 me-auto">Người dùng E</h6>
+                            <small class="text-muted me-2">20 phút trước</small>
+
+                          </div>
+                          <p class="mb-1 comment-content-text">@Người dùng B: Bình luận của bạn rất có giá trị.</p>
+
+                          <div class="edit-form-container mt-2" style="display: none;">
+                            <form class="edit-comment-form d-flex align-items-end">
+                              <div class="flex-grow-1 me-2">
+                                <textarea class="form-control form-control-sm" rows="2" required="">@Người dùng B: Bình luận của bạn rất có giá trị.</textarea>
+                              </div>
+                              <button type="submit" class="btn btn-sm btn-success me-1">Lưu</button>
+                              <button type="button" class="btn btn-sm btn-secondary cancel-edit-btn">Hủy</button>
+                            </form>
+                          </div>
+
+                          <small class="comment-action-links">
+
+                            <a href="#" class="text-primary me-2 reply-btn" data-comment-id="cmt1.1.2"
+                              data-comment-author="Người dùng E" data-comment-level="2">Phản hồi</a>
+
+                          </small>
+
+
+
+                          <div class="reply-form-container mt-2" style="display: none;">
+                            <form class="reply-form d-flex align-items-end">
+                              <div class="flex-grow-1 me-2">
+                                <textarea class="form-control form-control-sm" rows="2" placeholder="Phản hồi lại Người dùng E..."
+                                  required=""></textarea>
+                              </div>
+                              <button type="submit" class="btn btn-sm btn-outline-primary">Gửi</button>
+                            </form>
+                          </div>
+
+                          <div class="replies-container mt-2 hidden-replies">
+
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+                <div class="list-group-item comment-item" data-comment-id="cmt2" data-comment-owner-id="userA"
+                  data-comment-level="0">
+                  <div class="d-flex w-100 justify-content-between align-items-center">
+                    <h6 class="mb-1 me-auto">Admin</h6>
+                    <small class="text-muted me-2">Hôm qua</small>
+
+                    <div class="dropdown comment-actions-dropdown">
+                      <button class="btn btn-transparent dropdown-toggle hide-arrow-down" type="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-ellipsis-v"></i>
+                      </button>
+                      <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item edit-comment-btn" href="#" data-comment-id="cmt2">Chỉnh
+                            sửa</a></li>
+                        <li><a class="dropdown-item delete-comment-btn" href="#" data-comment-id="cmt2">Xóa</a>
+                        </li>
+                      </ul>
+                    </div>
+
+                  </div>
+                  <p class="mb-1 comment-content-text">Chào mừng các bạn đến với phần bình luận!</p>
+
+                  <div class="edit-form-container mt-2" style="display: none;">
+                    <form class="edit-comment-form d-flex align-items-end">
+                      <div class="flex-grow-1 me-2">
+                        <textarea class="form-control form-control-sm" rows="2" required="">Chào mừng các bạn đến với phần bình luận!</textarea>
+                      </div>
+                      <button type="submit" class="btn btn-sm btn-success me-1">Lưu</button>
+                      <button type="button" class="btn btn-sm btn-secondary cancel-edit-btn">Hủy</button>
+                    </form>
+                  </div>
+
+                  <small class="comment-action-links">
+
+                    <a href="#" class="text-primary me-2 reply-btn" data-comment-id="cmt2"
+                      data-comment-author="Admin" data-comment-level="0">Phản hồi</a>
+
+                  </small>
+
+
+
+                  <div class="reply-form-container mt-2" style="display: none;">
+                    <form class="reply-form d-flex align-items-end">
+                      <div class="flex-grow-1 me-2">
+                        <textarea class="form-control form-control-sm" rows="2" placeholder="Phản hồi lại Admin..." required=""></textarea>
+                      </div>
+                      <button type="submit" class="btn btn-sm btn-outline-primary">Gửi</button>
+                    </form>
+                  </div>
+
+                  <div class="replies-container mt-2 hidden-replies">
+
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -58,19 +386,38 @@
       <h6>Danh sách chương & bài giảng</h6>
       <hr>
       <div class="list-group">
-        <div class="mb-3">
-          <h5>Chương 1</h5>
-          <a href="lecture-detail.html" class="list-group-item list-group-item-action active ps-4">Bài 1.1: Giới
-            thiệu</a>
-          <a href="lecture-detail.html" class="list-group-item list-group-item-action ps-4">Bài 1.2: Cài đặt</a>
-        </div>
-        <div class="mb-3">
-          <h5>Chương 2</h5>
-          <a href="lecture-detail.html" class="list-group-item list-group-item-action ps-4">Bài 2.1: HTML cơ
-            bản</a>
-          <a href="lecture-detail.html" class="list-group-item list-group-item-action ps-4">Bài 2.2: CSS cơ
-            bản</a>
-        </div>
+        @foreach ($listChuong as $chuong)
+          @php
+            $chuongTrongLop = isset($listChuongTrongLop[$chuong->id]) ? $listChuongTrongLop[$chuong->id] : collect([]);
+            $hasBaiCongKhai = $chuongTrongLop->flatten(1)->contains(function ($bai) {
+                return $bai->pivot->cong_khai == true;
+            });
+          @endphp
+          @if ($hasBaiCongKhai || session('id_nguoi_dung') == $lopHocPhan->id_giang_vien)
+            <div class="mb-3">
+              <h5>{{ $chuong->tieu_de }}</h5>
+
+              @forelse ($chuongTrongLop as $bai)
+                @php
+                  $isPublic = $bai->pivot->cong_khai;
+                  $url = route('bai-trong-lop.detail', [$lopHocPhan->id, $bai->slug]);
+                  $isActive = request()->url() == $url ? 'active' : '';
+                @endphp
+
+                @if ($isPublic || session('id_nguoi_dung') == $lopHocPhan->id_giang_vien)
+                  <a href="{{ $url }}"
+                    class="list-group-item list-group-item-action {{$isActive}} ps-4">
+                    {{ $bai->tieu_de }}
+                  </a>
+                @endif
+              @empty
+                  <p>Chương chưa có bài học</p>
+              @endforelse
+
+            </div>
+          @endif
+        @endforeach
+
       </div>
     </div>
   </div>

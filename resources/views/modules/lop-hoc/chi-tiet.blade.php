@@ -9,7 +9,7 @@
   <!-- Main Content -->
   <div class="col bg-light p-4 overflow-auto custom-scrollbar">
 
-    <div id="info-lop-hoc" class="d-none" data-id-lop-hoc="{{ $lop->id }}" data-id-hoc-phan="{{ $hocPhan->id }}">
+    <div id="info-lop-hoc" class="d-none" data-id-lop-hoc="{{ $lopHocPhan->id }}" data-id-hoc-phan="{{ $hocPhan->id }}">
     </div>
 
     <!-- PHẦN DƯỚI: TAB NỘI DUNG -->
@@ -62,16 +62,16 @@
         <div class="card mb-4">
           <div class="row g-0">
             <div class="col-md-4">
-              <img src="{{ asset('storage/' . $lop->hinh_anh) }}" class="img-fluid rounded-start" alt="">
+              <img src="{{ asset('storage/' . $lopHocPhan->hinh_anh) }}" class="img-fluid rounded-start" alt="">
             </div>
             <div class="col-md-8 position-relative">
               <div class="card-body">
-                <h5 class="card-title mb-3">{{ $lop->ten }} - {{ $lop->ma }}</h5>
-                <p class="card-text mb-1"><strong>Học phần:</strong> {{ $lop->hoc_phan->ten }}</p>
-                <p class="card-text mb-1"><strong>Giảng viên:</strong> {{ $lop->giang_vien->ho_ten }}</p>
+                <h5 class="card-title mb-3">{{ $lopHocPhan->ten }} - {{ $lopHocPhan->ma }}</h5>
+                <p class="card-text mb-1"><strong>Học phần:</strong> {{ $lopHocPhan->hoc_phan->ten }}</p>
+                <p class="card-text mb-1"><strong>Giảng viên:</strong> {{ $lopHocPhan->giang_vien->ho_ten }}</p>
                 <p class="card-text mb-1"><strong>Học kì:</strong> 2024 - 2025</p>
                 <p class="card-text mt-3 mb-0">
-                  <small class="text-muted">{{ $lop->mo_ta_ngan }}</small>
+                  <small class="text-muted">{{ $lopHocPhan->mo_ta_ngan }}</small>
                 </p>
 
                 <div class="class-action-btn">
@@ -97,113 +97,10 @@
           </div>
         </div>
 
-        @foreach ($listBanTin as $banTin)
-          <!-- Mỗi bản tin là một thẻ -->
-          <div class="card news-item overflow-hidden mb-5">
-            <div class="card-body position-relative">
-              <!-- Avatar người đăng -->
-              <div class="d-flex align-items-center me-4">
-                <img src="{{ asset('storage/' . $banTin->thanh_vien_lop->nguoi_dung->hinh_anh) }}"
-                  class="border border-secondary rounded-circle me-3" alt="Avatar" width="40" height="40">
-                <h6 class="card-title">
-                  {{ $banTin->thanh_vien_lop->nguoi_dung->vai_tro ?? '' }}
-                  : {{ $banTin->thanh_vien_lop->nguoi_dung->ho_ten }}
-                  <small class="text-body-tertiary fst-italic">
-                    (Đã đăng vào lúc {{ $banTin->ngay_tao }})
-                  </small>
-                </h6>
-              </div>
-              <div class="news-content mt-3">
-                {!! $banTin->noi_dung !!}
-              </div>
 
-              <!-- Nút hiển thị số phản hồi -->
-              <div class="mt-2">
-                @if (count($banTin->list_ban_tin_con) > 0)
-                  <a href="javascript:void(0)" class="text-primary toggle-comments" data-bs-toggle="collapse"
-                    data-bs-target="#comments-{{ $banTin->id }}">
-                    {{ count($banTin->list_ban_tin_con) }} phản hồi
-                  </a>
-                @endif
-
-              </div>
-              @if ($nguoiDung->id == $banTin->thanh_vien_lop->nguoi_dung->id)
-                <div class="news-action-btn">
-                  <div class="dropdown">
-                    <button class="btn btn-transparent dropdown-toggle remove-arrow-down" type="button"
-                      data-bs-toggle="dropdown" aria-expanded="false">
-                      <i class="fas fa-ellipsis-v"></i>
-                    </button>
-                    <ul class="dropdown-menu">
-                      <li>
-                        <button class="dropdown-item btn-update-ban-tin" type="button"
-                          data-url-detail="{{ route('ban-tin.detail', $banTin->id) }}"
-                          data-url-update="{{ route('ban-tin.update', $banTin->id) }}">
-                          Chỉnh sửa bản tin
-                        </button>
-                      </li>
-                      <li>
-                        <button class="dropdown-item" type="button">Xóa bản tin</button>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              @endif
-            </div>
-
-            <div class="card-footer bg-white py-3">
-              <!-- Form phản hồi -->
-              <form action="{{ route('ban-tin.reply', [$lop->id, $banTin->id]) }}" method="POST" class="mb-3">
-                @csrf
-                <div class="d-flex align-items-start gap-2">
-                  <img src="{{ asset('storage/' . $nguoiDung->hinh_anh) }}" alt="Avatar"
-                    class="border border-secondary rounded-circle me-3" width="40" height="40">
-                  <div class="flex-grow-1">
-                    <div class="input-group">
-                      <input type="text" class="form-control" name="noi_dung" placeholder="Nhập phản hồi...">
-                      <button class="btn btn-outline-primary" type="submit">Gửi</button>
-                    </div>
-                  </div>
-                </div>
-              </form>
-
-              <!-- Danh sách bình luận - collapse -->
-              <div class="collapse comments custom-scrollbar" id="comments-{{ $banTin->id }}">
-                <!-- Bình luận 1 -->
-                @foreach ($banTin->list_ban_tin_con as $cmt)
-                  <div class="d-flex align-items-start mb-4 position-relative">
-                    <img src="{{ asset('storage/' . $banTin->thanh_vien_lop->nguoi_dung->hinh_anh) }}"
-                      class="border border-secondary rounded-circle me-3" alt="Avatar" width="40"
-                      height="40">
-                    <div class="bg-body-secondary rounded p-2 flex-grow-1">
-                      <h6>
-                        {{ $cmt->thanh_vien_lop->nguoi_dung->ho_ten }}
-                        <small class="text-body-tertiary fst-italic">
-                          (Đã đăng vào lúc {{ $banTin->ngay_tao }})
-                        </small>
-                      </h6>
-                      <p class="mb-0">{{ $cmt->noi_dung }}</p>
-                      @if ($nguoiDung->id == $cmt->thanh_vien_lop->nguoi_dung->id)
-                        <div class="child-news-action-btn">
-                          <div class="dropdown">
-                            <button class="btn btn-transparent dropdown-toggle remove-arrow-down" type="button"
-                              data-bs-toggle="dropdown" aria-expanded="false">
-                              <i class="fas fa-ellipsis-v"></i>
-                            </button>
-                            <ul class="dropdown-menu">
-                              <li><button class="dropdown-item" type="button">Chỉnh sửa phản hồi</button></li>
-                              <li><button class="dropdown-item" type="button">Xóa phản hồi</button></li>
-                            </ul>
-                          </div>
-                        </div>
-                      @endif
-                    </div>
-                  </div>
-                @endforeach
-              </div>
-            </div>
-          </div>
-        @endforeach
+        <div id="wp-list-ban-tin">
+          @include('partials.ban-tin.list', [$listBanTin, $lopHocPhan, $nguoiDung])
+        </div>
 
         @if (session('vai_tro') == 'Giảng viên')
           <button type="button" class="newsletter-add-btn btn btn-primary rounded-circle" title="Tạo bản tin mới"
@@ -220,104 +117,12 @@
           <div class="card-body">
             <div class="accordion" id="accordion-chuong">
 
-              @foreach ($listChuong as $key => $chuong)
-                @php
-                  $chuongTrongLop = isset($listChuongTrongLop[$chuong->id])
-                      ? $listChuongTrongLop[$chuong->id]
-                      : collect([]);
-                  $soBaiCongKhai = $chuongTrongLop
-                      ->filter(function ($bai) {
-                          return $bai->pivot->cong_khai == true;
-                      })
-                      ->count();
-                  $hasBaiCongKhai = $chuongTrongLop->flatten(1)->contains(function ($bai) {
-                      return $bai->pivot->cong_khai == true;
-                  });
-                @endphp
+              @include('partials.lop-hoc-phan.chi-tiet.list-bai', [
+                  $listChuong,
+                  $listChuongTrongLop,
+                  $lopHocPhan,
+              ])
 
-                @if ($hasBaiCongKhai || session('id_nguoi_dung') == $lop->id_giang_vien)
-                  <div class="accordion-item">
-                    <h2 class="accordion-header" id="heading-{{ $key }}">
-                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapse-{{ $key }}" aria-expanded="false"
-                        aria-controls="collapse-{{ $key }}">
-                        {{ $chuong->tieu_de }}
-                      </button>
-                    </h2>
-                    <div id="collapse-{{ $key }}" class="accordion-collapse collapse"
-                      aria-labelledby="heading-{{ $key }}" data-bs-parent="#lectureAccordion">
-                      <div class="accordion-body">
-                        <div class="table-responsive custom-scrollbar">
-
-                          <table class="table table-hover table-striped caption-top">
-                            @if (session('id_nguoi_dung') == $lop->id_giang_vien)
-                              <caption>Có {{ $chuong->list_bai->count() }} bài trong chương
-                              </caption>
-                            @else
-                              <caption>Có {{ $soBaiCongKhai }} bài trong chương</caption>
-                            @endif
-                            <thead>
-                              <tr>
-                                @if (session('id_nguoi_dung') == $lop->id_giang_vien)
-                                  <th scope="col">
-                                    <div class="form-check form-switch" style="max-width: 50px;">
-                                      <input class="form-check-input check-all" type="checkbox" role="switch"
-                                        data-bs-toggle="tooltip" data-bs-title="Công khai bài học"
-                                        data-bs-placement="left">
-                                    </div>
-                                  </th>
-                                @endif
-                                <th scope="col" class="w-100">Tiêu đề</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              @forelse ($chuongTrongLop as $index => $bai)
-                                @php
-                                  $isChecked = $bai->pivot->cong_khai;
-                                @endphp
-
-                                @if ($isChecked || session('id_nguoi_dung') == $lop->id_giang_vien)
-                                  <tr>
-                                    @if (session('id_nguoi_dung') == $lop->id_giang_vien)
-                                      <td>
-                                        <div class="form-check form-switch">
-                                          <input class="form-check-input row-checkbox" type="checkbox" role="switch"
-                                            data-bs-toggle="tooltip" data-bs-title="Công khai bài học"
-                                            data-bs-placement="left"
-                                            data-id="{{ $bai->id }}"{{ $isChecked ? ' checked' : '' }}>
-                                        </div>
-                                      </td>
-                                    @endif
-                                    <td class="align-middle">
-                                      <a href="{{ route('bai-trong-lop.detail', [$lop->id, $bai->slug]) }}"
-                                        class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
-                                        {{ $bai->tieu_de }}
-                                      </a>
-                                    </td>
-                                  </tr>
-                                @endif
-
-                              @empty
-                                <tr>
-                                  <td colspan="2">Chương chưa có bài học</td>
-                                </tr>
-                              @endforelse
-                            </tbody>
-                          </table>
-
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                @endif
-              @endforeach
-
-              @if (session('id_nguoi_dung') == $lop->id_giang_vien)
-                <button type="button" class="btn btn-success mt-3 btn-public-bai" data-bs-toggle="tooltip"
-                  data-bs-title="Cập nhật trạng thái công khai cho các bài học" data-bs-placement="bottom">
-                  Cập nhật
-                </button>
-              @endif
             </div>
 
           </div>
@@ -395,7 +200,7 @@
                     </div>
                     <hr>
 
-                    <input type="hidden" name="idLopHoc" id="idLopHoc" value="{{ $lop->id }}">
+                    <input type="hidden" name="idLopHoc" id="idLopHoc" value="{{ $lopHocPhan->id }}">
 
                     <div id="questionsFormContainer">
                       <h6>Danh sách câu hỏi:</h6>
@@ -567,7 +372,7 @@
 
     {{-- Modal thêm bản tin --}}
     @if (session('vai_tro') == 'Giảng viên')
-      <form action="{{ route('ban-tin.store', $lop->id) }}" method="POST">
+      <form action="{{ route('ban-tin.store', $lopHocPhan->id) }}" method="POST">
         @csrf
         <div class="modal fade" id="modal-them-ban-tin" tabindex="-1" aria-labelledby="" aria-hidden="true"
           data-bs-focus="false">

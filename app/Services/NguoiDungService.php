@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\NguoiDung;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class NguoiDungService
@@ -36,5 +37,29 @@ class NguoiDungService
             'status' => true,
             'message' => 'Thay đổi mật khẩu thành công.'
         ];
+    }
+
+    public function capNhatThongTin(array $data, $nguoiDung)
+    {
+        try {
+            DB::beginTransaction();
+
+            $nguoiDung->ho_ten = $data['ho_ten'];
+            $nguoiDung->hinh_anh = $data['hinh_anh'] ?? $nguoiDung->hinh_anh;
+            $nguoiDung->sdt = $data['sdt'];
+            $nguoiDung->save();
+
+            DB::commit();
+            return [
+                'success' => true,
+                'message' => 'Cập nhật thông tin cá nhân thành công'
+            ];
+        } catch (\Exception $e) {
+            DB::rollback();
+            return [
+                'success' => false,
+                'message' => 'Lỗi khi cập nhật thông tin: ' + $e->getMessage()
+            ];
+        }
     }
 }

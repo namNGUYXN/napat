@@ -12,12 +12,12 @@
       <i class="fas fa-arrow-alt-circle-left me-2"></i>Danh sách bài của chương
     </a>
 
-    @if (session('message'))
+    {{-- @if (session('message'))
       <div class="alert alert-{{ session('status') }} alert-dismissible fade show" role="alert">
         {{ session('message') }}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
-    @endif
+    @endif --}}
 
     <ul class="nav nav-tabs mb-3" id="myTab" role="tablist">
       <li class="nav-item" role="presentation">
@@ -368,4 +368,26 @@
   <script src="{{ asset('vendor/tinymce-5/tinymce.min.js') }}"></script>
   <script src="{{ asset('js/config-tinymce.js') }}"></script>
   <script src="{{ asset('modules/bai-tap/js/chinh-sua-bai-tap.js') }}"></script>
+
+  @if (session('message'))
+    <script>
+      const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        width: 'auto',
+        showConfirmButton: false,
+        timer: 3500,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        }
+      });
+
+      Toast.fire({
+        icon: '{{ session('icon') }}',
+        title: '{{ session('message') }}'
+      });
+    </script>
+  @endif
 @endsection

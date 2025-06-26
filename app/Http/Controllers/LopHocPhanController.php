@@ -54,7 +54,7 @@ class LopHocPhanController extends Controller
         // dd($listLopHocPhan->toArray());
         return view('modules.lop-hoc.danh-sach', compact('hocPhan', 'listLopHocPhan'));
     }
-    
+
     public function lopHocCuaToi()
     {
         // $nguoiDung = $this->authService->layNguoiDungDangNhap();
@@ -71,16 +71,16 @@ class LopHocPhanController extends Controller
 
     public function chiTiet($slug)
     {
-        $lop = $this->lopHocPhanService->layChiTietLopHoc($slug);
-        $listBanTin = $this->tinService->layBanTinLopHoc($lop->id);
+        $lopHocPhan = $this->lopHocPhanService->layChiTietLopHoc($slug);
+        $listBanTin = $this->tinService->layBanTinLopHoc($lopHocPhan->id);
         $nguoiDung = $this->nguoiDungService->layTheoId(session('id_nguoi_dung'));
-        $thanhVien = $this->thanhVienService->getAcceptedMembersByLopId($lop->id);
-        $yeuCau = $this->thanhVienService->getPendingMembersByLopId($lop->id);
+        $thanhVien = $this->thanhVienService->getAcceptedMembersByLopId($lopHocPhan->id);
+        $yeuCau = $this->thanhVienService->getPendingMembersByLopId($lopHocPhan->id);
         //$nguoiDung = $this->nguoiDungService->layTheoId(session('id_nguoi_dung'));
         //$listMucBaiGiang = $nguoiDung->list_muc_bai_giang;
-        $hocPhan = $lop->hoc_phan;
-        $listChuong = $lop->bai_giang->list_chuong;
-        $listChuongTrongLop = $lop->list_bai->groupBy('id_chuong');
+        $hocPhan = $lopHocPhan->hoc_phan;
+        $listChuong = $lopHocPhan->bai_giang->list_chuong;
+        $listChuongTrongLop = $lopHocPhan->list_bai->groupBy('id_chuong');
         // return $listChuongTrongLop[3][0]->pivot->cong_khai;
         // return $listChuongTrongLop[1]->flatten(1);
         // return $listChuongTrongLop;
@@ -88,7 +88,7 @@ class LopHocPhanController extends Controller
         return view(
             'modules.lop-hoc.chi-tiet',
             compact(
-                'lop',
+                'lopHocPhan',
                 'listBanTin',
                 'nguoiDung',
                 'thanhVien',
@@ -108,9 +108,31 @@ class LopHocPhanController extends Controller
 
         $result = $this->baiTrongLopService->congKhaiBai($lopHocPhan->id, $data);
 
+        if ($result['success']) {
+            $listChuong = $lopHocPhan->bai_giang->list_chuong;
+            $listChuongTrongLop = $lopHocPhan->list_bai->groupBy('id_chuong');
+            $tongSoBaiCongKhai = $listChuongTrongLop->flatten(1)
+                ->filter(function ($bai) {
+                    return $bai->pivot->cong_khai == true;
+                })->count();
+
+            $html = view('partials.lop-hoc-phan.chi-tiet.list-bai', compact(
+                'listChuong',
+                'listChuongTrongLop',
+                'lopHocPhan'
+            ))->render();
+
+            return response()->json([
+                'message' => $result['message'],
+                'icon' => 'success',
+                'html' => $html,
+                'tongSoBaiCongKhai' => $tongSoBaiCongKhai
+            ]);
+        }
+
         return response()->json([
-            'success' => $result['success'],
-            'message' => $result['message']
+            'message' => $result['message'],
+            'icon' => 'error'
         ]);
     }
 
@@ -118,10 +140,21 @@ class LopHocPhanController extends Controller
     {
         $bai = $this->baiService->layTheoSlug($slug);
         $baiGiang = $bai->chuong->bai_giang;
+        $lopHocPhan = $this->lopHocPhanService->layTheoId($id);
         $giangVienXem = session('id_nguoi_dung') == $baiGiang->id_giang_vien;
 
         $baiTrongLop = $this->baiTrongLopService->layBaiTrongLop($id, $bai->id, $giangVienXem);
 
-        return view('modules.bai.chi-tiet', compact('baiTrongLop'));
+        $listChuong = $baiGiang->list_chuong;
+        $listChuongTrongLop = $lopHocPhan->list_bai->groupBy('id_chuong');
+        
+        // dd($listChuongTrongLop->toArray());
+
+        return view('modules.bai.chi-tiet', compact(
+            'baiTrongLop',
+            'lopHocPhan',
+            'listChuong',
+            'listChuongTrongLop'
+        ));
     }
 }

@@ -41,10 +41,53 @@
   }
 }
 
-@media (max-width: 1099.98px) {
-  #content-bai img,
-  #content-bai iframe {
-    max-width: 100%;
-    height: auto !important;
-  }
+#content-bai img {
+  max-width: 100%;
+  height: auto;
+}
+
+#content-bai p:has(iframe) {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 = 9/16 = 0.5625 */
+  height: 0;
+  overflow: hidden;
+  max-width: 100%;
+  background: #000;
+}
+
+#content-bai p iframe,
+#content-bai p object,
+#content-bai p embed {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+
+/* Ẩn mũi tên mặc định của dropdown-toggle */
+.hide-arrow-down::after {
+  display: none !important;
+}
+
+.comment-content-text {
+  max-width: 100%;
+  word-wrap: break-word;
+}
+
+/* Ẩn các phản hồi con ban đầu */
+.replies-container.hidden-replies {
+  display: none;
+}
+
+.toggle-replies-btn {
+  font-size: 0.875rem;
+  color: #0d6efd;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.toggle-replies-btn:hover {
+  text-decoration: underline;
 }
