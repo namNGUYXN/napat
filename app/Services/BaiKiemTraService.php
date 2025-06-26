@@ -23,6 +23,7 @@ class BaiKiemTraService
     public function getById($id)
     {
         return BaiKiemTra::with('list_cau_hoi')
+            ->with('lop_hoc_phan')
             ->where('id', $id)
             ->where('is_delete', false)->first();
     }
@@ -42,17 +43,6 @@ class BaiKiemTraService
         return BaiKiemTra::where('id_lop_hoc_phan', $id_lop_hoc_phan)
             ->where('is_delete', false)
             ->get();
-    }
-
-    // Tạo mới bài tập
-    public function create($data)
-    {
-        return BaiKiemTra::create([
-            'tieu_de' => $data['tieu_de'],
-            'slug' => Str::slug($data['tieu_de']) . '-' . uniqid(),
-            'diem_toi_da' => $data['diem_toi_da'],
-            'id_bai_giang' => $data['id_bai_giang'],
-        ]);
     }
 
     // Cập nhật bài tập
@@ -203,6 +193,7 @@ class BaiKiemTraService
 
         $thanhVienLop = ThanhVienLop::where('id_nguoi_dung', $idNguoiDung)
             ->where('id_lop_hoc_phan', $baiKiemTra->id_lop_hoc_phan)
+            ->where('is_accept', true)
             ->first();
 
         if (!$thanhVienLop) {
@@ -236,6 +227,7 @@ class BaiKiemTraService
         // Lấy danh sách tất cả thành viên lớp trong lớp học phần của bài kiểm tra
         $danhSachThanhVien = ThanhVienLop::with('nguoi_dung')
             ->where('id_lop_hoc_phan', $baiKiemTra->id_lop_hoc_phan)
+            ->where('is_accept', true)
             ->get();
 
         $danhSachKetQua = [];
