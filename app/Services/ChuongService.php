@@ -71,7 +71,7 @@ class ChuongService
 
       $chuong->update([
         'tieu_de' => $data['tieu_de'] ?? $chuong->tieu_de,
-        'mo_ta_ngan' => $data['mo_ta_ngan'] ?? $chuong->mo_ta_ngan,
+        'mo_ta_ngan' => $data['mo_ta_ngan'],
       ]);
 
       DB::commit();

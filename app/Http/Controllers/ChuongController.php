@@ -48,13 +48,13 @@ class ChuongController extends Controller
             return redirect()->route('bai-giang.detail', $id)
                 ->with([
                     'message' => $result['message'],
-                    'status' => 'success'
+                    'icon' => 'success'
                 ]);
         }
 
         return redirect()->back()->with([
             'message' => $result['message'],
-            'status' => 'danger'
+            'icon' => 'error'
         ]);
     }
 
@@ -86,13 +86,13 @@ class ChuongController extends Controller
             $baiGiang = $result['data']->bai_giang;
             return redirect()->route('bai-giang.detail', $baiGiang->id)->with([
                 'message' => $result['message'],
-                'status' => 'success'
+                'icon' => 'success'
             ]);
         }
 
         return redirect()->back()->with([
             'message' => $result['message'],
-            'status' => 'danger'
+            'icon' => 'error'
         ]);
     }
 
@@ -105,13 +105,13 @@ class ChuongController extends Controller
         if ($result['success']) {
             return redirect()->route('bai-giang.detail', $baiGiang->id)->with([
                 'message' => $result['message'],
-                'status' => 'success'
+                'icon' => 'success'
             ]);
         }
 
         return redirect()->route('bai-giang.detail', $baiGiang->id)->with([
             'message' => $result['message'],
-            'status' => 'danger'
+            'icon' => 'error'
         ]);
     }
 

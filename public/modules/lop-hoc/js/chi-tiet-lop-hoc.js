@@ -993,8 +993,26 @@ $(document).on("click", ".btn-public-bai", function (e) {
         },
         dataType: "json",
         success: function (response) {
-            window.location.reload();
-            alert(response.message);
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                width: 'auto',
+                showConfirmButton: false,
+                timer: 3500,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+
+            Toast.fire({
+                icon: response.icon,
+                title: response.message
+            });
+
+            $('#accordion-chuong').html(response.html);
+            $('#lecture-tab>span').text(response.tongSoBaiCongKhai);
         },
         error: function (xhr) {
             alert("Đã xảy ra lỗi: " + xhr.status + " " + xhr.statusText);
@@ -1047,3 +1065,61 @@ $('#modal-chinh-sua-ban-tin').on('hidden.bs.modal', function () {
     tinymce.get('noi-dung-ban-tin-chinh-sua').setContent('');
     $('#modal-chinh-sua-ban-tin').parents('form').attr('action', '');
 })
+
+
+
+
+// Bản tin
+$(document).on('submit', '.form-reply', function (e) {
+    e.preventDefault();
+
+    const form = $(this);
+    const actionUrl = form.attr('action');
+    const noiDung = form.find('input[name="noi_dung"]').val();
+    const token = $('meta[name="csrf-token"]').attr('content');
+
+    // Optional: disable button trong khi gửi
+    const btn = form.find('button[type="submit"]');
+    btn.prop('disabled', true).text('Đang gửi...');
+
+    $.ajax({
+        url: actionUrl,
+        type: 'POST',
+        data: {
+            _token: token,
+            noi_dung: noiDung
+        },
+        success: function (response) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                width: 'auto',
+                showConfirmButton: false,
+                timer: 3500,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+
+            Toast.fire({
+                icon: response.icon,
+                title: response.message
+            });
+
+            $('#wp-list-ban-tin').html(response.html);
+
+            // Reset form
+            form[0].reset();
+        },
+        error: function (xhr) {
+            alert('Đã xảy ra lỗi: ' + xhr.status + ' ' + xhr.statusText);
+        },
+        complete: function () {
+            // Kích hoạt lại nút
+            btn.prop('disabled', false).text('Gửi');
+        }
+    });
+});
+

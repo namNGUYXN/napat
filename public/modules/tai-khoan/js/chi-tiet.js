@@ -102,3 +102,59 @@ $("#btnChangePassword").click(function () {
         },
     });
 });
+
+
+$('#form-cap-nhat-thong-tin').on('submit', function (e) {
+    e.preventDefault();
+
+    const form = $(this)[0]; // DOM element
+    const formData = new FormData(form); // Lấy tất cả input từ form, bao gồm file
+
+    $.ajax({
+        url: $(this).attr('action'),
+        type: 'POST',
+        data: formData,
+        dataType: 'json',
+        processData: false,
+        contentType: false,
+        success: function (response) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                width: 'auto',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+
+            Toast.fire({
+                icon: response.icon,
+                title: response.message
+            });
+            
+            $('#ho_ten_error').text('');
+            $('#sdt_error').text('');
+        },
+        error: function (xhr) {
+            if (xhr.status === 422) {
+                const errors = xhr.responseJSON.errors;
+
+                // Hiển thị lỗi cho từng field (ví dụ với Bootstrap)
+                if (errors.ho_ten) {
+                    $('#ho_ten_error').text(errors.ho_ten[0]);
+                }
+
+                if (errors.sdt) {
+                    $('#sdt_error').text(errors.sdt[0]);
+                }
+            } else {
+                alert('Đã xảy ra lỗi: ' + xhr.status + ' ' + xhr.statusText);
+            }
+        }
+    });
+});
+

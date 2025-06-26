@@ -71,11 +71,6 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien+sinh-vien']], 
     Route::get('/lop-hoc-phan/{id}/bai/{slug}', 'LopHocPhanController@xemNoiDungBai')->name('bai-trong-lop.detail');
 
 
-    //Tài khoản
-    Route::get('/tai-khoan/chi-tiet', 'NguoiDungController@chiTiet')->name('tai-khoan.chi-tiet');
-    Route::post('/tai-khoan/doi-mat-khau', 'NguoiDungController@doiMatKhau')->name('tai-khoan.doi-mat-khau');
-
-
     //Bài kiểm tra
     Route::get('/bai-kiem-tra/{idLopHoc}', 'BaiKiemTraController@danhSachBaiKiemTra');
     Route::get('/lam-bai/{id}', 'BaiKiemTraController@lamBai')->name('lambai');
@@ -137,4 +132,12 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:admin']], function () {
     Route::put('/admin/menu/{id}', 'MenuController@chinhSua')->name('menu.update');
     Route::post('/admin/menu/cap-nhat-thu-tu', 'MenuController@capNhatThuTu')->name('thu-tu-menu.update');
     Route::delete('/admin/menu/{id}', 'MenuController@xoa')->name('menu.delete');
+});
+
+// Route quản lý tài khoản cá nhân
+Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien+sinh-vien+admin']], function () {
+    //Tài khoản
+    Route::get('/tai-khoan/chi-tiet', 'NguoiDungController@chiTiet')->name('tai-khoan.chi-tiet');
+    Route::post('/tai-khoan/doi-mat-khau', 'NguoiDungController@doiMatKhau')->name('tai-khoan.doi-mat-khau');
+    Route::put('/tai-khoan/cap-nhat-thong-tin', 'NguoiDungController@capNhatThongTinCaNhan')->name('tai-khoan.update');
 });

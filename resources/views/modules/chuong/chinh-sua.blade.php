@@ -22,12 +22,12 @@
       </div>
     @endif
 
-    @if (session('message'))
+    {{-- @if (session('message'))
       <div class="alert alert-{{ session('status') }} alert-dismissible fade show" role="alert">
         {{ session('message') }}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
-    @endif
+    @endif --}}
 
     <div class="row align-items-start">
       <div class="col-lg-4">
@@ -204,4 +204,26 @@
   <script src="{{ asset('vendor/sortable/js/sortable.min.js') }}"></script>
   <script src="{{ asset('vendor/sortable/js/jquery-sortable.min.js') }}"></script>
   <script src="{{ asset('modules/chuong/js/chinh-sua.js') }}"></script>
+
+  @if (session('message'))
+    <script>
+      const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        width: 'auto',
+        showConfirmButton: false,
+        timer: 3500,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        }
+      });
+
+      Toast.fire({
+        icon: '{{ session('icon') }}',
+        title: '{{ session('message') }}'
+      });
+    </script>
+  @endif
 @endsection

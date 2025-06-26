@@ -8,12 +8,12 @@
       <i class="fas fa-arrow-alt-circle-left me-2"></i>Danh sách Menu
     </a>
 
-    @if (session('message'))
+    {{-- @if (session('message'))
       <div class="alert alert-{{ session('status') }} alert-dismissible fade show" role="alert">
         {{ session('message') }}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
-    @endif
+    @endif --}}
 
     <div class="card shadow-sm">
       <div class="card-header bg-success text-white">
@@ -170,4 +170,26 @@
       return false;
     }
   </script>
+
+  @if (session('message'))
+    <script>
+      const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        width: 'auto',
+        showConfirmButton: false,
+        timer: 3500,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        }
+      });
+
+      Toast.fire({
+        icon: '{{ session('icon') }}',
+        title: '{{ session('message') }}'
+      });
+    </script>
+  @endif
 @endsection

@@ -89,8 +89,8 @@ class BaiGiangController extends Controller
                 'hinh_anh' => 'image'
             ],
             [
-                'ten.required' => 'Vui lòng nhập tên mục bài giảng',
-                'ten.max' => 'Tên mục bài giảng tối đa 100 ký tự',
+                'ten.required' => 'Vui lòng nhập tên bài giảng',
+                'ten.max' => 'Tên bài giảng tối đa 100 ký tự',
                 'id_hoc_phan.exists' => 'Học phần không tồn tại',
                 'mo_ta_ngan.max' => 'Mô tả tối đa 255 ký tự',
                 'hinh_anh.image' => 'Hình ảnh không hợp lệ'
@@ -109,13 +109,13 @@ class BaiGiangController extends Controller
         if ($result['success']) {
             return redirect()->route('bai-giang.index')->with([
                 'message' => $result['message'],
-                'status' => 'success'
+                'icon' => 'success'
             ]);
         }
 
         return redirect()->back()->with([
             'message' => $result['message'],
-            'status' => 'danger'
+            'icon' => 'error'
         ]);
 
         // echo "<pre>";
@@ -142,8 +142,8 @@ class BaiGiangController extends Controller
                 'hinh_anh' => 'image'
             ],
             [
-                'ten.required' => 'Vui lòng nhập tên mục bài giảng',
-                'ten.max' => 'Tên mục bài giảng tối đa 100 ký tự',
+                'ten.required' => 'Vui lòng nhập tên bài giảng',
+                'ten.max' => 'Tên bài giảng tối đa 100 ký tự',
                 'id_hoc_phan.exists' => 'Học phần không tồn tại',
                 'mo_ta_ngan.max' => 'Mô tả tối đa 255 ký tự',
                 'hinh_anh.image' => 'Hình ảnh không hợp lệ'
@@ -174,13 +174,13 @@ class BaiGiangController extends Controller
         if ($result['success']) {
             return redirect()->route('bai-giang.index')->with([
                 'message' => $result['message'],
-                'status' => 'success'
+                'icon' => 'success'
             ]);
         }
 
         return redirect()->back()->with([
             'message' => $result['message'],
-            'status' => 'danger'
+            'icon' => 'error'
         ]);
     }
 
@@ -191,13 +191,13 @@ class BaiGiangController extends Controller
         if ($result['success']) {
             return redirect()->route('bai-giang.index')->with([
                 'message' => $result['message'],
-                'status' => 'success'
+                'icon' => 'success'
             ]);
         }
 
         return redirect()->route('bai-giang.index')->with([
             'message' => $result['message'],
-            'status' => 'danger'
+            'icon' => 'error'
         ]);
     }
 
@@ -208,13 +208,13 @@ class BaiGiangController extends Controller
         if ($result['success']) {
             return redirect()->route('bai-giang.detail', $id)->with([
                 'message' => $result['message'],
-                'status' => 'success'
+                'icon' => 'success'
             ]);
         }
 
         return redirect()->back()->with([
             'message' => $result['message'],
-            'status' => 'danger'
+            'icon' => 'error'
         ]);
     }
 }

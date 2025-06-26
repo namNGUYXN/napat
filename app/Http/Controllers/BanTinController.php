@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\BanTinService;
+use App\Services\NguoiDungService;
 use App\Services\ThanhVienLopService;
 use Illuminate\Http\Request;
 
@@ -10,11 +11,16 @@ class BanTinController extends Controller
 {
     protected $banTinService;
     protected $thanhVienLopService;
+    protected $nguoiDungService;
 
-    public function __construct(BanTinService $banTinService, ThanhVienLopService $thanhVienLopService)
-    {
+    public function __construct(
+        BanTinService $banTinService,
+        ThanhVienLopService $thanhVienLopService,
+        NguoiDungService $nguoiDungService
+    ) {
         $this->banTinService = $banTinService;
         $this->thanhVienLopService = $thanhVienLopService;
+        $this->nguoiDungService = $nguoiDungService;
         $this->middleware('ban_tin')->only('chiTiet', 'chinhSua');
     }
 
@@ -112,16 +118,22 @@ class BanTinController extends Controller
         // dd($data, $thanhVienLop->toArray());
 
         if ($result['success']) {
-            return redirect()->route('lop-hoc.detail', $thanhVienLop->lop_hoc_phan->slug)
-                ->with([
-                    'message' => $result['message'],
-                    'icon' => 'success'
-                ]);
+            $lopHocPhan = $thanhVienLop->lop_hoc_phan;
+            $listBanTin = $this->banTinService->layBanTinLopHoc($lopHocPhan->id);
+            $nguoiDung = $this->nguoiDungService->layTheoId(session('id_nguoi_dung'));
+
+            $html = view('partials.ban-tin.list', compact('lopHocPhan', 'listBanTin', 'nguoiDung'))->render();
+
+            return response()->json([
+                'message' => $result['message'],
+                'icon' => 'success',
+                'html' => $html
+            ]);
         }
 
-        return redirect()->back()->with([
+        return response()->json([
             'message' => $result['message'],
-            'icon' => 'error',
+            'icon' => 'error'
         ]);
     }
 }

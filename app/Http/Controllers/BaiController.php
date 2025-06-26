@@ -64,14 +64,14 @@ class BaiController extends Controller
             return redirect()->route('chuong.edit', $id)
                 ->with([
                     'message' => $result['message'],
-                    'status' => 'success'
+                    'icon' => 'success'
                 ]);
         }
 
         return redirect()->back()
             ->with([
                 'message' => $result['message'],
-                'status' => 'danger'
+                'icon' => 'error'
             ])->withInput();
     }
 
@@ -102,14 +102,14 @@ class BaiController extends Controller
             return redirect()->route('chuong.edit', $result['data']->id_chuong)
                 ->with([
                     'message' => $result['message'],
-                    'status' => 'success'
+                    'icon' => 'success'
                 ]);
         }
 
         return redirect()->back()
             ->with([
                 'message' => $result['message'],
-                'status' => 'danger'
+                'icon' => 'error'
             ])->withInput();
     }
 
@@ -130,13 +130,13 @@ class BaiController extends Controller
         if ($result['success']) {
             return redirect()->route('chuong.edit', $idChuong)->with([
                 'message' => $result['message'],
-                'status' => 'success'
+                'icon' => 'success'
             ]);
         }
 
         return redirect()->route('chuong.edit', $idChuong)->with([
             'message' => $result['message'],
-            'status' => 'danger'
+            'icon' => 'error'
         ]);
     }
 

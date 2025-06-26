@@ -10,12 +10,12 @@
   <div class="col bg-light p-4 overflow-auto custom-scrollbar">
     <h2 class="mb-3">Quản lý menu</h2>
 
-    @if (session('message'))
+    {{-- @if (session('message'))
       <div class="alert alert-{{ session('status') }} alert-dismissible fade show" role="alert">
         {{ session('message') }}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
-    @endif
+    @endif --}}
 
     <div class="card shadow-sm">
       <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
@@ -92,23 +92,22 @@
       </div>
     </div>
 
-      <div class="modal fade" id="modal-cap-nhat-thu-tu" tabindex="-1" aria-labelledby="" aria-hidden="true"
-        data-bs-focus="false">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-          <div class="modal-content">
-            <div class="modal-header bg-warning text-white">
-              <h5 class="modal-title">
-                <i class="fas fa-edit me-2"></i>Cập nhật thứ tự Menu
-              </h5>
-              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                aria-label="Close"></button>
-            </div>
-            <div class="modal-body custom-scrollbar">
-              <x-sortable-menu />
-            </div>
+    <div class="modal fade" id="modal-cap-nhat-thu-tu" tabindex="-1" aria-labelledby="" aria-hidden="true"
+      data-bs-focus="false">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+          <div class="modal-header bg-warning text-white">
+            <h5 class="modal-title">
+              <i class="fas fa-edit me-2"></i>Cập nhật thứ tự Menu
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body custom-scrollbar">
+            <x-sortable-menu />
           </div>
         </div>
       </div>
+    </div>
   </div>
 @endsection
 
@@ -120,4 +119,26 @@
   <script src="{{ asset('vendor/sortable/js/sortable.min.js') }}"></script>
   <script src="{{ asset('vendor/sortable/js/jquery-sortable.min.js') }}"></script>
   <script src="{{ asset('modules/menu/js/danh-sach.js') }}"></script>
+
+  @if (session('message'))
+    <script>
+      const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        width: 'auto',
+        showConfirmButton: false,
+        timer: 3500,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        }
+      });
+
+      Toast.fire({
+        icon: '{{ session('icon') }}',
+        title: '{{ session('message') }}'
+      });
+    </script>
+  @endif
 @endsection
