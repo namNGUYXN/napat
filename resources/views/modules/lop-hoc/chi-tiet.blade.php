@@ -259,7 +259,7 @@
                             </div>
                           </div>
                           <div class="col-12">
-                            <div class="invalid-feedback d-block">
+                            <div class="invalid-feedback">
                               Vui lòng chọn một đáp án đúng cho câu hỏi này.
                             </div>
                           </div>
