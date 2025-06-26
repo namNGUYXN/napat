@@ -18,13 +18,16 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div class="input-group-text">
                         <input class="form-check-input mt-0 correct-answer-radio" 
                                type="radio" name="correctAnswer_${count}" 
-                               value="${value}" ${correctAnswer === value ? "checked" : ""
-                    } required>
+                               value="${value}" ${
+                    correctAnswer === value ? "checked" : ""
+                } required>
                     </div>
                     <input type="text" class="form-control answer-option" 
-                           value="${answerOptions[index] || ""
-                    }" placeholder="Đáp án ${optionLabels[index]
-                    }" required>
+                           value="${
+                               answerOptions[index] || ""
+                           }" placeholder="Đáp án ${
+                    optionLabels[index]
+                }" required>
                 </div>
             </div>
         `
@@ -48,7 +51,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     <label class="form-label">Đáp án: <span class="text-danger">*</span></label>
                     ${optionsHTML}
                     <div class="col-12">
-                        <div class="invalid-feedback d-block">
+                        <div class="invalid-feedback">
                             Vui lòng chọn một đáp án đúng cho câu hỏi này.
                         </div>
                     </div>
@@ -193,7 +196,7 @@ function xemChiTietKetQua(idKetQua, tenNguoiDung, diem, tieuDeBaiKT) {
 
     // Thay nút đóng thành nút quay lại
     $("#modalChiTiet .modal-actions").html(`
-        <button class="btn btn-secondary" onclick="quayLaiDanhSach()">
+        <button class="btn btn-secondary" onclick="quayLaiDanhSach(2)">
             ← Quay lại danh sách
         </button>
     `);
@@ -246,8 +249,9 @@ function renderChiTietBaiKiemTra(baiKiemTra, chiTiet) {
         html += `</ul>
             <div class="mt-2">
                 <small><strong>Đáp án đúng:</strong> ${dapAnDung}</small><br/>
-                <small><strong>Đáp án chọn:</strong> ${dapAnChon || "<i>Không chọn</i>"
-            }</small>
+                <small><strong>Đáp án chọn:</strong> ${
+                    dapAnChon || "<i>Không chọn</i>"
+                }</small>
             </div>
         </div>`;
     });
@@ -280,13 +284,14 @@ function renderDanhSachKetQua(baiKiemTra, dsKetQua) {
             <td>${user.email}</td>
             <td>${item.diem ?? "Chưa làm"}</td>
             <td>
-                ${item.diem !== null
-                ? `<button class="btn btn-sm btn-primary"
+                ${
+                    item.diem !== null
+                        ? `<button class="btn btn-sm btn-primary"
                             onclick="xemChiTietKetQua('${idKetQua}', '${user.ten}', ${item.diem}, '${baiKiemTra.tieu_de}')">
                             Xem
                         </button>`
-                : ""
-            }
+                        : ""
+                }
             </td>
 
         </tr>`;
@@ -296,19 +301,112 @@ function renderDanhSachKetQua(baiKiemTra, dsKetQua) {
     return html;
 }
 
-function quayLaiDanhSach() {
-    if (currentBaiKiemTra && currentKetQuaList) {
-        const html = renderDanhSachKetQua(currentBaiKiemTra, currentKetQuaList);
-        $("#modalChiTiet .modal-title").text(
-            `Kết quả bài: ${currentBaiKiemTra.tieu_de}`
-        );
-        $("#modalChiTiet .modal-body").html(html);
+//Khi nhấn nút để xem danh sách kết quả của bài tập
+function hienThiKetQua() {
+    const html = renderDanhSachKetQua(currentBaiKiemTra, currentKetQuaList);
+    $("#modalChiTiet .modal-body").html(html);
+    // Thay nút đóng thành nút quay lại
+    $("#modalChiTiet .modal-actions").html(`
+        <button class="btn btn-secondary" onclick="quayLaiDanhSach(0)">
+            ← Quay lại 
+        </button>
+    `);
+}
 
-        // Khôi phục lại nút đóng mặc định
-        $("#modalChiTiet .modal-actions").html(`
+//Khi nhấn nút để xem danh sách câu hỏi của bài tập
+function hienThiCauHoi() {
+    const dsCauHoi = currentBaiKiemTra.list_cau_hoi || [];
+
+    if (dsCauHoi.length === 0) {
+        $("#modalChiTiet .modal-body").html("<p>Không có câu hỏi nào.</p>");
+        return;
+    }
+
+    let html = "<h5 class='mb-3'>Danh sách câu hỏi:</h5>";
+
+    dsCauHoi.forEach((cau, index) => {
+        html += `
+            <div class="mb-3 border rounded p-3 bg-light">
+                <strong>Câu ${index + 1}: ${cau.tieu_de}</strong>
+                <ul class="mt-2">
+                    <li>A. ${cau.dap_an_a}</li>
+                    <li>B. ${cau.dap_an_b}</li>
+                    <li>C. ${cau.dap_an_c}</li>
+                    <li>D. ${cau.dap_an_d}</li>
+                </ul>
+                <p><strong>Đáp án đúng:</strong> ${cau.dap_an_dung}</p>
+            </div>
+        `;
+    });
+    // Thay nút đóng thành nút quay lại
+    $("#modalChiTiet .modal-actions").html(`
+        <button class="btn btn-secondary" onclick="quayLaiDanhSach(0)">
+            ← Quay lại 
+        </button>
+    `);
+    $("#modalChiTiet .modal-body").html(html);
+}
+
+function quayLaiDanhSach($action) {
+    if ($action) {
+        if (currentBaiKiemTra && currentKetQuaList) {
+            const html = renderDanhSachKetQua(
+                currentBaiKiemTra,
+                currentKetQuaList
+            );
+            $("#modalChiTiet .modal-title").text(
+                `Kết quả bài: ${currentBaiKiemTra.tieu_de}`
+            );
+            $("#modalChiTiet .modal-body").html(html);
+
+            /// Thay nút đóng thành nút quay lại
+            $("#modalChiTiet .modal-actions").html(`
+                <button class="btn btn-secondary" onclick="quayLaiDanhSach(0)">
+                    ← Quay lại 
+                </button>
+            `);
+        }
+    } else {
+        if (currentBaiKiemTra && currentKetQuaList) {
+            $("#modalChiTiet .modal-title").text(
+                `Bài kiểm tra: ${currentBaiKiemTra.tieu_de}`
+            );
+            $("#modalChiTiet .modal-body").html(
+                renderChiTietBaiKiemTraGiangVien()
+            );
+
+            // Khôi phục lại nút đóng mặc định
+            $("#modalChiTiet .modal-actions").html(`
             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         `);
+        }
     }
+}
+
+function renderChiTietBaiKiemTraGiangVien() {
+    const thongTinBaiKT = `
+                        <p><strong>Bài kiểm tra:</strong> ${
+                            currentBaiKiemTra.tieu_de
+                        }</p>
+                        <p><strong>Hạn chót nộp bài:</strong> ${
+                            currentBaiKiemTra.ngay_ket_thuc
+                        }</p>
+                        <p><strong>Điểm tối đa:</strong> ${
+                            currentBaiKiemTra.diem_toi_da
+                        }</p>
+
+                        <p><strong>Hình thức:</strong> ${
+                            currentBaiKiemTra.hinh_thuc ?? "Trắc nghiệm"
+                        }</p>
+                    `;
+
+    const nutChucNang = `
+                        <div class="mt-3 d-flex justify-content-end gap-2">
+                            <button class="btn btn-info" onclick="hienThiCauHoi()">Xem câu hỏi</button>
+                            <button class="btn btn-primary" onclick="hienThiKetQua()">Kết quả</button>
+                        </div>
+                    `;
+    return thongTinBaiKT + nutChucNang;
 }
 
 $(document).ready(function () {
@@ -369,11 +467,11 @@ $(document).ready(function () {
                         !chiTiet.cauHoiVaDapAn ||
                         chiTiet.cauHoiVaDapAn.length === 0
                     ) {
-                        const tongCau = baiKiemTra.list_cau_hoi.length; // dùng .length thay vì count() trong JS
+                        const tongCau = baiKiemTra.list_cau_hoi.length;
                         const ngayDenHan = baiKiemTra.ngay_ket_thuc
                             ? new Date(
-                                baiKiemTra.ngay_ket_thuc
-                            ).toLocaleDateString("vi-VN")
+                                  baiKiemTra.ngay_ket_thuc
+                              ).toLocaleDateString("vi-VN")
                             : "Không có";
 
                         $("#modalChiTiet .modal-title").text(
@@ -386,6 +484,7 @@ $(document).ready(function () {
                             <div class="text-center py-4">
                                 <p><strong>Số câu hỏi:</strong> ${tongCau}</p>
                                 <p><strong>Hạn cuối làm bài:</strong> ${ngayDenHan}</p>
+                                <p><strong>Điểm tối đa:</strong> ${baiKiemTra.diem_toi_da}</p>
                                 <p>Bạn chưa làm bài kiểm tra này.</p>
                                 <a href="${lamBaiUrl}" class="btn btn-primary">
                                     Làm bài ngay
@@ -434,12 +533,16 @@ $(document).ready(function () {
                         }
                     });
 
-                    const html = renderDanhSachKetQua(baiKiemTra, dsKetQua);
-
                     $("#modalChiTiet .modal-title").text(
-                        `Kết quả bài: ${baiKiemTra.tieu_de}`
+                        `Bài kiểm tra: ${baiKiemTra.tieu_de}`
                     );
-                    $("#modalChiTiet .modal-body").html(html);
+
+                    $("#modalChiTiet .modal-body").html(
+                        renderChiTietBaiKiemTraGiangVien()
+                    );
+                    $("#modalChiTiet .modal-actions").html(`
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    `);
                     $("#modalChiTiet").modal("show");
                 }
             },
@@ -457,124 +560,6 @@ $(document).ready(function () {
     // Kích hoạt nút "Tạo mới bài tập" để mở modal này
     $("#addNewExerciseBtn").attr("data-bs-toggle", "modal");
     $("#addNewExerciseBtn").attr("data-bs-target", "#addExerciseModal");
-
-    // let questionCounter = 1; // Biến đếm số câu hỏi
-
-    // --- Sự kiện khi modal thêm bài tập hiện lên ---
-    // $("#addExerciseModal").on("show.bs.modal", function () {
-    //     // Đặt lại form khi modal mở
-    //     $("#newExerciseForm")[0].reset();
-    //     $("#newExerciseForm").removeClass("was-validated");
-    //     $("#questionsFormContainer").empty(); // Xóa tất cả câu hỏi cũ
-    //     questionCounter = 1; // Đặt lại bộ đếm
-    //     $("#questionsFormContainer").append(questionTemplate(questionCounter));
-    //     $("#noQuestionsMessage").show(); // Hiển thị thông báo khi không có câu hỏi
-    // });
-
-    // Mẫu HTML cho một câu hỏi mới
-    // const questionTemplate = (count) => `
-    //         <div class="question-item mb-4 p-3 border rounded bg-light" data-question-index="${count}">
-    //             <h7 class="d-flex justify-content-between align-items-center mb-3">
-    //                 <strong>Câu hỏi ${count}</strong>
-    //                 <button type="button" class="btn btn-sm btn-outline-danger remove-question-btn">
-    //                     <i class="fas fa-times"></i> Xóa
-    //                 </button>
-    //             </h7>
-    //             <div class="mb-3">
-    //                 <label for="question${count}Text" class="form-label">Nội dung câu hỏi <span class="text-danger">*</span></label>
-    //                 <textarea class="form-control question-text" id="question${count}Text" rows="2" placeholder="Nhập nội dung câu hỏi" required></textarea>
-    //                 <div class="invalid-feedback">
-    //                     Vui lòng nhập nội dung câu hỏi.
-    //                 </div>
-    //             </div>
-    //             <div class="row g-2 mb-3">
-    //                 <label class="form-label">Đáp án: <span class="text-danger">*</span></label>
-    //                 <div class="col-md-6">
-    //                     <div class="input-group">
-    //                         <div class="input-group-text">
-    //                             <input class="form-check-input mt-0 correct-answer-radio" type="radio" name="correctAnswer_${count}" value="optionA" aria-label="Đáp án A" required>
-    //                         </div>
-    //                         <input type="text" class="form-control answer-option" placeholder="Đáp án A" required>
-    //                     </div>
-    //                 </div>
-    //                 <div class="col-md-6">
-    //                     <div class="input-group">
-    //                         <div class="input-group-text">
-    //                             <input class="form-check-input mt-0 correct-answer-radio" type="radio" name="correctAnswer_${count}" value="optionB" aria-label="Đáp án B" required>
-    //                         </div>
-    //                         <input type="text" class="form-control answer-option" placeholder="Đáp án B" required>
-    //                     </div>
-    //                 </div>
-    //                 <div class="col-md-6">
-    //                     <div class="input-group">
-    //                         <div class="input-group-text">
-    //                             <input class="form-check-input mt-0 correct-answer-radio" type="radio" name="correctAnswer_${count}" value="optionC" aria-label="Đáp án C" required>
-    //                         </div>
-    //                         <input type="text" class="form-control answer-option" placeholder="Đáp án C" required>
-    //                     </div>
-    //                 </div>
-    //                 <div class="col-md-6">
-    //                     <div class="input-group">
-    //                         <div class="input-group-text">
-    //                             <input class="form-check-input mt-0 correct-answer-radio" type="radio" name="correctAnswer_${count}" value="optionD" aria-label="Đáp án D" required>
-    //                         </div>
-    //                         <input type="text" class="form-control answer-option" placeholder="Đáp án D" required>
-    //                     </div>
-    //                 </div>
-    //                  <div class="col-12">
-    //                     <div class="invalid-feedback d-block">
-    //                         Vui lòng chọn một đáp án đúng cho câu hỏi này.
-    //                     </div>
-    //                 </div>
-    //             </div>
-    //         </div>
-    //     `;
-
-    // // Cập nhật số thứ tự câu hỏi và trạng thái nút xóa
-    // function updateQuestionNumbers() {
-    //     const $questionItems = $("#questionsFormContainer .question-item");
-    //     if ($questionItems.length === 0) {
-    //         $("#noQuestionsMessage").show();
-    //     } else {
-    //         $("#noQuestionsMessage").hide();
-    //     }
-
-    //     $questionItems.each(function (index) {
-    //         const $this = $(this);
-    //         $this.find("h7 strong").text(`Câu hỏi ${index + 1}`);
-    //         // Cập nhật thuộc tính name của radio button để đảm bảo chúng hoạt động độc lập
-    //         $this
-    //             .find(".correct-answer-radio")
-    //             .attr("name", `correctAnswer_${index + 1}`);
-
-    //         // Ẩn/hiện nút xóa nếu chỉ còn 1 câu hỏi
-    //         if ($questionItems.length === 1) {
-    //             $this.find(".remove-question-btn").hide();
-    //         } else {
-    //             $this.find(".remove-question-btn").show();
-    //         }
-    //     });
-    // }
-
-    // // --- Xóa câu hỏi ---
-    // // Sử dụng event delegation vì các nút xóa được thêm động
-    // $(document).on("click", ".remove-question-btn", function () {
-    //     const $questionItemToRemove = $(this).closest(".question-item");
-    //     if ($("#questionsFormContainer .question-item").length > 1) {
-    //         // Chỉ xóa nếu có hơn 1 câu hỏi
-    //         $questionItemToRemove.remove();
-    //         updateQuestionNumbers();
-    //     } else {
-    //         alert("Bạn phải có ít nhất một câu hỏi.");
-    //     }
-    // });
-
-    // // Thêm câu hỏi mới
-    // $("#addQuestionBtn").on("click", function () {
-    //     questionCounter++;
-    //     $("#questionsFormContainer").append(questionTemplate(questionCounter));
-    //     updateQuestionNumbers();
-    // });
 
     // Xử lý nhấn nút Lưu bài kiểm tra Trong Modal thêm bài kiểm tra
     $("#newExerciseForm").on("submit", function (e) {
@@ -634,7 +619,8 @@ $(document).ready(function () {
                 dapAnDuocChon === null
             ) {
                 alert(
-                    `Vui lòng điền đầy đủ nội dung và chọn đáp án đúng cho Câu hỏi ${index + 1
+                    `Vui lòng điền đầy đủ nội dung và chọn đáp án đúng cho Câu hỏi ${
+                        index + 1
                     }.`
                 );
                 isValid = false;
@@ -661,27 +647,44 @@ $(document).ready(function () {
             },
             success: function (response) {
                 if (response.success) {
-                    alert(response.message);
-                    $("#addExerciseModal").modal("hide");
-                    $("#newExerciseForm")[0].reset();
-                    $("#newExerciseForm").removeClass("was-validated");
-                    $("#questionsFormContainer").empty();
-                    $("#noQuestionsMessage").show();
-                    questionCounter = 1;
-                    // Cập nhật lại danh sách và hiển thị
-                    danhSachBaiTap = response.data;
-                    loadExerciseList(danhSachBaiTap);
+                    Swal.fire({
+                        icon: "success",
+                        title: "Thành công",
+                        text: response.message,
+                        confirmButtonText: "Đóng",
+                    }).then(() => {
+                        $("#addExerciseModal").modal("hide");
+                        $("#newExerciseForm")[0].reset();
+                        $("#newExerciseForm").removeClass("was-validated");
+                        $("#questionsFormContainer").empty();
+                        $("#noQuestionsMessage").show();
+                        questionCounter = 1;
+                        // Cập nhật lại danh sách và hiển thị
+                        danhSachBaiTap = response.data;
+                        renderDanhSach(danhSachBaiTap);
+                    });
                 } else {
-                    alert("Tạo thất bại: " + response.message);
+                    Swal.fire({
+                        icon: "error",
+                        title: "Tạo thất bại",
+                        text: response.message,
+                        confirmButtonText: "Đóng",
+                    });
                 }
             },
             error: function (xhr) {
-                alert("Đã xảy ra lỗi phía server.");
+                Swal.fire({
+                    icon: "error",
+                    title: "Lỗi server",
+                    text: "Đã xảy ra lỗi phía server.",
+                    confirmButtonText: "Đóng",
+                });
                 console.error(xhr.responseText);
             },
         });
     });
 
+    //Nhấn chấp nhận yêu cầu tham gia lớp học
     $(".btn-accept-request").click(function () {
         let id = $(this).data("id");
 
@@ -712,6 +715,7 @@ $(document).ready(function () {
         });
     });
 
+    //Nhấn từ chối yêu cầu tham gia lớp học
     $(".btn-reject-request").click(function () {
         let id = $(this).data("id");
 
@@ -846,8 +850,9 @@ $(document).ready(function () {
                 <tr>
                     <td>
                         <div class="form-check">
-                            <input type="checkbox" class="form-check-input student-checkbox" value="${student.id
-                }">
+                            <input type="checkbox" class="form-check-input student-checkbox" value="${
+                                student.id
+                            }">
                         </div>
                     </td>
                     <td><span class="math-inline">${student.name}</td>
@@ -931,8 +936,6 @@ $(document).ready(function () {
     });
 });
 
-
-
 let listBaiTrongLop = {};
 
 // Xử lý check tất cả bản ghi
@@ -1002,48 +1005,49 @@ $(document).on("click", ".btn-public-bai", function (e) {
     });
 });
 
-
 let banTinCache = {};
 
 // Xử lý modal chỉnh sửa bản tin
-$(document).on('click', '.btn-update-ban-tin', function () {
-    const urlDetail = $(this).data('url-detail');
-    const urlUpdate = $(this).data('url-update');
-    const form = $('#modal-chinh-sua-ban-tin').parents('form');
+$(document).on("click", ".btn-update-ban-tin", function () {
+    const urlDetail = $(this).data("url-detail");
+    const urlUpdate = $(this).data("url-update");
+    const form = $("#modal-chinh-sua-ban-tin").parents("form");
 
     if (banTinCache[urlDetail]) {
         const banTin = banTinCache[urlDetail];
 
-        tinymce.get('noi-dung-ban-tin-chinh-sua').setContent(banTin.noi_dung);
-        form.attr('action', urlUpdate);
-        $('#modal-chinh-sua-ban-tin').modal('show');
+        tinymce.get("noi-dung-ban-tin-chinh-sua").setContent(banTin.noi_dung);
+        form.attr("action", urlUpdate);
+        $("#modal-chinh-sua-ban-tin").modal("show");
         return;
     }
 
     $.ajax({
         url: urlDetail,
-        type: 'POST',
-        dataType: 'json',
+        type: "POST",
+        dataType: "json",
         success: function (response) {
             const banTin = response.data;
             banTinCache[urlDetail] = banTin;
 
-            tinymce.get('noi-dung-ban-tin-chinh-sua').setContent(banTin.noi_dung);
-            form.attr('action', urlUpdate);
-            $('#modal-chinh-sua-ban-tin').modal('show');
+            tinymce
+                .get("noi-dung-ban-tin-chinh-sua")
+                .setContent(banTin.noi_dung);
+            form.attr("action", urlUpdate);
+            $("#modal-chinh-sua-ban-tin").modal("show");
         },
         error: function (xhr) {
-            alert("Đã xảy ra lỗi: " + xhr.status + ' ' + xhr.statusText);
-        }
+            alert("Đã xảy ra lỗi: " + xhr.status + " " + xhr.statusText);
+        },
     });
 });
 
 // Xử lý xóa dữ liệu khi modal ẩn
-$('#modal-them-ban-tin').on('hidden.bs.modal', function () {
-    tinymce.get('noi-dung-ban-tin-them').setContent('');
-})
+$("#modal-them-ban-tin").on("hidden.bs.modal", function () {
+    tinymce.get("noi-dung-ban-tin-them").setContent("");
+});
 
-$('#modal-chinh-sua-ban-tin').on('hidden.bs.modal', function () {
-    tinymce.get('noi-dung-ban-tin-chinh-sua').setContent('');
-    $('#modal-chinh-sua-ban-tin').parents('form').attr('action', '');
-})
+$("#modal-chinh-sua-ban-tin").on("hidden.bs.modal", function () {
+    tinymce.get("noi-dung-ban-tin-chinh-sua").setContent("");
+    $("#modal-chinh-sua-ban-tin").parents("form").attr("action", "");
+});
