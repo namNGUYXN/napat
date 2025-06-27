@@ -37,7 +37,7 @@
       </li>
       <li class="nav-item" role="presentation">
         <button class="nav-link" id="member-tab" data-bs-toggle="tab" data-bs-target="#member" type="button"
-          role="tab">Thành viên <span class="badge text-bg-danger">4</span></button>
+          role="tab">Thành viên <span class="badge text-bg-danger">{{ $thanhVien->count() }}</span></button>
       </li>
     </ul>
 
@@ -307,63 +307,11 @@
               </button>
             @endif
 
-
-            <div class="modal fade" id="addMemberModal" tabindex="-1" aria-labelledby="addMemberModalLabel"
-              aria-hidden="true">
-              <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                  <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="addMemberModalLabel">Thêm thành viên vào lớp</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                      aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body">
-                    <div class="mb-3">
-                      <label for="studentSearch" class="text-dark form-label">Tìm kiếm sinh
-                        viên:</label>
-                      <div class="input-group">
-                        <input type="text" class="form-control" id="studentSearch"
-                          placeholder="Nhập họ tên hoặc email để tìm kiếm">
-                        <button class="btn btn-outline-secondary" type="button" id="searchStudentBtn">
-                          <i class="fas fa-search"></i>
-                        </button>
-                      </div>
-                    </div>
-
-                    <div class="alert alert-danger" id="noStudentsFoundAlert" role="alert" style="display: none;">
-                      Không tìm thấy sinh viên nào phù hợp.
-                    </div>
-
-                    <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
-                      <table class="table table-hover">
-                        <thead>
-                          <tr>
-                            <th scope="col" style="width: 50px;">Chọn</th>
-                            <th scope="col">Họ và tên</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Số điện thoại</th>
-                          </tr>
-                        </thead>
-                        <tbody id="studentListBody">
-                          <tr>
-                            <td colspan="4" class="text-center">Nhập thông tin để tìm kiếm
-                              sinh viên.</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                    <button type="button" class="btn btn-primary" id="addSelectedMembersBtn">Thêm
-                      vào lớp</button>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
           <div class="card-body">
-            @include('partials._thanh-vien-lop')
+            <div id="list-thanh-vien">
+              @include('partials._thanh-vien-lop')
+            </div>
           </div>
         </div>
       </div>
@@ -467,6 +415,60 @@
         </div>
       </div>
     @endif
+
+    <div class="modal fade" id="addMemberModal" tabindex="-1" aria-labelledby="addMemberModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title" id="addMemberModalLabel">Thêm thành viên vào lớp</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+              aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="studentSearch" class="text-dark form-label">Tìm kiếm sinh
+                viên:</label>
+              <div class="input-group">
+                <input type="text" class="form-control" id="studentSearch"
+                  placeholder="Nhập họ tên hoặc email để tìm kiếm">
+                <button class="btn btn-outline-secondary" type="button" id="searchStudentBtn">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="alert alert-danger" id="noStudentsFoundAlert" role="alert" style="display: none;">
+              Không tìm thấy sinh viên nào phù hợp.
+            </div>
+
+            <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th scope="col" style="width: 50px;">Chọn</th>
+                    <th scope="col">Họ và tên</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Số điện thoại</th>
+                  </tr>
+                </thead>
+                <tbody id="studentListBody">
+                  <tr>
+                    <td colspan="4" class="text-center">Nhập thông tin để tìm kiếm
+                      sinh viên.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            <button type="button" class="btn btn-primary" id="addSelectedMembersBtn">Thêm
+              vào lớp</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     {{-- Modal gán bài giảng --}}
     {{-- <div class="modal fade" id="modal-gan-bai-giang" tabindex="-1" aria-labelledby="" aria-hidden="true"

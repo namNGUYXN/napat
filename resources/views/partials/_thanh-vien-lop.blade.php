@@ -25,9 +25,7 @@
                             <i class="fas fa-ellipsis-v"></i>
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Xem</a></li>
-                            <li><a class="dropdown-item" href="#">Chỉnh sửa</a></li>
-                            <li><a class="dropdown-item" href="#">Xóa</a></li>
+                            <li><a class="dropdown-item" href="#">Xóa khỏi lớp</a></li>
                         </ul>
                     </div>
                 @endif

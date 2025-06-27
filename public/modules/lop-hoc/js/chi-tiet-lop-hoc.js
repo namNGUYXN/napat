@@ -678,30 +678,43 @@ $(document).ready(function () {
     $(".btn-accept-request").click(function () {
         let id = $(this).data("id");
 
-        $.ajax({
-            url: `/thanh-vien-lop/${id}/chap-nhan`,
-            method: "POST",
-            data: {
-                _token: $('meta[name="csrf-token"]').attr("content"),
-            },
-            success: function (res) {
-                if (res.status) {
-                    $(".card-body").html(res.html);
-                } else {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Thất bại",
-                        text: res.message || "Đã xảy ra lỗi",
-                    });
-                }
-            },
-            error: function () {
-                Swal.fire({
-                    icon: "error",
-                    title: "Lỗi hệ thống",
-                    text: "Không thể kết nối đến máy chủ.",
+        Swal.fire({
+            title: 'Bạn có chắc chắn chấp nhận yêu cầu này không?',
+            // text: '',
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Chấp nhận",
+            cancelButtonText: "Hủy",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: `/thanh-vien-lop/${id}/chap-nhan`,
+                    method: "POST",
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr("content"),
+                    },
+                    success: function (res) {
+                        if (res.status) {
+                            $("#list-thanh-vien").html(res.html);
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Thất bại",
+                                text: res.message || "Đã xảy ra lỗi",
+                            });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Lỗi hệ thống",
+                            text: "Không thể kết nối đến máy chủ.",
+                        });
+                    },
                 });
-            },
+            }
         });
     });
 
@@ -709,30 +722,43 @@ $(document).ready(function () {
     $(".btn-reject-request").click(function () {
         let id = $(this).data("id");
 
-        $.ajax({
-            url: `/thanh-vien-lop/${id}/tu-choi`,
-            method: "POST",
-            data: {
-                _token: $('meta[name="csrf-token"]').attr("content"),
-            },
-            success: function (res) {
-                if (res.status) {
-                    $(".yeuCau").html(res.html);
-                } else {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Thất bại",
-                        text: res.message || "Đã xảy ra lỗi",
-                    });
-                }
-            },
-            error: function () {
-                Swal.fire({
-                    icon: "error",
-                    title: "Lỗi hệ thống",
-                    text: "Không thể kết nối đến máy chủ.",
+        Swal.fire({
+            title: 'Bạn có chắc chắn từ chối yêu cầu này không?',
+            // text: '',
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Từ chối",
+            cancelButtonText: "Hủy",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: `/thanh-vien-lop/${id}/tu-choi`,
+                    method: "POST",
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr("content"),
+                    },
+                    success: function (res) {
+                        if (res.status) {
+                            $(".yeuCau").html(res.html);
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Thất bại",
+                                text: res.message || "Đã xảy ra lỗi",
+                            });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Lỗi hệ thống",
+                            text: "Không thể kết nối đến máy chủ.",
+                        });
+                    },
                 });
-            },
+            }
         });
     });
 
@@ -1277,7 +1303,7 @@ $(document).on('click', '.btn-update-phan-hoi', function () {
     const formUpdateReply = $(idFormUpdateReply);
     const urlUpdate = $(this).data('url-update');
     const noiDungPhanHoi = $(this).parents('.child-news-action-btn').prev('.noi-dung-phan-hoi').text();
-    
+
     // Toggle 2 form phản hồi và cập nhật phản hồi
     formReply.css('display', 'none');
     formUpdateReply.css('display', 'block');
@@ -1292,9 +1318,9 @@ $(document).on('click', '.btn-update-phan-hoi', function () {
 $(document).on('click', '.btn-cancel-update-reply', function () {
     const idFormReply = $(this).data('form-reply');
     const formReply = $(idFormReply);
-    
+
     formReply.css('display', 'block');
-    
+
     $(this).prev('input[name="noi_dung"]').val('');
     $(this).parents('form[id|="form-update-reply"]').css('display', 'none');
 });
