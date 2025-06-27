@@ -301,10 +301,17 @@
           <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Danh sách thành viên</h5>
             @if (session('vai_tro') == 'Giảng viên')
-              <button class="btn btn-light btn-sm" id="member-add-btn" data-bs-toggle="modal"
+              {{-- <button class="btn btn-light btn-sm" id="member-add-btn" data-bs-toggle="modal"
                 data-bs-target="#addMemberModal">
                 <i class="fas fa-plus-circle me-2"></i>Thêm vào lớp
-              </button>
+              </button> --}}
+
+              <form action="{{ route('thanh-vien-lop.import') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <input type="file" name="file" id="">
+                <input type="hidden" name="id_lop_hoc_phan" value="{{ $lopHocPhan->id }}">
+                <button type="submit">Import</button>
+              </form>
             @endif
 
           </div>

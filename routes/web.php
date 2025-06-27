@@ -113,6 +113,7 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien']], function (
     //Thành viên lớp
     Route::post('/thanh-vien-lop/{id}/chap-nhan', 'ThanhVienLopController@chapNhan');
     Route::post('/thanh-vien-lop/{id}/tu-choi', 'ThanhVienLopController@tuChoi');
+    Route::post('/thanh-vien/them-danh-sach', 'ThanhVienLopController@themDanhSach')->name('thanh-vien-lop.import');
 
     //Bài kiểm tra
     Route::post('/bai-kiem-tra', 'BaiKiemTraController@themBaiKiemTra')->name('bai_kiem_tra.them');

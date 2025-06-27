@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\SinhVienImport;
+use App\Imports\ThanhVienLopImport;
 use Illuminate\Http\Request;
 use App\Services\ThanhVienLopService;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ThanhVienLopController extends Controller
 {
@@ -58,5 +61,30 @@ class ThanhVienLopController extends Controller
         }
 
         return response()->json($result);
+    }
+
+    public function themDanhSach(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls,csv',
+        ]);
+
+        $idLopHocPhan = $request->input('id_lop_hoc_phan');
+
+        $duocPhep = $this->thanhVienService->daThamGiaLopHocPhan($idLopHocPhan);
+
+        if ($duocPhep) {
+            Excel::import(new ThanhVienLopImport($idLopHocPhan), $request->file('file'));
+
+            return back()->with([
+                'message' => 'Đã import danh sách sinh viên!',
+                'icon' => 'success'
+            ]);
+        }
+
+        return back()->with([
+            'message' => 'Không được phép import danh sách sinh viên vào lớp khác',
+            'icon' => 'error'
+        ]);
     }
 }
