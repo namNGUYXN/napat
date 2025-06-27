@@ -17,6 +17,7 @@ class BaiKiemTra extends Model
         'diem_toi_da',
         'ngay_bat_dau',
         'ngay_ket_thuc',
+        'cho_phep_nop_qua_han',
         'id_lop_hoc_phan',
         'ngay_tao',
         'is_delete',
@@ -36,7 +37,7 @@ class BaiKiemTra extends Model
     {
         return $this->hasMany(CauHoiBaiKiemTra::class, 'id_bai_kiem_tra');
     }
-    
+
     public function list_ket_qua()
     {
         return $this->hasMany(KetQuaBaiKiemTra::class, 'id_bai_kiem_tra');

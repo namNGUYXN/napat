@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\BaiKiemTra;
 use App\Services\BaiKiemTraService;
 use App\Services\ThanhVienLopService;
 use App\Services\NguoiDungService;
 use Facade\FlareClient\Http\Exceptions\NotFound;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class BaiKiemTraController extends Controller
 {
@@ -46,6 +48,7 @@ class BaiKiemTraController extends Controller
         $baiKiemTra = $this->baiKiemTraService->getByLopHocIdWithCauHoi($id);
         return response()->json($baiKiemTra);
     }
+
     public function layChiTiet($id)
     {
         $idNguoiDung = session('id_nguoi_dung');
@@ -57,6 +60,7 @@ class BaiKiemTraController extends Controller
     }
     public function themBaiKiemTra(Request $request)
     {
+        
         try {
             // Gọi hàm tạo bài kiểm tra — nếu lỗi sẽ bị bắt ở catch
             $this->baiKiemTraService->createExercise($request->all());
@@ -116,9 +120,15 @@ class BaiKiemTraController extends Controller
             ]);
         }
 
-        // Nếu không tìm thấy thì trả về trang 404
-        if (!$thanhVienLop) {
-            abort(404, 'Không tìm thấy thành viên lớp.');
+        $thoiGian = Carbon::now();
+        if ($thoiGian > $baiKiemTra->ngay_ket_thuc) {
+            if (!$this->baiKiemTraService->kiemTraNopQuaHan($baiKiemTra->id)) {
+                return view('modules.lop-hoc.thong-bao-nop-bai', [
+                    'thanhCong' => false,
+                    'thongBao' => "Không thể nộp bài do đã quá hạn nộp!!!",
+                    'lop' => $baiKiemTra->lop_hoc_phan
+                ]);
+            }
         }
 
         $ketQua = $this->baiKiemTraService->nopBai($idBaiKiemTra, $thanhVienLop->id, $answers);
@@ -136,5 +146,24 @@ class BaiKiemTraController extends Controller
             'soCauDung' => $ketQua['data']->so_cau_dung,
             'lop' => $baiKiemTra->lop_hoc_phan
         ]);
+    }
+
+    public function capNhatBaiKiemTra(Request $request)
+    {
+        $validated = $request->validate([
+            'id' => 'required|exists:bai_kiem_tra,id',
+            'tieu_de' => 'required|string|max:255',
+            'diem_toi_da' => 'required|numeric|min:0',
+            'cau_hoi_xoa' => 'array',
+            'cau_hoi_cap_nhat' => 'array',
+            'cau_hoi_moi' => 'array',
+        ]);
+
+        try {
+            $this->baiKiemTraService->capNhatBaiKiemTra($validated);
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
+        }
     }
 }
