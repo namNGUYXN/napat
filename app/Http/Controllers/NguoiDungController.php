@@ -25,6 +25,11 @@ class NguoiDungController extends Controller
     {
         $id = $this->authService->layIdNguoiDungDangNhap();
         $nguoiDung = $this->nguoiDungService->layTheoId($id);
+
+        if ($nguoiDung->vai_tro == 'Admin') {
+            return view('admin.modules.tai-khoan.chi-tiet', compact('nguoiDung'));
+        }
+        
         return view('modules.tai-khoan.chi-tiet', compact('nguoiDung'));
     }
 

@@ -21,7 +21,7 @@ class BanTinController extends Controller
         $this->banTinService = $banTinService;
         $this->thanhVienLopService = $thanhVienLopService;
         $this->nguoiDungService = $nguoiDungService;
-        $this->middleware('ban_tin')->only('chiTiet', 'chinhSua');
+        $this->middleware('ban_tin')->only('chiTiet', 'chinhSua', 'chinhSuaPhanHoi');
     }
 
     public function them(Request $request, $id)
@@ -46,16 +46,22 @@ class BanTinController extends Controller
         // dd($data, $thanhVienLop->toArray());
 
         if ($result['success']) {
-            return redirect()->route('lop-hoc.detail', $thanhVienLop->lop_hoc_phan->slug)
-                ->with([
-                    'message' => $result['message'],
-                    'icon' => 'success'
-                ]);
+            $lopHocPhan = $thanhVienLop->lop_hoc_phan;
+            $listBanTin = $this->banTinService->layBanTinLopHoc($lopHocPhan->id);
+            $nguoiDung = $this->nguoiDungService->layTheoId(session('id_nguoi_dung'));
+
+            $html = view('partials.ban-tin.list', compact('lopHocPhan', 'listBanTin', 'nguoiDung'))->render();
+
+            return response()->json([
+                'message' => $result['message'],
+                'icon' => 'success',
+                'html' => $html
+            ]);
         }
 
-        return redirect()->back()->with([
+        return response()->json([
             'message' => $result['message'],
-            'icon' => 'error',
+            'icon' => 'error'
         ]);
     }
 
@@ -83,14 +89,47 @@ class BanTinController extends Controller
         $banTin = $result['data'];
 
         if ($result['success']) {
-            return redirect()->route('lop-hoc.detail', $banTin->lop_hoc_phan->slug)
-                ->with([
-                    'message' => $result['message'],
-                    'icon' => 'success'
-                ]);
+            $lopHocPhan = $banTin->lop_hoc_phan;
+            $listBanTin = $this->banTinService->layBanTinLopHoc($lopHocPhan->id);
+            $nguoiDung = $this->nguoiDungService->layTheoId(session('id_nguoi_dung'));
+
+            $html = view('partials.ban-tin.list', compact('lopHocPhan', 'listBanTin', 'nguoiDung'))->render();
+
+            return response()->json([
+                'message' => $result['message'],
+                'icon' => 'success',
+                'html' => $html
+            ]);
         }
 
-        return redirect()->back()->with([
+        return response()->json([
+            'message' => $result['message'],
+            'icon' => 'error'
+        ]);
+    }
+
+    public function xoa($id)
+    {
+        $banTin = $this->banTinService->layTheoId($id);
+        $lopHocPhan = $banTin->lop_hoc_phan;
+        $thanhVienLop = $this->thanhVienLopService->layTheoLopVaNguoiDung($lopHocPhan->id, session('id_nguoi_dung'));
+        
+        $result = $this->banTinService->xoa($banTin, $thanhVienLop);
+        
+        if ($result['success']) {
+            $listBanTin = $this->banTinService->layBanTinLopHoc($lopHocPhan->id);
+            $nguoiDung = $this->nguoiDungService->layTheoId(session('id_nguoi_dung'));
+
+            $html = view('partials.ban-tin.list', compact('lopHocPhan', 'listBanTin', 'nguoiDung'))->render();
+
+            return response()->json([
+                'message' => $result['message'],
+                'icon' => 'success',
+                'html' => $html
+            ]);
+        }
+
+        return response()->json([
             'message' => $result['message'],
             'icon' => 'error'
         ]);
@@ -108,7 +147,9 @@ class BanTinController extends Controller
         );
 
         $thanhVienLop = $this->thanhVienLopService->layTheoLopVaNguoiDung($idLopHocPhan, session('id_nguoi_dung'));
+        $banTin = $this->banTinService->layTheoId($idBanTin);
 
+        $data['duocPhepPhanHoi'] = $thanhVienLop->id_lop_hoc_phan == $banTin->id_lop_hoc_phan;
         $data['id_thanh_vien_lop'] = $thanhVienLop->id;
         $data['id_lop_hoc_phan'] = $idLopHocPhan;
         $data['id_ban_tin_cha'] = $idBanTin;
@@ -119,6 +160,42 @@ class BanTinController extends Controller
 
         if ($result['success']) {
             $lopHocPhan = $thanhVienLop->lop_hoc_phan;
+            $listBanTin = $this->banTinService->layBanTinLopHoc($lopHocPhan->id);
+            $nguoiDung = $this->nguoiDungService->layTheoId(session('id_nguoi_dung'));
+
+            $html = view('partials.ban-tin.list', compact('lopHocPhan', 'listBanTin', 'nguoiDung'))->render();
+
+            return response()->json([
+                'message' => $result['message'],
+                'icon' => 'success',
+                'html' => $html
+            ]);
+        }
+
+        return response()->json([
+            'message' => $result['message'],
+            'icon' => 'error'
+        ]);
+    }
+
+    public function chinhSuaPhanHoi(Request $request, $id)
+    {
+        // dd($request->all());
+        
+        $data = $request->validate(
+            [
+                'noi_dung' => 'required|string'
+            ],
+            [
+                'noi_dung.required' => 'Vui lòng nhập nội dung bản tin'
+            ]
+        );
+
+        $result = $this->banTinService->chinhSua($id, $data);
+        $banTin = $result['data'];
+
+        if ($result['success']) {
+            $lopHocPhan = $banTin->lop_hoc_phan;
             $listBanTin = $this->banTinService->layBanTinLopHoc($lopHocPhan->id);
             $nguoiDung = $this->nguoiDungService->layTheoId(session('id_nguoi_dung'));
 

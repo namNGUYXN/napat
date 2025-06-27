@@ -18,16 +18,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div class="input-group-text">
                         <input class="form-check-input mt-0 correct-answer-radio" 
                                type="radio" name="correctAnswer_${count}" 
-                               value="${value}" ${
-                    correctAnswer === value ? "checked" : ""
-                } required>
+                               value="${value}" ${correctAnswer === value ? "checked" : ""
+                    } required>
                     </div>
                     <input type="text" class="form-control answer-option" 
-                           value="${
-                               answerOptions[index] || ""
-                           }" placeholder="Đáp án ${
-                    optionLabels[index]
-                }" required>
+                           value="${answerOptions[index] || ""
+                    }" placeholder="Đáp án ${optionLabels[index]
+                    }" required>
                 </div>
             </div>
         `
@@ -249,9 +246,8 @@ function renderChiTietBaiKiemTra(baiKiemTra, chiTiet) {
         html += `</ul>
             <div class="mt-2">
                 <small><strong>Đáp án đúng:</strong> ${dapAnDung}</small><br/>
-                <small><strong>Đáp án chọn:</strong> ${
-                    dapAnChon || "<i>Không chọn</i>"
-                }</small>
+                <small><strong>Đáp án chọn:</strong> ${dapAnChon || "<i>Không chọn</i>"
+            }</small>
             </div>
         </div>`;
     });
@@ -284,14 +280,13 @@ function renderDanhSachKetQua(baiKiemTra, dsKetQua) {
             <td>${user.email}</td>
             <td>${item.diem ?? "Chưa làm"}</td>
             <td>
-                ${
-                    item.diem !== null
-                        ? `<button class="btn btn-sm btn-primary"
+                ${item.diem !== null
+                ? `<button class="btn btn-sm btn-primary"
                             onclick="xemChiTietKetQua('${idKetQua}', '${user.ten}', ${item.diem}, '${baiKiemTra.tieu_de}')">
                             Xem
                         </button>`
-                        : ""
-                }
+                : ""
+            }
             </td>
 
         </tr>`;
@@ -385,19 +380,15 @@ function quayLaiDanhSach($action) {
 
 function renderChiTietBaiKiemTraGiangVien() {
     const thongTinBaiKT = `
-                        <p><strong>Bài kiểm tra:</strong> ${
-                            currentBaiKiemTra.tieu_de
-                        }</p>
-                        <p><strong>Hạn chót nộp bài:</strong> ${
-                            currentBaiKiemTra.ngay_ket_thuc
-                        }</p>
-                        <p><strong>Điểm tối đa:</strong> ${
-                            currentBaiKiemTra.diem_toi_da
-                        }</p>
+                        <p><strong>Bài kiểm tra:</strong> ${currentBaiKiemTra.tieu_de
+        }</p>
+                        <p><strong>Hạn chót nộp bài:</strong> ${currentBaiKiemTra.ngay_ket_thuc
+        }</p>
+                        <p><strong>Điểm tối đa:</strong> ${currentBaiKiemTra.diem_toi_da
+        }</p>
 
-                        <p><strong>Hình thức:</strong> ${
-                            currentBaiKiemTra.hinh_thuc ?? "Trắc nghiệm"
-                        }</p>
+                        <p><strong>Hình thức:</strong> ${currentBaiKiemTra.hinh_thuc ?? "Trắc nghiệm"
+        }</p>
                     `;
 
     const nutChucNang = `
@@ -470,8 +461,8 @@ $(document).ready(function () {
                         const tongCau = baiKiemTra.list_cau_hoi.length;
                         const ngayDenHan = baiKiemTra.ngay_ket_thuc
                             ? new Date(
-                                  baiKiemTra.ngay_ket_thuc
-                              ).toLocaleDateString("vi-VN")
+                                baiKiemTra.ngay_ket_thuc
+                            ).toLocaleDateString("vi-VN")
                             : "Không có";
 
                         $("#modalChiTiet .modal-title").text(
@@ -619,8 +610,7 @@ $(document).ready(function () {
                 dapAnDuocChon === null
             ) {
                 alert(
-                    `Vui lòng điền đầy đủ nội dung và chọn đáp án đúng cho Câu hỏi ${
-                        index + 1
+                    `Vui lòng điền đầy đủ nội dung và chọn đáp án đúng cho Câu hỏi ${index + 1
                     }.`
                 );
                 isValid = false;
@@ -850,9 +840,8 @@ $(document).ready(function () {
                 <tr>
                     <td>
                         <div class="form-check">
-                            <input type="checkbox" class="form-check-input student-checkbox" value="${
-                                student.id
-                            }">
+                            <input type="checkbox" class="form-check-input student-checkbox" value="${student.id
+                }">
                         </div>
                     </td>
                     <td><span class="math-inline">${student.name}</td>
@@ -1025,7 +1014,7 @@ $(document).on("click", ".btn-public-bai", function (e) {
 
 let banTinCache = {};
 
-// Xử lý modal chỉnh sửa bản tin
+// Xử lý click nút chỉnh sửa bản tin
 $(document).on("click", ".btn-update-ban-tin", function () {
     const urlDetail = $(this).data("url-detail");
     const urlUpdate = $(this).data("url-update");
@@ -1052,11 +1041,114 @@ $(document).on("click", ".btn-update-ban-tin", function () {
                 .get("noi-dung-ban-tin-chinh-sua")
                 .setContent(banTin.noi_dung);
             form.attr("action", urlUpdate);
+            form.data('url-detail', urlDetail);
             $("#modal-chinh-sua-ban-tin").modal("show");
         },
         error: function (xhr) {
             alert("Đã xảy ra lỗi: " + xhr.status + " " + xhr.statusText);
         },
+    });
+});
+
+// Xử lý model thêm bản tin
+$('#modal-them-ban-tin').parents('form').on('submit', function (e) {
+    e.preventDefault();
+
+    const form = $(this);
+    const actionUrl = form.attr('action');
+    const noiDung = tinymce.get("noi-dung-ban-tin-them").getContent();
+    const token = $('meta[name="csrf-token"]').attr('content');
+
+    // console.log(noiDung);
+
+    $.ajax({
+        url: actionUrl,
+        type: 'POST',
+        data: {
+            _token: token,
+            noi_dung: noiDung
+        },
+        dataType: 'json',
+        success: function (response) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                width: 'auto',
+                showConfirmButton: false,
+                timer: 3500,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+
+            Toast.fire({
+                icon: response.icon,
+                title: response.message
+            });
+
+            $('#wp-list-ban-tin').html(response.html);
+
+            $('#modal-them-ban-tin').modal('hide');
+
+            // Reset form
+            form[0].reset();
+        },
+        error: function (xhr) {
+            alert('Đã xảy ra lỗi: ' + xhr.status + ' ' + xhr.statusText);
+        }
+    });
+});
+
+// Xử lý model chỉnh sửa bản tin
+$('#modal-chinh-sua-ban-tin').parents('form').on('submit', function (e) {
+    e.preventDefault();
+
+    const form = $(this);
+    const actionUrl = form.attr('action');
+    const noiDung = tinymce.get("noi-dung-ban-tin-chinh-sua").getContent();
+    const token = $('meta[name="csrf-token"]').attr('content');
+
+    $.ajax({
+        url: actionUrl,
+        type: 'PUT',
+        data: {
+            _token: token,
+            noi_dung: noiDung
+        },
+        dataType: 'json',
+        success: function (response) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                width: 'auto',
+                showConfirmButton: false,
+                timer: 3500,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+
+            Toast.fire({
+                icon: response.icon,
+                title: response.message
+            });
+
+            $('#wp-list-ban-tin').html(response.html);
+
+            $('#modal-chinh-sua-ban-tin').modal('hide');
+
+            // Reset form
+            form[0].reset();
+
+            delete banTinCache[form.data('url-detail')];
+        },
+        error: function (xhr) {
+            alert('Đã xảy ra lỗi: ' + xhr.status + ' ' + xhr.statusText);
+        }
     });
 });
 
@@ -1071,9 +1163,59 @@ $('#modal-chinh-sua-ban-tin').on('hidden.bs.modal', function () {
 })
 
 
+// Xử lý xóa bản tin
+$(document).on('click', '.btn-delete-ban-tin', function () {
+    const urlDelete = $(this).data('url-delete');
+    const type = $(this).data('type');
+
+    Swal.fire({
+        title: `Bạn có chắc chắn xóa ${type} này không?`,
+        text: `Bạn sẽ không thể khôi phục ${type} này!`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Xóa",
+        cancelButtonText: "Hủy",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: urlDelete,
+                type: 'DELETE',
+                dataType: 'json',
+                success: function (response) {
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        width: 'auto',
+                        showConfirmButton: false,
+                        timer: 3500,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
+                        }
+                    });
+
+                    Toast.fire({
+                        icon: response.icon,
+                        title: response.message
+                    });
+
+                    $('#wp-list-ban-tin').html(response.html);
+
+                    $('#modal-chinh-sua-ban-tin').modal('hide');
+                },
+                error: function (xhr) {
+                    alert('Đã xảy ra lỗi: ' + xhr.status + ' ' + xhr.statusText);
+                }
+            });
+        }
+    });
+});
 
 
-// Bản tin
+// Phản hồi bản tin 
 $(document).on('submit', '.form-reply', function (e) {
     e.preventDefault();
 
@@ -1123,6 +1265,84 @@ $(document).on('submit', '.form-reply', function (e) {
         complete: function () {
             // Kích hoạt lại nút
             btn.prop('disabled', false).text('Gửi');
+        }
+    });
+});
+
+
+$(document).on('click', '.btn-update-phan-hoi', function () {
+    const idFormReply = $(this).data('form-reply');
+    const idFormUpdateReply = $(this).data('form-update-reply');
+    const formReply = $(idFormReply);
+    const formUpdateReply = $(idFormUpdateReply);
+    const urlUpdate = $(this).data('url-update');
+    const noiDungPhanHoi = $(this).parents('.child-news-action-btn').prev('.noi-dung-phan-hoi').text();
+    
+    // Toggle 2 form phản hồi và cập nhật phản hồi
+    formReply.css('display', 'none');
+    formUpdateReply.css('display', 'block');
+
+    // Gán action form cập nhật
+    formUpdateReply.attr('action', urlUpdate);
+    // Gán giá trị input nội dung
+    formUpdateReply.find('input[name="noi_dung"]').val(noiDungPhanHoi);
+});
+
+
+$(document).on('click', '.btn-cancel-update-reply', function () {
+    const idFormReply = $(this).data('form-reply');
+    const formReply = $(idFormReply);
+    
+    formReply.css('display', 'block');
+    
+    $(this).prev('input[name="noi_dung"]').val('');
+    $(this).parents('form[id|="form-update-reply"]').css('display', 'none');
+});
+
+
+$(document).on('submit', 'form[id|="form-update-reply"]', function (e) {
+    e.preventDefault();
+
+    const urlUpdate = $(this).attr('action');
+    const noiDung = $(this).find('input[name="noi_dung"]').val();
+    const token = $('meta[name="csrf-token"]').attr('content');
+
+    // alert($(this).attr('action'));
+
+    $.ajax({
+        url: urlUpdate,
+        type: 'PUT',
+        data: {
+            _token: token,
+            noi_dung: noiDung
+        },
+        dataType: 'json',
+        success: function (response) {
+            // alert(response.message);
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                width: 'auto',
+                showConfirmButton: false,
+                timer: 3500,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+
+            Toast.fire({
+                icon: response.icon,
+                title: response.message
+            });
+
+            $('#wp-list-ban-tin').html(response.html);
+
+            $(this).find('input[name="noi_dung"]').val('')
+        },
+        error: function (xhr) {
+            alert('Đã xảy ra lỗi: ' + xhr.status + ' ' + xhr.statusText);
         }
     });
 });

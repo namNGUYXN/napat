@@ -65,7 +65,9 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien+sinh-vien']], 
     Route::post('/lop-hoc-phan/{id}/ban-tin/them', 'BanTinController@them')->name('ban-tin.store');
     Route::post('/ban-tin/{id}/chi-tiet', 'BanTinController@chiTiet')->name('ban-tin.detail');
     Route::put('/ban-tin/{id}/chinh-sua', 'BanTinController@chinhSua')->name('ban-tin.update');
+    Route::delete('/ban-tin/{id}/xoa', 'BanTinController@xoa')->name('ban-tin.delete');
     Route::post('/lop-hoc-phan/{idLopHocPhan}/ban-tin/{idBanTin}/phanHoi', 'BanTinController@phanHoi')->name('ban-tin.reply');
+    Route::put('/ban-tin/{id}/chinh-sua-phan-hoi', 'BanTinController@chinhSuaPhanHoi')->name('phan-hoi.update');
     // -- Bài
     Route::post('/lop-hoc-phan/{slug}/bai/cong-khai', 'LopHocPhanController@congKhaiBaiTrongLop')->name('bai-trong-lop.public');
     Route::get('/lop-hoc-phan/{id}/bai/{slug}', 'LopHocPhanController@xemNoiDungBai')->name('bai-trong-lop.detail');

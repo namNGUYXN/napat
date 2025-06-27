@@ -5,7 +5,7 @@
   </button>
   <ul class="menu-sidebar mt-5">
     <li>
-      <a href="#" class="nav-link">
+      <a href="{{ route('dashboard') }}" class="nav-link">
         <i class="fas fa-tachometer-alt me-2 fs-5"></i>
         <span class="nav-text">Bảng điều khiển</span>
       </a>
