@@ -45,22 +45,6 @@ class BaiKiemTraService
             ->get();
     }
 
-    // Cập nhật bài tập
-    public function update($id, $data)
-    {
-        $baiTap = BaiKiemTra::where('id', $id)->where('is_delete', false)->first();
-        if (!$baiTap) {
-            return null;
-        }
-
-        $baiTap->tieu_de = $data['tieu_de'];
-        $baiTap->slug = Str::slug($data['tieu_de']) . '-' . uniqid();
-        $baiTap->diem_toi_da = $data['diem_toi_da'];
-        $baiTap->id_bai_giang = $data['id_bai_giang'];
-        $baiTap->save();
-
-        return $baiTap;
-    }
 
     // Xóa mềm bài tập
     public function softDelete($id)
@@ -73,6 +57,7 @@ class BaiKiemTraService
         $baiTap->is_delete = true;
         return $baiTap->save();
     }
+
     public function createExercise(array $data)
     {
         DB::beginTransaction();
@@ -82,8 +67,9 @@ class BaiKiemTraService
                 'slug' => Str::slug($data['tieuDe']),
                 'diem_toi_da' => $data['diemToiDa'] ?? null,
                 'id_lop_hoc_phan' => $data['idLopHoc'],
-                'ngay_bat_dau' => Carbon::now(), // cần chỉnh lại(đang demo)
-                'ngay_ket_thuc' => Carbon::now(), // cần chỉnh lại
+                'ngay_bat_dau' => Carbon::createFromFormat('d/m/Y H:i', $data['thoiGianBatDau']),
+                'ngay_ket_thuc' => Carbon::createFromFormat('d/m/Y H:i', $data['thoiGianKetThuc']),
+                'cho_phep_nop_qua_han' => filter_var($data['choPhepNopTre'],FILTER_VALIDATE_BOOLEAN),
                 'ngay_tao' => Carbon::now(),
                 'is_delete' => false
             ]);
@@ -304,5 +290,64 @@ class BaiKiemTraService
         }
 
         return ['cauHoiVaDapAn' => $result];
+    }
+
+    public function capNhatBaiKiemTra($data)
+    {
+        DB::transaction(function () use ($data) {
+            // Cập nhật bài kiểm tra
+            $bai = BaiKiemTra::findOrFail($data['id']);
+            $bai->update([
+                'tieu_de' => $data['tieu_de'],
+                'diem_toi_da' => $data['diem_toi_da'],
+                'slug' => Str::slug($data['tieu_de']),
+            ]);
+
+            // Xóa câu hỏi cũ nếu câu hỏi bị xóa trên giao diện 
+            if (!empty($data['cau_hoi_xoa'])) {
+                CauHoiBaiKiemTra::whereIn('id', $data['cau_hoi_xoa'])->delete();
+            }
+
+            // Cập nhật câu hỏi cũ
+            if (!empty($data['cau_hoi_cap_nhat'])) {
+                foreach ($data['cau_hoi_cap_nhat'] as $q) {
+                    $cauHoi = CauHoiBaiKiemTra::find($q['id']);
+                    if ($cauHoi) {
+                        $cauHoi->update([
+                            'tieu_de' => $q['tieu_de'],
+                            'dap_an_a' => $q['dap_an_a'],
+                            'dap_an_b' => $q['dap_an_b'],
+                            'dap_an_c' => $q['dap_an_c'],
+                            'dap_an_d' => $q['dap_an_d'],
+                            'dap_an_dung' => $q['dap_an_dung'],
+                        ]);
+                    }
+                }
+            }
+
+            // Thêm câu hỏi mới nếu có
+            if (!empty($data['cau_hoi_moi'])) {
+                foreach ($data['cau_hoi_moi'] as $q) {
+                    CauHoiBaiKiemTra::create([
+                        'id_bai_kiem_tra' => $bai->id,
+                        'tieu_de' => $q['tieu_de'],
+                        'dap_an_a' => $q['dap_an_a'],
+                        'dap_an_b' => $q['dap_an_b'],
+                        'dap_an_c' => $q['dap_an_c'],
+                        'dap_an_d' => $q['dap_an_d'],
+                        'dap_an_dung' => $q['dap_an_dung'],
+                    ]);
+                }
+            }
+        });
+    }
+    public function kiemTraNopQuaHan($idBaiKiemTra)
+    {
+        $baiKiemTra = BaiKiemTra::with('list_cau_hoi')->findOrFail($idBaiKiemTra);
+
+        if ($baiKiemTra->cho_phep_nop_qua_han == true) {
+            return true;
+        }
+        return false;
     }
 }
