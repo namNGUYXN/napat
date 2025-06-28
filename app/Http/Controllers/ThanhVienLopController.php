@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Imports\SinhVienImport;
 use App\Imports\ThanhVienLopImport;
 use Illuminate\Http\Request;
 use App\Services\ThanhVienLopService;

@@ -39,7 +39,7 @@ class ThanhVienLopImport implements OnEachRow, WithHeadingRow
                     'id_nguoi_dung' => $sinhVien->id,
                     'is_accept' => true
                 ]);
-            } else if ($tontai && !$thanhVienLop->is_accept) {
+            } else if ($tontai && $thanhVienLop->nguoi_dung->vai_tro == "Sinh viên") {
                 $thanhVienLop->is_accept = true;
                 $thanhVienLop->save();
             }
