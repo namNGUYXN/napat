@@ -13,10 +13,7 @@ class ThanhVienLopService
     {
         return ThanhVienLop::with('nguoi_dung')
             ->where('id_lop_hoc_phan', $idLopHoc)
-            ->where(function ($query) {
-                $query->where('is_accept', true)
-                    ->orWhereNull('is_accept');
-            })
+            ->where('is_accept', true)
             ->get();
     }
 
@@ -55,7 +52,7 @@ class ThanhVienLopService
         return [
             'status' => true,
             'message' => 'Đã chấp nhận yêu cầu thành công.',
-            'lop_id' => $thanhVien->id_lop_hoc,
+            'lop_id' => $thanhVien->id_lop_hoc_phan,
         ];
     }
     public function tuChoiYeuCau(int $id): array

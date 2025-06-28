@@ -12,9 +12,17 @@
   z-index: 1001;
 }
 
-.news-content * {
+.news-content img {
   max-width: 100%;
   height: auto;
+}
+
+.news-content iframe,
+.news-content object,
+.news-content embed {
+  max-width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 16 / 9;
 }
 
 .news-action-btn {

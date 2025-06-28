@@ -46,23 +46,12 @@
   height: auto;
 }
 
-#content-bai p:has(iframe) {
-  position: relative;
-  padding-bottom: 56.25%; /* 16:9 = 9/16 = 0.5625 */
-  height: 0;
-  overflow: hidden;
-  max-width: 100%;
-  background: #000;
-}
-
-#content-bai p iframe,
-#content-bai p object,
-#content-bai p embed {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100% !important;
-  height: 100% !important;
+#content-bai iframe,
+#content-bai object,
+#content-bai embed {
+  max-width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 16 / 9;
 }
 
 

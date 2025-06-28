@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\BanTin;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Support\Facades\DB;
 
 class BanTinService
@@ -28,6 +29,10 @@ class BanTinService
         try {
             DB::beginTransaction();
 
+            if (isset($data['duocPhepPhanHoi']) && !$data['duocPhepPhanHoi']) {
+                throw new Exception('Không thể phản hồi bản tin ở lớp học phần khác');
+            }
+
             BanTin::create([
                 'noi_dung' => $data['noi_dung'],
                 'id_thanh_vien_lop' => $data['id_thanh_vien_lop'],
@@ -45,7 +50,7 @@ class BanTinService
             DB::rollBack();
             return [
                 'success' => false,
-                'message' => "Lỗi khi đăng {$type}" + $e->getMessage()
+                'message' => "Lỗi khi đăng {$type}: " + $e->getMessage()
             ];
         }
     }
@@ -61,6 +66,7 @@ class BanTinService
             DB::beginTransaction();
 
             $banTin = BanTin::findOrFail($id);
+            $type = $banTin->id_ban_tin_cha ? 'phản hồi' : 'bản tin';
 
             $banTin->noi_dung = $data['noi_dung'];
             $banTin->save();
@@ -68,14 +74,41 @@ class BanTinService
             DB::commit();
             return [
                 'success' => true,
-                'message' => 'Cập nhật bản tin thành công',
+                'message' => "Cập nhật {$type} thành công",
                 'data' => $banTin->fresh()
             ];
         } catch (\Exception $e) {
             DB::rollback();
             return [
                 'success' => false,
-                'message' => 'Lỗi khi cập nhật bản tin: ' . $e->getMessage()
+                'message' => "Lỗi khi cập nhật {$type}: " . $e->getMessage()
+            ];
+        }
+    }
+
+    public function xoa($banTin, $thanhVienLop)
+    {
+        $type = $banTin->id_ban_tin_cha ? 'phản hồi' : 'bản tin';
+
+        try {
+            DB::beginTransaction();
+
+            if ($banTin->id_thanh_vien_lop != $thanhVienLop->id) {
+                throw new Exception("Bạn không thể xóa {$type} của người khác");
+            }
+
+            $banTin->delete();
+
+            DB::commit();
+            return [
+                'success' => true,
+                'message' => "Xóa {$type} thành công",
+            ];
+        } catch (\Exception $e) {
+            DB::rollback();
+            return [
+                'success' => false,
+                'message' => "Lỗi khi xóa {$type}: " . $e->getMessage()
             ];
         }
     }
