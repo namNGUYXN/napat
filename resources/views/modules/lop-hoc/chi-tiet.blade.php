@@ -351,6 +351,7 @@
       </form>
     @endif
 
+    {{-- Modal import thành viên bằng file excel --}}
     <div class="modal fade" id="addMemberModal" tabindex="-1" aria-labelledby="" aria-hidden="true"
       data-bs-focus="false">
       <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
@@ -366,7 +367,7 @@
               <div class="guide-import">
                 <h3>Hướng dẫn import:</h3>
                 <p class="text-dark mb-0"><b>Bước 1: </b>Tạo một file excel (.xlsx) trên máy tính</p>
-                <p class="text-dark mb-0"><b>Bước 2: </b>Đặt tên cho ô đầu tiên (có thể là email, .v.v.)</p>
+                <p class="text-dark mb-0"><b>Bước 2: </b>Đặt tên cho ô đầu tiên là email</p>
                 <p class="text-dark mb-0"><b>Bước 3: </b>Nhập lần lượt các email của sinh viên cần thêm vào lớp</p>
                 <p class="mb-3 mt-1"><b>Lưu ý: </b>Các email không tồn tại trên hệ thống sẽ bị bỏ qua</p>
                 <div class="text-center">
