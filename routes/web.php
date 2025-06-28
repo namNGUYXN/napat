@@ -36,7 +36,7 @@ Route::group(['middleware' => ['auth.custom']], function () {
     Route::get('/storage/files/shares/{ten_file}', 'SecureFileController@publicFile');
     Route::get('/storage/photos/shares/thumbs/{ten_anh}', 'SecureFileController@publicImage');
     Route::get('/storage/photos/shares/{ten_anh}', 'SecureFileController@publicImage');
-    
+
     Route::get('/storage/files/{id_nguoi_dung}/thumbs/{ten_file}', 'SecureFileController@privateFile');
     Route::get('/storage/files/{id_nguoi_dung}/{ten_file}', 'SecureFileController@privateFile');
     Route::get('/storage/photos/{id_nguoi_dung}/thumbs/{ten_anh}', 'SecureFileController@privateImage');
@@ -51,7 +51,7 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien+sinh-vien']], 
     Route::get('/', 'HomeController@home')->name('home');
     Route::get('/trang-chu', 'HomeController@home');
 
-    
+
     Route::post('/bai-tap', 'BaiTapController@themBaiTap')->name('bai_tap.them');
     Route::get('/bai-giang/{id}/bai-tap', 'BaiTapController@danhSachBaiTap')->name('bai-tap.by-bai-giang');
     Route::get('lop-hoc-cua-toi', 'LopHocPhanController@lopHocCuaToi')->name('lop-hoc.lop-hoc-cua-toi');
@@ -59,7 +59,7 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien+sinh-vien']], 
 
     // Lớp học
     Route::get('/hoc-phan/{id}', 'LopHocPhanController@lopHocTheoHocPhan')->name('lop-hoc.list');
-    Route::get('lop-hoc-cua-toi','LopHocPhanController@lopHocCuaToi')->name('lop-hoc.lop-hoc-cua-toi');
+    Route::get('lop-hoc-cua-toi', 'LopHocPhanController@lopHocCuaToi')->name('lop-hoc.lop-hoc-cua-toi');
     Route::get('/lop-hoc-phan/{slug}', 'LopHocPhanController@chiTiet')->name('lop-hoc.detail');
     // -- Bản tin
     Route::post('/lop-hoc-phan/{id}/ban-tin/them', 'BanTinController@them')->name('ban-tin.store');
@@ -117,6 +117,7 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien']], function (
 
     //Bài kiểm tra
     Route::post('/bai-kiem-tra', 'BaiKiemTraController@themBaiKiemTra')->name('bai_kiem_tra.them');
+    Route::put('/bai-kiem-tra', 'BaiKiemTraController@capNhatBaiKiemTra')->name('bai_kiem_tra.cap-nhat');
 });
 
 

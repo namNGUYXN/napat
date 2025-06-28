@@ -1,61 +1,28 @@
+var questionCounter = 0;
+
 document.addEventListener("DOMContentLoaded", function () {
-    let questionCounter = 0;
+    flatpickr.localize(flatpickr.l10ns.vn); // Bật tiếng Việt
 
-    //Mẫu html để load dữ liệu vào
-    const questionTemplate = (
-        count,
-        questionText = "",
-        answerOptions = ["", "", "", ""],
-        correctAnswer = ""
-    ) => {
-        const optionLabels = ["A", "B", "C", "D"];
-        const optionValues = ["optionA", "optionB", "optionC", "optionD"];
-        const optionsHTML = optionValues
-            .map(
-                (value, index) => `
-            <div class="col-md-6">
-                <div class="input-group">
-                    <div class="input-group-text">
-                        <input class="form-check-input mt-0 correct-answer-radio" 
-                               type="radio" name="correctAnswer_${count}" 
-                               value="${value}" ${correctAnswer === value ? "checked" : ""
-                    } required>
-                    </div>
-                    <input type="text" class="form-control answer-option" 
-                           value="${answerOptions[index] || ""
-                    }" placeholder="Đáp án ${optionLabels[index]
-                    }" required>
-                </div>
-            </div>
-        `
-            )
-            .join("");
+    const startPicker = flatpickr("#startTime", {
+        enableTime: true,
+        dateFormat: "d/m/Y H:i",
+        time_24hr: true,
+        allowInput: true,
+        onChange: function (selectedDates, dateStr, instance) {
+            // Gợi ý thời gian kết thúc ≥ thời gian bắt đầu
+            if (selectedDates.length > 0) {
+                const startDate = selectedDates[0];
+                endPicker.set("minDate", startDate);
+            }
+        },
+    });
 
-        return `
-            <div class="question-item mb-4 p-3 border rounded bg-light" data-question-index="${count}">
-                <h7 class="d-flex justify-content-between align-items-center mb-3">
-                    <strong>Câu hỏi ${count}</strong>
-                    <button type="button" class="btn btn-sm btn-outline-danger remove-question-btn">
-                        <i class="fas fa-times"></i> Xóa
-                    </button>
-                </h7>
-                <div class="mb-3">
-                    <label class="form-label">Nội dung câu hỏi <span class="text-danger">*</span></label>
-                    <textarea class="form-control question-text" rows="2" required>${questionText}</textarea>
-                    <div class="invalid-feedback">Vui lòng nhập nội dung câu hỏi.</div>
-                </div>
-                <div class="row g-2 mb-3">
-                    <label class="form-label">Đáp án: <span class="text-danger">*</span></label>
-                    ${optionsHTML}
-                    <div class="col-12">
-                        <div class="invalid-feedback">
-                            Vui lòng chọn một đáp án đúng cho câu hỏi này.
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-    };
+    const endPicker = flatpickr("#endTime", {
+        enableTime: true,
+        dateFormat: "d/m/Y H:i",
+        time_24hr: true,
+        allowInput: true,
+    });
 
     //Thêm câu hỏi(Thủ công và File)
     function addQuestion(
@@ -64,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function () {
         correct = ""
     ) {
         questionCounter++;
-        $("#questionsFormContainer").append(
+        $("div[id|='questionsFormContainer']").append(
             questionTemplate(questionCounter, questionText, answers, correct)
         );
         updateQuestionNumbers();
@@ -72,7 +39,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     //Cập nhật lại thứ tự câu hỏi cho đúng khi thêm mới hoặc xóa
     function updateQuestionNumbers() {
-        const $questionItems = $("#questionsFormContainer .question-item");
+        const $questionItems = $(
+            "div[id|='questionsFormContainer'] .question-item"
+        );
         if ($questionItems.length === 0) {
             $("#noQuestionsMessage").show();
         } else {
@@ -91,6 +60,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 $this.find(".remove-question-btn").show();
             }
         });
+        console.log(questionCounter);
     }
 
     $("#addNewExerciseBtn").attr("data-bs-toggle", "modal");
@@ -100,21 +70,20 @@ document.addEventListener("DOMContentLoaded", function () {
     $("#addExerciseModal").on("show.bs.modal", function () {
         $("#newExerciseForm")[0].reset();
         $("#newExerciseForm").removeClass("was-validated");
-        $("#questionsFormContainer").empty();
+        $("div[id|='questionsFormContainer']").empty();
         questionCounter = 0;
-        addQuestion(); // mặc định 1 câu hỏi
         $("#noQuestionsMessage").show();
     });
 
     //Nhấn nút thêm câu hỏi
-    $("#addQuestionBtn").on("click", function () {
+    $(document).on("click", "#addQuestionBtn", function () {
         addQuestion();
     });
 
     //Nhấn nút xóa câu hỏi
     $(document).on("click", ".remove-question-btn", function () {
         const $toRemove = $(this).closest(".question-item");
-        if ($("#questionsFormContainer .question-item").length > 1) {
+        if ($("div[id|='questionsFormContainer'] .question-item").length > 1) {
             $toRemove.remove();
             updateQuestionNumbers();
         } else {
@@ -123,7 +92,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     //Đọc file được chọn và truyền dữ liệu để tạo html hiển thị danh sách câu hỏi từ file
-    $("#excelFileInput").on("change", function (e) {
+    $(document).on("change", "#excelFileInput", function (e) {
         const file = e.target.files[0];
         if (!file) return;
 
@@ -145,10 +114,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 const correctValue =
                     {
-                        A: "optionA",
-                        B: "optionB",
-                        C: "optionC",
-                        D: "optionD",
+                        A: "A",
+                        B: "B",
+                        C: "C",
+                        D: "D",
                     }[correctLabel] || "";
 
                 if (
@@ -377,28 +346,172 @@ function quayLaiDanhSach($action) {
         }
     }
 }
+function formatNgay(ngayGoc) {
+    const date = new Date(ngayGoc);
+    const gio = String(date.getHours()).padStart(2, "0");
+    const phut = String(date.getMinutes()).padStart(2, "0");
+    const ngay = String(date.getDate()).padStart(2, "0");
+    const thang = String(date.getMonth() + 1).padStart(2, "0");
+    const nam = date.getFullYear();
 
+    return `${gio}:${phut} Ngày: ${ngay}/${thang}/${nam}`;
+}
 function renderChiTietBaiKiemTraGiangVien() {
     const thongTinBaiKT = `
-                        <p><strong>Bài kiểm tra:</strong> ${currentBaiKiemTra.tieu_de
-        }</p>
-                        <p><strong>Hạn chót nộp bài:</strong> ${currentBaiKiemTra.ngay_ket_thuc
-        }</p>
-                        <p><strong>Điểm tối đa:</strong> ${currentBaiKiemTra.diem_toi_da
-        }</p>
+                        <p><strong>Bài kiểm tra:</strong> ${
+                            currentBaiKiemTra.tieu_de
+                        }</p>
+                        <p><strong>Hạn chót nộp bài:</strong> ${formatNgay(
+                            currentBaiKiemTra.ngay_ket_thuc
+                        )}</p>
+                        
+                        <p><strong>Điểm tối đa:</strong> ${
+                            currentBaiKiemTra.diem_toi_da
+                        }</p>
 
-                        <p><strong>Hình thức:</strong> ${currentBaiKiemTra.hinh_thuc ?? "Trắc nghiệm"
-        }</p>
+                        <p><strong>Hình thức:</strong> ${
+                            currentBaiKiemTra.hinh_thuc ?? "Trắc nghiệm"
+                        }</p>
+                        <p><strong>Số câu hỏi:</strong> ${
+                            currentBaiKiemTra.list_cau_hoi.length
+                        }</p>
                     `;
 
     const nutChucNang = `
                         <div class="mt-3 d-flex justify-content-end gap-2">
                             <button class="btn btn-info" onclick="hienThiCauHoi()">Xem câu hỏi</button>
+                            <button class="btn btn-info" onclick="chuyenSangChinhSua()">Chỉnh sửa nội dung</button>
                             <button class="btn btn-primary" onclick="hienThiKetQua()">Kết quả</button>
                         </div>
                     `;
     return thongTinBaiKT + nutChucNang;
 }
+
+//Mẫu html để load dữ liệu vào
+const questionTemplate = (
+    count,
+    questionText = "",
+    answerOptions = ["", "", "", ""],
+    correctAnswer = "",
+    questionID = ""
+) => {
+    const optionLabels = ["A", "B", "C", "D"];
+    const optionValues = ["A", "B", "C", "D"];
+    const optionsHTML = optionValues
+        .map(
+            (value, index) => `
+            <div class="col-md-6">
+                <div class="input-group">
+                    <div class="input-group-text">
+                        <input class="form-check-input mt-0 correct-answer-radio" 
+                               type="radio" name="correctAnswer_${count}" 
+                               value="${value}" ${
+                correctAnswer === value ? "checked" : ""
+            } required>
+                    </div>
+                    <input type="text" class="form-control answer-option" 
+                           value="${
+                               answerOptions[index] || ""
+                           }" placeholder="Đáp án ${
+                optionLabels[index]
+            }" required>
+                </div>
+            </div>
+        `
+        )
+        .join("");
+
+    return `
+            <div class="question-item mb-4 p-3 border rounded bg-light" data-question-index="${count}">
+                <input type="hidden" name="idCauHoi" id="idCauHoi"
+                    value="${questionID}">
+                <h7 class="d-flex justify-content-between align-items-center mb-3">
+                    <strong>Câu hỏi ${count}</strong>
+                    <button type="button" class="btn btn-sm btn-outline-danger remove-question-btn">
+                        <i class="fas fa-times"></i> Xóa
+                    </button>
+                </h7>
+                <div class="mb-3">
+                    <label class="form-label">Nội dung câu hỏi <span class="text-danger">*</span></label>
+                    <textarea class="form-control question-text" rows="2" required>${questionText}</textarea>
+                    <div class="invalid-feedback">Vui lòng nhập nội dung câu hỏi.</div>
+                </div>
+                <div class="row g-2 mb-3">
+                    <label class="form-label">Đáp án: <span class="text-danger">*</span></label>
+                    ${optionsHTML}
+                    <div class="col-12">
+                        <div class="invalid-feedback">
+                            Vui lòng chọn một đáp án đúng cho câu hỏi này.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+};
+
+const chuyenSangChinhSua = () => {
+    const body = document.getElementById("modalChiTietBody");
+    let html = `<form id="editExerciseForm">
+                    <input type="hidden" name="idBaiKiemTra" id="idBaiKiemTra"
+                        value="${currentBaiKiemTra.id}">
+                    <div class="row mb-3">
+                        <div class="col-sm-9 col-lg-10">
+                            <label for="ExerciseTitle" class="form-label">Tiêu đề
+                                <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="tieu_de"
+                                id="ExerciseTitle" value="${currentBaiKiemTra.tieu_de}" placeholder="Nhập tiêu đề bài kiểm tra" required>
+                            <div class="invalid-feedback">
+                            Vui lòng nhập tiêu đề cho bài kiểm tra.
+                            </div>
+                        </div>
+                        <div class="col-sm-3 col-lg-2 mt-3 mt-sm-0"> <label
+                            for="ExerciseMaxScore" class="form-label">Điểm tối
+                            đa</label>
+                            <input type="number" class="form-control" name="diem_toi_da" value="${currentBaiKiemTra.diem_toi_da}"
+                            id="ExerciseMaxScore" placeholder="100" min="0">
+                        </div>
+                    </div>
+                    <div id="questionsFormContainer-sua">`;
+    questionCounter = 0;
+    // Tạo HTML từ template
+    currentBaiKiemTra.list_cau_hoi.forEach((q, index) => {
+        questionCounter++;
+        html += questionTemplate(
+            questionCounter,
+            q.tieu_de,
+            [q.dap_an_a, q.dap_an_b, q.dap_an_c, q.dap_an_d],
+            q.dap_an_dung,
+            q.id
+        );
+    });
+    html += `</div>
+            <div class="d-flex gap-2 mb-3">
+                <!-- Nút Thêm câu hỏi mới -->
+                <button type="button" class="btn btn-outline-primary flex-fill"
+                    id="addQuestionBtn">
+                    <i class="fas fa-plus me-2"></i>Thêm câu hỏi mới
+                </button>
+
+                
+                <label class="btn btn-outline-secondary flex-fill m-0"
+                for="excelFileInput">
+                    <i class="fas fa-file-excel me-2"></i>Chọn file Excel
+                </label>
+                <input type="file" id="excelFileInput" accept=".xlsx, .xls"
+                    class="d-none">
+            </div>
+            <div class="text-end mt-3">
+                <button type="submit" class="btn btn-success">Lưu thay đổi</button>
+            </div>
+        </form>`;
+    $("#modalChiTiet .modal-actions").html(`
+        <button class="btn btn-secondary" onclick="quayLaiDanhSach(0)">
+            ← Quay lại 
+        </button>
+    `);
+    // Gán lại vào modal-body
+    body.innerHTML = html;
+};
 
 $(document).ready(function () {
     let danhSachBaiKiemTra = [];
@@ -477,7 +590,7 @@ $(document).ready(function () {
                                 <p><strong>Hạn cuối làm bài:</strong> ${ngayDenHan}</p>
                                 <p><strong>Điểm tối đa:</strong> ${baiKiemTra.diem_toi_da}</p>
                                 <p>Bạn chưa làm bài kiểm tra này.</p>
-                                <a href="${lamBaiUrl}" class="btn btn-primary">
+                                <a href="${lamBaiUrl}" target="_blank" class="btn btn-primary">
                                     Làm bài ngay
                                 </a>
                             </div>
@@ -509,6 +622,7 @@ $(document).ready(function () {
                     }
                 }
                 if (res.role === "giang_vien") {
+                    questionCounter = 0;
                     const baiKiemTra = res.bai_kiem_tra;
                     const dsKetQua = res.danh_sach_ket_qua;
 
@@ -562,12 +676,39 @@ $(document).ready(function () {
             return;
         }
 
-        if ($("#questionsFormContainer .question-item").length === 0) {
+        if (
+            $("div[id|='questionsFormContainer'] .question-item").length === 0
+        ) {
             $("#noQuestionsMessage").show();
             alert("Vui lòng thêm ít nhất một câu hỏi cho bài kiểm tra.");
             return;
         } else {
             $("#noQuestionsMessage").hide();
+        }
+        const startTime = $("#startTime").val();
+        const endTime = $("#endTime").val();
+
+        if (!startTime || !endTime) {
+            Swal.fire({
+                icon: "warning",
+                title: "Thiếu thông tin",
+                text: "Vui lòng chọn đầy đủ thời gian bắt đầu và kết thúc.",
+                confirmButtonText: "Đóng",
+            });
+            return;
+        }
+
+        const start = new Date(startTime);
+        const end = new Date(endTime);
+
+        if (start > end) {
+            Swal.fire({
+                icon: "warning",
+                title: "Thời gian không hợp lệ",
+                text: "Thời gian kết thúc phải sau hoặc bằng thời gian bắt đầu.",
+                confirmButtonText: "Đóng",
+            });
+            return;
         }
 
         const newExercise = {
@@ -576,12 +717,18 @@ $(document).ready(function () {
                 ? parseInt($("#newExerciseMaxScore").val())
                 : null,
             idLopHoc: $("#idLopHoc").val(),
+            thoiGianBatDau: startTime,
+            thoiGianKetThuc: endTime,
+            choPhepNopTre: $("#choPhepNopTre").is(":checked"),
             danhSachCauHoi: [],
         };
+        console.log(newExercise);
 
         let isValid = true;
 
-        $("#questionsFormContainer .question-item").each(function (index) {
+        $("div[id|='questionsFormContainer'] .question-item").each(function (
+            index
+        ) {
             const $thisQuestion = $(this);
             const cauHoi = $thisQuestion.find(".question-text").val();
             const danhSachDapAn = [];
@@ -594,7 +741,7 @@ $(document).ready(function () {
                 if (
                     $thisQuestion
                         .find(
-                            `.correct-answer-radio[value="option${String.fromCharCode(
+                            `.correct-answer-radio[value="${String.fromCharCode(
                                 65 + optIndex
                             )}"]`
                         )
@@ -646,9 +793,9 @@ $(document).ready(function () {
                         $("#addExerciseModal").modal("hide");
                         $("#newExerciseForm")[0].reset();
                         $("#newExerciseForm").removeClass("was-validated");
-                        $("#questionsFormContainer").empty();
+                        $("div[id|='questionsFormContainer']").empty();
                         $("#noQuestionsMessage").show();
-                        questionCounter = 1;
+                        questionCounter = 0;
                         // Cập nhật lại danh sách và hiển thị
                         danhSachBaiTap = response.data;
                         renderDanhSach(danhSachBaiTap);
@@ -760,6 +907,99 @@ $(document).ready(function () {
                 });
             }
         });
+    });
+
+    document.addEventListener("submit", function (e) {
+        if (e.target && e.target.id === "editExerciseForm") {
+            e.preventDefault();
+
+            const form = e.target;
+            const tieuDe = form.querySelector("#ExerciseTitle").value;
+            const diemToiDa = form.querySelector("#ExerciseMaxScore").value;
+            const idBaiKiemTra = form.querySelector("#idBaiKiemTra").value;
+
+            // Thu thập câu hỏi hiện tại từ giao diện
+            const questionEls = form.querySelectorAll(".question-item");
+            const questions = [];
+            const currentQuestionIDs = [];
+
+            questionEls.forEach((qEl, index) => {
+                const id =
+                    qEl.querySelector('input[name="idCauHoi"]')?.value || null;
+                const noiDung = qEl.querySelector(".question-text").value;
+                const answerInputs = qEl.querySelectorAll(".answer-option");
+                const answers = Array.from(answerInputs).map((i) => i.value);
+
+                const correct = qEl.querySelector(
+                    ".correct-answer-radio:checked"
+                )?.value;
+
+                const question = {
+                    id: id,
+                    tieu_de: noiDung,
+                    dap_an_a: answers[0],
+                    dap_an_b: answers[1],
+                    dap_an_c: answers[2],
+                    dap_an_d: answers[3],
+                    dap_an_dung: correct,
+                };
+                questions.push(question);
+
+                if (id) currentQuestionIDs.push(id); // để so sánh xem câu nào bị xóa
+            });
+
+            // Xác định ID các câu hỏi cũ bị xóa (không còn trong DOM)
+            const deletedQuestionIDs = currentBaiKiemTra.list_cau_hoi
+                .map((q) => q.id.toString())
+                .filter((id) => !currentQuestionIDs.includes(id));
+
+            const data = {
+                id: idBaiKiemTra,
+                tieu_de: tieuDe,
+                diem_toi_da: diemToiDa,
+                cau_hoi_cap_nhat: questions.filter((q) => q.id),
+                cau_hoi_moi: questions.filter((q) => !q.id),
+                cau_hoi_xoa: deletedQuestionIDs,
+            };
+            console.log(data);
+
+            $.ajax({
+                url: "/bai-kiem-tra",
+                method: "PUT",
+                contentType: "application/json",
+                data: JSON.stringify(data),
+
+                success: function (response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Thành công",
+                            text: response.message,
+                            confirmButtonText: "Đóng",
+                        }).then(() => {
+                            questionCounter = 0;
+                            quayLaiDanhSach(0);
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Tạo thất bại",
+                            text: response.message,
+                            confirmButtonText: "Đóng",
+                        });
+                    }
+                },
+                error: function (xhr) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Lỗi server",
+                        text: "Đã xảy ra lỗi phía server.",
+                        confirmButtonText: "Đóng",
+                    });
+                    console.error(xhr.responseText);
+                },
+            });
+        }
     });
 
     // --- Sự kiện click nút "Chèn bài giảng đã chọn" ---
@@ -1013,24 +1253,24 @@ $(document).on("click", ".btn-public-bai", function (e) {
         success: function (response) {
             const Toast = Swal.mixin({
                 toast: true,
-                position: 'top-end',
-                width: 'auto',
+                position: "top-end",
+                width: "auto",
                 showConfirmButton: false,
                 timer: 3500,
                 timerProgressBar: true,
                 didOpen: (toast) => {
                     toast.onmouseenter = Swal.stopTimer;
                     toast.onmouseleave = Swal.resumeTimer;
-                }
+                },
             });
 
             Toast.fire({
                 icon: response.icon,
-                title: response.message
+                title: response.message,
             });
 
-            $('#accordion-chuong').html(response.html);
-            $('#lecture-tab>span').text(response.tongSoBaiCongKhai);
+            $("#accordion-chuong").html(response.html);
+            $("#lecture-tab>span").text(response.tongSoBaiCongKhai);
         },
         error: function (xhr) {
             alert("Đã xảy ra lỗi: " + xhr.status + " " + xhr.statusText);
@@ -1240,58 +1480,62 @@ $(document).on('click', '.btn-delete-ban-tin', function () {
     });
 });
 
+$("#modal-chinh-sua-ban-tin").on("hidden.bs.modal", function () {
+    tinymce.get("noi-dung-ban-tin-chinh-sua").setContent("");
+    $("#modal-chinh-sua-ban-tin").parents("form").attr("action", "");
+});
 
 // Phản hồi bản tin 
 $(document).on('submit', '.form-reply', function (e) {
     e.preventDefault();
 
     const form = $(this);
-    const actionUrl = form.attr('action');
+    const actionUrl = form.attr("action");
     const noiDung = form.find('input[name="noi_dung"]').val();
-    const token = $('meta[name="csrf-token"]').attr('content');
+    const token = $('meta[name="csrf-token"]').attr("content");
 
     // Optional: disable button trong khi gửi
     const btn = form.find('button[type="submit"]');
-    btn.prop('disabled', true).text('Đang gửi...');
+    btn.prop("disabled", true).text("Đang gửi...");
 
     $.ajax({
         url: actionUrl,
-        type: 'POST',
+        type: "POST",
         data: {
             _token: token,
-            noi_dung: noiDung
+            noi_dung: noiDung,
         },
         success: function (response) {
             const Toast = Swal.mixin({
                 toast: true,
-                position: 'top-end',
-                width: 'auto',
+                position: "top-end",
+                width: "auto",
                 showConfirmButton: false,
                 timer: 3500,
                 timerProgressBar: true,
                 didOpen: (toast) => {
                     toast.onmouseenter = Swal.stopTimer;
                     toast.onmouseleave = Swal.resumeTimer;
-                }
+                },
             });
 
             Toast.fire({
                 icon: response.icon,
-                title: response.message
+                title: response.message,
             });
 
-            $('#wp-list-ban-tin').html(response.html);
+            $("#wp-list-ban-tin").html(response.html);
 
             // Reset form
             form[0].reset();
         },
         error: function (xhr) {
-            alert('Đã xảy ra lỗi: ' + xhr.status + ' ' + xhr.statusText);
+            alert("Đã xảy ra lỗi: " + xhr.status + " " + xhr.statusText);
         },
         complete: function () {
             // Kích hoạt lại nút
-            btn.prop('disabled', false).text('Gửi');
-        }
+            btn.prop("disabled", false).text("Gửi");
+        },
     });
 });
 

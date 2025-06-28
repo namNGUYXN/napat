@@ -20,6 +20,7 @@ class CreateBaiKiemTraTable extends Migration
             $table->smallInteger('diem_toi_da');
             $table->timestamp('ngay_bat_dau')->nullable();
             $table->timestamp('ngay_ket_thuc')->nullable();
+            $table->boolean('cho_phep_nop_qua_han')->default(false);
             $table->unsignedBigInteger('id_lop_hoc_phan');
             $table->timestamp('ngay_tao')->useCurrent();
             $table->boolean('is_delete')->default(false);

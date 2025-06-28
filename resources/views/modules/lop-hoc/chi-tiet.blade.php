@@ -68,7 +68,8 @@
               <div class="card-body">
                 <h5 class="card-title mb-3">{{ $lopHocPhan->ten }} - {{ $lopHocPhan->ma }}</h5>
                 <p class="card-text mb-1"><strong>Học phần:</strong> {{ $lopHocPhan->hoc_phan->ten }}</p>
-                <p class="card-text mb-1"><strong>Giảng viên:</strong> {{ $lopHocPhan->giang_vien->ho_ten }}</p>
+                <p class="card-text mb-1"><strong>Giảng viên:</strong> {{ $lopHocPhan->giang_vien->ho_ten }}
+                </p>
                 <p class="card-text mb-1"><strong>Học kì:</strong> 2024 - 2025</p>
                 <p class="card-text mt-3 mb-0">
                   <small class="text-muted">{{ $lopHocPhan->mo_ta_ngan }}</small>
@@ -157,141 +158,104 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                   </div>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" id="modalChiTietBody">
                   <!-- Nội dung sẽ được render bằng JS -->
                 </div>
               </div>
             </div>
           </div>
 
-
-          <div class="modal fade" id="addExerciseModal" tabindex="-1" aria-labelledby="addExerciseModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-dialog-scrollable">
-              <div class="modal-content">
-                <div class="modal-header bg-success text-white">
-                  <h5 class="modal-title" id="addExerciseModalLabel">Tạo mới bài kiểm tra</h5>
-                  <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                    aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  <form id="newExerciseForm">
-                    <div class="row mb-3">
-                      <div class="col-sm-9 col-lg-10">
-                        <label for="newExerciseTitle" class="form-label">Tiêu đề
-                          <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" name="tieu_de" id="newExerciseTitle"
-                          placeholder="Nhập tiêu đề bài tập" required>
-                        <div class="invalid-feedback">
-                          Vui lòng nhập tiêu đề cho bài kiểm tra.
-                        </div>
-                      </div>
-                      <div class="col-sm-3 col-lg-2 mt-3 mt-sm-0"> <label for="newExerciseMaxScore"
-                          class="form-label">Điểm tối
-                          đa</label>
-                        <input type="number" class="form-control" name="diem_toi_da" id="newExerciseMaxScore"
-                          placeholder="100" min="0">
-                      </div>
-                    </div>
-
-                    <div class="mb-3"> <label for="newExerciseDescription" class="form-label">Mô
-                        tả</label>
-                      <textarea class="form-control" name="mo_ta" id="newExerciseDescription" rows="3" placeholder="Nhập mô tả"></textarea>
-                    </div>
-                    <hr>
-
-                    <input type="hidden" name="idLopHoc" id="idLopHoc" value="{{ $lopHocPhan->id }}">
-
-                    <div id="questionsFormContainer">
-                      <h6>Danh sách câu hỏi:</h6>
-                      <div class="question-item mb-4 p-3 border rounded bg-light">
-                        <h7 class="d-flex justify-content-between align-items-center mb-3">
-                          <strong>Câu hỏi 1</strong>
-                          <button type="button" class="btn btn-sm btn-outline-danger remove-question-btn">
-                            <i class="fas fa-times"></i> Xóa
-                          </button>
-                        </h7>
-                        <div class="mb-3">
-                          <label for="question1Text" class="form-label">Nội dung câu hỏi <span
-                              class="text-danger">*</span></label>
-                          <textarea class="form-control question-text" id="question1Text" rows="2" placeholder="Nhập nội dung câu hỏi"
-                            required></textarea>
+          {{-- Modal thêm bài kiểm tra --}}
+          @if (session('vai_tro') == 'Giảng viên')
+            <div class="modal fade" id="addExerciseModal" tabindex="-1" aria-labelledby="addExerciseModalLabel"
+              aria-hidden="true">
+              <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                <div class="modal-content">
+                  <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="addExerciseModalLabel">Tạo mới bài kiểm tra</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                      aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <form id="newExerciseForm">
+                      <div class="row mb-3">
+                        <div class="col-sm-9 col-lg-10">
+                          <label for="newExerciseTitle" class="form-label">Tiêu đề
+                            <span class="text-danger">*</span></label>
+                          <input type="text" class="form-control" name="tieu_de" id="newExerciseTitle"
+                            placeholder="Nhập tiêu đề bài tập" required>
                           <div class="invalid-feedback">
-                            Vui lòng nhập nội dung câu hỏi.
+                            Vui lòng nhập tiêu đề cho bài kiểm tra.
                           </div>
                         </div>
-                        <div class="row g-2 mb-3">
-                          <label class="form-label">Đáp án: <span class="text-danger">*</span></label>
+                        <div class="col-sm-3 col-lg-2 mt-3 mt-sm-0"> <label for="newExerciseMaxScore"
+                            class="form-label">Điểm tối
+                            đa</label>
+                          <input type="number" class="form-control" name="diem_toi_da" id="newExerciseMaxScore"
+                            placeholder="100" min="0">
+                        </div>
+                        <div class="row mb-3 mt-3 ">
                           <div class="col-md-6">
-                            <div class="input-group">
-                              <div class="input-group-text">
-                                <input class="form-check-input mt-0 correct-answer-radio" type="radio"
-                                  name="correctAnswer_1" value="optionA" aria-label="Đáp án A" required>
-                              </div>
-                              <input type="text" class="form-control answer-option" placeholder="Đáp án A" required>
-                            </div>
+                            <label for="startTime">Thời gian bắt đầu</label>
+                            <input type="text" class="form-control" id="startTime" name="thoi_gian_bat_dau"
+                              placeholder="Chọn thời gian">
                           </div>
                           <div class="col-md-6">
-                            <div class="input-group">
-                              <div class="input-group-text">
-                                <input class="form-check-input mt-0 correct-answer-radio" type="radio"
-                                  name="correctAnswer_1" value="optionB" aria-label="Đáp án B" required>
-                              </div>
-                              <input type="text" class="form-control answer-option" placeholder="Đáp án B" required>
-                            </div>
+                            <label for="endTime">Thời gian kết thúc</label>
+                            <input type="text" class="form-control" id="endTime" name="thoi_gian_ket_thuc"
+                              placeholder="Chọn thời gian">
                           </div>
-                          <div class="col-md-6">
-                            <div class="input-group">
-                              <div class="input-group-text">
-                                <input class="form-check-input mt-0 correct-answer-radio" type="radio"
-                                  name="correctAnswer_1" value="optionC" aria-label="Đáp án C" required>
-                              </div>
-                              <input type="text" class="form-control answer-option" placeholder="Đáp án C" required>
-                            </div>
-                          </div>
-                          <div class="col-md-6">
-                            <div class="input-group">
-                              <div class="input-group-text">
-                                <input class="form-check-input mt-0 correct-answer-radio" type="radio"
-                                  name="correctAnswer_1" value="optionD" aria-label="Đáp án D" required>
-                              </div>
-                              <input type="text" class="form-control answer-option" placeholder="Đáp án D" required>
-                            </div>
-                          </div>
-                          <div class="col-12">
-                            <div class="invalid-feedback">
-                              Vui lòng chọn một đáp án đúng cho câu hỏi này.
-                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-center mt-1">
+                          <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="1" id="choPhepNopTre"
+                              name="cho_phep_nop_tre">
+                            <label class="form-check-label" for="choPhepNopTre">
+                              Cho phép nộp quá hạn
+                            </label>
                           </div>
                         </div>
                       </div>
-                    </div>
-                    <div class="d-flex gap-2 mb-3">
-                      <!-- Nút Thêm câu hỏi mới -->
-                      <button type="button" class="btn btn-outline-primary flex-fill" id="addQuestionBtn">
-                        <i class="fas fa-plus me-2"></i>Thêm câu hỏi mới
-                      </button>
 
-                      <!-- Nhãn chọn file (giả dạng nút) -->
-                      <label class="btn btn-outline-secondary flex-fill m-0" for="excelFileInput">
-                        <i class="fas fa-file-excel me-2"></i>Chọn file Excel
-                      </label>
-                      <input type="file" id="excelFileInput" accept=".xlsx, .xls" class="d-none">
 
-                    </div>
-                    <div class="text-center text-muted mb-3" id="noQuestionsMessage" style="display: none;">
-                      Vui lòng thêm ít nhất một câu hỏi.
-                    </div>
+                      <hr>
 
-                    <div class="d-flex justify-content-end mt-4">
-                      <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Hủy</button>
-                      <button type="submit" class="btn btn-primary">Lưu bài kiểm tra</button>
-                    </div>
-                  </form>
+                      <input type="hidden" name="idLopHoc" id="idLopHoc" value="{{ $lopHocPhan->id }}">
+
+                      <div id="questionsFormContainer-them">
+                        <h6>Danh sách câu hỏi:</h6>
+                        <div class="question-item mb-4 p-3 border rounded bg-light">
+                        </div>
+                      </div>
+                      <div class="d-flex gap-2 mb-3">
+                        <!-- Nút Thêm câu hỏi mới -->
+                        <button type="button" class="btn btn-outline-primary flex-fill" id="addQuestionBtn">
+                          <i class="fas fa-plus me-2"></i>Thêm câu hỏi mới
+                        </button>
+
+                        <!-- Nhãn chọn file (giả dạng nút) -->
+                        <label class="btn btn-outline-secondary flex-fill m-0" for="excelFileInput">
+                          <i class="fas fa-file-excel me-2"></i>Chọn file Excel
+                        </label>
+                        <input type="file" id="excelFileInput" accept=".xlsx, .xls" class="d-none">
+
+                      </div>
+                      <div class="text-center text-muted mb-3" id="noQuestionsMessage" style="display: none;">
+                        Vui lòng thêm ít nhất một câu hỏi.
+                      </div>
+
+                      <div class="d-flex justify-content-end mt-4">
+                        <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-primary">Lưu bài kiểm tra</button>
+                      </div>
+                    </form>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          @endif
+
         </div>
       </div>
 
@@ -387,35 +351,6 @@
       </form>
     @endif
 
-    {{-- Modal thêm bản tin --}}
-    @if (session('vai_tro') == 'Giảng viên')
-      <div class="modal fade" id="newNewsletterModal" tabindex="-1" aria-labelledby="newNewsletterModalLabel"
-        aria-hidden="true" data-bs-focus="false">
-        <div class="modal-dialog modal-lg modal-dialog-scrollable">
-          <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-              <h5 class="modal-title" id="newNewsletterModalLabel">Tạo bản tin mới</h5>
-              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <form id="newNewsletterForm" action="#" method="POST">
-                <div class="mb-3">
-                  <label for="newsletterContent" class="form-label">Nội dung thông báo:</label>
-                  <textarea class="form-control tinymce" id="newsletterContent" rows="8"
-                    placeholder="Nhập nội dung thông báo chi tiết"></textarea>
-                </div>
-              </form>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-              <button type="submit" form="newNewsletterForm" class="btn btn-primary">Đăng bản tin</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    @endif
-
     <div class="modal fade" id="addMemberModal" tabindex="-1" aria-labelledby="" aria-hidden="true"
       data-bs-focus="false">
       <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
@@ -457,6 +392,7 @@
 
 @section('styles')
   <link rel="stylesheet" href="{{ asset('modules/lop-hoc/css/chi-tiet-lop-hoc.css') }}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 @endsection
 
 @section('scripts')
@@ -464,6 +400,8 @@
   <script src="{{ asset('js/config-tinymce.js') }}"></script>
   <script src="{{ asset('modules/lop-hoc/js/chi-tiet-lop-hoc.js') }}"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/vn.js"></script>
 
   @if (session('message'))
     <script>
