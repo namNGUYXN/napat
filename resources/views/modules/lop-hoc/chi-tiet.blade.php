@@ -301,17 +301,10 @@
           <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Danh sách thành viên</h5>
             @if (session('vai_tro') == 'Giảng viên')
-              {{-- <button class="btn btn-light btn-sm" id="member-add-btn" data-bs-toggle="modal"
+              <button class="btn btn-light btn-sm" id="member-add-btn" data-bs-toggle="modal"
                 data-bs-target="#addMemberModal">
                 <i class="fas fa-plus-circle me-2"></i>Thêm vào lớp
-              </button> --}}
-
-              <form action="{{ route('thanh-vien-lop.import') }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                <input type="file" name="file" id="">
-                <input type="hidden" name="id_lop_hoc_phan" value="{{ $lopHocPhan->id }}">
-                <button type="submit">Import</button>
-              </form>
+              </button>
             @endif
 
           </div>
@@ -423,200 +416,41 @@
       </div>
     @endif
 
-    <div class="modal fade" id="addMemberModal" tabindex="-1" aria-labelledby="addMemberModalLabel"
-      aria-hidden="true">
-      <div class="modal-dialog modal-lg">
+    <div class="modal fade" id="addMemberModal" tabindex="-1" aria-labelledby="" aria-hidden="true"
+      data-bs-focus="false">
+      <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header bg-primary text-white">
-            <h5 class="modal-title" id="addMemberModalLabel">Thêm thành viên vào lớp</h5>
+            <h5 class="modal-title">Thêm thành viên vào lớp</h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
               aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <div class="mb-3">
-              <label for="studentSearch" class="text-dark form-label">Tìm kiếm sinh
-                viên:</label>
-              <div class="input-group">
-                <input type="text" class="form-control" id="studentSearch"
-                  placeholder="Nhập họ tên hoặc email để tìm kiếm">
-                <button class="btn btn-outline-secondary" type="button" id="searchStudentBtn">
-                  <i class="fas fa-search"></i>
-                </button>
+            <form action="{{ route('thanh-vien-lop.import') }}" method="POST" enctype="multipart/form-data">
+              @csrf
+              <div class="guide-import">
+                <h3>Hướng dẫn import:</h3>
+                <p class="text-dark mb-0"><b>Bước 1: </b>Tạo một file excel (.xlsx) trên máy tính</p>
+                <p class="text-dark mb-0"><b>Bước 2: </b>Đặt tên cho ô đầu tiên (có thể là email, .v.v.)</p>
+                <p class="text-dark mb-0"><b>Bước 3: </b>Nhập lần lượt các email của sinh viên cần thêm vào lớp</p>
+                <p class="mb-3 mt-1"><b>Lưu ý: </b>Các email không tồn tại trên hệ thống sẽ bị bỏ qua</p>
+                <div class="text-center">
+                  <h3 class="text-info">Ví dụ:</h3>
+                  <img src="{{ asset('images/guide-import-dssv-from-excel.png') }}" class="img-fluid rounded shadow-lg"
+                    alt="Hướng dẫn chèn danh sách sinh viên">
+                </div>
+                <p class="mb-3 mt-2"><b>Bước 4: </b>Chọn file excel vừa tạo</p>
               </div>
-            </div>
-
-            <div class="alert alert-danger" id="noStudentsFoundAlert" role="alert" style="display: none;">
-              Không tìm thấy sinh viên nào phù hợp.
-            </div>
-
-            <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
-              <table class="table table-hover">
-                <thead>
-                  <tr>
-                    <th scope="col" style="width: 50px;">Chọn</th>
-                    <th scope="col">Họ và tên</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Số điện thoại</th>
-                  </tr>
-                </thead>
-                <tbody id="studentListBody">
-                  <tr>
-                    <td colspan="4" class="text-center">Nhập thông tin để tìm kiếm
-                      sinh viên.</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-            <button type="button" class="btn btn-primary" id="addSelectedMembersBtn">Thêm
-              vào lớp</button>
+              <div class="input-group">
+                <input type="hidden" name="id_lop_hoc_phan" value="{{ $lopHocPhan->id }}">
+                <input type="file" name="file" class="form-control" accept=".xls,.xlsx" required>
+                <button class="btn btn-outline-primary" type="submit">Thực hiện</button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
     </div>
-
-    {{-- Modal gán bài giảng --}}
-    {{-- <div class="modal fade" id="modal-gan-bai-giang" tabindex="-1" aria-labelledby="" aria-hidden="true"
-      data-bs-focus="false">
-      <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
-          <div class="modal-header bg-primary text-white">
-            <h5 class="modal-title">Gán bài giảng cho lớp học</h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-              aria-label="Close"></button>
-          </div>
-          <div class="modal-body custom-scrollbar">
-            <div class="mb-3">
-              <label for="documentSelect" class="form-label">Chọn bài giảng từ mục bài giảng cá nhân:</label>
-              <select class="form-select" id="select-muc-bai-giang">
-                <option value="">-- Chọn mục bài giảng --</option>
-                @foreach ($listMucBaiGiang as $mucBaiGiang)
-                  <option value="{{ route('bai-giang.list', $mucBaiGiang->id) }}">
-                    {{ $mucBaiGiang->ten }}
-                  </option>
-                @endforeach
-              </select>
-            </div>
-
-            <hr class="my-4">
-
-            <h5>Danh sách bài giảng trong mục bài giảng:</h5>
-            <div class="alert alert-warning" id="alert-ko-muc-bai-giang" role="alert">
-              Vui lòng chọn một mục bài giảng để xem danh sách bài giảng.
-            </div>
-
-            <div id="section-list-bai-giang">
-
-              <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="Tìm kiếm bài giảng theo tiêu đề..."
-                  id="input-search-bai-giang">
-              </div>
-
-              <div class="table-responsive custom-scrollbar" style="max-height: 400px; overflow-y: auto;">
-                <table class="table table-hover table-striped">
-                  <thead>
-                    <tr>
-                      <th scope="col" style="width: 50px;">Chọn</th>
-                      <th scope="col">Tiêu đề bài giảng</th>
-                      <th scope="col"></th>
-                    </tr>
-                    </tr>
-                  </thead>
-                  <tbody id="body-table-list-bai-giang">
-                    <tr>
-                      <td colspan="4" class="text-center">
-                        Chọn tài liệu để hiển thị bài giảng.
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-            <button type="button" class="btn btn-primary" id="selected-lecture-insert-btn">Chèn bài
-              giảng đã chọn</button>
-          </div>
-        </div>
-      </div>
-    </div> --}}
-
-    {{-- Modal xem chi tiết bài giảng --}}
-    {{-- <div class="modal fade" id="modal-chi-tiet-bai-giang" tabindex="-1" aria-labelledby="" aria-hidden="true"
-      data-bs-focus="false">
-      <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
-          <div class="modal-header bg-info text-white">
-            <h5 class="modal-title">Chi tiết Bài giảng:</h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-              aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <p><strong>Tiêu đề:</strong> <span id="tieu-de-bai-giang"></span></p>
-            <hr>
-            <h6>Nội dung bài giảng:</h6>
-            <div id="noi-dung-bai-giang">
-              Không có nội dung chi tiết.
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
-              data-bs-target="#modal-gan-bai-giang">Quay lại</button>
-          </div>
-        </div>
-      </div>
-    </div> --}}
-
-    {{-- Modal chỉnh sửa lớp học --}}
-    {{-- <div class="modal fade" id="updateClassModal" tabindex="-1" aria-labelledby="updateClassModalLabel"
-      aria-hidden="true" data-bs-focus="false">
-      <div class="modal-dialog modal-dialog-scrollable">
-        <div class="modal-content">
-          <div class="modal-header bg-warning text-white">
-            <h1 class="modal-title fs-5" id="updateClassModalLabel">Chỉnh sửa lớp học</h1>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-              aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <form action="" enctype="multipart/form-data">
-              <div class="mb-3">
-                <label for="" class="form-label">Tên lớp học</label>
-                <input type="text" name="" class="form-control" id="">
-              </div>
-              <div class="mb-3">
-                <label for="" class="form-label">Học phần</label>
-                <select class="form-select" aria-label="">
-                  <option selected>-- Chọn học phần --</option>
-                  <option value="1">Cơ Sở Dữ Liệu</option>
-                  <option value="2">Mạng Máy Tính</option>
-                  <option value="3">Toán Rời Rạc</option>
-                </select>
-              </div>
-              <div class="mb-3">
-                <label for="" class="form-label">Mô tả ngắn (100 từ)</label>
-                <textarea name="" id="" class="form-control"></textarea>
-              </div>
-              <div class="mb-3">
-                <label for="imageUpload" class="form-label">Hình ảnh</label>
-                <input class="form-control" type="file" id="imageUpload" accept="image/*">
-                <div id="imagePreviewContainer" class="mt-3 position-relative d-inline-block">
-                  <img id="imagePreview" src="#" alt="Ảnh xem trước" class="img-thumbnail"
-                    style="display: none; max-width: 200px; max-height: 200px;">
-                  <span id="removeImageBtn" class="close-btn" style="display: none;">&times;</span>
-                </div>
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-            <button type="button" class="btn btn-primary">Lưu thay đổi</button>
-          </div>
-        </div>
-      </div>
-    </div> --}}
 
   </div>
 @endsection
