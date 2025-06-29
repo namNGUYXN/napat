@@ -136,6 +136,17 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:admin']], function () {
     Route::put('/admin/menu/{id}', 'MenuController@chinhSua')->name('menu.update');
     Route::post('/admin/menu/cap-nhat-thu-tu', 'MenuController@capNhatThuTu')->name('thu-tu-menu.update');
     Route::delete('/admin/menu/{id}', 'MenuController@xoa')->name('menu.delete');
+
+    // Người dùng
+
+    Route::prefix('nguoi-dung')->group(function () {
+        Route::get('/', 'NguoiDungController@danhSachNguoiDung')->name('nguoi-dung.index');
+        Route::get('/them', 'NguoiDungController@hienThiFormThem')->name('nguoi-dung.them');
+        Route::post('/them', 'NguoiDungController@xuLyThemNguoiDung')->name('nguoi-dung.xu-ly-them');
+        Route::post('/import', 'NguoiDungController@xuLyImportExcel')->name('nguoi-dung.import');
+        Route::get('/nguoi-dung/{id}/sua', 'NguoiDungController@suaNguoiDung')->name('nguoi-dung.sua');
+        Route::put('/nguoi-dung/{id}', 'NguoiDungController@capNhatNguoiDung')->name('nguoi-dung.cap-nhat');
+    });
 });
 
 // Route quản lý tài khoản cá nhân
