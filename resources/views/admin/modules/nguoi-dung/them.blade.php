@@ -57,6 +57,25 @@
 
                     <!-- Form import -->
                     <div class="tab-pane fade" id="form-import" role="tabpanel" aria-labelledby="import-tab">
+                        {{-- Hiển thị lỗi nếu có --}}
+                        @if (session('errors_import'))
+                            <div class="alert alert-danger">
+                                <strong>Dữ liệu bị lỗi:</strong>
+                                <ul class="mb-0">
+                                    @foreach (session('errors_import') as $failure)
+                                        <li>
+                                            <strong>Dòng {{ $failure->row() }}:</strong>
+                                            <ul>
+                                                @foreach ($failure->errors() as $error)
+                                                    <li>{{ $error }}</li>
+                                                @endforeach
+                                            </ul>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
                         <form method="POST" action="{{ route('nguoi-dung.import') }}" enctype="multipart/form-data">
                             @csrf
                             <div class="form-group mb-3">

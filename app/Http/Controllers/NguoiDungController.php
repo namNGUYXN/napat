@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use App\Services\AuthService;
 use App\Services\NguoiDungService;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class NguoiDungController extends Controller
 {
@@ -158,12 +159,26 @@ class NguoiDungController extends Controller
             'file_excel' => 'required|file|mimes:xlsx,xls,csv',
         ]);
 
-        $this->nguoiDungService->importTuExcel($request->file('file_excel'));
+        try {
+            $failures = $this->nguoiDungService->importTuExcel($request->file('file_excel'));
 
-        return redirect()->route('nguoi-dung.index')
-            ->with('message', 'Thêm người dùng thành công!')
-            ->with('icon', 'success');
+            if ($failures->isNotEmpty()) {
+                return back()
+                    ->with('errors_import', $failures)
+                    ->with('message', 'Một số dòng bị lỗi, vui lòng kiểm tra lại!')
+                    ->with('icon', 'warning');
+            }
+
+            return redirect()->route('nguoi-dung.index')
+                ->with('message', 'Thêm người dùng thành công!')
+                ->with('icon', 'success');
+        } catch (\Exception $e) {
+            return back()
+                ->with('message', 'Lỗi: ' . $e->getMessage())
+                ->with('icon', 'error');
+        }
     }
+
 
     public function suaNguoiDung($id)
     {
