@@ -69,7 +69,7 @@ class BaiKiemTraService
                 'id_lop_hoc_phan' => $data['idLopHoc'],
                 'ngay_bat_dau' => Carbon::createFromFormat('d/m/Y H:i', $data['thoiGianBatDau']),
                 'ngay_ket_thuc' => Carbon::createFromFormat('d/m/Y H:i', $data['thoiGianKetThuc']),
-                'cho_phep_nop_qua_han' => filter_var($data['choPhepNopTre'],FILTER_VALIDATE_BOOLEAN),
+                'cho_phep_nop_qua_han' => filter_var($data['choPhepNopTre'], FILTER_VALIDATE_BOOLEAN),
                 'ngay_tao' => Carbon::now(),
                 'is_delete' => false
             ]);
@@ -341,6 +341,7 @@ class BaiKiemTraService
             }
         });
     }
+
     public function kiemTraNopQuaHan($idBaiKiemTra)
     {
         $baiKiemTra = BaiKiemTra::with('list_cau_hoi')->findOrFail($idBaiKiemTra);
@@ -349,5 +350,29 @@ class BaiKiemTraService
             return true;
         }
         return false;
+    }
+
+    public function kiemTraTieuDe(string $tieuDe, int $lopHocID, ?int $baiKiemTraId = null): array
+    {
+        $query = BaiKiemTra::where('tieu_de', $tieuDe)
+            ->where('id_lop_hoc_phan', $lopHocID)
+            ->where('is_delete', 0);
+
+        if ($baiKiemTraId) {
+            $query->where('id', '!=', $baiKiemTraId);
+        }
+
+        $tonTai = $query->exists();
+
+        // Trả về danh sách tiêu đề của lớp học (không bị xóa)
+        $danhSachTieuDe = BaiKiemTra::where('id_lop_hoc_phan', $lopHocID)
+            ->where('is_delete', 0)
+            ->pluck('tieu_de')
+            ->toArray();
+
+        return [
+            'ton_tai' => $tonTai,
+            'danh_sach_tieu_de' => $danhSachTieuDe,
+        ];
     }
 }

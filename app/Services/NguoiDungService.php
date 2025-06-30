@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\NguoiDungImport;
 
+
 class NguoiDungService
 {
     public function layTheoId($id)
@@ -102,7 +103,11 @@ class NguoiDungService
 
     public function importTuExcel($file)
     {
-        Excel::import(new NguoiDungImport, $file);
+        $import = new NguoiDungImport();
+        Excel::import($import, $file);
+
+        // Trả lại danh sách lỗi (nếu có) cho Controller
+        return $import->failures();
     }
 
     private function taoMatKhauNgauNhien($length = 6)
