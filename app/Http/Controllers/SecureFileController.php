@@ -64,4 +64,11 @@ class SecureFileController extends Controller
     {
         return $this->browseImage('shares', $ten_anh);
     }
+
+    public function privateImageWord($id_nguoi_dung, $ten_thu_muc, $ten_anh)
+    {
+        $path = "{$id_nguoi_dung}/{$ten_thu_muc}";
+
+        return $this->browseImage($path, $ten_anh);
+    }
 }

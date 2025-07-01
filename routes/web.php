@@ -41,6 +41,8 @@ Route::group(['middleware' => ['auth.custom']], function () {
     Route::get('/storage/files/{id_nguoi_dung}/{ten_file}', 'SecureFileController@privateFile');
     Route::get('/storage/photos/{id_nguoi_dung}/thumbs/{ten_anh}', 'SecureFileController@privateImage');
     Route::get('/storage/photos/{id_nguoi_dung}/{ten_anh}', 'SecureFileController@privateImage');
+
+    Route::get('/storage/photos/{id_nguoi_dung}/{ten_thu_muc}/{ten_anh}', 'SecureFileController@privateImageWord');
 });
 
 
@@ -95,13 +97,13 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien']], function (
 
     // Chương
     Route::post('/bai-giang/{id}/chuong/them', 'ChuongController@them')->name('chuong.store');
-    Route::get('/chuong/{id}/chinh-sua', 'ChuongController@giaoDienChinhSua')->name('chuong.edit');
+    Route::post('/chuong/{id}/modal-chinh-sua', 'ChuongController@modalChinhSua')->name('chuong.edit');
     Route::put('/chuong/{id}/chinh-sua', 'ChuongController@chinhSua')->name('chuong.update');
     Route::put('/bai-giang/{id}/chuong/cap-nhat-thu-tu', 'ChuongController@capNhatThuTu')->name('thu-tu-chuong.update');
     Route::delete('chuong/{id}/xoa', 'ChuongController@xoa')->name('chuong.delete');
 
     // Bài
-    Route::post('/chuong/{id}/bai/list', 'BaiController@layListTheoChuong')->name('bai.list');
+    Route::get('/chuong/{id}/bai', 'BaiController@giaoDienQuanLy')->name('bai.index');
     Route::get('/chuong/{id}/bai/them', 'BaiController@giaoDienThem')->name('bai.create');
     Route::post('/chuong{id}/bai/them', 'BaiController@them')->name('bai.store');
     Route::get('/bai/{id}/chinh-sua', 'BaiController@giaoDienChinhSua')->name('bai.edit');
@@ -109,6 +111,7 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien']], function (
     Route::put('/chuong/{id}/bai/cap-nhat-thu-tu', 'BaiController@capNhatThuTu')->name('thu-tu-bai.update');
     Route::post('/bai/{id}/chi-tiet', 'BaiController@chiTiet')->name('bai.detail');
     Route::delete('/bai/{id}/xoa', 'BaiController@xoa')->name('bai.delete');
+    Route::post('/upload-image', 'BaiController@privateUploadImage')->name('upload.image');
 
     //Thành viên lớp
     Route::post('/thanh-vien-lop/{id}/chap-nhan', 'ThanhVienLopController@chapNhan');

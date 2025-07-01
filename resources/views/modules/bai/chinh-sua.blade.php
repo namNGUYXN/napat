@@ -1,6 +1,16 @@
 @extends('layouts.app')
 
 @section('content')
+  <!-- Loading Overlay -->
+  <div id="loading-overlay"
+    class="position-fixed top-0 start-0 w-100 h-100 d-none align-items-center justify-content-center"
+    style="z-index: 1050; background-color: rgba(0, 0, 0, 0.5);">
+    <div class="text-center text-white">
+      <div class="spinner-border text-light" role="status" style="width: 3rem; height: 3rem;"></div>
+      <div class="mt-2">Đang xử lý, vui lòng chờ...</div>
+    </div>
+  </div>
+
   <!-- Main Content -->
   <div class="col bg-light p-4 overflow-auto custom-scrollbar">
     <h2 class="mb-4">
@@ -8,9 +18,20 @@
       - Bài giảng <span class="fst-italic text-secondary">"{{ $bai->chuong->bai_giang->ten }}"</span>
     </h2>
 
-    <a href="{{ route('chuong.edit', $bai->chuong->id) }}" class="btn btn-outline-secondary mb-4">
+    <a href="{{ route('bai.index', $bai->chuong->id) }}" class="btn btn-outline-secondary mb-4">
       <i class="fas fa-arrow-alt-circle-left me-2"></i>Danh sách bài của chương
     </a>
+
+    @if ($errors->any())
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <ul class="list-unstyled m-0">
+          @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+          @endforeach
+        </ul>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    @endif
 
     {{-- @if (session('message'))
       <div class="alert alert-{{ session('status') }} alert-dismissible fade show" role="alert">
@@ -37,7 +58,9 @@
             <h5 class="mb-0">Thông tin bài</h5>
           </div>
           <div class="card-body">
-            <form action="{{ route('bai.update', $bai->id) }}" method="POST">
+            <input type="file" id="upload-docx" accept=".docx" class="d-none">
+
+            <form action="{{ route('bai.update', $bai->id) }}" method="POST" id="form-chinh-sua-bai">
               @csrf
               @method('PUT')
               <div class="mb-3">
@@ -47,25 +70,17 @@
                   <abbr class="text-danger" title="Bắt buộc">*</abbr>
                 </label>
                 <input type="text" class="form-control @error('tieu_de') is-invalid @enderror" name="tieu_de"
-                  value="{{ old('tieu_de', $bai->tieu_de) }}" placeholder="Nhập tiêu đề bài..." id="lecture-title">
-                @error('tieu_de')
-                  <div class="invalid-feedback">
-                    {{ $message }}
-                  </div>
-                @enderror
+                  placeholder="Nhập tiêu đề bài..." required maxlength="255" id="lecture-title" value="{{ $bai->tieu_de }}">
+                <small class="text-danger" id="tieu-de-error"></small>
               </div>
               <div class="mb-3">
                 <label for="lecture-content" class="form-label">Nội dung bài giảng <abbr class="text-danger"
                     title="Bắt buộc">*</abbr></label>
-                <textarea class="form-control tinymce" name="noi_dung" rows="10" placeholder="Nhập nội dung chi tiết bài..."
+                <textarea class="form-control tinymce" name="noi_dung" rows="10" required placeholder="Nhập nội dung chi tiết bài..."
                   id="lecture-content">
-                  {{ old('noi_dung', $bai->noi_dung) }}
+                  {{ $bai->noi_dung }}
                 </textarea>
-                @error('noi_dung')
-                  <div class="invalid-feedback">
-                    {{ $message }}
-                  </div>
-                @enderror
+                <small class="text-danger" id="noi-dung-error"></small>
               </div>
 
               <div class="d-flex justify-content-end">
@@ -366,28 +381,14 @@
 
 @section('scripts')
   <script src="{{ asset('vendor/tinymce-5/tinymce.min.js') }}"></script>
-  <script src="{{ asset('js/config-tinymce.js') }}"></script>
+  <script src="{{ asset('js/mammoth.browser.min.js') }}"></script>
+
+  <script>
+    const uploadImageUrl = '{{ route('upload.image') }}';
+    const csrfToken = '{{ csrf_token() }}';
+  </script>
+
+  <script src="{{ asset('js/config-tinymce-import-word.js') }}"></script>
   <script src="{{ asset('modules/bai-tap/js/chinh-sua-bai-tap.js') }}"></script>
-
-  @if (session('message'))
-    <script>
-      const Toast = Swal.mixin({
-        toast: true,
-        position: 'top-end',
-        width: 'auto',
-        showConfirmButton: false,
-        timer: 3500,
-        timerProgressBar: true,
-        didOpen: (toast) => {
-          toast.onmouseenter = Swal.stopTimer;
-          toast.onmouseleave = Swal.resumeTimer;
-        }
-      });
-
-      Toast.fire({
-        icon: '{{ session('icon') }}',
-        title: '{{ session('message') }}'
-      });
-    </script>
-  @endif
+  <script src="{{ asset('modules/bai/js/chinh-sua.js') }}"></script>
 @endsection

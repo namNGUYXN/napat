@@ -20,6 +20,7 @@ var editor_config = {
   },
   menubar: "favs file edit view insert format tools table help",
   content_css: false,
+  paste_data_images: true,
   file_picker_callback: function (callback, value, meta) {
     var x =
       window.innerWidth ||
