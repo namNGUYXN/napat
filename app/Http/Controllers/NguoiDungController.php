@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Services\AuthService;
 use App\Services\NguoiDungService;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 
 class NguoiDungController extends Controller
 {
@@ -29,7 +31,7 @@ class NguoiDungController extends Controller
         if ($nguoiDung->vai_tro == 'Admin') {
             return view('admin.modules.tai-khoan.chi-tiet', compact('nguoiDung'));
         }
-        
+
         return view('modules.tai-khoan.chi-tiet', compact('nguoiDung'));
     }
 
@@ -75,7 +77,7 @@ class NguoiDungController extends Controller
 
         if ($request->hasFile('hinh_anh')) {
             $file = $request->file('hinh_anh');
-            
+
             // Xóa ảnh trong storage (nếu ảnh mặc định thì ko xóa)
             $hinh_anh_goc = $nguoiDung->hinh_anh;
             if (!Str::contains($hinh_anh_goc, 'no-avatar.png')) {
@@ -98,5 +100,123 @@ class NguoiDungController extends Controller
             'message' => $result['message'],
             'icon' => 'error'
         ]);
+    }
+
+    public function hienThiFormThem()
+    {
+        return view('admin.modules.nguoi-dung.them');
+    }
+
+    public function danhSachNguoiDung(Request $request)
+    {
+        $vaiTro = $request->input('vai_tro'); // null, 1, 2
+        $keyword = $request->input('keyword');
+        $perPage = $request->input('per_page', 1);
+
+        $danhSach = $this->nguoiDungService->danhSachNguoiDung($vaiTro, $keyword, $perPage);
+
+        if ($request->ajax()) {
+            return view('admin.partials.nguoi-dung._table', compact('danhSach'))->render();
+        }
+
+        return view('admin.modules.nguoi-dung.danh-sach', compact('danhSach', 'vaiTro', 'keyword'));
+    }
+
+    public function xuLyThemNguoiDung(Request $request)
+    {
+        $validated = $request->validate([
+            'ho_ten' => 'required|string|max:255',
+            'email' => 'required|email|unique:nguoi_dung,email',
+            'sdt' => 'nullable|string|max:20',
+            'vai_tro' => 'required',
+        ], [
+            'ho_ten.required' => 'Vui lòng nhập họ tên.',
+            'ho_ten.max' => 'Họ tên không được vượt quá :max ký tự.',
+            'email.required' => 'Vui lòng nhập email.',
+            'email.email' => 'Email không hợp lệ.',
+            'email.unique' => 'Email đã tồn tại trong hệ thống.',
+            'sdt.max' => 'Số điện thoại không được vượt quá :max ký tự.',
+            'vai_tro.required' => 'Vui lòng chọn vai trò.',
+        ], [
+            'ho_ten' => 'Họ tên',
+            'email' => 'Email',
+            'sdt' => 'Số điện thoại',
+            'vai_tro' => 'Vai trò',
+        ]);
+
+
+        $this->nguoiDungService->themNguoiDung($validated);
+
+        return redirect()->route('nguoi-dung.index')
+            ->with('message', 'Thêm người dùng thành công!')
+            ->with('icon', 'success');
+    }
+
+
+    public function xuLyImportExcel(Request $request)
+    {
+        $request->validate([
+            'file_excel' => 'required|file|mimes:xlsx,xls,csv',
+        ]);
+
+        try {
+            $failures = $this->nguoiDungService->importTuExcel($request->file('file_excel'));
+
+            if ($failures->isNotEmpty()) {
+                return back()
+                    ->with('errors_import', $failures)
+                    ->with('message', 'Một số dòng bị lỗi, vui lòng kiểm tra lại!')
+                    ->with('icon', 'warning');
+            }
+
+            return redirect()->route('nguoi-dung.index')
+                ->with('message', 'Thêm người dùng thành công!')
+                ->with('icon', 'success');
+        } catch (\Exception $e) {
+            return back()
+                ->with('message', 'Lỗi: ' . $e->getMessage())
+                ->with('icon', 'error');
+        }
+    }
+
+
+    public function suaNguoiDung($id)
+    {
+        $nguoiDung = $this->nguoiDungService->layTheoId($id);
+        return view('admin.modules.nguoi-dung.chinh-sua', compact('nguoiDung'));
+    }
+
+    // Xử lý khi submit form sửa
+    public function capNhatNguoiDung(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'ho_ten' => 'required|string|max:255',
+            'email' => ['required', 'email', Rule::unique('nguoi_dung')->ignore($id)],
+            'sdt' => 'nullable|string|max:20',
+            'vai_tro' => 'required',
+        ], [
+            'ho_ten.required' => 'Vui lòng nhập họ tên.',
+            'ho_ten.max' => 'Họ tên không được vượt quá :max ký tự.',
+
+            'email.required' => 'Vui lòng nhập email.',
+            'email.email' => 'Định dạng email không hợp lệ.',
+            'email.unique' => 'Email đã tồn tại trong hệ thống.',
+
+            'sdt.max' => 'Số điện thoại không được vượt quá :max ký tự.',
+
+            'vai_tro.required' => 'Vui lòng chọn vai trò.',
+        ], [
+
+            'ho_ten' => 'Họ tên',
+            'email' => 'Email',
+            'sdt' => 'Số điện thoại',
+            'vai_tro' => 'Vai trò',
+        ]);
+
+        $this->nguoiDungService->capNhatNguoiDung($id, $validated);
+
+        return redirect()->route('nguoi-dung.index')
+            ->with('message', 'Chỉnh sửa người dùng thành công!')
+            ->with('icon', 'success');
     }
 }

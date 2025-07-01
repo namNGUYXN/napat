@@ -5,6 +5,11 @@ namespace App\Services;
 use App\NguoiDung;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Carbon\Carbon;
+use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\NguoiDungImport;
+
 
 class NguoiDungService
 {
@@ -61,5 +66,79 @@ class NguoiDungService
                 'message' => 'Lỗi khi cập nhật thông tin: ' + $e->getMessage()
             ];
         }
+    }
+
+    public function danhSachNguoiDung($vaiTro = null, $keyword = null, $perPage = 1)
+    {
+        $query = NguoiDung::query();
+
+        if ($vaiTro !== null) {
+            $query->where('vai_tro', $vaiTro); // 1: giảng viên, 2: sinh viên
+        }
+
+        if ($keyword) {
+            $query->where(function ($q) use ($keyword) {
+                $q->where('ho_ten', 'like', "%$keyword%")
+                    ->orWhere('email', 'like', "%$keyword%")
+                    ->orWhere('sdt', 'like', "%$keyword%");
+            });
+        }
+
+        return $query->orderByDesc('ngay_tao')->paginate($perPage);
+    }
+
+    public function themNguoiDung($data)
+    {
+        $matKhau = $this->taoMatKhauNgauNhien(); // Tạo mật khẩu ngẫu nhiên
+        return NguoiDung::create([
+            'ho_ten' => $data['ho_ten'],
+            'email' => $data['email'],
+            'sdt' => $data['sdt'] ?? null,
+            'mat_khau' => $matKhau,
+            'vai_tro' => $data['vai_tro'],
+            'is_active' => true,
+            'ngay_tao' => Carbon::now(),
+        ]);
+    }
+
+    public function importTuExcel($file)
+    {
+        $import = new NguoiDungImport();
+        Excel::import($import, $file);
+
+        // Trả lại danh sách lỗi (nếu có) cho Controller
+        return $import->failures();
+    }
+
+    private function taoMatKhauNgauNhien($length = 6)
+    {
+        $chu = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $so = '0123456789';
+        $kyTuDacBiet = '!@#$%^&*';
+
+        $all = $chu . $so . $kyTuDacBiet;
+
+        $password = Str::random(3); // Khởi tạo ngẫu nhiên ban đầu
+
+        // Đảm bảo có ít nhất 1 ký tự thuộc mỗi nhóm
+        $password .= $chu[rand(0, strlen($chu) - 1)];
+        $password .= $so[rand(0, strlen($so) - 1)];
+        $password .= $kyTuDacBiet[rand(0, strlen($kyTuDacBiet) - 1)];
+
+        return Str::substr(str_shuffle($password), 0, $length);
+    }
+
+    public function capNhatNguoiDung($id, $data)
+    {
+        $nguoiDung = NguoiDung::findOrFail($id);
+
+        $nguoiDung->update([
+            'ho_ten' => $data['ho_ten'],
+            'email' => $data['email'],
+            'sdt' => $data['sdt'] ?? null,
+            'vai_tro' => $data['vai_tro'],
+        ]);
+
+        return $nguoiDung;
     }
 }
