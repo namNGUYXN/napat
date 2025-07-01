@@ -47,16 +47,29 @@ class BaiService
     try {
       DB::beginTransaction();
 
-      $slug = Str::slug($data['tieu_de']) . '-' . Str::random(5);
+      $slug = Str::slug($data['tieu_de']);
       $thuTuMax = Bai::where('id_chuong', $idChuong)->max('thu_tu');
+
+      $checkExists = Bai::where([
+        ['id_chuong', $idChuong],
+        ['slug', 'LIKE', $slug . '%']
+      ])->exists();
+
+      if ($checkExists) {
+        throw new \Exception('Tiêu đề bài này đã tồn tại');
+      }
 
       $bai = Bai::create([
         'tieu_de' => $data['tieu_de'],
-        'slug' => $slug,
+        // 'slug' => $slug,
+        'slug' => '',
         'noi_dung' => $data['noi_dung'],
         'id_chuong' => $idChuong,
         'thu_tu' => $thuTuMax + 1
       ]);
+
+      $bai->slug = Str::slug($data['tieu_de']) . '-' . $bai->id;
+      $bai->save();
 
       DB::commit();
       return [
@@ -68,7 +81,7 @@ class BaiService
       DB::rollBack();
       return [
         'success' => false,
-        'message' => 'Lỗi khi thêm bài: ' . $e->getMessage()
+        'message' => $e->getMessage()
       ];
     }
   }
@@ -84,15 +97,22 @@ class BaiService
       DB::beginTransaction();
 
       $bai = Bai::findOrFail($id);
-      $slug = null;
-      if ($bai->tieu_de != $data['tieu_de']) {
-        $slug = Str::slug($data['tieu_de']) . '-' . Str::random(5);
+      $slug = Str::slug($data['tieu_de']);
+
+      $checkExists = Bai::where([
+        ['id_chuong', $bai->id_chuong],
+        ['id', '!=', $id],
+        ['slug', 'LIKE', $slug . '%']
+      ])->exists();
+
+      if ($checkExists) {
+        throw new \Exception('Tiêu đề bài này đã tồn tại');
       }
 
       $bai->update([
-        'tieu_de' => $data['tieu_de'] ?? $bai->tieu_de,
-        'slug' => $slug ?? $bai->slug,
-        'noi_dung' => $data['noi_dung'] ?? $bai->noi_dung
+        'tieu_de' => $data['tieu_de'],
+        'slug' => $slug . '-' . $id,
+        'noi_dung' => $data['noi_dung']
       ]);
 
       DB::commit();
@@ -105,7 +125,7 @@ class BaiService
       DB::rollBack();
       return [
         'success' => false,
-        'message' => 'Lỗi khi cập nhật bài: ' . $e->getMessage()
+        'message' => $e->getMessage()
       ];
     }
   }

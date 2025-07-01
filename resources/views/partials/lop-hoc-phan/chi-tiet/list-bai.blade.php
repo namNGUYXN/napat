@@ -36,7 +36,7 @@
                 <tr>
                   @if (session('id_nguoi_dung') == $lopHocPhan->id_giang_vien)
                     <th scope="col">
-                      <div class="form-check form-switch" style="max-width: 50px;">
+                      <div class="form-check form-switch me-3" style="max-width: 50px;">
                         <input class="form-check-input check-all" type="checkbox" role="switch"
                           title="Check tất cả">
                       </div>
@@ -63,7 +63,7 @@
                       @endif
                       <td class="align-middle">
                         <a href="{{ route('bai-trong-lop.detail', [$lopHocPhan->id, $bai->slug]) }}"
-                          class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
+                          class="link-dark link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">
                           {{ $bai->tieu_de }}
                         </a>
                       </td>

@@ -5,7 +5,10 @@
     @csrf
   </form>
   <div class="col bg-light px-4 pt-4 overflow-auto custom-scrollbar">
-    <h2 class="mb-4">Chỉnh sửa chương</h2>
+    <h2 class="mb-4">
+      Quản lý các bài trong Chương <span class="fst-italic text-secondary">"{{ $chuong->tieu_de }}"</span>
+      - Bài giảng <span class="fst-italic text-secondary">"{{ $chuong->bai_giang->ten }}"</span>
+    </h2>
 
     <a href="{{ route('bai-giang.detail', $chuong->bai_giang->id) }}" class="btn btn-outline-secondary mb-4">
       <i class="fas fa-arrow-alt-circle-left me-2"></i>Danh sách chương
@@ -30,33 +33,7 @@
     @endif --}}
 
     <div class="row align-items-start">
-      <div class="col-lg-4">
-        <div class="card h-100 shadow-sm p-3">
-          <form action="{{ route('chuong.update', $chuong->id) }}" method="POST">
-            @csrf
-            @method('PUT')
-            <div class="mb-3">
-              <label for="" class="form-label">
-                Tiêu đề chương
-                <span class="text-muted">(100 ký tự)</span>
-                <abbr class="text-danger" title="Bắt buộc">*</abbr>
-              </label>
-              <input type="text" name="tieu_de" class="form-control" id="" required maxlength="100"
-                value="{{ $chuong->tieu_de }}" placeholder="Nhập tiêu đề chương...">
-            </div>
-            <div class="mb-3">
-              <label for="" class="form-label">Mô tả ngắn <span class="text-muted">(255 ký tự)</span></label>
-              <textarea name="mo_ta_ngan" id="" class="form-control" rows="6" maxlength="255"
-                placeholder="Nhập nội dung mô tả chương...">{{ $chuong->mo_ta_ngan }}</textarea>
-            </div>
-            <div class="text-end">
-              <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
-            </div>
-          </form>
-        </div>
-      </div>
-
-      <div class="col-lg-8 my-4 mt-md-0">
+      <div class="col-12">
         <div class="card shadow-sm">
           <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Danh sách các bài trong chương</h5>
@@ -151,8 +128,7 @@
         <div class="modal-content">
           <div class="modal-header bg-info text-white">
             <h5 class="modal-title">Chi tiết bài</h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-              aria-label="Close"></button>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body custom-scrollbar">
             <p><strong>Tiêu đề bài:</strong> <span id="tieu-de-bai"></span></p>
@@ -198,12 +174,13 @@
 
 @section('styles')
   <link rel="stylesheet" href="{{ asset('vendor/sortable/css/sortable.css') }}">
+  <link rel="stylesheet" href="{{ asset('modules/bai/css/danh-sach.css') }}">
 @endsection
 
 @section('scripts')
   <script src="{{ asset('vendor/sortable/js/sortable.min.js') }}"></script>
   <script src="{{ asset('vendor/sortable/js/jquery-sortable.min.js') }}"></script>
-  <script src="{{ asset('modules/chuong/js/chinh-sua.js') }}"></script>
+  <script src="{{ asset('modules/bai/js/danh-sach.js') }}"></script>
 
   @if (session('message'))
     <script>

@@ -48,62 +48,100 @@ $.ajaxSetup({
   }
 });
 
+// let cache = {};
+
+// $(document).on('click', '.btn-detail-chuong', function () {
+//   const url = $(this).data('url');
+//   const tieuDeChuong = $(this).data('tieu-de');
+
+//   // console.log(url, tieuDeChuong);
+
+//   if (cache[url]) {
+//     const listBai = cache[url];
+
+//     $('#tieu-de-chuong').text(tieuDeChuong);
+//     $('#section-list-bai').html(renderListBai(listBai));
+//     $('#modal-chi-tiet-chuong').modal('show');
+//     return;
+//   }
+
+//   $.ajax({
+//     url: url,
+//     type: 'POST',
+//     dataType: 'json',
+//     success: function (response) {
+//       const listBai = response.data;
+//       cache[url] = listBai; // Lưu vào cache
+
+//       $('#tieu-de-chuong').text(tieuDeChuong);
+//       $('#section-list-bai').html(renderListBai(listBai));
+//       $('#modal-chi-tiet-chuong').modal('show');
+//     },
+//     error: function (xhr) {
+//       alert('Đã xảy ra lỗi: ' + xhr.status + ' ' + xhr.statusText);
+//     }
+//   });
+// });
+
+// function renderListBai(listBai) {
+//   if (listBai.length == 0) {
+//     return `
+//       <tr class="text-center">
+//         <td colspan="3">Không có bài nào trong chương</td>
+//       </tr>
+//     `;
+//   }
+
+//   const html = listBai.map((bai, index) => {
+//     return `
+//       <tr>
+//         <th scope="row">${index + 1}</th>
+//         <td>${bai.tieu_de}</td>
+//         <td>${bai.ngay_tao}</td>
+//       </tr>
+//     `;
+//   }).join('');
+
+//   return html;
+// }
+
 let cache = {};
 
-$(document).on('click', '.btn-detail-chuong', function () {
-  const url = $(this).data('url');
-  const tieuDeChuong = $(this).data('tieu-de');
+$(document).on('click', '.btn-update-chuong', function () {
+  // $('#modal-chinh-sua-chuong').modal('show');
 
-  // console.log(url, tieuDeChuong);
+  const urlDetail = $(this).data('url-detail');
+  const urlUpdate = $(this).data('url-update');
 
-  if (cache[url]) {
-    const listBai = cache[url];
-
-    $('#tieu-de-chuong').text(tieuDeChuong);
-    $('#section-list-bai').html(renderListBai(listBai));
-    $('#modal-chi-tiet-chuong').modal('show');
+  if (cache[urlDetail]) {
+    const chuong = cache[urlDetail];
+    $('#tieu-de-chuong').val(chuong.tieu_de);
+    $('#mo-ta-ngan').val(chuong.mo_ta_ngan);
+    $('#modal-chinh-sua-chuong').closest('form').attr('action', urlUpdate);
+    $('#modal-chinh-sua-chuong').modal('show');
     return;
   }
 
   $.ajax({
-    url: url,
+    url: urlDetail,
     type: 'POST',
     dataType: 'json',
     success: function (response) {
-      const listBai = response.data;
-      cache[url] = listBai; // Lưu vào cache
+      const chuong = response.data;
+      cache[urlDetail] = chuong;
 
-      $('#tieu-de-chuong').text(tieuDeChuong);
-      $('#section-list-bai').html(renderListBai(listBai));
-      $('#modal-chi-tiet-chuong').modal('show');
+      $('#tieu-de-chuong').val(chuong.tieu_de);
+      $('#mo-ta-ngan').val(chuong.mo_ta_ngan);
+      $('#modal-chinh-sua-chuong').closest('form').attr('action', urlUpdate);
+      $('#modal-chinh-sua-chuong').modal('show');
+
+      // console.log(chuong)
     },
     error: function (xhr) {
-      alert('Đã xảy ra lỗi: ' + xhr.status + ' ' + xhr.statusText);
+      alert("Đã xảy ra lỗi: " + xhr.status + ' ' + xhr.statusText);
     }
   });
 });
-
-function renderListBai(listBai) {
-  if (listBai.length == 0) {
-    return `
-      <tr class="text-center">
-        <td colspan="3">Không có bài nào trong chương</td>
-      </tr>
-    `;
-  }
-
-  const html = listBai.map((bai, index) => {
-    return `
-      <tr>
-        <th scope="row">${index + 1}</th>
-        <td>${bai.tieu_de}</td>
-        <td>${bai.ngay_tao}</td>
-      </tr>
-    `;
-  }).join('');
-
-  return html;
-}
 
 // Xử lý modal xóa chương
 $(document).on('click', '.btn-xoa-chuong', function () {
