@@ -210,18 +210,64 @@ class BaiKiemTraController extends Controller
     //Cập nhật thông tin bài kiểm tra
     public function capNhatBaiKiemTra(Request $request)
     {
-        $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'id' => 'required|exists:bai_kiem_tra,id',
             'tieu_de' => 'required|string|max:255',
             'diem_toi_da' => 'required|numeric|min:0',
-            'cau_hoi_xoa' => 'array',
-            'cau_hoi_cap_nhat' => 'array',
-            'cau_hoi_moi' => 'array',
+            'ngay_bat_dau' => 'required|date_format:d-m-Y H:i:s',
+            'ngay_ket_thuc' => 'required|date_format:d-m-Y H:i:s|after:ngay_bat_dau',
+            'cho_phep_nop_qua_han' => 'required|boolean',
+        ], [
+            'id.required' => 'Thiếu ID bài kiểm tra.',
+            'id.exists' => 'Bài kiểm tra không tồn tại.',
+
+            'tieu_de.required' => 'Vui lòng nhập tiêu đề.',
+            'tieu_de.string' => 'Tiêu đề không hợp lệ.',
+            'tieu_de.max' => 'Tiêu đề không được vượt quá 255 ký tự.',
+
+            'diem_toi_da.required' => 'Vui lòng nhập điểm tối đa.',
+            'diem_toi_da.numeric' => 'Điểm tối đa phải là số.',
+            'diem_toi_da.min' => 'Điểm tối đa không được âm.',
+
+            'ngay_bat_dau.required' => 'Vui lòng nhập ngày bắt đầu.',
+            'ngay_bat_dau.date_format' => 'Ngày bắt đầu phải đúng định dạng dd-mm-YYYY HH:ii:ss.',
+
+            'ngay_ket_thuc.required' => 'Vui lòng nhập ngày kết thúc.',
+            'ngay_ket_thuc.date_format' => 'Ngày kết thúc phải đúng định dạng dd-mm-YYYY HH:ii:ss.',
+            'ngay_ket_thuc.after' => 'Ngày kết thúc phải sau ngày bắt đầu.',
+
+            'cho_phep_nop_qua_han.required' => 'Vui lòng chọn cho phép nộp quá hạn hay không.',
+            'cho_phep_nop_qua_han.boolean' => 'Giá trị cho phép nộp quá hạn không hợp lệ.',
         ]);
 
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors(), // <-- gửi mảng lỗi về
+            ], 422);
+        }
+
+        $baiKiemTraHienTai = $this->baiKiemTraService->getById($request['id']);
+
+        $kiemTra = $this->baiKiemTraService->kiemTraTieuDe(
+            $request['tieu_de'],
+            $baiKiemTraHienTai->id_lop_hoc_phan,
+            $baiKiemTraHienTai->id
+        );
+
+        if ($kiemTra['ton_tai']) {
+            return response()->json([
+                'success' => false,
+                'error' => 'tieu_de',
+                'message' => 'Lớp học đã có bài kiểm tra với tiêu đề này rồi!',
+                'danh_sach_tieu_de' => $kiemTra['danh_sach_tieu_de'],
+            ]);
+        }
+
         try {
-            $this->baiKiemTraService->capNhatBaiKiemTra($validated);
-            return response()->json(['success' => true]);
+            $this->baiKiemTraService->capNhatBaiKiemTra($request->all());
+            $baiKiemTra = $this->baiKiemTraService->getById($request['id']);
+            return response()->json(['success' => true, 'data' => $baiKiemTra]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }

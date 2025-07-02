@@ -1,66 +1,167 @@
+let questionCounter = 0; // Biến đếm số câu hỏi
+
+//Câu hỏi - START
+// Hàm thêm câu hỏi (thủ công và file)
+function addQuestion(
+    questionText = "",
+    answers = ["", "", "", ""],
+    correct = ""
+) {
+    questionCounter++;
+    console.log(questionCounter);
+    $("div[id|='questionsFormContainer']").append(
+        questionTemplate(questionCounter, questionText, answers, correct)
+    );
+    updateQuestionNumbers();
+}
+
+//Cập nhật lại thứ tự câu hỏi cho đúng khi thêm mới hoặc xóa
+function updateQuestionNumbers() {
+    const $questionItems = $(
+        "div[id|='questionsFormContainer'] .question-item"
+    );
+    if ($questionItems.length === 0) {
+        $("#noQuestionsMessage").show();
+    } else {
+        $("#noQuestionsMessage").hide();
+    }
+
+    $questionItems.each(function (index) {
+        const $this = $(this);
+        $this.find("h7 strong").text(`Câu hỏi ${index + 1}`);
+        $this
+            .find(".correct-answer-radio")
+            .attr("name", `correctAnswer_${index + 1}`);
+        if ($questionItems.length === 1) {
+            $this.find(".remove-question-btn").hide();
+        } else {
+            $this.find(".remove-question-btn").show();
+        }
+    });
+    console.log(questionCounter);
+}
+
+//Nhấn nút thêm câu hỏi
+$(document).on("click", "#addQuestionBtn", function () {
+    addQuestion();
+});
+
+//Nhấn nút xóa câu hỏi
+$(document).on("click", ".remove-question-btn", function () {
+    const $toRemove = $(this).closest(".question-item");
+    if ($("div[id|='questionsFormContainer'] .question-item").length > 1) {
+        $toRemove.remove();
+        updateQuestionNumbers();
+    } else {
+        alert("Bạn phải có ít nhất một câu hỏi.");
+    }
+});
+
+//Đọc file được chọn và truyền dữ liệu để tạo html hiển thị danh sách câu hỏi từ file
+$(document).on("change", "#excelFileInput", function (e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: "array" });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+        for (let i = 1; i < rows.length; i++) {
+            const row = rows[i];
+            const questionText = row[0] || "";
+            const answers = [row[1], row[2], row[3], row[4]];
+            const correctLabel = (row[5] || "").toString().trim().toUpperCase();
+
+            const correctValue =
+                {
+                    A: "A",
+                    B: "B",
+                    C: "C",
+                    D: "D",
+                }[correctLabel] || "";
+
+            if (
+                questionText &&
+                answers.filter((a) => !!a).length >= 2 &&
+                correctValue
+            ) {
+                addQuestion(questionText, answers, correctValue);
+            }
+        }
+
+        $("#excelFileInput").val("");
+    };
+
+    reader.readAsArrayBuffer(file);
+});
+//Câu hỏi - END
+
+//Mẫu html để load dữ liệu vào
+const questionTemplate = (
+    count,
+    questionText = "",
+    answerOptions = ["", "", "", ""],
+    correctAnswer = "",
+    questionID = ""
+) => {
+    const optionLabels = ["A", "B", "C", "D"];
+    const optionValues = ["A", "B", "C", "D"];
+    const optionsHTML = optionValues
+        .map(
+            (value, index) => `
+            <div class="col-md-6">
+                <div class="input-group">
+                    <div class="input-group-text">
+                        <input class="form-check-input mt-0 correct-answer-radio" 
+                               type="radio" name="correctAnswer_${count}" 
+                               value="${value}" ${
+                correctAnswer === value ? "checked" : ""
+            } required>
+                    </div>
+                    <input type="text" class="form-control answer-option" 
+                           value="${
+                               answerOptions[index] || ""
+                           }" placeholder="Đáp án ${
+                optionLabels[index]
+            }" required>
+                </div>
+            </div>
+        `
+        )
+        .join("");
+
+    return `
+            <div class="question-item mb-4 p-3 border rounded bg-light" data-question-index="${count}">
+                <input type="hidden" name="idCauHoi" id="idCauHoi"
+                    value="${questionID}">
+                <h7 class="d-flex justify-content-between align-items-center mb-3">
+                    <strong>Câu hỏi ${count}</strong>
+                    <button type="button" class="btn btn-sm btn-outline-danger remove-question-btn">
+                        <i class="fas fa-times"></i> Xóa
+                    </button>
+                </h7>
+                <div class="mb-3">
+                    <label class="form-label">Nội dung câu hỏi <span class="text-danger">*</span></label>
+                    <textarea class="form-control question-text" rows="2" required>${questionText}</textarea>
+                    <div class="invalid-feedback">Vui lòng nhập nội dung câu hỏi.</div>
+                </div>
+                <div class="row g-2 mb-3">
+                    <label class="form-label">Đáp án: <span class="text-danger">*</span></label>
+                    ${optionsHTML}
+                    <div class="col-12">
+                        <div class="invalid-feedback">
+                            Vui lòng chọn một đáp án đúng cho câu hỏi này.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+};
+
 $(document).ready(function () {
-    // // --- Dữ liệu mẫu cho Bài tập (ĐÃ CẬP NHẬT CẤU TRÚC) ---
-    // const exercisesData = [
-    //     {
-    //         id: 1,
-    //         title: "Bài tập HTML cơ bản",
-    //         type: "Trắc nghiệm",
-    //         date: "2023-01-20",
-    //         content:
-    //             "Nội dung chi tiết của <strong>Bài tập HTML cơ bản</strong>. Bài tập này bao gồm các câu hỏi về cấu trúc HTML và các thẻ cơ bản.",
-    //         questions: [
-    //             // Thêm mảng câu hỏi
-    //             {
-    //                 id: 1,
-    //                 questionText: "Thẻ HTML nào dùng để tạo tiêu đề lớn nhất?",
-    //                 options: [
-    //                     "&lt;h6&gt;",
-    //                     "&lt;head&gt;",
-    //                     "&lt;h1&gt;",
-    //                     "&lt;title&gt;",
-    //                 ],
-    //                 correctAnswer: "&lt;h1&gt;",
-    //             },
-    //             {
-    //                 id: 2,
-    //                 questionText:
-    //                     "Thẻ nào dùng để tạo một danh sách không có thứ tự?",
-    //                 options: [
-    //                     "&lt;ol&gt;",
-    //                     "&lt;ul&gt;",
-    //                     "&lt;li&gt;",
-    //                     "&lt;dl&gt;",
-    //                 ],
-    //                 correctAnswer: "&lt;ul&gt;",
-    //             },
-    //             {
-    //                 id: 3,
-    //                 questionText:
-    //                     "Thuộc tính HTML nào dùng để định nghĩa CSS nội dòng (inline CSS)?",
-    //                 options: ["class", "id", "style", "font"],
-    //                 correctAnswer: "style",
-    //             },
-    //         ],
-    //     },
-    //     {
-    //         id: 2,
-    //         title: "Bài tập CSS Flexbox",
-    //         type: "Điền khuyết",
-    //         date: "2023-02-25",
-    //         content:
-    //             "Nội dung chi tiết của <em>Bài tập CSS Flexbox</em>. Hoàn thành các đoạn mã CSS còn thiếu để tạo bố cục sử dụng Flexbox.",
-    //         questions: [], // Không có câu hỏi trắc nghiệm cho loại này
-    //     },
-    //     {
-    //         id: 3,
-    //         title: "Bài tập JavaScript mảng",
-    //         type: "Tự luận",
-    //         date: "2023-03-15",
-    //         content:
-    //             "Nội dung chi tiết của <strong>Bài tập JavaScript mảng</strong>. Viết một hàm JavaScript để thực hiện các thao tác trên mảng như thêm, xóa, tìm kiếm phần tử.",
-    //         questions: [], // Không có câu hỏi trắc nghiệm cho loại này
-    //     },
-    // ];
     let danhSachBaiTap = [];
 
     const baiGiangId = $("#myTabContent").data("id-bai-giang");
@@ -215,92 +316,90 @@ $(document).ready(function () {
         }
     }
 
-    let questionCounter = 1; // Biến đếm số câu hỏi
+    // // Mẫu HTML cho một câu hỏi mới
+    // const questionTemplate = (count) => `
+    //         <div class="question-item mb-4 p-3 border rounded bg-light" data-question-index="${count}">
+    //             <h7 class="d-flex justify-content-between align-items-center mb-3">
+    //                 <strong>Câu hỏi ${count}</strong>
+    //                 <button type="button" class="btn btn-sm btn-outline-danger remove-question-btn">
+    //                     <i class="fas fa-times"></i> Xóa
+    //                 </button>
+    //             </h7>
+    //             <div class="mb-3">
+    //                 <label for="question${count}Text" class="form-label">Nội dung câu hỏi <span class="text-danger">*</span></label>
+    //                 <textarea class="form-control question-text" id="question${count}Text" rows="2" placeholder="Nhập nội dung câu hỏi" required></textarea>
+    //                 <div class="invalid-feedback">
+    //                     Vui lòng nhập nội dung câu hỏi.
+    //                 </div>
+    //             </div>
+    //             <div class="row g-2 mb-3">
+    //                 <label class="form-label">Đáp án: <span class="text-danger">*</span></label>
+    //                 <div class="col-md-6">
+    //                     <div class="input-group">
+    //                         <div class="input-group-text">
+    //                             <input class="form-check-input mt-0 correct-answer-radio" type="radio" name="correctAnswer_${count}" value="optionA" aria-label="Đáp án A" required>
+    //                         </div>
+    //                         <input type="text" class="form-control answer-option" placeholder="Đáp án A" required>
+    //                     </div>
+    //                 </div>
+    //                 <div class="col-md-6">
+    //                     <div class="input-group">
+    //                         <div class="input-group-text">
+    //                             <input class="form-check-input mt-0 correct-answer-radio" type="radio" name="correctAnswer_${count}" value="optionB" aria-label="Đáp án B" required>
+    //                         </div>
+    //                         <input type="text" class="form-control answer-option" placeholder="Đáp án B" required>
+    //                     </div>
+    //                 </div>
+    //                 <div class="col-md-6">
+    //                     <div class="input-group">
+    //                         <div class="input-group-text">
+    //                             <input class="form-check-input mt-0 correct-answer-radio" type="radio" name="correctAnswer_${count}" value="optionC" aria-label="Đáp án C" required>
+    //                         </div>
+    //                         <input type="text" class="form-control answer-option" placeholder="Đáp án C" required>
+    //                     </div>
+    //                 </div>
+    //                 <div class="col-md-6">
+    //                     <div class="input-group">
+    //                         <div class="input-group-text">
+    //                             <input class="form-check-input mt-0 correct-answer-radio" type="radio" name="correctAnswer_${count}" value="optionD" aria-label="Đáp án D" required>
+    //                         </div>
+    //                         <input type="text" class="form-control answer-option" placeholder="Đáp án D" required>
+    //                     </div>
+    //                 </div>
+    //                  <div class="col-12">
+    //                     <div class="invalid-feedback d-block">
+    //                         Vui lòng chọn một đáp án đúng cho câu hỏi này.
+    //                     </div>
+    //                 </div>
+    //             </div>
+    //         </div>
+    //     `;
 
-    // Mẫu HTML cho một câu hỏi mới
-    const questionTemplate = (count) => `
-            <div class="question-item mb-4 p-3 border rounded bg-light" data-question-index="${count}">
-                <h7 class="d-flex justify-content-between align-items-center mb-3">
-                    <strong>Câu hỏi ${count}</strong>
-                    <button type="button" class="btn btn-sm btn-outline-danger remove-question-btn">
-                        <i class="fas fa-times"></i> Xóa
-                    </button>
-                </h7>
-                <div class="mb-3">
-                    <label for="question${count}Text" class="form-label">Nội dung câu hỏi <span class="text-danger">*</span></label>
-                    <textarea class="form-control question-text" id="question${count}Text" rows="2" placeholder="Nhập nội dung câu hỏi" required></textarea>
-                    <div class="invalid-feedback">
-                        Vui lòng nhập nội dung câu hỏi.
-                    </div>
-                </div>
-                <div class="row g-2 mb-3">
-                    <label class="form-label">Đáp án: <span class="text-danger">*</span></label>
-                    <div class="col-md-6">
-                        <div class="input-group">
-                            <div class="input-group-text">
-                                <input class="form-check-input mt-0 correct-answer-radio" type="radio" name="correctAnswer_${count}" value="optionA" aria-label="Đáp án A" required>
-                            </div>
-                            <input type="text" class="form-control answer-option" placeholder="Đáp án A" required>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="input-group">
-                            <div class="input-group-text">
-                                <input class="form-check-input mt-0 correct-answer-radio" type="radio" name="correctAnswer_${count}" value="optionB" aria-label="Đáp án B" required>
-                            </div>
-                            <input type="text" class="form-control answer-option" placeholder="Đáp án B" required>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="input-group">
-                            <div class="input-group-text">
-                                <input class="form-check-input mt-0 correct-answer-radio" type="radio" name="correctAnswer_${count}" value="optionC" aria-label="Đáp án C" required>
-                            </div>
-                            <input type="text" class="form-control answer-option" placeholder="Đáp án C" required>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="input-group">
-                            <div class="input-group-text">
-                                <input class="form-check-input mt-0 correct-answer-radio" type="radio" name="correctAnswer_${count}" value="optionD" aria-label="Đáp án D" required>
-                            </div>
-                            <input type="text" class="form-control answer-option" placeholder="Đáp án D" required>
-                        </div>
-                    </div>
-                     <div class="col-12">
-                        <div class="invalid-feedback d-block">
-                            Vui lòng chọn một đáp án đúng cho câu hỏi này.
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
+    // // Cập nhật số thứ tự câu hỏi và trạng thái nút xóa
+    // function updateQuestionNumbers() {
+    //     const $questionItems = $("#questionsFormContainer .question-item");
+    //     if ($questionItems.length === 0) {
+    //         $("#noQuestionsMessage").show();
+    //     } else {
+    //         $("#noQuestionsMessage").hide();
+    //     }
 
-    // Cập nhật số thứ tự câu hỏi và trạng thái nút xóa
-    function updateQuestionNumbers() {
-        const $questionItems = $("#questionsFormContainer .question-item");
-        if ($questionItems.length === 0) {
-            $("#noQuestionsMessage").show();
-        } else {
-            $("#noQuestionsMessage").hide();
-        }
+    //     $questionItems.each(function (index) {
+    //         const $this = $(this);
+    //         $this.find("h7 strong").text(`Câu hỏi ${index + 1}`);
+    //         // Cập nhật thuộc tính name của radio button để đảm bảo chúng hoạt động độc lập
+    //         $this
+    //             .find(".correct-answer-radio")
+    //             .attr("name", `correctAnswer_${index + 1}`);
 
-        $questionItems.each(function (index) {
-            const $this = $(this);
-            $this.find("h7 strong").text(`Câu hỏi ${index + 1}`);
-            // Cập nhật thuộc tính name của radio button để đảm bảo chúng hoạt động độc lập
-            $this
-                .find(".correct-answer-radio")
-                .attr("name", `correctAnswer_${index + 1}`);
-
-            // Ẩn/hiện nút xóa nếu chỉ còn 1 câu hỏi
-            if ($questionItems.length === 1) {
-                $this.find(".remove-question-btn").hide();
-            } else {
-                $this.find(".remove-question-btn").show();
-            }
-        });
-    }
+    //         // Ẩn/hiện nút xóa nếu chỉ còn 1 câu hỏi
+    //         if ($questionItems.length === 1) {
+    //             $this.find(".remove-question-btn").hide();
+    //         } else {
+    //             $this.find(".remove-question-btn").show();
+    //         }
+    //     });
+    // }
 
     // --- Sự kiện khi modal thêm bài tập hiện lên ---
     $("#addExerciseModal").on("show.bs.modal", function () {
@@ -312,25 +411,25 @@ $(document).ready(function () {
         $("#noQuestionsMessage").show(); // Hiển thị thông báo khi không có câu hỏi
     });
 
-    // --- Thêm câu hỏi mới ---
-    $("#addQuestionBtn").on("click", function () {
-        questionCounter++;
-        $("#questionsFormContainer").append(questionTemplate(questionCounter));
-        updateQuestionNumbers();
-    });
+    // // --- Thêm câu hỏi mới ---
+    // $("#addQuestionBtn").on("click", function () {
+    //     questionCounter++;
+    //     $("#questionsFormContainer").append(questionTemplate(questionCounter));
+    //     updateQuestionNumbers();
+    // });
 
-    // --- Xóa câu hỏi ---
-    // Sử dụng event delegation vì các nút xóa được thêm động
-    $(document).on("click", ".remove-question-btn", function () {
-        const $questionItemToRemove = $(this).closest(".question-item");
-        if ($("#questionsFormContainer .question-item").length > 1) {
-            // Chỉ xóa nếu có hơn 1 câu hỏi
-            $questionItemToRemove.remove();
-            updateQuestionNumbers();
-        } else {
-            alert("Bạn phải có ít nhất một câu hỏi.");
-        }
-    });
+    // // --- Xóa câu hỏi ---
+    // // Sử dụng event delegation vì các nút xóa được thêm động
+    // $(document).on("click", ".remove-question-btn", function () {
+    //     const $questionItemToRemove = $(this).closest(".question-item");
+    //     if ($("#questionsFormContainer .question-item").length > 1) {
+    //         // Chỉ xóa nếu có hơn 1 câu hỏi
+    //         $questionItemToRemove.remove();
+    //         updateQuestionNumbers();
+    //     } else {
+    //         alert("Bạn phải có ít nhất một câu hỏi.");
+    //     }
+    // });
 
     // Xử lý nhấn nút Lưu bài tập Trong Modal thêm bài tập
     $("#newExerciseForm").on("submit", function (e) {
@@ -442,12 +541,6 @@ $(document).ready(function () {
     // Kích hoạt nút "Tạo mới bài tập" để mở modal này
     $("#addNewExerciseBtn").attr("data-bs-toggle", "modal");
     $("#addNewExerciseBtn").attr("data-bs-target", "#addExerciseModal");
-
-    // Khởi tạo trạng thái ban đầu cho nút xóa (khi modal mở)
-    // Nếu bạn muốn modal luôn có sẵn 1 câu hỏi khi mở:
-    questionCounter = 1;
-    $("#questionsFormContainer").append(questionTemplate(questionCounter));
-    updateQuestionNumbers(); // Gọi lần đầu để xử lý trạng thái ban đầu
 
     // // Hàm để tạo HTML cho một câu hỏi trong modal chỉnh sửa
     const editQuestionTemplate = (question, index, totalQuestions) => `

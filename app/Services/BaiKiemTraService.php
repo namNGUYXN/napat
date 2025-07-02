@@ -301,6 +301,9 @@ class BaiKiemTraService
                 'tieu_de' => $data['tieu_de'],
                 'diem_toi_da' => $data['diem_toi_da'],
                 'slug' => Str::slug($data['tieu_de']),
+                'ngay_bat_dau' => Carbon::createFromFormat('d-m-Y H:i:s', $data['ngay_bat_dau'])->format('Y-m-d H:i:s'),
+                'ngay_ket_thuc' => Carbon::createFromFormat('d-m-Y H:i:s', $data['ngay_ket_thuc'])->format('Y-m-d H:i:s'),
+                'cho_phep_nop_qua_han' => $data['cho_phep_nop_qua_han'],
             ]);
 
             // Xóa câu hỏi cũ nếu câu hỏi bị xóa trên giao diện 

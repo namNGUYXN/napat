@@ -106,8 +106,20 @@ class NguoiDungService
         $import = new NguoiDungImport();
         Excel::import($import, $file);
 
-        // Trả lại danh sách lỗi (nếu có) cho Controller
-        return $import->failures();
+        // Nếu có lỗi thì không lưu
+        if ($import->failures()->isNotEmpty()) {
+            return [
+                'success' => false,
+                'failures' => $import->failures(),
+            ];
+        }
+
+        // Lưu toàn bộ dữ liệu hợp lệ
+        foreach ($import->getValidRows() as $row) {
+            NguoiDung::create($row);
+        }
+
+        return ['success' => true];
     }
 
     private function taoMatKhauNgauNhien($length = 6)

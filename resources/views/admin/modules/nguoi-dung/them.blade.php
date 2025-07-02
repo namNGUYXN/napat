@@ -2,7 +2,6 @@
 
 @section('content')
     <div class="col bg-light p-4 overflow-auto custom-scrollbar">
-        <h2 class="mb-4">Thêm người dùng mới</h2>
 
         <a href="{{ route('nguoi-dung.index') }}" class="btn btn-outline-secondary mb-4">
             <i class="fas fa-arrow-alt-circle-left me-2"></i>Danh sách người dùng
@@ -10,7 +9,7 @@
 
         <div class="card shadow-sm">
             <div class="card-header bg-success text-white">
-                <h5 class="mb-0">Quản lý người dùng</h5>
+                <h5 class="mb-0">Thêm người dùng mới</h5>
             </div>
             <div class="card-body">
                 <!-- Tabs -->
@@ -21,7 +20,7 @@
                     </li>
                     <li class="nav-item" role="presentation">
                         <a class="nav-link fw-bold" id="import-tab" data-bs-toggle="tab" href="#form-import" role="tab"
-                            aria-controls="form-import" aria-selected="false">Import từ file</a>
+                            aria-controls="form-import" aria-selected="false">Thêm từ file</a>
                     </li>
 
                 </ul>
@@ -32,24 +31,53 @@
                     <div class="tab-pane fade show active" id="form-input" role="tabpanel" aria-labelledby="form-tab">
                         <form method="POST" action="{{ route('nguoi-dung.xu-ly-them') }}">
                             @csrf
+                            {{-- Họ tên --}}
                             <div class="form-group mb-3">
                                 <label>Họ tên</label>
-                                <input type="text" name="ho_ten" class="form-control" required>
+                                <input type="text" name="ho_ten"
+                                    class="form-control @error('ho_ten') is-invalid @enderror" value="{{ old('ho_ten') }}">
+                                <div id="ho_ten_error" class="invalid-feedback d-none"></div>
+                                @error('ho_ten')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
+
+                            {{-- Email --}}
                             <div class="form-group mb-3">
                                 <label>Email</label>
-                                <input type="email" name="email" class="form-control" required>
+                                <input type="email" name="email"
+                                    class="form-control @error('email') is-invalid @enderror" value="{{ old('email') }}">
+                                <div id="email_error" class="invalid-feedback d-none"></div>
+                                @error('email')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
+
+                            {{-- Số điện thoại --}}
                             <div class="form-group mb-3">
                                 <label>Số điện thoại</label>
-                                <input type="text" name="sdt" class="form-control">
+                                <input type="text" name="sdt" class="form-control @error('sdt') is-invalid @enderror"
+                                    value="{{ old('sdt') }}">
+                                <div id="sdt_error" class="invalid-feedback d-none"></div>
+                                @error('sdt')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
+
+                            {{-- Vai trò --}}
                             <div class="form-group mb-3">
                                 <label>Vai trò</label>
-                                <select name="vai_tro" class="form-control" required>
-                                    <option value="Giảng viên">Giảng viên</option>
-                                    <option value="Sinh viên">Sinh viên</option>
+                                <select name="vai_tro" class="form-control @error('vai_tro') is-invalid @enderror">
+                                    <option value="">-- Chọn vai trò --</option>
+                                    <option value="Giảng viên" {{ old('vai_tro') == 'Giảng viên' ? 'selected' : '' }}>Giảng
+                                        viên</option>
+                                    <option value="Sinh viên" {{ old('vai_tro') == 'Sinh viên' ? 'selected' : '' }}>Sinh
+                                        viên</option>
                                 </select>
+                                <div id="vai_tro_error" class="invalid-feedback d-none"></div>
+                                @error('vai_tro')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                             <button type="submit" class="btn btn-success mt-2">Thêm người dùng</button>
                         </form>
@@ -88,7 +116,7 @@
                                 <input type="file" name="file_excel" id="file_excel" class="d-none" required
                                     onchange="updateFileName(this)">
                             </div>
-                            <button type="submit" class="btn btn-primary">Import</button>
+                            <button type="submit" class="btn btn-primary">Thêm</button>
                         </form>
                     </div>
                 </div>
@@ -103,13 +131,7 @@
 @endsection
 
 @section('scripts')
-    <script src="{{ asset('modules/nguoi-dung/js/danh-sach.js') }}"></script>
-    <script>
-        function updateFileName(input) {
-            const fileName = input.files.length > 0 ? input.files[0].name : 'Chưa chọn file';
-            document.getElementById('file-name').textContent = fileName;
-        }
-    </script>
+    <script src="{{ asset('modules/nguoi-dung/js/them.js') }}"></script>
     @if (session('message'))
         <script>
             const Toast = Swal.mixin({
