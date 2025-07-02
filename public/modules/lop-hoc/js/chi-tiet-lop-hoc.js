@@ -144,20 +144,32 @@ document.addEventListener("DOMContentLoaded", function () {
     //Modal thêm Bài kiểm tra - END
 });
 
-const inputTieuDe = document.querySelector("#newExerciseTitle");
+document
+    .querySelector("#newExerciseTitle")
+    ?.addEventListener("input", function () {
+        const val = this.value.toLowerCase().trim();
+        const msg = this.nextElementSibling;
 
-inputTieuDe.addEventListener("input", function () {
-    const giaTriNhap = this.value.toLowerCase().trim();
+        const isDuplicate = dsTieuDe.includes(val);
+        this.classList.toggle("is-invalid", isDuplicate);
+        msg.textContent = isDuplicate
+            ? "Lớp học đã có bài kiểm tra với tiêu đề này rồi!"
+            : "Vui lòng nhập tiêu đề cho bài kiểm tra.";
+    });
 
-    // Kiểm tra trùng
-    if (dsTieuDe.includes(giaTriNhap)) {
-        this.classList.add("is-invalid");
-        this.nextElementSibling.textContent =
-            "Lớp học đã có bài kiểm tra với tiêu đề này rồi!";
-    } else {
-        this.classList.remove("is-invalid");
-        this.nextElementSibling.textContent =
-            "Vui lòng nhập tiêu đề cho bài kiểm tra.";
+document.addEventListener("input", function (e) {
+    if (e.target && e.target.id === "ExerciseTitle") {
+        const giaTriNhap = e.target.value.toLowerCase().trim();
+
+        if (dsTieuDe.includes(giaTriNhap)) {
+            e.target.classList.add("is-invalid");
+            e.target.nextElementSibling.textContent =
+                "Lớp học đã có bài kiểm tra với tiêu đề này rồi!";
+        } else {
+            e.target.classList.remove("is-invalid");
+            e.target.nextElementSibling.textContent =
+                "Vui lòng nhập tiêu đề cho bài kiểm tra.";
+        }
     }
 });
 
@@ -399,6 +411,17 @@ function formatNgay(ngayGoc) {
     return `${gio}:${phut} Ngày: ${ngay}/${thang}/${nam}`;
 }
 
+function formatDateForFlatpickr(dateTimeStr) {
+    const date = new Date(dateTimeStr); // Tự parse từ "Y-m-d H:i:s"
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Tháng bắt đầu từ 0
+    const year = date.getFullYear();
+    const hour = String(date.getHours()).padStart(2, "0");
+    const minute = String(date.getMinutes()).padStart(2, "0");
+
+    return `${day}/${month}/${year} ${hour}:${minute}`;
+}
+
 function renderChiTietBaiKiemTraGiangVien() {
     const thongTinBaiKT = `
                         <p><strong>Bài kiểm tra:</strong> ${
@@ -494,6 +517,7 @@ const questionTemplate = (
 
 const chuyenSangChinhSua = () => {
     const body = document.getElementById("modalChiTietBody");
+
     let html = `<form id="editExerciseForm">
                     <input type="hidden" name="idBaiKiemTra" id="idBaiKiemTra"
                         value="${currentBaiKiemTra.id}">
@@ -502,17 +526,57 @@ const chuyenSangChinhSua = () => {
                             <label for="ExerciseTitle" class="form-label">Tiêu đề
                                 <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" name="tieu_de"
-                                id="ExerciseTitle" value="${currentBaiKiemTra.tieu_de}" placeholder="Nhập tiêu đề bài kiểm tra" required>
-                            <div class="invalid-feedback">
+                                id="ExerciseTitle" value="${
+                                    currentBaiKiemTra.tieu_de
+                                }" placeholder="Nhập tiêu đề bài kiểm tra" required>
+                            <div class="invalid-feedback fw-bold">
                             Vui lòng nhập tiêu đề cho bài kiểm tra.
                             </div>
                         </div>
                         <div class="col-sm-3 col-lg-2 mt-3 mt-sm-0"> <label
                             for="ExerciseMaxScore" class="form-label">Điểm tối
                             đa</label>
-                            <input type="number" class="form-control" name="diem_toi_da" value="${currentBaiKiemTra.diem_toi_da}"
+                            <input type="number" class="form-control" name="diem_toi_da" value="${
+                                currentBaiKiemTra.diem_toi_da
+                            }"
                             id="ExerciseMaxScore" placeholder="100" min="0">
+                            <div class="invalid-feedback fw-bold">
+                            Vui lòng nhập tiêu đề cho bài kiểm tra.
+                            </div>
                         </div>
+                        <div class="row mb-3 mt-3 ">
+                                                    <div class="col-md-6">
+                                                        <label for="editStartTime">Thời gian bắt đầu</label>
+                                                        <input type="text" class="form-control" id="editStartTime"
+                                                            name="ngay_bat_dau" 
+                                                         placeholder="Chọn thời gian">
+                                                        <div class="invalid-feedback fw-bold">
+                                                            Vui lòng chọn thời gian bắt đầu
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label for="editEndTime">Thời gian kết thúc</label>
+                                                        <input type="text" class="form-control" id="editEndTime"
+                                                            name="ngay_ket_thuc" placeholder="Chọn thời gian">
+                                                        <div class="invalid-feedback fw-bold">
+                                                            Vui lòng chọn thời gian kết thúc
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="d-flex justify-content-center mt-1">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" value="1"
+                                                            id="editChoPhepNopTre" name="cho_phep_nop_qua_han"  ${
+                                                                currentBaiKiemTra.cho_phep_nop_qua_han
+                                                                    ? "checked"
+                                                                    : ""
+                                                            }>
+                                                        <label class="form-check-label" for="choPhepNopTre">
+                                                            Cho phép nộp quá hạn
+                                                        </label>
+                                                    </div>
+                                                </div>
                     </div>
                     <div id="questionsFormContainer-sua">`;
     questionCounter = 0;
@@ -552,9 +616,79 @@ const chuyenSangChinhSua = () => {
             ← Quay lại 
         </button>
     `);
+
     // Gán lại vào modal-body
     body.innerHTML = html;
+
+    //Cấu hình Flatpickr - START
+    flatpickr.localize(flatpickr.l10ns.vn);
+    const editStartPicker = flatpickr("#editStartTime", {
+        enableTime: true,
+        dateFormat: "d-m-Y H:i:S",
+        time_24hr: true,
+        allowInput: true,
+        defaultDate: formatDateForFlatpickr(currentBaiKiemTra.ngay_bat_dau),
+        onChange: function (selectedDates, dateStr, instance) {
+            // Gợi ý thời gian kết thúc ≥ thời gian bắt đầu
+            if (selectedDates.length > 0) {
+                const startDate = selectedDates[0];
+                endPicker.set("minDate", startDate);
+            }
+        },
+    });
+    const editEndPicker = flatpickr("#editEndTime", {
+        enableTime: true,
+        dateFormat: "d-m-Y H:i:S",
+        time_24hr: true,
+        allowInput: true,
+        defaultDate: formatDateForFlatpickr(currentBaiKiemTra.ngay_ket_thuc),
+    });
+    //Cấu hình Flatpickr - END
+
+    fetch("/server-time")
+        .then((response) => response.json())
+        .then((data) => {
+            const serverNow = new Date(data.now);
+
+            const startTimeStr = currentBaiKiemTra.ngay_bat_dau; // "2025-06-30 15:00:00"
+            const startTime = new Date(startTimeStr); // new Date("2025-06-30 15:00:00")
+
+            disableEditingFields(serverNow, startTime);
+        });
 };
+
+function disableEditingFields(serverNow, startTime) {
+    if (serverNow >= startTime) {
+        // Disable các input/textarea không được sửa
+        document
+            .querySelectorAll(
+                "#editExerciseForm input, #editExerciseForm textarea"
+            )
+            .forEach((input) => {
+                if (
+                    !input.matches("#editEndTime") &&
+                    !input.matches("#editChoPhepNopTre") &&
+                    !input.classList.contains("correct-answer-radio")
+                ) {
+                    input.setAttribute("readonly", true);
+                    input.classList.add("bg-light");
+                }
+            });
+
+        // Disable nút xóa câu hỏi
+        document.querySelectorAll(".remove-question-btn").forEach((btn) => {
+            btn.disabled = true;
+            btn.classList.add("disabled");
+        });
+
+        // Disable nút thêm câu hỏi
+        document.getElementById("addQuestionBtn").disabled = true;
+        document
+            .querySelector('label[for="excelFileInput"]')
+            .classList.add("disabled");
+        document.getElementById("excelFileInput").disabled = true;
+    }
+}
 
 $(document).ready(function () {
     let danhSachBaiKiemTra = [];
@@ -1020,6 +1154,9 @@ $(document).ready(function () {
             const tieuDe = form.querySelector("#ExerciseTitle").value;
             const diemToiDa = form.querySelector("#ExerciseMaxScore").value;
             const idBaiKiemTra = form.querySelector("#idBaiKiemTra").value;
+            const ngayBatDau = form.querySelector("#editStartTime").value;
+            const ngayKetThuc = form.querySelector("#editEndTime").value;
+            const choPhepNopTre = $("#editChoPhepNopTre").is(":checked");
 
             // Thu thập câu hỏi hiện tại từ giao diện
             const questionEls = form.querySelectorAll(".question-item");
@@ -1060,6 +1197,9 @@ $(document).ready(function () {
                 id: idBaiKiemTra,
                 tieu_de: tieuDe,
                 diem_toi_da: diemToiDa,
+                ngay_bat_dau: ngayBatDau,
+                ngay_ket_thuc: ngayKetThuc,
+                cho_phep_nop_qua_han: choPhepNopTre,
                 cau_hoi_cap_nhat: questions.filter((q) => q.id),
                 cau_hoi_moi: questions.filter((q) => !q.id),
                 cau_hoi_xoa: deletedQuestionIDs,
@@ -1081,9 +1221,19 @@ $(document).ready(function () {
                             confirmButtonText: "Đóng",
                         }).then(() => {
                             questionCounter = 0;
+                            currentBaiKiemTra = response.data;
                             quayLaiDanhSach(0);
                         });
                     } else {
+                        if (response.error === "tieu_de") {
+                            const input = $(`[name="tieu_de"]`);
+                            input.addClass("is-invalid");
+                            input
+                                .next(".invalid-feedback")
+                                .text(response.message)
+                                .show();
+                            dsTieuDe = response.danh_sach_tieu_de;
+                        }
                         Swal.fire({
                             icon: "error",
                             title: "Tạo thất bại",
@@ -1093,13 +1243,39 @@ $(document).ready(function () {
                     }
                 },
                 error: function (xhr) {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Lỗi server",
-                        text: "Đã xảy ra lỗi phía server.",
-                        confirmButtonText: "Đóng",
-                    });
-                    console.error(xhr.responseText);
+                    if (xhr.status === 422) {
+                        const errors = xhr.responseJSON.errors;
+
+                        // Xóa lỗi cũ
+                        $("#editExerciseForm .is-invalid").removeClass(
+                            "is-invalid"
+                        );
+                        $("#editExerciseForm .invalid-feedback").hide();
+
+                        // Hiển thị lỗi mới
+                        for (let name in errors) {
+                            const input = $(`[name="${name}"]`);
+                            input.addClass("is-invalid");
+                            input
+                                .next(".invalid-feedback")
+                                .text(errors[name][0])
+                                .show();
+                        }
+
+                        Swal.fire({
+                            icon: "error",
+                            title: "Lỗi dữ liệu",
+                            text: "Vui lòng kiểm tra lại các trường đã nhập.",
+                            confirmButtonText: "Đóng",
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Lỗi hệ thống",
+                            text: "Đã xảy ra lỗi không mong muốn.",
+                            confirmButtonText: "Đóng",
+                        });
+                    }
                 },
             });
         }

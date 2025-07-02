@@ -15,6 +15,8 @@ use Maatwebsite\Excel\Validators\Failure;
 class NguoiDungImport implements OnEachRow, SkipsOnFailure
 {
     use SkipsFailures;
+    protected $validRows = [];
+    protected $failures = [];
 
     public function onRow(Row $row)
     {
@@ -25,7 +27,6 @@ class NguoiDungImport implements OnEachRow, SkipsOnFailure
             'ho_ten.required' => 'Họ tên không được để trống.',
             'ho_ten.regex' => 'Họ tên chỉ được chứa chữ cái và khoảng trắng.',
             'email.required' => 'Email là bắt buộc.',
-            //'email.email' => 'Email không đúng định dạng.',
             'email.unique' => 'Email đã tồn tại trong hệ thống.',
             'sdt.numeric' => 'Số điện thoại phải là số.',
             'vai_tro.required' => 'Vai trò là bắt buộc.',
@@ -39,25 +40,23 @@ class NguoiDungImport implements OnEachRow, SkipsOnFailure
             'vai_tro' => $rowData[3] ?? null,
         ], [
             'ho_ten' => ['required', 'regex:/^[\p{L}\s]+$/u'],
-            'email' => ['required', //'email',
-             'unique:nguoi_dung,email'],
+            'email' => ['required', 'unique:nguoi_dung,email'],
             'sdt' => ['nullable', 'numeric'],
             'vai_tro' => ['required', Rule::in(['Giảng viên', 'Sinh viên', 'Admin'])],
         ], $messages);
 
         if ($validator->fails()) {
-            // ✅ Truyền từng Failure, KHÔNG truyền mảng []
-            $this->onFailure(new Failure(
+            $this->failures[] = new Failure(
                 $rowIndex,
-                '', // Không cần field cụ thể
+                '',
                 $validator->errors()->all(),
                 $rowData
-            ));
+            );
             return;
         }
 
-
-        NguoiDung::create([
+        // Nếu hợp lệ, lưu vào danh sách chờ
+        $this->validRows[] = [
             'ho_ten'    => $rowData[0],
             'email'     => $rowData[1],
             'sdt'       => $rowData[2],
@@ -65,7 +64,7 @@ class NguoiDungImport implements OnEachRow, SkipsOnFailure
             'vai_tro'   => $rowData[3],
             'is_active' => true,
             'ngay_tao'  => now(),
-        ]);
+        ];
     }
 
     //Hàm tạo mật khẩu tự động
@@ -81,5 +80,14 @@ class NguoiDungImport implements OnEachRow, SkipsOnFailure
         $password .= $kyTuDacBiet[rand(0, strlen($kyTuDacBiet) - 1)];
 
         return Str::substr(str_shuffle($password), 0, $length);
+    }
+    public function getValidRows()
+    {
+        return $this->validRows;
+    }
+
+    public function failures()
+    {
+        return collect($this->failures);
     }
 }

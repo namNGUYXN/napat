@@ -78,6 +78,11 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien+sinh-vien']], 
     Route::get('/lam-bai/{id}', 'BaiKiemTraController@lamBai')->name('lambai');
     Route::post('/bai-kiem-tra/nop-bai', 'BaiKiemTraController@nopBai')->name('bai-kiem-tra.nop-bai');
     Route::get('/bai-kiem-tra/{id}/chi-tiet', 'BaiKiemTraController@layChiTiet');
+
+    //Lấy giờ hệ thống
+    Route::get('/server-time', function () {
+        return response()->json(['now' => now()->format('Y-m-d H:i:s')]);
+    });
 });
 
 

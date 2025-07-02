@@ -122,20 +122,22 @@ class NguoiDungController extends Controller
         return view('admin.modules.nguoi-dung.danh-sach', compact('danhSach', 'vaiTro', 'keyword'));
     }
 
+    //Xử lý thêm người dùng thủ công
     public function xuLyThemNguoiDung(Request $request)
     {
         $validated = $request->validate([
-            'ho_ten' => 'required|string|max:255',
+            'ho_ten' => ['required', 'regex:/^[\p{L}\s]+$/u', 'max:255'],
             'email' => 'required|email|unique:nguoi_dung,email',
-            'sdt' => 'nullable|string|max:20',
+            'sdt' => ['nullable', 'regex:/^0\d{9,10}$/'],
             'vai_tro' => 'required',
         ], [
             'ho_ten.required' => 'Vui lòng nhập họ tên.',
+            'ho_ten.regex' => 'Họ tên chỉ được chứa chữ cái và khoảng trắng, không chứa số hoặc ký tự đặc biệt.',
             'ho_ten.max' => 'Họ tên không được vượt quá :max ký tự.',
             'email.required' => 'Vui lòng nhập email.',
             'email.email' => 'Email không hợp lệ.',
             'email.unique' => 'Email đã tồn tại trong hệ thống.',
-            'sdt.max' => 'Số điện thoại không được vượt quá :max ký tự.',
+            'sdt.regex' => 'Số điện thoại phải là số và bắt đầu bằng số 0 và không quá 11 số',
             'vai_tro.required' => 'Vui lòng chọn vai trò.',
         ], [
             'ho_ten' => 'Họ tên',
@@ -152,7 +154,7 @@ class NguoiDungController extends Controller
             ->with('icon', 'success');
     }
 
-
+    //Xử lý khi thêm hàng loạt người dùng(Excel)
     public function xuLyImportExcel(Request $request)
     {
         $request->validate([
@@ -160,12 +162,12 @@ class NguoiDungController extends Controller
         ]);
 
         try {
-            $failures = $this->nguoiDungService->importTuExcel($request->file('file_excel'));
+            $result = $this->nguoiDungService->importTuExcel($request->file('file_excel'));
 
-            if ($failures->isNotEmpty()) {
+            if (!$result['success']) {
                 return back()
-                    ->with('errors_import', $failures)
-                    ->with('message', 'Một số dòng bị lỗi, vui lòng kiểm tra lại!')
+                    ->with('errors_import', $result['failures'])
+                    ->with('message', 'Một số dòng bị lỗi, dữ liệu chưa được thêm!')
                     ->with('icon', 'warning');
             }
 
@@ -179,7 +181,7 @@ class NguoiDungController extends Controller
         }
     }
 
-
+    //Xử lý khi chỉnh sửa thông tin người dùng
     public function suaNguoiDung($id)
     {
         $nguoiDung = $this->nguoiDungService->layTheoId($id);
