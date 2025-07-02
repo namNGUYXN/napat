@@ -129,7 +129,7 @@ class NguoiDungController extends Controller
             'ho_ten' => ['required', 'regex:/^[\p{L}\s]+$/u', 'max:255'],
             'email' => 'required|email|unique:nguoi_dung,email',
             'sdt' => ['nullable', 'regex:/^0\d{9,10}$/'],
-            'vai_tro' => 'required',
+            'vai_tro' => ['required', Rule::in(['Giảng viên', 'Sinh viên', 'Admin'])],
         ], [
             'ho_ten.required' => 'Vui lòng nhập họ tên.',
             'ho_ten.regex' => 'Họ tên chỉ được chứa chữ cái và khoảng trắng, không chứa số hoặc ký tự đặc biệt.',
@@ -139,6 +139,7 @@ class NguoiDungController extends Controller
             'email.unique' => 'Email đã tồn tại trong hệ thống.',
             'sdt.regex' => 'Số điện thoại phải là số và bắt đầu bằng số 0 và không quá 11 số',
             'vai_tro.required' => 'Vui lòng chọn vai trò.',
+            'vai_tro.in' => 'Vai trò chỉ được là Giảng viên, Sinh viên hoặc Admin.',
         ], [
             'ho_ten' => 'Họ tên',
             'email' => 'Email',
