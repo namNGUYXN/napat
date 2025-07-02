@@ -1,0 +1,13 @@
+
+#noi-dung-bai img {
+  max-width: 100%;
+  height: auto;
+}
+
+#noi-dung-bai iframe,
+#noi-dung-bai object,
+#noi-dung-bai embed {
+  max-width: 100% !important;
+  height: auto !important;
+  aspect-ratio: 16 / 9;
+}

@@ -6,6 +6,7 @@ use App\Services\BaiService;
 use App\Services\BaiTrongLopService;
 use App\Services\ChuongService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class BaiController extends Controller
 {
@@ -21,8 +22,16 @@ class BaiController extends Controller
         $this->baiService = $baiService;
         $this->chuongService = $chuongService;
         $this->baiTrongLopService = $baiTrongLopService;
-        $this->middleware('chuong')->only('giaoDienThem');
+        $this->middleware('chuong')->only('giaoDienThem', 'giaoDienQuanLy');
         $this->middleware('bai')->only('giaoDienChinhSua', 'chinhSua', 'chiTiet', 'xoa', 'capNhatThuTu');
+    }
+
+    public function giaoDienQuanLy(Request $request, $idChuong)
+    {
+        $listBai = $this->baiService->layListTheoChuong($request, $idChuong);
+        $chuong = $this->chuongService->layTheoId($idChuong);
+
+        return view('modules.bai.danh-sach', compact('listBai', 'chuong'));
     }
 
     public function giaoDienThem($id)
@@ -61,18 +70,19 @@ class BaiController extends Controller
                 exit();
             }
 
-            return redirect()->route('chuong.edit', $id)
-                ->with([
-                    'message' => $result['message'],
-                    'icon' => 'success'
-                ]);
+            return response()->json([
+                'success' => true,
+                'message' => $result['message'],
+                'icon' => 'success',
+                'redirect_url' => route('bai.index', $id)
+            ]);
         }
 
-        return redirect()->back()
-            ->with([
-                'message' => $result['message'],
-                'icon' => 'error'
-            ])->withInput();
+        return response()->json([
+            'success' => false,
+            'message' => $result['message'],
+            'icon' => 'error',
+        ]);
     }
 
     public function giaoDienChinhSua($id)
@@ -99,18 +109,19 @@ class BaiController extends Controller
         $result = $this->baiService->chinhSua($id, $data);
 
         if ($result['success']) {
-            return redirect()->route('chuong.edit', $result['data']->id_chuong)
-                ->with([
-                    'message' => $result['message'],
-                    'icon' => 'success'
-                ]);
+            return response()->json([
+                'success' => true,
+                'message' => $result['message'],
+                'icon' => 'success',
+                'redirect_url' => route('bai.index', $result['data']->id_chuong)
+            ]);
         }
 
-        return redirect()->back()
-            ->with([
-                'message' => $result['message'],
-                'icon' => 'error'
-            ])->withInput();
+        return response()->json([
+            'success' => false,
+            'message' => $result['message'],
+            'icon' => 'error'
+        ]);
     }
 
     public function chiTiet($id)
@@ -128,13 +139,13 @@ class BaiController extends Controller
         $result = $this->baiService->xoa($id);
 
         if ($result['success']) {
-            return redirect()->route('chuong.edit', $idChuong)->with([
+            return redirect()->route('bai.index', $idChuong)->with([
                 'message' => $result['message'],
                 'icon' => 'success'
             ]);
         }
 
-        return redirect()->route('chuong.edit', $idChuong)->with([
+        return redirect()->route('bai.index', $idChuong)->with([
             'message' => $result['message'],
             'icon' => 'error'
         ]);
@@ -152,7 +163,7 @@ class BaiController extends Controller
     public function capNhatThuTu(Request $request)
     {
         $inputThuTuBai = $request->input('listThuTuBai');
-        
+
         $listThuTuBai = array_map('intval', $inputThuTuBai);
 
         $result = $this->baiService->capNhatThuTu($listThuTuBai);
@@ -161,5 +172,21 @@ class BaiController extends Controller
             'success' => $result['success'],
             'message' => $result['message']
         ]);
+    }
+
+    public function privateUploadImage(Request $request)
+    {
+        if ($request->hasFile('image')) {
+            $idNguoiDung = session('id_nguoi_dung');
+            // $tieuDeBai = Str::slug($request->input('tieu_de_bai'));
+            $pathToSave = "photos/{$idNguoiDung}/import";
+            $path = $request->file('image')->store($pathToSave, 'lfm_private');
+            // dd($path);
+            return response()->json([
+                'url' => asset('storage/' . $path)
+            ]);
+        }
+
+        return response()->json(['error' => 'Không có ảnh'], 400);
     }
 }

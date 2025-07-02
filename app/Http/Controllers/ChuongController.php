@@ -58,12 +58,18 @@ class ChuongController extends Controller
         ]);
     }
 
-    public function giaoDienChinhSua(Request $request, $id)
+    public function modalChinhSua(Request $request, $id)
     {
-        $chuong = $this->chuongService->layTheoId($id);
-        $listBai = $this->baiService->layListTheoChuong($request, $id);
+        // $chuong = $this->chuongService->layTheoId($id);
+        // $listBai = $this->baiService->layListTheoChuong($request, $id);
 
-        return view('modules.chuong.chinh-sua', compact('chuong', 'listBai'));
+        // return view('modules.chuong.chinh-sua', compact('chuong', 'listBai'));
+
+        $chuong = $this->chuongService->layTheoId($id);
+
+        return response()->json([
+            'data' => $chuong
+        ]);
     }
 
     public function chinhSua(Request $request, $id)

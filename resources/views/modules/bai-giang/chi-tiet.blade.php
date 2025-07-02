@@ -104,16 +104,22 @@
                         <th scope="row">
                           <input type="checkbox" class="form-check-input row-checkbox" name="" id="">
                         </th>
-                        <td class="align-middle">{{ $chuong->tieu_de }}</td>
+                        <td class="align-middle">
+                          <a href="{{ route('bai.index', $chuong->id) }}"
+                            class="link-body-emphasis link-offset-2 link-underline-opacity-25 link-underline-opacity-75-hover">
+                            {{ $chuong->tieu_de }}
+                          </a>
+                        </td>
                         <td class="align-middle">{{ $chuong->mo_ta_ngan }}</td>
                         <td class="text-center align-middle" style="min-width: 140px;">
-                          <button type="button" class="btn btn-info btn-sm me-1 btn-detail-chuong"
-                            data-tieu-de="{{ $chuong->tieu_de }}" data-url="{{ route('bai.list', $chuong->id) }}">
+                          <a href="{{ route('bai.index', $chuong->id) }}" class="btn btn-info btn-sm me-1">
                             <i class="fas fa-eye"></i>
-                          </button>
-                          <a href="{{ route('chuong.edit', $chuong->id) }}" class="btn btn-warning btn-sm me-1">
-                            <i class="fas fa-edit"></i>
                           </a>
+                          <button type="button" class="btn btn-warning btn-sm me-1 btn-update-chuong"
+                            data-url-detail="{{ route('chuong.edit', $chuong->id) }}"
+                            data-url-update="{{ route('chuong.update', $chuong->id) }}">
+                            <i class="fas fa-edit"></i>
+                          </button>
                           <button type="button" class="btn btn-danger btn-sm btn-xoa-chuong"
                             data-url="{{ route('chuong.delete', $chuong->id) }}">
                             <i class="fas fa-trash-alt"></i>
@@ -188,41 +194,44 @@
       </div>
     </form>
 
-    <div class="modal fade" id="modal-chi-tiet-chuong" tabindex="-1" aria-labelledby="" aria-hidden="true"
-      data-bs-focus="false">
-      <div class="modal-dialog modal-lg modal-dialog-scrollable modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header bg-info text-white">
-            <h5 class="modal-title" id="">Chi tiết chương</h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-              aria-label="Close"></button>
-          </div>
-          <div class="modal-body custom-scrollbar">
-            <h5>Danh sách các bài trong Chương <span class="fst-italic text-secondary" id="tieu-de-chuong"></span></h5>
-            <hr>
-            <div class="table-responsive custom-scrollbar">
-              <table class="table table-hover table-striped" style="min-width: 600px;">
-                <thead>
-                  <tr>
-                    <th scope="col">Thứ tự</th>
-                    <th scope="col">Tiêu đề</th>
-                    <th scope="col">Ngày tạo</th>
-                  </tr>
-                </thead>
-                <tbody id="section-list-bai">
-                  <tr class="text-center">
-                    <td colspan="3">Không có bài nào trong chương</td>
-                  </tr>
-                </tbody>
-              </table>
+    <form action="" method="POST">
+      @csrf
+      @method('PUT')
+      <div class="modal fade" id="modal-chinh-sua-chuong" tabindex="-1" aria-labelledby="" aria-hidden="true"
+        data-bs-focus="false">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+          <div class="modal-content">
+            <div class="modal-header bg-warning text-white">
+              <h5 class="modal-title">
+                <i class="far fa-edit me-2"></i>Chỉnh sửa chương
+              </h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                aria-label="Close"></button>
             </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            <div class="modal-body custom-scrollbar">
+              <div class="mb-3">
+                <label for="" class="form-label">
+                  Tiêu đề chương
+                  <span class="text-muted">(100 ký tự)</span>
+                  <abbr class="text-danger" title="Bắt buộc">*</abbr>
+                </label>
+                <input type="text" name="tieu_de" class="form-control" id="tieu-de-chuong" required maxlength="100"
+                  placeholder="Nhập tiêu đề chương...">
+              </div>
+              <div class="mb-3">
+                <label for="" class="form-label">Mô tả ngắn <span class="text-muted">(255 ký tự)</span></label>
+                <textarea name="mo_ta_ngan" id="mo-ta-ngan" class="form-control" rows="6" maxlength="255"
+                  placeholder="Nhập nội dung mô tả chương..."></textarea>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+              <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </form>
 
     <div class="modal fade" id="modal-xoa-chuong" tabindex="-1" aria-labelledby="" aria-hidden="true"
       data-bs-focus="false">

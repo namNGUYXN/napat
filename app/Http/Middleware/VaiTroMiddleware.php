@@ -25,6 +25,12 @@ class VaiTroMiddleware
             return $next($request);
         }
 
-        abort(403, 'Bạn không có quyền truy cập.');
+        // abort(403, 'Bạn không có quyền truy cập.');
+
+        if ($vaiTroHienTai == "admin") {
+            return redirect()->route('dashboard');
+        } else {
+            return redirect('/');
+        }
     }
 }
