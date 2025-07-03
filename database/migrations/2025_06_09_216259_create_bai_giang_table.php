@@ -20,14 +20,11 @@ class CreateBaiGiangTable extends Migration
             $table->string('mo_ta_ngan')->nullable();
             $table->string('hinh_anh')->nullable();
             $table->unsignedBigInteger('id_giang_vien');
-            $table->unsignedInteger('id_hoc_phan');
             $table->timestamp('ngay_tao')->useCurrent();
             $table->boolean('is_delete')->default(false);
 
             // FK
             $table->foreign('id_giang_vien')->references('id')->on('nguoi_dung');
-            // FK
-            $table->foreign('id_hoc_phan')->references('id')->on('hoc_phan');
         });
     }
 

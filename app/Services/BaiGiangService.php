@@ -100,7 +100,6 @@ class BaiGiangService
                 'mo_ta_ngan' => $data['mo_ta_ngan'],
                 'hinh_anh' => $data['hinh_anh'] ?? 'images/bai-giang/no-image.png',
                 'id_giang_vien' => session('id_nguoi_dung'),
-                'id_hoc_phan' => $data['id_hoc_phan']
             ]);
 
             DB::commit();
@@ -134,7 +133,6 @@ class BaiGiangService
                 'slug' => $slug ?? $baiGiang->slug,
                 'mo_ta_ngan' => $data['mo_ta_ngan'] ?? $baiGiang->mo_ta_ngan,
                 'hinh_anh' => $data['hinh_anh'] ?? $baiGiang->hinh_anh,
-                'id_hoc_phan' => $data['id_hoc_phan'] ?? $baiGiang->id_hoc_phan
             ]);
 
             DB::commit();

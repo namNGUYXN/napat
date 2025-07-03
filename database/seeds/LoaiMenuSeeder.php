@@ -40,12 +40,6 @@ class LoaiMenuSeeder extends Seeder
                 'thu_tu' => 4
             ],
             [
-                'ten' => 'Học phần',
-                'slug' => Str::slug('Học phần'),
-                'icon' => '',
-                'thu_tu' => 5
-            ],
-            [
                 'ten' => 'Bài giảng',
                 'slug' => Str::slug('Bài giảng'),
                 'icon' => 'fas fa-folder-open',

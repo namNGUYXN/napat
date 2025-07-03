@@ -5,8 +5,8 @@
 @section('content')
   <!-- Main Content -->
   <div class="col bg-light p-4 overflow-auto custom-scrollbar">
-    <h2 class="mb-3">Danh sách lớp học phần thuộc học phần
-      <span class="text-secondary fst-italic">{{ $hocPhan->ten }}</span>
+    <h2 class="mb-3">Danh sách lớp học phần thuộc Khoa
+      <span class="text-secondary fst-italic">{{ $khoa->ten }}</span>
     </h2>
 
     <div class="class-grid">
@@ -18,7 +18,6 @@
           <div class="p-3">
             <a href="{{ route('lop-hoc.detail', ['slug' => $lopHocPhan->slug]) }}"
               class="text-dark class-name">{{ $lopHocPhan->ten }}</a>
-            <p class="mb-1"><b>Học phần: </b>{{ $lopHocPhan->hoc_phan->ten }}</p>
             <p class="mb-1"><b>Giảng viên: </b>{{ $lopHocPhan->giang_vien->ho_ten }}</p>
             <small class="text-secondary fst-italic">{{ $lopHocPhan->mo_ta_ngan }}</small>
             <div class="class-action-btn">
@@ -46,7 +45,7 @@
     </div>
 
     {{-- Dấu : báo hiệu cho blade đây là biểu thức php --}}
-    <x-pagination :paginator="$listLopHocPhan" base-url="{{ route('lop-hoc.list', $hocPhan->id) }}" />
+    <x-pagination :paginator="$listLopHocPhan" base-url="{{ route('lop-hoc.index', $khoa->id) }}" />
 
     <button type="button" class="class-add-btn btn btn-primary rounded-circle" data-bs-toggle="modal"
       data-bs-target="#exampleModal">

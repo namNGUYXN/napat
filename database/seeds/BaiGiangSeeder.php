@@ -21,7 +21,6 @@ class BaiGiangSeeder extends Seeder
                 'mo_ta_ngan' => 'Giới thiệu về HTML, CSS và JS',
                 'hinh_anh' => 'images/bai-giang/no-image.png',
                 'id_giang_vien' => 2,
-                'id_hoc_phan' => 1,
                 'is_delete' => false,
             ],
             [
@@ -30,7 +29,6 @@ class BaiGiangSeeder extends Seeder
                 'mo_ta_ngan' => 'Tài liệu và bài giảng về Laravel 10',
                 'hinh_anh' => 'images/bai-giang/no-image.png',
                 'id_giang_vien' => 3,
-                'id_hoc_phan' => 2,
                 'is_delete' => false,
             ]
         ];

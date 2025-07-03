@@ -17,7 +17,6 @@
           <div class="p-3">
             <a href="{{ route('lop-hoc.detail', ['slug' => $lop->slug]) }}"
               class="text-dark class-name">{{ $lop->ten }}</a>
-            <p class="mb-1"><b>Học phần: </b>{{ $lop->hoc_phan->ten }}</p>
             <p class="mb-1"><b>Giảng viên: </b>{{ $lop->giang_vien->ho_ten }}</p>
             <small class="text-secondary fst-italic">{{ $lop->mo_ta_ngan }}</small>
             <div class="class-action-btn">

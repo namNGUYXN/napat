@@ -73,61 +73,27 @@
   <script>
     // Lấy list từ MenuController truyền qua
     var listKhoa = @php echo $listKhoa @endphp;
-    var listHocPhan = @php echo $listHocPhan @endphp;
 
     // Tạo chuỗi html list option
     const listKhoaOption = createListOption('khoa', listKhoa);
-    const listHocPhanOption = createListOption('học phần', listHocPhan);
 
     $('#select-loai-menu').on('change', function() {
       const menuType = Number($(this).val());
-      xuLySelectLoaiMenuChange(menuType);
+      // Chọn khoa
+      if (menuType == 4) {
+        $('#sub-box-select').html(renderBoxSelect());
+      }
     });
-
-    // Khi có option loại menu được chọn
-    if ($('#select-loai-menu').val()) {
-      const menuType = Number($('#select-loai-menu').val());
-      xuLySelectLoaiMenuChange(menuType);
-    }
 
     $('button[type="reset"]').on('click', function() {
       $('#sub-box-select').html('');
     });
 
-    $('#form-them-menu').on('change', '#select-khoa', function() {
-      const idKhoa = $(this).val();
-      const listHocPhanTheoId = [];
-
-      for (let hocPhan of listHocPhan) {
-        if (hocPhan.id_khoa == idKhoa) {
-          listHocPhanTheoId.push(hocPhan);
-        }
-      }
-
-      const listHocPhanTheoIdOption = createListOption('học phần', listHocPhanTheoId);
-
-      $('#select-hoc-phan').html(listHocPhanTheoIdOption);
-    });
-
-    // Hàm xử lý chọn loại menu khoa, học phần
-    function xuLySelectLoaiMenuChange(menuType) {
-      switch (menuType) {
-        case 4: // Chỉ mục khoa
-          $('#sub-box-select').html(renderBoxSelect('khoa'));
-          break;
-        case 5: // Chỉ mục học phần
-          $('#sub-box-select').html(renderBoxSelect('học phần'));
-          break;
-        default:
-          $('#sub-box-select').html('');
-      }
-    }
-
     // Hàm tạo list thẻ option
     function createListOption(item, list) {
       const mapList = $.map(list, function(element, index) {
         return `
-         <option value="${element.id}">${element.ten}</option>
+         <option value="${element.slug}/lop-hoc-phan">${element.ten}</option>
         `;
       });
       mapList.unshift(`<option selected disabled value="">--- Chọn một ${item} ---</option>`);
@@ -135,10 +101,8 @@
       return mapList.join('');
     }
 
-    // Hàm hiển thị box select khi loại menu là khoa, học phần
-    function renderBoxSelect(item) {
-      if (item === 'khoa') {
-        return `
+    function renderBoxSelect() {
+      return `
         <div class="mb-3">
           <label for="" class="form-label">Chọn khoa:</label>
           <select class="form-select" id="" name="gia_tri">
@@ -146,28 +110,6 @@
           </select>
         </div>
       `;
-      } else if (item === 'học phần') {
-        return `
-          <div class="mb-3">
-            <div class="row">
-              <div class="col-md-6">
-                <label for="" class="form-label">Chọn khoa:</label>
-                <select class="form-select" id="select-khoa">
-                  ${listKhoaOption}
-                </select>
-              </div>
-              <div class="col-md-6 mt-3 mt-md-0">
-                <label for="" class="form-label">Chọn học phần theo khoa:</label>
-                <select class="form-select" id="select-hoc-phan" name="gia_tri">
-                  <option selected disabled value="">--- Chọn một học phần ---</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        `;
-      }
-
-      return false;
     }
   </script>
 

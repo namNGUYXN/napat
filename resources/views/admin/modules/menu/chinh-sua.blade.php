@@ -92,71 +92,23 @@
 
     // Lấy list từ MenuController truyền qua
     var listKhoa = @php echo $listKhoa @endphp;
-    var listHocPhan = @php echo $listHocPhan @endphp;
     // Menu đang thao tác
     var menu = @php echo $menu @endphp;
 
-    var listKhoaOption = '';
+    var listKhoaOption = createListOption('khoa', listKhoa, menu.gia_tri);
 
     $('#select-loai-menu').on('change', function() {
       const menuType = Number($(this).val());
-      xuLySelectLoaiMenuChange(menuType);
+      if (menuType === 4) {
+        $('#sub-box-select').html(renderBoxSelect('khoa'));
+      }
     });
 
     // Khi có option loại menu được chọn
     if ($('#select-loai-menu').val()) {
       const menuType = Number($('#select-loai-menu').val());
-      xuLySelectLoaiMenuChange(menuType);
-    }
-
-    $('#form-them-menu').on('change', '#select-khoa', function() {
-      const idKhoa = $(this).val();
-      xuLySelectKhoaChange(idKhoa);
-    });
-
-    // Khi có option khoa được chọn
-    if ($('#select-khoa').val()) {
-      const idKhoa = Number($('#select-khoa').val());
-      xuLySelectKhoaChange(idKhoa, menu.gia_tri);
-    }
-
-    // Hàm xử lý chọn khoa
-    function xuLySelectKhoaChange(idKhoa, giaTri = "") {
-      const listHocPhanTheoId = [];
-
-      for (let hocPhan of listHocPhan) {
-        if (hocPhan.id_khoa == idKhoa) {
-          listHocPhanTheoId.push(hocPhan);
-        }
-      }
-
-      const listHocPhanTheoIdOption = createListOption('học phần', listHocPhanTheoId, giaTri);
-
-      $('#select-hoc-phan').html(listHocPhanTheoIdOption);
-    }
-
-    // Hàm xử lý chọn loại menu khoa, học phần
-    function xuLySelectLoaiMenuChange(menuType) {
-      switch (menuType) {
-        case 4: // Chỉ mục khoa
-          listKhoaOption = createListOption('khoa', listKhoa, menu.gia_tri);
-          $('#sub-box-select').html(renderBoxSelect('khoa'));
-          break;
-        case 5: // Chỉ mục học phần
-          let idKhoa = -1;
-
-          for (let hocPhan of listHocPhan) {
-            if (menu.gia_tri == hocPhan.id) {
-              idKhoa = hocPhan.id_khoa;
-            }
-          }
-
-          listKhoaOption = createListOption('khoa', listKhoa, idKhoa);
-
-          $('#sub-box-select').html(renderBoxSelect('học phần'));
-          break;
-        default:
-          $('#sub-box-select').html('');
+      if (menuType === 4) {
+        $('#sub-box-select').html(renderBoxSelect('khoa'));
       }
     }
 
@@ -164,7 +116,7 @@
     function createListOption(item, list, giaTri = "") {
       const mapList = $.map(list, function(element, index) {
         return `
-         <option value="${element.id}"${element.id == giaTri ? ' selected' : ''}>${element.ten}</option>
+         <option value="${element.slug}/lop-hoc-phan"${element.id == giaTri ? ' selected' : ''}>${element.ten}</option>
         `;
       });
       mapList.unshift(`<option selected disabled value="">--- Chọn một ${item} ---</option>`);
@@ -172,10 +124,8 @@
       return mapList.join('');
     }
 
-    // Hàm hiển thị box select khi loại menu là khoa, học phần
-    function renderBoxSelect(item) {
-      if (item === 'khoa') {
-        return `
+    function renderBoxSelect() {
+      return `
         <div class="mb-3">
           <label for="" class="form-label">Chọn khoa:</label>
           <select class="form-select" id="" name="gia_tri">
@@ -183,28 +133,6 @@
           </select>
         </div>
       `;
-      } else if (item === 'học phần') {
-        return `
-          <div class="mb-3">
-            <div class="row">
-              <div class="col-md-6">
-                <label for="" class="form-label">Chọn khoa:</label>
-                <select class="form-select" id="select-khoa">
-                  ${listKhoaOption}
-                </select>
-              </div>
-              <div class="col-md-6 mt-3 mt-md-0">
-                <label for="" class="form-label">Chọn học phần theo khoa:</label>
-                <select class="form-select" id="select-hoc-phan" name="gia_tri">
-                  <option selected disabled value="">--- Chọn một học phần ---</option>
-                </select>
-              </div>
-            </div>
-          </div>
-        `;
-      }
-
-      return false;
     }
   </script>
 

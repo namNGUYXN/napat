@@ -28,7 +28,7 @@ class LopHocPhanService
                 })
                 ->pluck('id_lop_hoc_phan');
 
-            return LopHocPhan::with(['hoc_phan', 'giang_vien'])
+            return LopHocPhan::with(['giang_vien'])
                 ->whereIn('id', $idLopHoc)
                 ->where('is_delete', false)
                 ->get();
@@ -38,10 +38,7 @@ class LopHocPhanService
 
     public function layChiTietLopHoc($slug)
     {
-        return LopHocPhan::with([
-            'hoc_phan',
-            'giang_vien',
-        ])
+        return LopHocPhan::with(['giang_vien'])
             ->where('slug', $slug)
             ->where('is_delete', false)
             ->firstOrFail();

@@ -37,7 +37,6 @@
           <img src="{{ asset('storage/' . $baiGiang->hinh_anh) }}" class="card-img-top" alt="">
           <div class="card-body">
             <h4 id="courseTitle">{{ $baiGiang->ten }}</h4>
-            <p class="mb-1"><b>Học phần:</b> {{ $baiGiang->hoc_phan->ten }}</p>
             <p class="mb-1">
               <b>Số chương: </b>{{ $baiGiang->so_chuong }}
               / <b>Số bài: </b>{{ $baiGiang->tong_so_bai }}
@@ -280,18 +279,6 @@
                 </label>
                 <input type="text" name="ten" class="form-control" id="ten-bai-giang"
                   value="{{ $baiGiang->ten }}" placeholder="Nhập tên bài giảng...">
-              </div>
-              <div class="mb-3">
-                <label for="" class="form-label">Chọn học phần <abbr class="text-danger"
-                    title="Bắt buộc">*</abbr></label>
-                <select name="id_hoc_phan" id="" required class="form-control">
-                  @foreach ($listHocPhan as $hocPhan)
-                    <option
-                      value="{{ $hocPhan->id }}"{{ $baiGiang->hoc_phan->id == $hocPhan->id ? ' selected' : '' }}>
-                      {{ $hocPhan->ten }}
-                    </option>
-                  @endforeach
-                </select>
               </div>
               <div class="mb-3">
                 <label for="" class="form-label">Mô tả ngắn <span class="text-muted">(255 ký tự)</span></label>

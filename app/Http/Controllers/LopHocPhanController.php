@@ -9,6 +9,7 @@ use App\Services\BaiTrongLopService;
 use App\Services\LopHocPhanService;
 use App\Services\BanTinService;
 use App\Services\HocPhanService;
+use App\Services\KhoaService;
 use App\Services\NguoiDungService;
 use App\Services\ThanhVienLopService;
 use Ramsey\Uuid\Type\Integer;
@@ -22,7 +23,7 @@ class LopHocPhanController extends Controller
     protected $nguoiDungService;
     protected $baiService;
     protected $baiTrongLopService;
-    protected $hocPhanService;
+    protected $khoaService;
 
     public function __construct(
         AuthService $authService,
@@ -32,7 +33,7 @@ class LopHocPhanController extends Controller
         BaiService $baiService,
         BaiTrongLopService $baiTrongLopService,
         NguoiDungService $nguoiDungService,
-        HocPhanService $hocPhanService
+        KhoaService $khoaService
     ) {
         $this->authService = $authService;
         $this->lopHocPhanService = $lopHocPhanService;
@@ -41,18 +42,18 @@ class LopHocPhanController extends Controller
         $this->baiService = $baiService;
         $this->baiTrongLopService = $baiTrongLopService;
         $this->nguoiDungService = $nguoiDungService;
-        $this->hocPhanService = $hocPhanService;
+        $this->khoaService = $khoaService;
         $this->middleware('lop_hoc_phan')->only('chiTiet');
         $this->middleware('bai_trong_lop')->only('xemNoiDungBai');
     }
 
-    public function lopHocTheoHocPhan($id)
+    public function lopHocPhanTheoKhoa($slug)
     {
-        $hocPhan = $this->hocPhanService->layTheoId($id);
-        $listLopHocPhan = $hocPhan->list_lop_hoc_phan()->paginate(6);
+        $khoa = $this->khoaService->layTheoSlug($slug);
+        $listLopHocPhan = $khoa->list_lop_hoc_phan()->paginate(6);
 
         // dd($listLopHocPhan->toArray());
-        return view('modules.lop-hoc.danh-sach', compact('hocPhan', 'listLopHocPhan'));
+        return view('modules.lop-hoc.danh-sach', compact('khoa', 'listLopHocPhan'));
     }
 
     public function lopHocCuaToi()
@@ -77,8 +78,6 @@ class LopHocPhanController extends Controller
         $thanhVien = $this->thanhVienService->getAcceptedMembersByLopId($lopHocPhan->id);
         $yeuCau = $this->thanhVienService->getPendingMembersByLopId($lopHocPhan->id);
         //$nguoiDung = $this->nguoiDungService->layTheoId(session('id_nguoi_dung'));
-        //$listMucBaiGiang = $nguoiDung->list_muc_bai_giang;
-        $hocPhan = $lopHocPhan->hoc_phan;
         $listChuong = $lopHocPhan->bai_giang->list_chuong;
         $listChuongTrongLop = $lopHocPhan->list_bai->groupBy('id_chuong');
         // return $listChuongTrongLop[3][0]->pivot->cong_khai;
@@ -93,8 +92,6 @@ class LopHocPhanController extends Controller
                 'nguoiDung',
                 'thanhVien',
                 'yeuCau',
-                //'listMucBaiGiang',
-                'hocPhan',
                 'listChuong',
                 'listChuongTrongLop',
             )

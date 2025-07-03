@@ -6,12 +6,18 @@ use App\Khoa;
 
 class KhoaService
 {
-  function layListKhoa()
+  public function layListKhoa()
   {
     return Khoa::all();
   }
-  function layListKhoaWithHocPhans()
+
+  public function layTheoId($id)
   {
-    return Khoa::with('list_hoc_phan')->get();
+    return Khoa::findOrFail($id);
+  }
+
+  public function layTheoSlug($slug)
+  {
+    return Khoa::where('slug', $slug)->firstOrFail();
   }
 }

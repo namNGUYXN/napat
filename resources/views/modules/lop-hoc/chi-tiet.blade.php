@@ -9,7 +9,7 @@
     <!-- Main Content -->
     <div class="col bg-light p-4 overflow-auto custom-scrollbar">
 
-        <div id="info-lop-hoc" class="d-none" data-id-lop-hoc="{{ $lopHocPhan->id }}" data-id-hoc-phan="{{ $hocPhan->id }}">
+        <div id="info-lop-hoc" class="d-none" data-id-lop-hoc="{{ $lopHocPhan->id }}">
         </div>
 
         <!-- PHẦN DƯỚI: TAB NỘI DUNG -->
@@ -68,11 +68,9 @@
                         <div class="col-md-8 position-relative">
                             <div class="card-body">
                                 <h5 class="card-title mb-3">{{ $lopHocPhan->ten }} - {{ $lopHocPhan->ma }}</h5>
-                                <p class="card-text mb-1"><strong>Học phần:</strong> {{ $lopHocPhan->hoc_phan->ten }}</p>
                                 <p class="card-text mb-1"><strong>Giảng viên:</strong>
                                     {{ $lopHocPhan->giang_vien->ho_ten }}
                                 </p>
-                                <p class="card-text mb-1"><strong>Học kì:</strong> 2024 - 2025</p>
                                 <p class="card-text mt-3 mb-0">
                                     <small class="text-muted">{{ $lopHocPhan->mo_ta_ngan }}</small>
                                 </p>
