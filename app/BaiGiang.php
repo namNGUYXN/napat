@@ -18,7 +18,6 @@ class BaiGiang extends Model
         'mo_ta_ngan',
         'hinh_anh',
         'id_giang_vien',
-        'id_hoc_phan',
         'ngay_tao',
         'is_delete',
     ];
@@ -33,11 +32,6 @@ class BaiGiang extends Model
         return $this->list_chuong->sum(function ($chuong) {
             return $chuong->list_bai->count();
         });
-    }
-
-    public function hoc_phan()
-    {
-        return $this->belongsTo(HocPhan::class, 'id_hoc_phan');
     }
 
     public function list_chuong()

@@ -36,17 +36,6 @@ class BaiTrongLopMiddleware
      */
     public function handle($request, Closure $next)
     {
-        // $lopHocPhan = $this->lopHocPhanService->layTheoId($request->id);
-
-        // $nguoiDungDangNhap = $this->nguoiDungService->layTheoId(session('id_nguoi_dung'));
-        // $listLopHocPhan = $nguoiDungDangNhap->list_lop_hoc_phan;
-
-        // foreach ($listLopHocPhan as $lopHocPhan) {
-        //     if ($lopHocPhan->id == $request->id) {
-        //         return $next($request);
-        //     }
-        // }
-
         $daThamGiaLopHoc = $this->thanhVienLopService->daThamGiaLopHocPhan($request->id);
 
         if ($daThamGiaLopHoc) return $next($request);

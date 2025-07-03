@@ -32,8 +32,12 @@ class LopHocPhanMiddleware
      */
     public function handle($request, Closure $next)
     {
-        $lopHocPhan = $this->lopHocPhanService->layTheoSlug($request->slug);
-        
+        if (isset($request->id)) {
+            $lopHocPhan = $this->lopHocPhanService->layTheoId($request->id);
+        } else {
+            $lopHocPhan = $this->lopHocPhanService->layTheoSlug($request->slug);
+        }
+
         $daThamGiaLopHoc = $this->thanhVienLopService->daThamGiaLopHocPhan($lopHocPhan->id);
 
         if ($daThamGiaLopHoc) return $next($request);

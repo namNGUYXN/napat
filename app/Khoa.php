@@ -26,8 +26,8 @@ class Khoa extends Model
         return $value ? Carbon::parse($value)->format('d/m/Y') : null;
     }
 
-    function list_hoc_phan()
+    function list_lop_hoc_phan()
     {
-        return $this->hasMany(HocPhan::class, 'id_khoa');
+        return $this->hasMany(LopHocPhan::class, 'id_khoa')->orderByDesc('ngay_tao');
     }
 }

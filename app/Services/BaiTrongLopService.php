@@ -81,73 +81,68 @@ class BaiTrongLopService
     }
   }
 
-  // public function them(array $listIdBaiGiang, $idLopHoc, $idChuong)
-  // {
-  //   try {
-  //     DB::beginTransaction();
+  public function them($idLopHocPhan, $listChuong)
+  {
+    try {
+      DB::beginTransaction();
 
-  //     $data = [];
+      $listIdBai = [];
+      $data = collect();
 
-  //     foreach ($listIdBaiGiang as $idBaiGiang) {
-  //       $data[] = [
-  //         'id_lop_hoc' => $idLopHoc,
-  //         'id_bai_giang' => $idBaiGiang,
-  //         'id_chuong' => $idChuong,
-  //       ];
-  //     }
+      foreach ($listChuong as $chuong) {
+        $data[] = $chuong->list_bai->pluck('id');
+      }
 
-  //     BaiGiangLop::insert($data);
+      $listIdBai = $data->flatten()->toArray();
 
-  //     DB::commit();
-  //     return [
-  //       'success' => true,
-  //       'message' => 'Gán bài giảng vào lớp thành công',
-  //     ];
-  //   } catch (QueryException $e) {
-  //     if ($e->getCode() === '23000' || str_contains($e->getMessage(), 'Duplicate entry')) {
-  //       return [
-  //         'success' => false,
-  //         'message' => 'Không được gán trùng bài giảng trong một chương.',
-  //       ];
-  //     }
+      foreach ($listIdBai as $idBai) {
+        BaiTrongLop::insert([
+          'id_lop_hoc_phan' => $idLopHocPhan,
+          'id_bai' => $idBai
+        ]);
+      }
 
-  //     // Trả lỗi Query chung
-  //     return [
-  //       'success' => false,
-  //       'message' => 'Lỗi CSDL: ' . $e->getMessage(),
-  //     ];
-  //   } catch (\Exception $e) {
-  //     DB::rollBack();
-  //     return [
-  //       'success' => false,
-  //       'message' => 'Lỗi khi gán bài giảng: ' . $e->getMessage()
-  //     ];
-  //   }
-  // }
+      DB::commit();
+      return [
+        'success' => true
+      ];
+    } catch (\Exception $e) {
+      DB::rollBack();
+      return [
+        'success' => false,
+        'message' => $e->getMessage()
+      ];
+    }
+  }
 
-  // public function goBaiGiang($idLopHoc, $idChuong, $id)
-  // {
-  //   try {
-  //     DB::beginTransaction();
+  public function xoa($idLopHocPhan, $listChuong)
+  {
+    try {
+      DB::beginTransaction();
 
-  //     BaiGiangLop::where([
-  //       ['id_lop_hoc', $idLopHoc],
-  //       ['id_bai_giang', $id],
-  //       ['id_chuong', $idChuong]
-  //     ])->delete();
+      $listIdBai = [];
+      $data = collect();
 
-  //     DB::commit();
+      foreach ($listChuong as $chuong) {
+        $data[] = $chuong->list_bai->pluck('id');
+      }
 
-  //     return [
-  //       'success' => true,
-  //       'message' => 'Gỡ bài giảng lớp thành công',
-  //     ];
-  //   } catch (\Exception $e) {
-  //     DB::rollBack();
-  //     return [
-  //       'success' => false,
-  //       'message' => 'Lỗi khi gỡ bài giảng: ' . $e->getMessage()
-  //     ];
-  //   }
-  // }
+      $listIdBai = $data->flatten()->toArray();
+
+      BaiTrongLop::where('id_lop_hoc_phan', $idLopHocPhan)
+        ->whereIn('id_bai', $listIdBai)
+        ->delete();
+
+      DB::commit();
+      return [
+        'success' => true
+      ];
+    } catch (\Exception $e) {
+      DB::rollBack();
+      return [
+        'success' => false,
+        'message' => $e->getMessage()
+      ];
+    }
+  }
 }

@@ -267,9 +267,8 @@ function renderChiTietBaiKiemTra(baiKiemTra, chiTiet) {
         html += `</ul>
             <div class="mt-2">
                 <small><strong>Đáp án đúng:</strong> ${dapAnDung}</small><br/>
-                <small><strong>Đáp án chọn:</strong> ${
-                    dapAnChon || "<i>Không chọn</i>"
-                }</small>
+                <small><strong>Đáp án chọn:</strong> ${dapAnChon || "<i>Không chọn</i>"
+            }</small>
             </div>
         </div>`;
     });
@@ -326,14 +325,13 @@ function renderDanhSachKetQua(baiKiemTra, dsKetQua) {
             <td>${nopMuon}</td>
             <td>${item.diem ?? ""}</td>
             <td>
-                ${
-                    item.diem !== null
-                        ? `<button class="btn btn-sm btn-primary"
+                ${item.diem !== null
+                ? `<button class="btn btn-sm btn-primary"
                             onclick="xemChiTietKetQua('${idKetQua}', '${user.ten}', ${item.diem}, '${baiKiemTra.tieu_de}')">
                             Xem
                         </button>`
-                        : ""
-                }
+                : ""
+            }
             </td>
         </tr>`;
     });
@@ -465,23 +463,19 @@ function formatDateForFlatpickr(dateTimeStr) {
 
 function renderChiTietBaiKiemTraGiangVien() {
     const thongTinBaiKT = `
-                        <p><strong>Bài kiểm tra:</strong> ${
-                            currentBaiKiemTra.tieu_de
-                        }</p>
+                        <p><strong>Bài kiểm tra:</strong> ${currentBaiKiemTra.tieu_de
+        }</p>
                         <p><strong>Hạn chót nộp bài:</strong> ${formatNgay(
-                            currentBaiKiemTra.ngay_ket_thuc
-                        )}</p>
+            currentBaiKiemTra.ngay_ket_thuc
+        )}</p>
                         
-                        <p><strong>Điểm tối đa:</strong> ${
-                            currentBaiKiemTra.diem_toi_da
-                        }</p>
+                        <p><strong>Điểm tối đa:</strong> ${currentBaiKiemTra.diem_toi_da
+        }</p>
 
-                        <p><strong>Hình thức:</strong> ${
-                            currentBaiKiemTra.hinh_thuc ?? "Trắc nghiệm"
-                        }</p>
-                        <p><strong>Số câu hỏi:</strong> ${
-                            currentBaiKiemTra.list_cau_hoi.length
-                        }</p>
+                        <p><strong>Hình thức:</strong> ${currentBaiKiemTra.hinh_thuc ?? "Trắc nghiệm"
+        }</p>
+                        <p><strong>Số câu hỏi:</strong> ${currentBaiKiemTra.list_cau_hoi.length
+        }</p>
                     `;
     return thongTinBaiKT;
 }
@@ -504,16 +498,13 @@ const questionTemplate = (
                     <div class="input-group-text">
                         <input class="form-check-input mt-0 correct-answer-radio" 
                                type="radio" name="correctAnswer_${count}" 
-                               value="${value}" ${
-                correctAnswer === value ? "checked" : ""
-            } required>
+                               value="${value}" ${correctAnswer === value ? "checked" : ""
+                } required>
                     </div>
                     <input type="text" class="form-control answer-option" 
-                           value="${
-                               answerOptions[index] || ""
-                           }" placeholder="Đáp án ${
-                optionLabels[index]
-            }" required>
+                           value="${answerOptions[index] || ""
+                }" placeholder="Đáp án ${optionLabels[index]
+                }" required>
                 </div>
             </div>
         `
@@ -559,9 +550,8 @@ const chuyenSangChinhSua = () => {
                             <label for="ExerciseTitle" class="form-label">Tiêu đề
                                 <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" name="tieu_de"
-                                id="ExerciseTitle" value="${
-                                    currentBaiKiemTra.tieu_de
-                                }" placeholder="Nhập tiêu đề bài kiểm tra" required>
+                                id="ExerciseTitle" value="${currentBaiKiemTra.tieu_de
+        }" placeholder="Nhập tiêu đề bài kiểm tra" required>
                             <div class="invalid-feedback fw-bold">
                             Vui lòng nhập tiêu đề cho bài kiểm tra.
                             </div>
@@ -569,9 +559,8 @@ const chuyenSangChinhSua = () => {
                         <div class="col-sm-3 col-lg-2 mt-3 mt-sm-0"> <label
                             for="ExerciseMaxScore" class="form-label">Điểm tối
                             đa</label>
-                            <input type="number" class="form-control" name="diem_toi_da" value="${
-                                currentBaiKiemTra.diem_toi_da
-                            }"
+                            <input type="number" class="form-control" name="diem_toi_da" value="${currentBaiKiemTra.diem_toi_da
+        }"
                             id="ExerciseMaxScore" placeholder="100" min="0">
                             <div class="invalid-feedback fw-bold">
                             Vui lòng nhập tiêu đề cho bài kiểm tra.
@@ -807,8 +796,8 @@ $(document).ready(function () {
                         const tongCau = baiKiemTra.list_cau_hoi.length;
                         const ngayDenHan = baiKiemTra.ngay_ket_thuc
                             ? new Date(
-                                  baiKiemTra.ngay_ket_thuc
-                              ).toLocaleDateString("vi-VN")
+                                baiKiemTra.ngay_ket_thuc
+                            ).toLocaleDateString("vi-VN")
                             : "Không có";
 
                         $("#modalChiTiet .modal-title").text(
@@ -1021,8 +1010,7 @@ $(document).ready(function () {
                 dapAnDuocChon === null
             ) {
                 errorMessages.push(
-                    `• Câu hỏi ${
-                        index + 1
+                    `• Câu hỏi ${index + 1
                     }: Thiếu nội dung hoặc chưa chọn đáp án đúng.`
                 );
                 isValid = false;
@@ -1341,177 +1329,6 @@ $(document).ready(function () {
         }
     });
 
-    const $addMemberModal = $("#addMemberModal");
-    const $studentSearchInput = $("#studentSearch");
-    const $searchStudentBtn = $("#searchStudentBtn");
-    const $studentListBody = $("#studentListBody");
-    const $noStudentsFoundAlert = $("#noStudentsFoundAlert");
-    const $addSelectedMembersBtn = $("#addSelectedMembersBtn");
-
-    let allStudents = []; // Biến để lưu trữ tất cả sinh viên (hoặc kết quả tìm kiếm mới nhất)
-
-    // --- Hàm giả lập tìm kiếm sinh viên (thay thế bằng API thực tế) ---
-    function searchStudents(searchTerm) {
-        // Trong thực tế, bạn sẽ gọi API ở đây
-        // $.ajax({
-        //     url: 'YOUR_API_ENDPOINT_FOR_SEARCH_STUDENTS',
-        //     method: 'GET',
-        //     data: { query: searchTerm },
-        //     success: function(response) {
-        //         allStudents = response.data; // Giả sử API trả về { data: [...] }
-        //         renderStudentList(allStudents);
-        //     },
-        //     error: function(error) {
-        //         console.error('Lỗi tìm kiếm sinh viên:', error);
-        //         $studentListBody.html('<tr><td colspan="4" class="text-center text-danger">Lỗi khi tìm kiếm sinh viên.</td></tr>');
-        //     }
-        // });
-
-        // --- Dữ liệu sinh viên giả định ---
-        const mockStudents = [
-            {
-                id: 1,
-                name: "Nguyễn Văn A",
-                email: "a@example.com",
-                phone: "0901234567",
-            },
-            {
-                id: 2,
-                name: "Trần Thị B",
-                email: "b@example.com",
-                phone: "0909876543",
-            },
-            {
-                id: 3,
-                name: "Lê Công C",
-                email: "c@example.com",
-                phone: "0911223344",
-            },
-            {
-                id: 4,
-                name: "Phạm Thị D",
-                email: "d@example.com",
-                phone: "0988776655",
-            },
-            {
-                id: 5,
-                name: "Hoàng Văn E",
-                email: "e@example.com",
-                phone: "0933445566",
-            },
-        ];
-
-        const filteredStudents = mockStudents.filter(
-            (student) =>
-                student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                student.email.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-        allStudents = filteredStudents;
-        renderStudentList(allStudents);
-    }
-
-    // --- Hàm hiển thị danh sách sinh viên ---
-    function renderStudentList(students) {
-        $studentListBody.empty();
-        $noStudentsFoundAlert.hide();
-
-        if (students.length === 0) {
-            $studentListBody.html(
-                '<tr><td colspan="4" class="text-center">Không có sinh viên nào phù hợp.</td></tr>'
-            );
-            $noStudentsFoundAlert.show();
-            return;
-        }
-
-        students.forEach((student) => {
-            const row = `
-                <tr>
-                    <td>
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input student-checkbox" value="${
-                                student.id
-                            }">
-                        </div>
-                    </td>
-                    <td><span class="math-inline">${student.name}</td>
-                    <td><span>${student.email}</span></td>
-                    <td>${student.phone || "N/A"}</td>
-                </tr>
-            `;
-            $studentListBody.append(row);
-        });
-    }
-
-    // --- Sự kiện click nút tìm kiếm ---
-    $searchStudentBtn.on("click", function () {
-        const searchTerm = $studentSearchInput.val().trim();
-        searchStudents(searchTerm);
-    });
-
-    // --- Sự kiện nhấn Enter trong ô tìm kiếm ---
-    $studentSearchInput.on("keypress", function (event) {
-        if (event.key === "Enter") {
-            $searchStudentBtn.click();
-        }
-    });
-
-    // --- Sự kiện hiển thị modal (reset trạng thái) ---
-    $addMemberModal.on("show.bs.modal", function () {
-        $studentSearchInput.val("");
-        $studentListBody.html(
-            '<tr><td colspan="4" class="text-center">Nhập thông tin để tìm kiếm sinh viên.</td></tr>'
-        );
-        $noStudentsFoundAlert.hide();
-        allStudents = []; // Reset danh sách sinh viên
-    });
-
-    // --- Xử lý sự kiện click nút "Thêm vào lớp" ---
-    $addSelectedMembersBtn.on("click", function () {
-        const selectedStudents = [];
-        $(".student-checkbox:checked").each(function () {
-            const studentData = $(this).data("student");
-            selectedStudents.push(studentData.id); // Hoặc toàn bộ đối tượng studentData
-        });
-
-        if (selectedStudents.length > 0) {
-            console.log("Sinh viên được chọn để thêm:", selectedStudents);
-
-            // --- Gọi API để thêm sinh viên vào lớp (thay thế bằng API thực tế) ---
-            // $.ajax({
-            //     url: 'YOUR_API_ENDPOINT_FOR_ADD_STUDENTS',
-            //     method: 'POST',
-            //     contentType: 'application/json',
-            //     data: JSON.stringify({ studentIds: selectedStudents }),
-            //     success: function(response) {
-            //         if (response.success) {
-            //             alert('Đã thêm sinh viên vào lớp thành công!');
-            //             $addMemberModal.modal('hide');
-            //             // Tùy chọn: Cập nhật lại danh sách thành viên hiện tại trên trang
-            //         } else {
-            //             alert('Lỗi khi thêm sinh viên vào lớp: ' + response.message);
-            //         }
-            //     },
-            //     error: function(error) {
-            //         console.error('Lỗi thêm sinh viên vào lớp:', error);
-            //         alert('Có lỗi xảy ra khi thêm sinh viên vào lớp. Vui lòng thử lại.');
-            //     }
-            // });
-
-            // --- Giả lập thành công ---
-            alert(
-                `Đã chọn ${selectedStudents.length} sinh viên để thêm vào lớp.`
-            );
-            $addMemberModal.modal("hide");
-            // Tùy chọn: Cập nhật lại danh sách thành viên trên trang
-        } else {
-            alert("Vui lòng chọn ít nhất một sinh viên để thêm vào lớp.");
-        }
-    });
-
-    // --- Sự kiện hiển thị modal khi nút "Thêm vào lớp" được click ---
-    $("#addNewLessonBtn").on("click", function () {
-        $addMemberModal.modal("show");
-    });
 });
 
 let listBaiTrongLop = {};
@@ -1594,6 +1411,7 @@ $(document).on("click", ".btn-public-bai", function (e) {
 
             $("#accordion-chuong").html(response.html);
             $("#lecture-tab>span").text(response.tongSoBaiCongKhai);
+            handleCheckAllSelected($(".row-checkbox:checked"));
         },
         error: function (xhr) {
             alert("Đã xảy ra lỗi: " + xhr.status + " " + xhr.statusText);
@@ -1626,9 +1444,7 @@ $(document).on("click", ".btn-update-ban-tin", function () {
             const banTin = response.data;
             banTinCache[urlDetail] = banTin;
 
-            tinymce
-                .get("noi-dung-ban-tin-chinh-sua")
-                .setContent(banTin.noi_dung);
+            tinymce.get("noi-dung-ban-tin-chinh-sua").setContent(banTin.noi_dung);
             form.attr("action", urlUpdate);
             form.data("url-detail", urlDetail);
             $("#modal-chinh-sua-ban-tin").modal("show");
@@ -1640,110 +1456,107 @@ $(document).on("click", ".btn-update-ban-tin", function () {
 });
 
 // Xử lý model thêm bản tin
-$("#modal-them-ban-tin")
-    .parents("form")
-    .on("submit", function (e) {
-        e.preventDefault();
+$("#modal-them-ban-tin").parents("form").on("submit", function (e) {
+    e.preventDefault();
 
-        const form = $(this);
-        const actionUrl = form.attr("action");
-        const noiDung = tinymce.get("noi-dung-ban-tin-them").getContent();
-        const token = $('meta[name="csrf-token"]').attr("content");
+    const form = $(this);
+    const actionUrl = form.attr("action");
+    const noiDung = tinymce.get("noi-dung-ban-tin-them").getContent();
+    const token = $('meta[name="csrf-token"]').attr("content");
 
-        // console.log(noiDung);
+    // console.log(noiDung);
 
-        $.ajax({
-            url: actionUrl,
-            type: "POST",
-            data: {
-                _token: token,
-                noi_dung: noiDung,
-            },
-            dataType: "json",
-            success: function (response) {
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: "top-end",
-                    width: "auto",
-                    showConfirmButton: false,
-                    timer: 3500,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.onmouseenter = Swal.stopTimer;
-                        toast.onmouseleave = Swal.resumeTimer;
-                    },
-                });
+    $.ajax({
+        url: actionUrl,
+        type: "POST",
+        data: {
+            _token: token,
+            noi_dung: noiDung,
+        },
+        dataType: "json",
+        success: function (response) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                width: "auto",
+                showConfirmButton: false,
+                timer: 3500,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                },
+            });
 
-                Toast.fire({
-                    icon: response.icon,
-                    title: response.message,
-                });
+            Toast.fire({
+                icon: response.icon,
+                title: response.message,
+            });
 
-                $("#wp-list-ban-tin").html(response.html);
+            $("#wp-list-ban-tin").html(response.html);
+            $("#news-tab>span").text(response.tongSoBanTin);
 
-                $("#modal-them-ban-tin").modal("hide");
+            $("#modal-them-ban-tin").modal("hide");
 
-                // Reset form
-                form[0].reset();
-            },
-            error: function (xhr) {
-                alert("Đã xảy ra lỗi: " + xhr.status + " " + xhr.statusText);
-            },
-        });
+            // Reset form
+            form[0].reset();
+        },
+        error: function (xhr) {
+            alert("Đã xảy ra lỗi: " + xhr.status + " " + xhr.statusText);
+        },
     });
+});
 
-// Xử lý model chỉnh sửa bản tin
-$("#modal-chinh-sua-ban-tin")
-    .parents("form")
-    .on("submit", function (e) {
-        e.preventDefault();
+// Xử lý modal chỉnh sửa bản tin
+$("#modal-chinh-sua-ban-tin").parents("form").on("submit", function (e) {
+    e.preventDefault();
 
-        const form = $(this);
-        const actionUrl = form.attr("action");
-        const noiDung = tinymce.get("noi-dung-ban-tin-chinh-sua").getContent();
-        const token = $('meta[name="csrf-token"]').attr("content");
+    const form = $(this);
+    const actionUrl = form.attr("action");
+    const noiDung = tinymce.get("noi-dung-ban-tin-chinh-sua").getContent();
+    const token = $('meta[name="csrf-token"]').attr("content");
 
-        $.ajax({
-            url: actionUrl,
-            type: "PUT",
-            data: {
-                _token: token,
-                noi_dung: noiDung,
-            },
-            dataType: "json",
-            success: function (response) {
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: "top-end",
-                    width: "auto",
-                    showConfirmButton: false,
-                    timer: 3500,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.onmouseenter = Swal.stopTimer;
-                        toast.onmouseleave = Swal.resumeTimer;
-                    },
-                });
+    $.ajax({
+        url: actionUrl,
+        type: "PUT",
+        data: {
+            _token: token,
+            noi_dung: noiDung,
+        },
+        dataType: "json",
+        success: function (response) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                width: "auto",
+                showConfirmButton: false,
+                timer: 3500,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                },
+            });
 
-                Toast.fire({
-                    icon: response.icon,
-                    title: response.message,
-                });
+            Toast.fire({
+                icon: response.icon,
+                title: response.message,
+            });
 
-                $("#wp-list-ban-tin").html(response.html);
+            $("#wp-list-ban-tin").html(response.html);
 
-                $("#modal-chinh-sua-ban-tin").modal("hide");
+            $("#modal-chinh-sua-ban-tin").modal("hide");
 
-                // Reset form
-                form[0].reset();
+            // Reset form
+            form[0].reset();
 
-                delete banTinCache[form.data("url-detail")];
-            },
-            error: function (xhr) {
-                alert("Đã xảy ra lỗi: " + xhr.status + " " + xhr.statusText);
-            },
-        });
+            delete banTinCache[form.data("url-detail")];
+        },
+        error: function (xhr) {
+            alert("Đã xảy ra lỗi: " + xhr.status + " " + xhr.statusText);
+        },
     });
+});
 
 // Xử lý xóa dữ liệu khi modal ẩn
 $("#modal-them-ban-tin").on("hidden.bs.modal", function () {
@@ -1795,6 +1608,7 @@ $(document).on("click", ".btn-delete-ban-tin", function () {
                     });
 
                     $("#wp-list-ban-tin").html(response.html);
+                    $("#news-tab>span").text(response.tongSoBanTin);
 
                     $("#modal-chinh-sua-ban-tin").modal("hide");
                 },

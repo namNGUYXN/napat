@@ -10,59 +10,6 @@ use Illuminate\Support\Str;
 
 class BaiGiangService
 {
-    // public function getAll()
-    // {
-    //     return BaiGiang::where('is_delete', false)
-    //         ->withCount('list_chuong')
-    //         ->orderBy('ten')
-    //         ->get();
-    // }
-
-    // public function getByGiangVienId($idGiangVien)
-    // {
-    //     return BaiGiang::where('id_giang_vien', $idGiangVien)
-    //         ->where('is_delete', false)
-    //         ->withCount('list_bai_giang')
-    //         ->orderBy('ten')
-    //         ->get();
-    // }
-
-    // public function getBySlugWithBaiGiangs(string $slug)
-    // {
-    //     return BaiGiang::where('slug', $slug)
-    //         ->with('list_bai_giang')
-    //         ->firstOrFail();
-    // }
-
-    // /**
-    //  * Lấy mục bài giảng theo ID
-    //  */
-    // public function getById($id)
-    // {
-    //     return BaiGiang::where('id', $id)
-    //         ->where('is_delete', false)
-    //         ->with('list_bai_giang')
-    //         ->firstOrFail();
-    // }
-
-
-
-    // public function layChiTietVaDanhSachChuong($id)
-    // {
-    //     return BaiGiang::with([
-    //         'list_chuong' => function ($query) {
-    //             $query->where('is_delete', false);
-    //         }
-    //     ])
-    //         ->withCount(['list_chuong as so_luong_chuong' => function ($query) {
-    //             $query->where('is_delete', false);
-    //         }])
-    //         ->where([
-    //             ['id', $id],
-    //             ['is_delete', false]
-    //         ])->first();
-    // }
-
     public function layListTheoGiangVien($perPage = -1)
     {
         $idNguoiDungHienTai = session('id_nguoi_dung');
@@ -100,7 +47,6 @@ class BaiGiangService
                 'mo_ta_ngan' => $data['mo_ta_ngan'],
                 'hinh_anh' => $data['hinh_anh'] ?? 'images/bai-giang/no-image.png',
                 'id_giang_vien' => session('id_nguoi_dung'),
-                'id_hoc_phan' => $data['id_hoc_phan']
             ]);
 
             DB::commit();
@@ -134,7 +80,6 @@ class BaiGiangService
                 'slug' => $slug ?? $baiGiang->slug,
                 'mo_ta_ngan' => $data['mo_ta_ngan'] ?? $baiGiang->mo_ta_ngan,
                 'hinh_anh' => $data['hinh_anh'] ?? $baiGiang->hinh_anh,
-                'id_hoc_phan' => $data['id_hoc_phan'] ?? $baiGiang->id_hoc_phan
             ]);
 
             DB::commit();

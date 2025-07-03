@@ -27,7 +27,11 @@ class BaiGiangMiddleware
      */
     public function handle($request, Closure $next)
     {
-        $baiGiang = $this->baiGiangService->layTheoId($request->id);
+        if (isset($request->id_bai_giang)) {
+            $baiGiang = $this->baiGiangService->layTheoId($request->id_bai_giang);
+        } else {
+            $baiGiang = $this->baiGiangService->layTheoId($request->id);
+        }
 
         if ($baiGiang->id_giang_vien == session('id_nguoi_dung')) {
             return $next($request);

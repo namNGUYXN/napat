@@ -16,20 +16,17 @@ class BaiGiangController extends Controller
     protected $baiService;
     protected $uploadImageHelper;
     protected $chuongService;
-    protected $hocPhanService;
 
     function __construct(
         BaiGiangService $baiGiangService,
         BaiService $baiService,
         UploadImageHelper $uploadImageHelper,
-        ChuongService $chuongService,
-        HocPhanService $hocPhanService
+        ChuongService $chuongService
     ) {
         $this->baiGiangService = $baiGiangService;
         $this->baiService = $baiService;
         $this->uploadImageHelper = $uploadImageHelper;
         $this->chuongService = $chuongService;
-        $this->hocPhanService = $hocPhanService;
         $this->middleware('bai_giang')->only('modalChiTiet', 'chiTiet', 'modalChinhSua', 'chinhSua', 'xoa');
     }
 
@@ -37,7 +34,6 @@ class BaiGiangController extends Controller
     {
         $numPerPage = 3;
         $listBaiGiang = $this->baiGiangService->layListTheoGiangVien($numPerPage);
-        $listHocPhan = $this->hocPhanService->layList();
 
         // Kiểm tra số trang
         $page = (int) $request->input('page', 1);
@@ -50,9 +46,7 @@ class BaiGiangController extends Controller
             ));
         }
 
-        return view('modules.bai-giang.danh-sach', compact(
-            'listBaiGiang', 'listHocPhan'
-        ));
+        return view('modules.bai-giang.danh-sach', compact('listBaiGiang'));
     }
 
     public function chiTiet(Request $request, $id)
@@ -60,7 +54,6 @@ class BaiGiangController extends Controller
         $baiGiang = $this->baiGiangService->layTheoId($id);
         $numPerPage = 5;
         $listChuong = $this->chuongService->layListTheoBaiGiang($request, $id, $numPerPage);
-        $listHocPhan = $this->hocPhanService->layList();
 
         // Kiểm tra số trang
         $page = (int) $request->input('page', 1);
@@ -74,8 +67,13 @@ class BaiGiangController extends Controller
             ));
         }
 
-        return view('modules.bai-giang.chi-tiet', compact(
-            'baiGiang', 'listChuong', 'numPerPage', 'listHocPhan')
+        return view(
+            'modules.bai-giang.chi-tiet',
+            compact(
+                'baiGiang',
+                'listChuong',
+                'numPerPage',
+            )
         );
     }
 
@@ -84,14 +82,12 @@ class BaiGiangController extends Controller
         $data = $request->validate(
             [
                 'ten' => 'required|string|max:100',
-                'id_hoc_phan' => 'required|exists:hoc_phan,id',
                 'mo_ta_ngan' => 'nullable|string|max:255',
                 'hinh_anh' => 'image'
             ],
             [
                 'ten.required' => 'Vui lòng nhập tên bài giảng',
                 'ten.max' => 'Tên bài giảng tối đa 100 ký tự',
-                'id_hoc_phan.exists' => 'Học phần không tồn tại',
                 'mo_ta_ngan.max' => 'Mô tả tối đa 255 ký tự',
                 'hinh_anh.image' => 'Hình ảnh không hợp lệ'
             ]
@@ -137,14 +133,12 @@ class BaiGiangController extends Controller
         $data = $request->validate(
             [
                 'ten' => 'sometimes|required|string|max:100',
-                'id_hoc_phan' => 'sometimes|required|exists:hoc_phan,id',
                 'mo_ta_ngan' => 'nullable|string|max:255',
                 'hinh_anh' => 'image'
             ],
             [
                 'ten.required' => 'Vui lòng nhập tên bài giảng',
                 'ten.max' => 'Tên bài giảng tối đa 100 ký tự',
-                'id_hoc_phan.exists' => 'Học phần không tồn tại',
                 'mo_ta_ngan.max' => 'Mô tả tối đa 255 ký tự',
                 'hinh_anh.image' => 'Hình ảnh không hợp lệ'
             ]
@@ -187,7 +181,7 @@ class BaiGiangController extends Controller
     public function xoa($id)
     {
         $result = $this->baiGiangService->xoa($id);
-        
+
         if ($result['success']) {
             return redirect()->route('bai-giang.index')->with([
                 'message' => $result['message'],

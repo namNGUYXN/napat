@@ -37,13 +37,12 @@
           <div class="p-3">
             <a href="{{ route('bai-giang.detail', $baiGiang->id) }}"
               class="text-dark document-name">{{ $baiGiang->ten }}</a>
-            <p class="mb-1"><b>Học phần: </b>{{ $baiGiang->hoc_phan->ten }}</p>
             <p class="mb-1">
               <b>Số chương: </b>{{ $baiGiang->so_chuong }}
               / <b>Số bài: </b>{{ $baiGiang->tong_so_bai }}
             </p>
             <p class="mb-1"><b>Ngày tạo: </b> {{ $baiGiang->ngay_tao }}</p>
-            <small class="text-secondary fst-italic" title="{{ $baiGiang->mo_ta_ngan }}">
+            <small class="text-secondary fst-italic d-inline-block me-3" title="{{ $baiGiang->mo_ta_ngan }}">
               {{ Str::of($baiGiang->mo_ta_ngan)->limit(100) }}
             </small>
             <div class="document-action-btn">
@@ -103,16 +102,6 @@
                 <input type="text" name="ten" class="form-control" id="" required maxlength="100">
               </div>
               <div class="mb-3">
-                <label for="" class="form-label">Chọn học phần <abbr class="text-danger"
-                    title="Bắt buộc">*</abbr></label>
-                <select name="id_hoc_phan" id="" required class="form-control">
-                  <option value="" selected disabled>-- Chọn một học phần --</option>
-                  @foreach ($listHocPhan as $hocPhan)
-                    <option value="{{ $hocPhan->id }}">{{ $hocPhan->ten }}</option>
-                  @endforeach
-                </select>
-              </div>
-              <div class="mb-3">
                 <label for="" class="form-label">Mô tả ngắn <span class="text-muted">(255 từ)</span></label>
                 <textarea name="mo_ta_ngan" id="" class="form-control" rows="6" maxlength="255"></textarea>
               </div>
@@ -159,16 +148,6 @@
                   <abbr class="text-danger" title="Bắt buộc">*</abbr>
                 </label>
                 <input type="text" name="ten" class="form-control" id="ten-bai-giang">
-              </div>
-              <div class="mb-3">
-                <label for="" class="form-label">Chọn học phần <abbr class="text-danger"
-                    title="Bắt buộc">*</abbr></label>
-                <select name="id_hoc_phan" id="" required class="form-control">
-                  <option value="" selected disabled>-- Chọn một học phần --</option>
-                  @foreach ($listHocPhan as $hocPhan)
-                    <option value="{{ $hocPhan->id }}">{{ $hocPhan->ten }}</option>
-                  @endforeach
-                </select>
               </div>
               <div class="mb-3">
                 <label for="" class="form-label">Mô tả ngắn <span class="text-muted">(255 từ)</span></label>

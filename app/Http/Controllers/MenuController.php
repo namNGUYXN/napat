@@ -12,13 +12,11 @@ class MenuController extends Controller
 {
     protected $menuService;
     protected $khoaService;
-    protected $hocPhanService;
 
-    function __construct(MenuService $menuService, KhoaService $khoaService, HocPhanService $hocPhanService)
+    function __construct(MenuService $menuService, KhoaService $khoaService)
     {
         $this->menuService = $menuService;
         $this->khoaService = $khoaService;
-        $this->hocPhanService = $hocPhanService;
     }
 
     function giaoDienQuanLy()
@@ -33,11 +31,10 @@ class MenuController extends Controller
         $listMenu = $this->menuService->dataTree();
         $listLoaiMenu = $this->menuService->layListLoaiMenu();
         $listKhoa = $this->khoaService->layListKhoa();
-        $listHocPhan = $this->hocPhanService->laylistHocPhan();
 
         return view(
             'admin.modules.menu.them',
-            compact('listMenu', 'listLoaiMenu', 'listKhoa', 'listHocPhan')
+            compact('listMenu', 'listLoaiMenu', 'listKhoa')
         );
     }
 
@@ -83,11 +80,10 @@ class MenuController extends Controller
         $listMenu = $this->menuService->dataTree();
         $listLoaiMenu = $this->menuService->layListLoaiMenu();
         $listKhoa = $this->khoaService->layListKhoa();
-        $listHocPhan = $this->hocPhanService->laylistHocPhan();
 
         return view(
             'admin.modules.menu.chinh-sua',
-            compact('menu', 'listMenu', 'listLoaiMenu', 'listKhoa', 'listHocPhan')
+            compact('menu', 'listMenu', 'listLoaiMenu', 'listKhoa')
         );
     }
 

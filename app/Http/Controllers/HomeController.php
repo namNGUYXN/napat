@@ -16,7 +16,7 @@ class HomeController extends Controller
     // Trang chủ phía client - Home
     function home()
     {
-        $dsKhoa = $this->khoaService->layListKhoaWithHocPhans();
+        $dsKhoa = $this->khoaService->layListKhoa();
         return view('home', compact('dsKhoa'));
     }
 

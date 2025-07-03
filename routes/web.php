@@ -56,11 +56,9 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien+sinh-vien']], 
 
     Route::post('/bai-tap', 'BaiTapController@themBaiTap')->name('bai_tap.them');
     Route::get('/bai-giang/{id}/bai-tap', 'BaiTapController@danhSachBaiTap')->name('bai-tap.by-bai-giang');
-    Route::get('lop-hoc-cua-toi', 'LopHocPhanController@lopHocCuaToi')->name('lop-hoc.lop-hoc-cua-toi');
-    Route::get('/lop-hoc-phan/{slug}', 'LopHocPhanController@chiTiet')->name('lop-hoc.detail');
 
-    // Lớp học
-    Route::get('/hoc-phan/{id}', 'LopHocPhanController@lopHocTheoHocPhan')->name('lop-hoc.list');
+    // Lớp học phần
+    Route::get('/khoa/{slug}/lop-hoc-phan', 'LopHocPhanController@lopHocPhanTheoKhoa')->name('lop-hoc.index');
     Route::get('lop-hoc-cua-toi', 'LopHocPhanController@lopHocCuaToi')->name('lop-hoc.lop-hoc-cua-toi');
     Route::get('/lop-hoc-phan/{slug}', 'LopHocPhanController@chiTiet')->name('lop-hoc.detail');
     // -- Bản tin
@@ -91,6 +89,12 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien+sinh-vien']], 
 // Các route cho giảng viên
 Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien']], function () {
 
+    // Lớp học phần
+    Route::post('/lop-hoc-phan/them', 'LopHocPhanController@them')->name('lop-hoc.store');
+    Route::post('/lop-hoc-phan/{id}/modal-chi-tiet', 'LopHocPhanController@modalChiTiet')->name('lop-hoc-phan.detail-modal');
+    Route::put('/lop-hoc-phan/{id}/modal-chinh-sua', 'LopHocPhanController@modalChinhSua')->name('lop-hoc-phan.update-modal');
+    Route::put('/lop-hoc-phan/{id}/chinh-sua', 'LopHocPhanController@chinhSua')->name('lop-hoc-phan.update');
+    
     // Bài giảng
     Route::get('/bai-giang', 'BaiGiangController@giaoDienQuanLy')->name('bai-giang.index');
     Route::get('/bai-giang/{id}/chi-tiet', 'BaiGiangController@chiTiet')->name('bai-giang.detail');

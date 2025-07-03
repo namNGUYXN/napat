@@ -45,3 +45,26 @@
   max-height: 400px;
   overflow-y: auto;
 }
+
+.img-remove-btn {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  line-height: 20px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.2s ease-in-out;
+  z-index: 10;
+}
+
+.img-remove-btn:hover {
+  opacity: 1;
+}

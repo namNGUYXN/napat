@@ -19,9 +19,9 @@ class LopHocPhan extends Model
         'slug',
         'mo_ta_ngan',
         'hinh_anh',
-        'id_hoc_phan',
         'id_giang_vien',
         'id_bai_giang',
+        'id_khoa',
         'ngay_tao',
         'is_delete',
     ];
@@ -31,9 +31,9 @@ class LopHocPhan extends Model
         return $value ? Carbon::parse($value)->format('d/m/Y') : null;
     }
 
-    public function hoc_phan()
+    public function khoa()
     {
-        return $this->belongsTo(HocPhan::class, 'id_hoc_phan');
+        return $this->belongsTo(Khoa::class, 'id_khoa');
     }
 
     public function giang_vien()
