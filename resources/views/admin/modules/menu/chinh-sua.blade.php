@@ -86,10 +86,6 @@
 
 @section('scripts')
   <script>
-    $('button[type="reset"]').on('click', function() {
-      $('#sub-box-select').html('');
-    });
-
     // Lấy list từ MenuController truyền qua
     var listKhoa = @php echo $listKhoa @endphp;
     // Menu đang thao tác
@@ -116,7 +112,7 @@
     function createListOption(item, list, giaTri = "") {
       const mapList = $.map(list, function(element, index) {
         return `
-         <option value="${element.slug}/lop-hoc-phan"${element.id == giaTri ? ' selected' : ''}>${element.ten}</option>
+         <option value="${element.slug}/lop-hoc-phan"${element.slug + '/lop-hoc-phan' == giaTri ? ' selected' : ''}>${element.ten}</option>
         `;
       });
       mapList.unshift(`<option selected disabled value="">--- Chọn một ${item} ---</option>`);
