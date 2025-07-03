@@ -17,7 +17,7 @@ class CreateBaiTable extends Migration
             $table->id();
             $table->string('tieu_de', 100);
             $table->string('slug')->unique();
-            $table->text('noi_dung');
+            $table->mediumText('noi_dung');
             $table->unsignedBigInteger('id_chuong');
             $table->timestamp('ngay_tao')->useCurrent();
             $table->integer('thu_tu')->default(1);
