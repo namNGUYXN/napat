@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         },
     });
+
     const endPicker = flatpickr("#endTime", {
         enableTime: true,
         dateFormat: "d/m/Y H:i",
@@ -276,29 +277,53 @@ function renderChiTietBaiKiemTra(baiKiemTra, chiTiet) {
 }
 
 function renderDanhSachKetQua(baiKiemTra, dsKetQua) {
-    let html = "<table class='table table-bordered'>";
-    html += `
-        <thead>
-            <tr>
-                <th>STT</th>
-                <th>Họ tên</th>
-                <th>Email</th>
-                <th>Điểm</th>
-                <th>Chi tiết</th>
-            </tr>
-        </thead><tbody>`;
+    let html = `
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover table-sm table-nowrap align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>STT</th>
+                        <th>Họ tên</th>
+                        <th>Email</th>
+                        <th>Ngày nộp</th>
+                        <th>Quá hạn nộp</th>
+                        <th>Điểm</th>
+                        <th>Chi tiết</th>
+                    </tr>
+                </thead>
+                <tbody>`;
 
     dsKetQua.forEach((item, index) => {
         const user = item.sinh_vien;
         const ketQua = item.ket_qua;
         const idKetQua = ketQua?.id || 0;
 
+        // Xử lý ngày nộp
+        let ngayNop = "Chưa nộp";
+        if (ketQua?.ngay_lam) {
+            ngayNop = formatNgay(ketQua.ngay_lam);
+        }
+
+        // Xử lý nộp muộn
+        let nopMuon = "Chưa nộp";
+        if (ketQua?.ngay_lam !== null && ketQua?.ngay_lam !== undefined) {
+            if (ketQua.nop_qua_han === 1) {
+                nopMuon = `<span class="text-danger">Nộp trễ</span>`;
+            } else if (ketQua.nop_qua_han === 0) {
+                nopMuon = `<span class="text-success">Đúng hạn</span>`;
+            } else {
+                nopMuon = "Không rõ";
+            }
+        }
+
         html += `
         <tr>
             <td>${index + 1}</td>
-            <td>${user.ten}</td>
-            <td>${user.email}</td>
-            <td>${item.diem ?? "Chưa làm"}</td>
+            <td class="text-nowrap">${user.ten}</td>
+            <td class="text-nowrap">${user.email}</td>
+            <td class="text-nowrap">${ngayNop}</td>
+            <td>${nopMuon}</td>
+            <td>${item.diem ?? ""}</td>
             <td>
                 ${item.diem !== null
                 ? `<button class="btn btn-sm btn-primary"
@@ -308,11 +333,13 @@ function renderDanhSachKetQua(baiKiemTra, dsKetQua) {
                 : ""
             }
             </td>
-
         </tr>`;
     });
 
-    html += "</tbody></table>";
+    html += `
+        </tbody>
+    </table>
+</div>`;
     return html;
 }
 
@@ -326,6 +353,8 @@ function hienThiKetQua() {
             ← Quay lại 
         </button>
     `);
+    $("#modalChiTiet .modal-footer").html(`      
+            `);
 }
 
 //Khi nhấn nút để xem danh sách câu hỏi của bài kiểm tra
@@ -360,6 +389,9 @@ function hienThiCauHoi() {
         </button>
     `);
     $("#modalChiTiet .modal-body").html(html);
+
+    $("#modalChiTiet .modal-footer").html(`      
+            `);
 }
 
 function quayLaiDanhSach($action) {
@@ -374,6 +406,8 @@ function quayLaiDanhSach($action) {
             );
             $("#modalChiTiet .modal-body").html(html);
 
+            $("#modalChiTiet .modal-footer").html(`      
+            `);
             /// Thay nút đóng thành nút quay lại
             $("#modalChiTiet .modal-actions").html(`
                 <button class="btn btn-secondary" onclick="quayLaiDanhSach(0)">
@@ -389,6 +423,13 @@ function quayLaiDanhSach($action) {
             $("#modalChiTiet .modal-body").html(
                 renderChiTietBaiKiemTraGiangVien()
             );
+            $("#modalChiTiet .modal-footer").html(`                   
+                <div class="mt-3 d-flex justify-content-end gap-2">
+                    <button class="btn btn-info" onclick="hienThiCauHoi()">Xem câu hỏi</button>
+                    <button class="btn btn-info" onclick="chuyenSangChinhSua()">Chỉnh sửa nội dung</button>
+                    <button class="btn btn-primary" onclick="hienThiKetQua()">Kết quả</button>
+                </div>
+            `);
 
             // Khôi phục lại nút đóng mặc định
             $("#modalChiTiet .modal-actions").html(`
@@ -436,15 +477,7 @@ function renderChiTietBaiKiemTraGiangVien() {
                         <p><strong>Số câu hỏi:</strong> ${currentBaiKiemTra.list_cau_hoi.length
         }</p>
                     `;
-
-    const nutChucNang = `
-                        <div class="mt-3 d-flex justify-content-end gap-2">
-                            <button class="btn btn-info" onclick="hienThiCauHoi()">Xem câu hỏi</button>
-                            <button class="btn btn-info" onclick="chuyenSangChinhSua()">Chỉnh sửa nội dung</button>
-                            <button class="btn btn-primary" onclick="hienThiKetQua()">Kết quả</button>
-                        </div>
-                    `;
-    return thongTinBaiKT + nutChucNang;
+    return thongTinBaiKT;
 }
 
 //Mẫu html để load dữ liệu vào
@@ -534,37 +567,37 @@ const chuyenSangChinhSua = () => {
                             </div>
                         </div>
                         <div class="row mb-3 mt-3 ">
-                                                    <div class="col-md-6">
-                                                        <label for="editStartTime">Thời gian bắt đầu</label>
-                                                        <input type="text" class="form-control" id="editStartTime"
-                                                            name="ngay_bat_dau" 
-                                                         placeholder="Chọn thời gian">
-                                                        <div class="invalid-feedback fw-bold">
-                                                            Vui lòng chọn thời gian bắt đầu
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <label for="editEndTime">Thời gian kết thúc</label>
-                                                        <input type="text" class="form-control" id="editEndTime"
-                                                            name="ngay_ket_thuc" placeholder="Chọn thời gian">
-                                                        <div class="invalid-feedback fw-bold">
-                                                            Vui lòng chọn thời gian kết thúc
-                                                        </div>
-                                                    </div>
-                                                </div>
+                            <div class="col-md-6">
+                                <label for="editStartTime">Thời gian bắt đầu</label>
+                                <input type="text" class="form-control" id="editStartTime"
+                                    name="ngay_bat_dau" placeholder="Chọn thời gian">
+                                <div class="invalid-feedback fw-bold">
+                                    Vui lòng chọn thời gian bắt đầu
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="editEndTime">Thời gian kết thúc</label>
+                                <input type="text" class="form-control" id="editEndTime"
+                                    name="ngay_ket_thuc" placeholder="Chọn thời gian">
+                                <div class="invalid-feedback fw-bold">
+                                    Vui lòng chọn thời gian kết thúc
+                                </div>
+                            </div>
+                        </div>
 
-                                                <div class="d-flex justify-content-center mt-1">
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" value="1"
-                                                            id="editChoPhepNopTre" name="cho_phep_nop_qua_han"  ${currentBaiKiemTra.cho_phep_nop_qua_han
-            ? "checked"
-            : ""
-        }>
-                                                        <label class="form-check-label" for="choPhepNopTre">
-                                                            Cho phép nộp quá hạn
-                                                        </label>
-                                                    </div>
-                                                </div>
+                        <div class="d-flex justify-content-center mt-1">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="1"
+                                    id="editChoPhepNopTre" name="cho_phep_nop_qua_han"  ${
+                                        currentBaiKiemTra.cho_phep_nop_qua_han
+                                            ? "checked"
+                                            : ""
+                                    }>
+                                <label class="form-check-label" for="choPhepNopTre">
+                                    Cho phép nộp quá hạn
+                                </label>
+                            </div>
+                        </div>
                     </div>
                     <div id="questionsFormContainer-sua">`;
     questionCounter = 0;
@@ -580,29 +613,35 @@ const chuyenSangChinhSua = () => {
         );
     });
     html += `</div>
-            <div class="d-flex gap-2 mb-3">
-                <!-- Nút Thêm câu hỏi mới -->
-                <button type="button" class="btn btn-outline-primary flex-fill"
-                    id="addQuestionBtn">
-                    <i class="fas fa-plus me-2"></i>Thêm câu hỏi mới
-                </button>
-
-                
-                <label class="btn btn-outline-secondary flex-fill m-0"
-                for="excelFileInput">
-                    <i class="fas fa-file-excel me-2"></i>Chọn file Excel
-                </label>
-                <input type="file" id="excelFileInput" accept=".xlsx, .xls"
-                    class="d-none">
-            </div>
-            <div class="text-end mt-3">
-                <button type="submit" class="btn btn-success">Lưu thay đổi</button>
-            </div>
+            
         </form>`;
     $("#modalChiTiet .modal-actions").html(`
         <button class="btn btn-secondary" onclick="quayLaiDanhSach(0)">
             ← Quay lại 
         </button>
+    `);
+
+    $("#modalChiTiet .modal-footer").html(`
+        <div class="d-flex gap-2 mb-3">
+            <!-- Nút Thêm câu hỏi mới -->
+            <button type="button" class="btn btn-outline-primary flex-fill"
+                id="addQuestionBtn">
+                <i class="fas fa-plus me-2"></i>Thêm câu hỏi mới
+            </button>
+
+                
+            <label class="btn btn-outline-secondary flex-fill m-0"
+                for="excelFileInput">
+                <i class="fas fa-file-excel me-2"></i>Chọn file Excel
+            </label>
+            <input type="file" id="excelFileInput" accept=".xlsx, .xls"
+                class="d-none">
+            <!-- Nút lưu thay đổi -->
+        <button type="button" class="btn btn-success" id="submitEditFormBtn">
+            Lưu thay đổi
+        </button>
+        </div>
+        
     `);
 
     // Gán lại vào modal-body
@@ -624,6 +663,7 @@ const chuyenSangChinhSua = () => {
             }
         },
     });
+
     const editEndPicker = flatpickr("#editEndTime", {
         enableTime: true,
         dateFormat: "d-m-Y H:i:S",
@@ -643,6 +683,19 @@ const chuyenSangChinhSua = () => {
 
             disableEditingFields(serverNow, startTime);
         });
+
+    // Gắn sự kiện cho nút "Lưu thay đổi"
+    setTimeout(() => {
+        const submitBtn = document.getElementById("submitEditFormBtn");
+        if (submitBtn) {
+            submitBtn.addEventListener("click", function () {
+                const form = document.getElementById("editExerciseForm");
+                if (form) {
+                    form.requestSubmit(); // Gọi submit và sẽ trigger đoạn addEventListener("submit", ...)
+                }
+            });
+        }
+    }, 0);
 };
 
 function disableEditingFields(serverNow, startTime) {
@@ -814,6 +867,14 @@ $(document).ready(function () {
                     $("#modalChiTiet .modal-body").html(
                         renderChiTietBaiKiemTraGiangVien()
                     );
+                    $("#modalChiTiet .modal-footer").html(`                   
+                        <div class="mt-3 d-flex justify-content-end gap-2">
+                            <button class="btn btn-info" onclick="hienThiCauHoi()">Xem câu hỏi</button>
+                            <button class="btn btn-info" onclick="chuyenSangChinhSua()">Chỉnh sửa nội dung</button>
+                            <button class="btn btn-primary" onclick="hienThiKetQua()">Kết quả</button>
+                        </div>
+                    `);
+
                     $("#modalChiTiet .modal-actions").html(`
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     `);

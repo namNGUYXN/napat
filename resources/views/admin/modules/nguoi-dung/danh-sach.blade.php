@@ -21,6 +21,7 @@
             </div>
             <div class="card-body position-relative">
                 <div class="container mt-4">
+                    
                     <div class="row mb-3">
                         <div class="col-md-3">
                             <select id="vaiTroSelect" class="form-select">
@@ -36,13 +37,12 @@
                         </div>
                         <div class="col-md-2">
                             <select id="perPageSelect" class="form-select">
-                                <option value="1">1 dòng</option>
-                                <option value="2">2 dòng</option>
                                 <option value="5">5 dòng</option>
                                 <option value="10">10 dòng</option>
+                                <option value="20">20 dòng</option>
                             </select>
                         </div>
-                        <div class="col-md-2 text-end">
+                        <div class="col-md-2">
                             <button id="btnSearch" class="btn btn-primary">Tìm</button>
                         </div>
                     </div>

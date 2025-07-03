@@ -68,7 +68,7 @@ class NguoiDungService
         }
     }
 
-    public function danhSachNguoiDung($vaiTro = null, $keyword = null, $perPage = 1)
+    public function danhSachNguoiDung($vaiTro = null, $keyword = null, $perPage = 5)
     {
         $query = NguoiDung::query();
 

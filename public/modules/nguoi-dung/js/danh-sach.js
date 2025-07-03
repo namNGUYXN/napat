@@ -20,6 +20,18 @@ function loadNguoiDung(page = 1) {
     });
 }
 
+// Bắt Enter trong ô tìm kiếm
+$(document).on("keypress", "#searchInput", function (e) {
+    if (e.which === 13) {
+        loadNguoiDung(1);
+    }
+});
+
+$(document).on("click", "#clearSearch", function () {
+    $("#searchInput").val(""); // Xóa keyword trong input
+    loadNguoiDung(1); // Gọi lại AJAX từ trang 1
+});
+
 $(document).ready(function () {
     $("#btnSearch, #vaiTroSelect, #perPageSelect").on(
         "click change",

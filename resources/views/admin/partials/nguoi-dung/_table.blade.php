@@ -1,3 +1,30 @@
+<div class="mb-3">
+    <div
+        class="py-2 px-3 mb-0 d-flex justify-content-between align-items-center 
+        {{ request('keyword') ? 'alert alert-info' : '' }}">
+
+        @if (request('keyword'))
+            <div class="d-flex align-items-center">
+                <span>
+                    Bạn đang tìm: <strong id="searchKeywordText">{{ request('keyword') }}</strong>
+                </span>
+                <button type="button" class="btn btn-sm btn-outline-danger ms-2" id="clearSearch" title="Xóa tìm kiếm">
+                    &times;
+                </button>
+            </div>
+            <div>
+                Kết quả: <strong>{{ $danhSach->total() }}</strong>
+            </div>
+        @else
+            <div class="">
+                Tổng số người dùng: <strong>{{ $danhSach->total() }}</strong>
+            </div>
+        @endif
+    </div>
+</div>
+
+
+
 <table class="table table-bordered table-hover">
     <thead class="table-light">
         <tr>
@@ -27,13 +54,6 @@
                         @method('DELETE')
                         <button class="btn btn-sm btn-danger">Xóa</button>
                     </form>
-                    {{-- <a href="{{ route('nguoi-dung.edit', $nd->id) }}" class="btn btn-sm btn-warning">Sửa</a>
-                    <form action="{{ route('nguoi-dung.destroy', $nd->id) }}" method="POST" class="d-inline-block"
-                        onsubmit="return confirm('Xóa người dùng này?')">
-                        @csrf
-                        @method('DELETE')
-                        <button class="btn btn-sm btn-danger">Xóa</button>
-                    </form> --}}
                 </td>
             </tr>
         @empty
