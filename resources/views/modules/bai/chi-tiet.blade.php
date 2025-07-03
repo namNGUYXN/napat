@@ -28,7 +28,7 @@
         <div class="container-fluid border rounded bg-white shadow-sm p-4">
           <h4>{{ $baiTrongLop->bai->tieu_de }}</h4>
 
-          <div id="content-bai">
+          <div id="content-bai" class="custom-scrollbar">
             {!! $baiTrongLop->bai->noi_dung !!}
           </div>
         </div>

@@ -41,6 +41,11 @@
   }
 }
 
+#content-bai {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 #content-bai img {
   max-width: 100%;
   height: auto;
