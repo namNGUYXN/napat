@@ -55,7 +55,8 @@ class BanTinController extends Controller
             return response()->json([
                 'message' => $result['message'],
                 'icon' => 'success',
-                'html' => $html
+                'html' => $html,
+                'tongSoBanTin' => $listBanTin->count()
             ]);
         }
 
@@ -125,7 +126,8 @@ class BanTinController extends Controller
             return response()->json([
                 'message' => $result['message'],
                 'icon' => 'success',
-                'html' => $html
+                'html' => $html,
+                'tongSoBanTin' => $listBanTin->count()
             ]);
         }
 

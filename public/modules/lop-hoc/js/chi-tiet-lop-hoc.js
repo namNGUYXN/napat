@@ -1350,6 +1350,7 @@ $(document).on("click", ".btn-public-bai", function (e) {
 
             $("#accordion-chuong").html(response.html);
             $("#lecture-tab>span").text(response.tongSoBaiCongKhai);
+            handleCheckAllSelected($(".row-checkbox:checked"));
         },
         error: function (xhr) {
             alert("Đã xảy ra lỗi: " + xhr.status + " " + xhr.statusText);
@@ -1394,59 +1395,58 @@ $(document).on("click", ".btn-update-ban-tin", function () {
 });
 
 // Xử lý model thêm bản tin
-$("#modal-them-ban-tin")
-    .parents("form")
-    .on("submit", function (e) {
-        e.preventDefault();
+$("#modal-them-ban-tin").parents("form").on("submit", function (e) {
+    e.preventDefault();
 
-        const form = $(this);
-        const actionUrl = form.attr("action");
-        const noiDung = tinymce.get("noi-dung-ban-tin-them").getContent();
-        const token = $('meta[name="csrf-token"]').attr("content");
+    const form = $(this);
+    const actionUrl = form.attr("action");
+    const noiDung = tinymce.get("noi-dung-ban-tin-them").getContent();
+    const token = $('meta[name="csrf-token"]').attr("content");
 
-        // console.log(noiDung);
+    // console.log(noiDung);
 
-        $.ajax({
-            url: actionUrl,
-            type: "POST",
-            data: {
-                _token: token,
-                noi_dung: noiDung,
-            },
-            dataType: "json",
-            success: function (response) {
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: "top-end",
-                    width: "auto",
-                    showConfirmButton: false,
-                    timer: 3500,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.onmouseenter = Swal.stopTimer;
-                        toast.onmouseleave = Swal.resumeTimer;
-                    },
-                });
+    $.ajax({
+        url: actionUrl,
+        type: "POST",
+        data: {
+            _token: token,
+            noi_dung: noiDung,
+        },
+        dataType: "json",
+        success: function (response) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                width: "auto",
+                showConfirmButton: false,
+                timer: 3500,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                },
+            });
 
-                Toast.fire({
-                    icon: response.icon,
-                    title: response.message,
-                });
+            Toast.fire({
+                icon: response.icon,
+                title: response.message,
+            });
 
-                $("#wp-list-ban-tin").html(response.html);
+            $("#wp-list-ban-tin").html(response.html);
+            $("#news-tab>span").text(response.tongSoBanTin);
 
-                $("#modal-them-ban-tin").modal("hide");
+            $("#modal-them-ban-tin").modal("hide");
 
-                // Reset form
-                form[0].reset();
-            },
-            error: function (xhr) {
-                alert("Đã xảy ra lỗi: " + xhr.status + " " + xhr.statusText);
-            },
-        });
+            // Reset form
+            form[0].reset();
+        },
+        error: function (xhr) {
+            alert("Đã xảy ra lỗi: " + xhr.status + " " + xhr.statusText);
+        },
     });
+});
 
-// Xử lý model chỉnh sửa bản tin
+// Xử lý modal chỉnh sửa bản tin
 $("#modal-chinh-sua-ban-tin").parents("form").on("submit", function (e) {
     e.preventDefault();
 
@@ -1547,6 +1547,7 @@ $(document).on("click", ".btn-delete-ban-tin", function () {
                     });
 
                     $("#wp-list-ban-tin").html(response.html);
+                    $("#news-tab>span").text(response.tongSoBanTin);
 
                     $("#modal-chinh-sua-ban-tin").modal("hide");
                 },

@@ -42,7 +42,7 @@
               / <b>Số bài: </b>{{ $baiGiang->tong_so_bai }}
             </p>
             <p class="mb-1"><b>Ngày tạo: </b> {{ $baiGiang->ngay_tao }}</p>
-            <small class="text-secondary fst-italic" title="{{ $baiGiang->mo_ta_ngan }}">
+            <small class="text-secondary fst-italic d-inline-block me-3" title="{{ $baiGiang->mo_ta_ngan }}">
               {{ Str::of($baiGiang->mo_ta_ngan)->limit(100) }}
             </small>
             <div class="document-action-btn">

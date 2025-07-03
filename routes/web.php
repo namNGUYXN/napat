@@ -61,6 +61,7 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien+sinh-vien']], 
     Route::get('/khoa/{slug}/lop-hoc-phan', 'LopHocPhanController@lopHocPhanTheoKhoa')->name('lop-hoc.index');
     Route::get('lop-hoc-cua-toi', 'LopHocPhanController@lopHocCuaToi')->name('lop-hoc.lop-hoc-cua-toi');
     Route::get('/lop-hoc-phan/{slug}', 'LopHocPhanController@chiTiet')->name('lop-hoc.detail');
+    Route::post('/lop-hoc-phan/them', 'LopHocPhanController@them')->name('lop-hoc.store');
     // -- Bản tin
     Route::post('/lop-hoc-phan/{id}/ban-tin/them', 'BanTinController@them')->name('ban-tin.store');
     Route::post('/ban-tin/{id}/chi-tiet', 'BanTinController@chiTiet')->name('ban-tin.detail');

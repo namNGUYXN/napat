@@ -5,6 +5,8 @@ namespace App\Services;
 use App\BaiGiangLop;
 use App\LopHocPhan;
 use App\ThanhVienLop;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class LopHocPhanService
 {
@@ -44,33 +46,48 @@ class LopHocPhanService
             ->firstOrFail();
     }
 
-    // public function layListBaiGiangTrongLop($id)
-    // {
-    //     $lopHoc = LopHoc::with('bai_giang_lop.bai_giang', 'bai_giang_lop.chuong')->find($id);
+    public function them(array $data)
+    {
+        try {
+            DB::beginTransaction();
 
-    //     return $lopHoc;
-    // }
+            $slug = Str::slug($data['ten']);
+            $checkExists = LopHocPhan::where([
+                ['id_giang_vien', session('id_nguoi_dung')],
+                ['slug', 'LIKE', $slug . '%']
+            ])->exists();
 
-    // public function layListBaiGiangTheoChuongTrongLop($idLopHoc, $idChuong)
-    // {
-    //     // $lopHoc = LopHoc::with('bai_giang_lop.bai_giang', 'bai_giang_lop.chuong')->find($id);
-    //     $listBaiGiang = BaiGiangLop::where([
-    //         ['id_lop_hoc', $idLopHoc],
-    //         ['id_chuong', $idChuong]
-    //     ])->get();
+            if ($checkExists) {
+                throw new \Exception('Tên lớp học phần này đã tồn tại');
+            }
+            
+            $lopHocPhan = LopHocPhan::create([
+                'ten' => $data['ten'],
+                'ma' => Str::random(10),
+                'slug' => '',
+                'mo_ta_ngan' => $data['mo_ta_ngan'],
+                'hinh_anh' => $data['hinh_anh'] ?? 'images/lop-hoc-phan/no-image.png',
+                'id_giang_vien' => session('id_nguoi_dung'),
+                'id_bai_giang' => $data['id_bai_giang'],
+                'id_khoa' => $data['id_khoa']
+            ]);
 
-    //     return $listBaiGiang;
-    // }
+            $lopHocPhan->slug = $slug . '-' . $lopHocPhan->id;
+            $lopHocPhan->save();
 
-    // public function layLopHocTheoHocPhan($id)
-    // {
-    //     return LopHoc::with([
-    //             'hoc_phan',
-    //             'giang_vien',
-    //         ])
-    //         ->where('id_hoc_phan', $id)
-    //         ->where('is_delete', false)
-    //         ->get();
-    // }
+            DB::commit();
 
+            return [
+                'success' => true,
+                'message' => 'Thêm lớp học phần thành công',
+                'data' => $lopHocPhan
+            ];
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return [
+                'success' => false,
+                'message' => $e->getMessage()
+            ];
+        }
+    }
 }

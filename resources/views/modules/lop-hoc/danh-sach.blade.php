@@ -19,25 +19,50 @@
             <a href="{{ route('lop-hoc.detail', ['slug' => $lopHocPhan->slug]) }}"
               class="text-dark class-name">{{ $lopHocPhan->ten }}</a>
             <p class="mb-1"><b>Giảng viên: </b>{{ $lopHocPhan->giang_vien->ho_ten }}</p>
+            <p class="mb-1"><b>Mã lớp: </b>{{ $lopHocPhan->ma }}</p>
+            <p class="mb-1"><b>Khoa: </b>{{ $lopHocPhan->khoa->ten }}</p>
             <small class="text-secondary fst-italic">{{ $lopHocPhan->mo_ta_ngan }}</small>
-            <div class="class-action-btn">
-              <div class="dropdown">
-                <button class="btn btn-transparent dropdown-toggle remove-arrow-down" type="button"
-                  data-bs-toggle="dropdown" aria-expanded="false">
-                  <i class="fas fa-ellipsis-v"></i>
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="{{ route('lop-hoc.detail', ['slug' => $lopHocPhan->slug]) }}">Xem lớp
-                      học</a>
-                  </li>
-                  <li><button class="dropdown-item class-update-btn" type="button">Chỉnh sửa lớp
-                      học</button>
-                  </li>
-                  <li><button class="dropdown-item class-delete-btn" type="button">Xóa lớp học</button>
-                  </li>
-                </ul>
+
+            @if (session('vai_tro') == 'Giảng viên' && session('id_nguoi_dung') == $lopHocPhan->giang_vien->id)
+              <div class="class-action-btn">
+                <div class="dropdown">
+                  <button class="btn btn-transparent dropdown-toggle remove-arrow-down" type="button"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                  <ul class="dropdown-menu">
+                      <li>
+                        <a class="dropdown-item" href="{{ route('lop-hoc.detail', ['slug' => $lopHocPhan->slug]) }}">
+                          Xem lớp học
+                        </a>
+                      </li>
+                      <li>
+                        <button class="dropdown-item class-update-btn" type="button">
+                          Chỉnh sửa lớp học
+                        </button>
+                      </li>
+                      <li>
+                        <button class="dropdown-item class-delete-btn" type="button">
+                          Xóa lớp học
+                        </button>
+                      </li>
+                  </ul>
+                </div>
               </div>
-            </div>
+            @elseif (session('vai_tro') == 'Sinh viên')
+              <div class="class-action-btn">
+                <div class="dropdown">
+                  <button class="btn btn-transparent dropdown-toggle remove-arrow-down" type="button"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-ellipsis-v"></i>
+                  </button>
+                  <ul class="dropdown-menu">
+                      <li><button class="dropdown-item" type="button">Đăng ký lớp học</button></li>
+                      <li><button class="dropdown-item" type="button">Rời lớp học</button></li>
+                  </ul>
+                </div>
+              </div>
+            @endif
           </div>
         </div>
       @endforeach
@@ -47,13 +72,13 @@
     {{-- Dấu : báo hiệu cho blade đây là biểu thức php --}}
     <x-pagination :paginator="$listLopHocPhan" base-url="{{ route('lop-hoc.index', $khoa->id) }}" />
 
-    <button type="button" class="class-add-btn btn btn-primary rounded-circle" data-bs-toggle="modal"
+    {{-- <button type="button" class="class-add-btn btn btn-primary rounded-circle" data-bs-toggle="modal"
       data-bs-target="#exampleModal">
       <i class="fas fa-plus"></i>
-    </button>
+    </button> --}}
 
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    {{-- Modal thêm lớp học phần --}}
+    {{-- <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header bg-primary text-white">
@@ -96,7 +121,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> --}}
 
     <!-- Modal -->
     <div class="modal fade" id="updateClassModal" tabindex="-1" aria-labelledby="updateClassModalLabel"

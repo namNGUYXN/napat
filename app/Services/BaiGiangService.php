@@ -10,59 +10,6 @@ use Illuminate\Support\Str;
 
 class BaiGiangService
 {
-    // public function getAll()
-    // {
-    //     return BaiGiang::where('is_delete', false)
-    //         ->withCount('list_chuong')
-    //         ->orderBy('ten')
-    //         ->get();
-    // }
-
-    // public function getByGiangVienId($idGiangVien)
-    // {
-    //     return BaiGiang::where('id_giang_vien', $idGiangVien)
-    //         ->where('is_delete', false)
-    //         ->withCount('list_bai_giang')
-    //         ->orderBy('ten')
-    //         ->get();
-    // }
-
-    // public function getBySlugWithBaiGiangs(string $slug)
-    // {
-    //     return BaiGiang::where('slug', $slug)
-    //         ->with('list_bai_giang')
-    //         ->firstOrFail();
-    // }
-
-    // /**
-    //  * Lấy mục bài giảng theo ID
-    //  */
-    // public function getById($id)
-    // {
-    //     return BaiGiang::where('id', $id)
-    //         ->where('is_delete', false)
-    //         ->with('list_bai_giang')
-    //         ->firstOrFail();
-    // }
-
-
-
-    // public function layChiTietVaDanhSachChuong($id)
-    // {
-    //     return BaiGiang::with([
-    //         'list_chuong' => function ($query) {
-    //             $query->where('is_delete', false);
-    //         }
-    //     ])
-    //         ->withCount(['list_chuong as so_luong_chuong' => function ($query) {
-    //             $query->where('is_delete', false);
-    //         }])
-    //         ->where([
-    //             ['id', $id],
-    //             ['is_delete', false]
-    //         ])->first();
-    // }
-
     public function layListTheoGiangVien($perPage = -1)
     {
         $idNguoiDungHienTai = session('id_nguoi_dung');

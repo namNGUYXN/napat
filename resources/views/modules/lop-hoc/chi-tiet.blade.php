@@ -82,10 +82,6 @@
                                             <i class="fas fa-ellipsis-v"></i>
                                         </button>
                                         <ul class="dropdown-menu">
-                                            <!-- Sinh viên -->
-                                            <li><button class="dropdown-item" type="button">Đăng ký lớp học</button></li>
-                                            <li><button class="dropdown-item" type="button">Rời lớp học</button></li>
-                                            <!-- Giảng viên -->
                                             <li><button class="dropdown-item" type="button" data-bs-toggle="modal"
                                                     data-bs-target="#updateClassModal">Chỉnh sửa lớp học</button>
                                             </li>

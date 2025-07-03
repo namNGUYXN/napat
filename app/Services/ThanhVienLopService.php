@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\ThanhVienLop;
+use Illuminate\Support\Facades\DB;
 
 class ThanhVienLopService
 {
@@ -116,5 +117,30 @@ class ThanhVienLopService
                 $query->where('is_accept', true)
                       ->orWhereNull('is_accept');
             })->firstOrFail();
+    }
+
+    public function them($idLopHocPhan)
+    {
+        try {
+            DB::beginTransaction();
+
+            ThanhVienLop::create([
+                'id_lop_hoc_phan' => $idLopHocPhan,
+                'id_nguoi_dung' => session('id_nguoi_dung'),
+                'is_accept' => null
+            ]);
+
+            DB::commit();
+
+            return [
+                'success' => true,
+            ];
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return [
+                'success' => false,
+                'message' => $e->getMessage()
+            ];
+        }
     }
 }
