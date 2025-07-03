@@ -28,6 +28,6 @@ class Khoa extends Model
 
     function list_lop_hoc_phan()
     {
-        return $this->hasMany(LopHocPhan::class, 'id_khoa');
+        return $this->hasMany(LopHocPhan::class, 'id_khoa')->orderByDesc('ngay_tao');
     }
 }

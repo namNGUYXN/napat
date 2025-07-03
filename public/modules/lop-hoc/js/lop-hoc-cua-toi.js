@@ -57,13 +57,79 @@ function handleRemoveImg(imgPreview, imgUpload, imgRemoveBtn) {
   imgUpload.val('');
 }
 
+// Xóa dữ liệu form khi ản modal thêm
 $('#modal-them-lop-hoc-phan').on('hidden.bs.modal', function () {
-    const imgPreview = $('#img-preview-container-modal-them .img-preview');
-    const imgUpload = $('#img-upload-modal-them');
-    const imgRemoveBtn = $('#img-preview-container-modal-them .img-remove-btn');
+  const imgPreview = $('#img-preview-container-modal-them .img-preview');
+  const imgUpload = $('#img-upload-modal-them');
+  const imgRemoveBtn = $('#img-preview-container-modal-them .img-remove-btn');
 
-    handleRemoveImg(imgPreview, imgUpload, imgRemoveBtn);
+  handleRemoveImg(imgPreview, imgUpload, imgRemoveBtn);
 
-    $(this).find('input[name="ten"]').val('');
-    $(this).find('textarea[name="mo_ta_ngan"]').val('');
+  $(this).closest('form')[0].reset();
+});
+
+
+let cache = {};
+
+// Xử lý modal chỉnh sửa lớp học phần
+$(document).on('click', '.btn-update-class', function () {
+  const token = $('meta[name="csrf-token"]').attr('content');
+  const pathStorage = $('#hinh-anh-lop-hoc-phan').data('url') + '/';
+  const urlDetail = $(this).data('url-detail');
+  const urlUpdate = $(this).data('url-update');
+  const formUpdate = $('#modal-chinh-sua-lop-hoc-phan').parent('form');
+  const selectKhoa = $('#modal-chinh-sua-lop-hoc-phan #select-khoa');
+  const selectBaiGiang = $('#modal-chinh-sua-lop-hoc-phan #select-bai-giang');
+
+  if (cache[urlDetail]) {
+    const lopHocPhan = cache[urlDetail];
+    const listOptionKhoa = selectKhoa.find('option');
+    const optionKhoaSelected = selectKhoa.find(`option[value="${lopHocPhan.id_khoa}"]`);
+    const listOptionBaiGiang = selectBaiGiang.find('option');
+    const optionBaiGiangSelected = selectBaiGiang.find(`option[value="${lopHocPhan.id_bai_giang}"]`);
+
+    $('#ten-lop-hoc-phan').val(lopHocPhan.ten);
+    listOptionKhoa.removeAttr('selected');
+    optionKhoaSelected.attr('selected', true);
+    listOptionBaiGiang.removeAttr('selected');
+    optionBaiGiangSelected.attr('selected', true);
+    $('#mo-ta-lop-hoc-phan').val(lopHocPhan.mo_ta_ngan);
+    $('#hinh-anh-lop-hoc-phan').attr('src', pathStorage + lopHocPhan.hinh_anh);
+    formUpdate.attr('action', urlUpdate);
+    $('#modal-chinh-sua-lop-hoc-phan').modal('show');
+    return;
+  }
+
+  $.ajax({
+    url: urlDetail,
+    type: 'POST',
+    data: {
+      _token: token
+    },
+    dataType: 'json',
+    success: function (response) {
+      const lopHocPhan = response.data;
+      const listOptionKhoa = selectKhoa.find('option');
+      const optionKhoaSelected = selectKhoa.find(`option[value="${lopHocPhan.id_khoa}"]`);
+      const listOptionBaiGiang = selectBaiGiang.find('option');
+      const optionBaiGiangSelected = selectBaiGiang.find(`option[value="${lopHocPhan.id_bai_giang}"]`);
+
+      // Lưu vào cache
+      cache[urlDetail] = lopHocPhan;
+
+      $('#ten-lop-hoc-phan').val(lopHocPhan.ten);
+      listOptionKhoa.removeAttr('selected');
+      optionKhoaSelected.attr('selected', true);
+      listOptionBaiGiang.removeAttr('selected');
+      optionBaiGiangSelected.attr('selected', true);
+      $('#mo-ta-lop-hoc-phan').val(lopHocPhan.mo_ta_ngan);
+      $('#hinh-anh-lop-hoc-phan').attr('src', pathStorage + lopHocPhan.hinh_anh);
+      formUpdate.attr('action', urlUpdate);
+      $('#modal-chinh-sua-lop-hoc-phan').modal('show');
+    },
+    error: function (xhr) {
+      alert('Đã xảy ra lỗi: ' + xhr.status + ' ' + xhr.statusText);
+    }
+  });
+
 });

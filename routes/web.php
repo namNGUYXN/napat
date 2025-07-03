@@ -61,7 +61,6 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien+sinh-vien']], 
     Route::get('/khoa/{slug}/lop-hoc-phan', 'LopHocPhanController@lopHocPhanTheoKhoa')->name('lop-hoc.index');
     Route::get('lop-hoc-cua-toi', 'LopHocPhanController@lopHocCuaToi')->name('lop-hoc.lop-hoc-cua-toi');
     Route::get('/lop-hoc-phan/{slug}', 'LopHocPhanController@chiTiet')->name('lop-hoc.detail');
-    Route::post('/lop-hoc-phan/them', 'LopHocPhanController@them')->name('lop-hoc.store');
     // -- Bản tin
     Route::post('/lop-hoc-phan/{id}/ban-tin/them', 'BanTinController@them')->name('ban-tin.store');
     Route::post('/ban-tin/{id}/chi-tiet', 'BanTinController@chiTiet')->name('ban-tin.detail');
@@ -90,6 +89,12 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien+sinh-vien']], 
 // Các route cho giảng viên
 Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien']], function () {
 
+    // Lớp học phần
+    Route::post('/lop-hoc-phan/them', 'LopHocPhanController@them')->name('lop-hoc.store');
+    Route::post('/lop-hoc-phan/{id}/modal-chi-tiet', 'LopHocPhanController@modalChiTiet')->name('lop-hoc-phan.detail-modal');
+    Route::put('/lop-hoc-phan/{id}/modal-chinh-sua', 'LopHocPhanController@modalChinhSua')->name('lop-hoc-phan.update-modal');
+    Route::put('/lop-hoc-phan/{id}/chinh-sua', 'LopHocPhanController@chinhSua')->name('lop-hoc-phan.update');
+    
     // Bài giảng
     Route::get('/bai-giang', 'BaiGiangController@giaoDienQuanLy')->name('bai-giang.index');
     Route::get('/bai-giang/{id}/chi-tiet', 'BaiGiangController@chiTiet')->name('bai-giang.detail');

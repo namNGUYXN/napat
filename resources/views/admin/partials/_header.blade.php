@@ -12,7 +12,7 @@
     <div class="col d-flex justify-content-between align-items-center">
       <a href="{{ route('dashboard') }}" class="text-white fs-4 fw-semibold text-decoration-none">NAPAT E-Learning</a>
       <div class="dropdown">
-        <button class="dropdown-toggle remove-arrow-down" type="button" id="dropdownMenuButton1"
+        <button class="dropdown-toggle" type="button" id="dropdownMenuButton1"
           data-bs-toggle="dropdown" aria-expanded="false">
           <img src="{{ asset('storage/' . $hinhAnh) }}" alt="Avt" width="40" height="40"
             class="border border-dark rounded-circle me-2">

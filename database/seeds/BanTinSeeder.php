@@ -50,7 +50,7 @@ class BanTinSeeder extends Seeder
             [
                 'noi_dung' => 'Em in tài liệu rồi ạ!',
                 'ngay_tao' => Carbon::now()->subHours(15),
-                'id_thanh_vien_lop' => 5, // Võ Thị Ánh (Sinh viên)
+                'id_thanh_vien_lop' => 1, // Lê Gia Nghi (Sinh viên)
                 'id_lop_hoc_phan' => 1,
                 'id_ban_tin_cha' => 3,
                 'is_delete' => false,

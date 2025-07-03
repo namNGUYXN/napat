@@ -133,14 +133,12 @@ class BaiGiangController extends Controller
         $data = $request->validate(
             [
                 'ten' => 'sometimes|required|string|max:100',
-                'id_hoc_phan' => 'sometimes|required|exists:hoc_phan,id',
                 'mo_ta_ngan' => 'nullable|string|max:255',
                 'hinh_anh' => 'image'
             ],
             [
                 'ten.required' => 'Vui lòng nhập tên bài giảng',
                 'ten.max' => 'Tên bài giảng tối đa 100 ký tự',
-                'id_hoc_phan.exists' => 'Học phần không tồn tại',
                 'mo_ta_ngan.max' => 'Mô tả tối đa 255 ký tự',
                 'hinh_anh.image' => 'Hình ảnh không hợp lệ'
             ]

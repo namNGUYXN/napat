@@ -20,7 +20,7 @@ class LopHocPhanSeeder extends Seeder
             [
                 'ma' => 'WEB01',
                 'ten' => 'Lập trình Web cơ bản',
-                'slug' => Str::slug('Lập trình Web cơ bản') . '-' . Str::random(5),
+                'slug' => Str::slug('Lập trình Web cơ bản') . '-' . 1,
                 'mo_ta_ngan' => 'Giới thiệu về HTML, CSS và JS',
                 'hinh_anh' => 'images/lop-hoc-phan/no-image.png',
                 'id_giang_vien' => 2,
@@ -32,7 +32,7 @@ class LopHocPhanSeeder extends Seeder
             [
                 'ma' => 'LARAVEL01',
                 'ten' => 'Phát triển ứng dụng Laravel',
-                'slug' => Str::slug('Phát triển ứng dụng Laravel') . '-' . Str::random(5),
+                'slug' => Str::slug('Phát triển ứng dụng Laravel') . '-' . 2,
                 'mo_ta_ngan' => 'Tài liệu và bài giảng về Laravel 10',
                 'hinh_anh' => 'images/lop-hoc-phan/no-image.png',
                 'id_giang_vien' => 3,

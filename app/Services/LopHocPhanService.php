@@ -20,7 +20,7 @@ class LopHocPhanService
         return LopHocPhan::where('slug', $slug)->firstOrFail();
     }
 
-    public function getLopHocCuaToi($idNguoiDung)
+    public function getLopHocCuaToi($idNguoiDung, $perPage = -1)
     {
         if ($idNguoiDung != null) {
             $idLopHoc = ThanhVienLop::where('id_nguoi_dung', $idNguoiDung)
@@ -30,10 +30,16 @@ class LopHocPhanService
                 })
                 ->pluck('id_lop_hoc_phan');
 
-            return LopHocPhan::with(['giang_vien'])
+            $listLopHocPhan = LopHocPhan::with(['giang_vien'])
                 ->whereIn('id', $idLopHoc)
                 ->where('is_delete', false)
-                ->get();
+                ->orderByDesc('ngay_tao');
+
+            if ($perPage > 0) {
+                return $listLopHocPhan->paginate($perPage);
+            }
+            
+            return $listLopHocPhan->get();
         }
         return collect();
     }
@@ -60,7 +66,7 @@ class LopHocPhanService
             if ($checkExists) {
                 throw new \Exception('Tên lớp học phần này đã tồn tại');
             }
-            
+
             $lopHocPhan = LopHocPhan::create([
                 'ten' => $data['ten'],
                 'ma' => Str::random(10),
@@ -82,6 +88,53 @@ class LopHocPhanService
                 'message' => 'Thêm lớp học phần thành công',
                 'data' => $lopHocPhan
             ];
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return [
+                'success' => false,
+                'message' => $e->getMessage()
+            ];
+        }
+    }
+
+    public function chinhSua($id, array $data)
+    {
+        try {
+            DB::beginTransaction();
+
+            $lopHocPhan = LopHocPhan::findOrFail($id);
+            $idBaiGiangBanDau = $lopHocPhan->id_bai_giang;
+            $slug = Str::slug($data['ten']);
+
+            $checkExists = LopHocPhan::where([
+                ['id', '!=', $id],
+                ['id_giang_vien', session('id_nguoi_dung')],
+                ['slug', 'LIKE', $slug . '%']
+            ])->exists();
+
+            if ($checkExists) {
+                throw new \Exception('Tên lớp học phần này đã tồn tại');
+            }
+
+            $lopHocPhan->update([
+                'ten' => $data['ten'],
+                'slug' => $slug . '-' . $lopHocPhan->id,
+                'mo_ta_ngan' => $data['mo_ta_ngan'],
+                'hinh_anh' => $data['hinh_anh'] ?? $lopHocPhan->hinh_anh,
+                'id_bai_giang' => $data['id_bai_giang'],
+                'id_khoa' => $data['id_khoa']
+            ]);
+
+            DB::commit();
+
+            return [
+                'success' => true,
+                'message' => 'Cập nhật lớp học phần thành công',
+                'data' => $lopHocPhan->fresh(),
+                'id_bai_giang_ban_dau' => $idBaiGiangBanDau
+            ];
+
+            DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
             return [

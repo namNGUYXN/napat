@@ -92,7 +92,7 @@ class BaiTrongLopService
       foreach ($listChuong as $chuong) {
         $data[] = $chuong->list_bai->pluck('id');
       }
-      
+
       $listIdBai = $data->flatten()->toArray();
 
       foreach ($listIdBai as $idBai) {
@@ -101,6 +101,37 @@ class BaiTrongLopService
           'id_bai' => $idBai
         ]);
       }
+
+      DB::commit();
+      return [
+        'success' => true
+      ];
+    } catch (\Exception $e) {
+      DB::rollBack();
+      return [
+        'success' => false,
+        'message' => $e->getMessage()
+      ];
+    }
+  }
+
+  public function xoa($idLopHocPhan, $listChuong)
+  {
+    try {
+      DB::beginTransaction();
+
+      $listIdBai = [];
+      $data = collect();
+
+      foreach ($listChuong as $chuong) {
+        $data[] = $chuong->list_bai->pluck('id');
+      }
+
+      $listIdBai = $data->flatten()->toArray();
+
+      BaiTrongLop::where('id_lop_hoc_phan', $idLopHocPhan)
+        ->whereIn('id_bai', $listIdBai)
+        ->delete();
 
       DB::commit();
       return [
