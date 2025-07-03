@@ -160,8 +160,10 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                     </div>
                                 </div>
-                                <div class="modal-body" id="modalChiTietBody">
+                                <div class="modal-body overflow-auto" id="modalChiTietBody" style="max-height: 60vh;">
                                     <!-- Nội dung sẽ được render bằng JS -->
+                                </div>
+                                <div class="modal-footer">
                                 </div>
                             </div>
                         </div>
@@ -173,11 +175,15 @@
                             aria-labelledby="addExerciseModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-lg modal-dialog-scrollable">
                                 <div class="modal-content">
+
+                                    <!-- HEADER: luôn cố định -->
                                     <div class="modal-header bg-success text-white">
                                         <h5 class="modal-title" id="addExerciseModalLabel">Tạo mới bài kiểm tra</h5>
                                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
                                     </div>
+
+                                    <!-- BODY: chỉ phần này cuộn -->
                                     <div class="modal-body">
                                         <form id="newExerciseForm">
                                             <div class="row mb-3">
@@ -230,7 +236,6 @@
                                                 </div>
                                             </div>
 
-
                                             <hr>
 
                                             <input type="hidden" name="idLopHoc" id="idLopHoc"
@@ -238,36 +243,36 @@
 
                                             <div id="questionsFormContainer-them">
                                                 <h6>Danh sách câu hỏi:</h6>
-                                                <div class="question-item mb-4 p-3 border rounded bg-light">
-                                                </div>
+                                                <div class="question-item mb-4 p-3 border rounded bg-light"></div>
                                             </div>
-                                            <div class="d-flex gap-2 mb-3">
-                                                <!-- Nút Thêm câu hỏi mới -->
-                                                <button type="button" class="btn btn-outline-primary flex-fill"
-                                                    id="addQuestionBtn">
-                                                    <i class="fas fa-plus me-2"></i>Thêm câu hỏi mới
-                                                </button>
 
-                                                <!-- Nhãn chọn file (giả dạng nút) -->
-                                                <label class="btn btn-outline-secondary flex-fill m-0"
-                                                    for="excelFileInput">
-                                                    <i class="fas fa-file-excel me-2"></i>Chọn file Excel
-                                                </label>
-                                                <input type="file" id="excelFileInput" accept=".xlsx, .xls"
-                                                    class="d-none">
-
-                                            </div>
+                                            <!-- THÔNG BÁO nếu chưa có câu hỏi -->
                                             <div class="text-center text-danger fw-bold mb-3 d-none"
                                                 id="noQuestionsMessage">
                                                 Vui lòng thêm ít nhất một câu hỏi.
                                             </div>
-
-                                            <div class="d-flex justify-content-end mt-4">
-                                                <button type="button" class="btn btn-secondary me-2"
-                                                    data-bs-dismiss="modal">Hủy</button>
-                                                <button type="submit" class="btn btn-primary">Lưu bài kiểm tra</button>
-                                            </div>
                                         </form>
+                                    </div>
+
+                                    <!-- FOOTER: chứa nút cố định -->
+                                    <div class="modal-footer d-flex flex-column align-items-stretch gap-3">
+                                        <div class="d-flex gap-2 w-100">
+                                            <button type="button" class="btn btn-outline-primary flex-fill"
+                                                id="addQuestionBtn">
+                                                <i class="fas fa-plus me-2"></i>Thêm câu hỏi mới
+                                            </button>
+                                            <label class="btn btn-outline-secondary flex-fill m-0" for="excelFileInput">
+                                                <i class="fas fa-file-excel me-2"></i>Chọn file Excel
+                                            </label>
+                                            <input type="file" id="excelFileInput" accept=".xlsx, .xls"
+                                                class="d-none">
+                                        </div>
+                                        <div class="d-flex justify-content-end w-100">
+                                            <button type="button" class="btn btn-secondary me-2"
+                                                data-bs-dismiss="modal">Hủy</button>
+                                            <button type="submit" form="newExerciseForm" class="btn btn-primary">Lưu bài
+                                                kiểm tra</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

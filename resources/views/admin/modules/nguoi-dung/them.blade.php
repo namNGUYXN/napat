@@ -1,18 +1,18 @@
 @extends('layouts.admin')
 
 @section('content')
-    <div class="col bg-light p-4 overflow-auto custom-scrollbar">
+    <div class="col bg-light p-3 overflow-auto custom-scrollbar">
 
-        <a href="{{ route('nguoi-dung.index') }}" class="btn btn-outline-secondary mb-4">
+        <!--Nút quay về trang danh sách người dùng - Start -->
+        <a href="{{ route('nguoi-dung.index') }}" class="btn btn-outline-secondary mb-2">
             <i class="fas fa-arrow-alt-circle-left me-2"></i>Danh sách người dùng
         </a>
+        <!--Nút quay về trang danh sách người dùng - End -->
 
         <div class="card shadow-sm">
-            <div class="card-header bg-success text-white">
-                <h5 class="mb-0">Thêm người dùng mới</h5>
-            </div>
+
             <div class="card-body">
-                <!-- Tabs -->
+                <!-- Thẻ tab - Start -->
                 <ul class="nav nav-tabs" id="userTab" role="tablist">
                     <li class="nav-item" role="presentation">
                         <a class="nav-link active fw-bold" id="form-tab" data-bs-toggle="tab" href="#form-input"
@@ -22,12 +22,12 @@
                         <a class="nav-link fw-bold" id="import-tab" data-bs-toggle="tab" href="#form-import" role="tab"
                             aria-controls="form-import" aria-selected="false">Thêm từ file</a>
                     </li>
-
                 </ul>
+                <!-- Thẻ tab - End -->
 
-                <!-- Tab content -->
+                <!-- Nội dung thẻ tab - Start -->
                 <div class="tab-content mt-3" id="userTabContent">
-                    <!-- Form nhập -->
+                    <!--Tab nhập thủ công - Start-->
                     <div class="tab-pane fade show active" id="form-input" role="tabpanel" aria-labelledby="form-tab">
                         <form method="POST" action="{{ route('nguoi-dung.xu-ly-them') }}">
                             @csrf
@@ -36,10 +36,9 @@
                                 <label>Họ tên</label>
                                 <input type="text" name="ho_ten"
                                     class="form-control @error('ho_ten') is-invalid @enderror" value="{{ old('ho_ten') }}">
-                                <div id="ho_ten_error" class="invalid-feedback d-none"></div>
-                                @error('ho_ten')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <div class="invalid-feedback {{ $errors->has('ho_ten') ? '' : 'd-none' }}">
+                                    {{ $errors->first('ho_ten') }}
+                                </div>
                             </div>
 
                             {{-- Email --}}
@@ -47,10 +46,9 @@
                                 <label>Email</label>
                                 <input type="email" name="email"
                                     class="form-control @error('email') is-invalid @enderror" value="{{ old('email') }}">
-                                <div id="email_error" class="invalid-feedback d-none"></div>
-                                @error('email')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <div class="invalid-feedback {{ $errors->has('email') ? '' : 'd-none' }}">
+                                    {{ $errors->first('email') }}
+                                </div>
                             </div>
 
                             {{-- Số điện thoại --}}
@@ -58,10 +56,9 @@
                                 <label>Số điện thoại</label>
                                 <input type="text" name="sdt" class="form-control @error('sdt') is-invalid @enderror"
                                     value="{{ old('sdt') }}">
-                                <div id="sdt_error" class="invalid-feedback d-none"></div>
-                                @error('sdt')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <div class="invalid-feedback {{ $errors->has('sdt') ? '' : 'd-none' }}">
+                                    {{ $errors->first('sdt') }}
+                                </div>
                             </div>
 
                             {{-- Vai trò --}}
@@ -74,35 +71,116 @@
                                     <option value="Sinh viên" {{ old('vai_tro') == 'Sinh viên' ? 'selected' : '' }}>Sinh
                                         viên</option>
                                 </select>
-                                <div id="vai_tro_error" class="invalid-feedback d-none"></div>
-                                @error('vai_tro')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <div class="invalid-feedback {{ $errors->has('vai_tro') ? '' : 'd-none' }}">
+                                    {{ $errors->first('vai_tro') }}
+                                </div>
                             </div>
                             <button type="submit" class="btn btn-success mt-2">Thêm người dùng</button>
                         </form>
                     </div>
+                    <!--Tab nhập thủ công - End-->
 
-                    <!-- Form import -->
+                    <!--Tab Import file - Start-->
                     <div class="tab-pane fade" id="form-import" role="tabpanel" aria-labelledby="import-tab">
-                        {{-- Hiển thị lỗi nếu có --}}
+                        <!--Thẻ hiển thị lỗi - Start-->
                         @if (session('errors_import'))
-                            <div class="alert alert-danger">
-                                <strong>Dữ liệu bị lỗi:</strong>
-                                <ul class="mb-0">
-                                    @foreach (session('errors_import') as $failure)
-                                        <li>
-                                            <strong>Dòng {{ $failure->row() }}:</strong>
-                                            <ul>
-                                                @foreach ($failure->errors() as $error)
-                                                    <li>{{ $error }}</li>
-                                                @endforeach
-                                            </ul>
-                                        </li>
-                                    @endforeach
-                                </ul>
+                            @php $failures = session('errors_import'); @endphp
+                            <div class="alert alert-danger d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>Dữ liệu bị lỗi:</strong> {{ count($failures) }} dòng lỗi
+                                </div>
+                                <button class="btn btn-success btn-sm " data-bs-toggle="modal"
+                                    data-bs-target="#importErrorModal">
+                                    Xem chi tiết
+                                </button>
                             </div>
                         @endif
+                        @if (session('errors_import'))
+                            @php $failures = session('errors_import'); @endphp
+
+                            <div class="modal fade" id="importErrorModal" tabindex="-1"
+                                aria-labelledby="importErrorModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-danger text-white">
+                                            <h5 class="modal-title" id="importErrorModalLabel">Chi tiết lỗi import</h5>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                                aria-label="Đóng"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <ul class="list-group">
+                                                @foreach ($failures as $failure)
+                                                    <li class="list-group-item">
+                                                        <strong>Dòng {{ $failure->row() }}:</strong>
+                                                        <ul class="mb-0">
+                                                            @foreach ($failure->errors() as $error)
+                                                                <li>{{ $error }}</li>
+                                                            @endforeach
+                                                        </ul>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Đóng</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+                        <!--Thẻ hiển thị lỗi - End-->
+                        <div class="d-flex justify-content-start mb-2">
+                            <button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#importGuideModal">
+                                📘 Hướng dẫn Import
+                            </button>
+                        </div>
+                        <!-- Modal Hướng dẫn Import -->
+                        <div class="modal fade" id="importGuideModal" tabindex="-1"
+                            aria-labelledby="importGuideModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-primary text-white">
+                                        <h5 class="modal-title" id="importGuideModalLabel">Hướng dẫn Import file Excel
+                                        </h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                            aria-label="Đóng"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>💡 <strong>Lưu ý khi Import:</strong></p>
+                                        <ul>
+                                            <li>File phải có định dạng <strong>.xlsx, .xls</strong> hoặc
+                                                <strong>.csv</strong>.
+                                            </li>
+                                            <ul>
+                                                <li><code>Cột A</code>: Họ và tên người dùng <strong>(bắt buộc
+                                                        nhập)</strong></li>
+                                                <li><code>Cột B</code>: Email <strong>(bắt buộc nhập)</strong></li>
+                                                <li><code>Cột C</code>: Số điện thoại <em>(có thể bỏ trống)</em></li>
+                                                <li><code>Cột D</code>: Vai trò <strong>(bắt buộc nhập)</strong> – chỉ chấp
+                                                    nhận <code>Giảng viên</code> hoặc <code>Sinh viên</code></li>
+                                            </ul>
+                                            <li>Không được để trống các ô bắt buộc, Email phải hợp lệ và không trùng.</li>
+                                        </ul>
+
+                                        <hr>
+
+                                        <p>📷 <strong>File mẫu Excel:</strong></p>
+                                        <img src="{{ asset('images/guide-import-ds-nguoi-dung-from-excel.png') }}"
+                                            alt="Mẫu file import" class="img-fluid rounded shadow">
+
+                                        {{-- <p class="mt-3">Bạn có thể <a href="{{ asset('files/mau-import.xlsx') }}"
+                                                download>tải file mẫu tại đây</a>.</p> --}}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Đóng</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
 
                         <form method="POST" action="{{ route('nguoi-dung.import') }}" enctype="multipart/form-data">
                             @csrf
@@ -119,11 +197,11 @@
                             <button type="submit" class="btn btn-primary">Thêm</button>
                         </form>
                     </div>
+                    <!--Tab Import file - End-->
                 </div>
+                <!-- Nội dung thẻ tab - End -->
             </div>
         </div>
-
-
     </div>
 @endsection
 
@@ -132,6 +210,15 @@
 
 @section('scripts')
     <script src="{{ asset('modules/nguoi-dung/js/them.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            @if (session('errors_import'))
+                var triggerEl = document.querySelector('#import-tab');
+                var tab = new bootstrap.Tab(triggerEl);
+                tab.show();
+            @endif
+        });
+    </script>
     @if (session('message'))
         <script>
             const Toast = Swal.mixin({

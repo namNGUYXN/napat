@@ -1,35 +1,14 @@
 @extends('layouts.admin')
 
 @section('content')
-    <div class="col bg-light p-4 overflow-auto custom-scrollbar">
-        <h2 class="mb-4">Chỉnh sửa người dùng</h2>
+    <div class="col bg-light p-3 overflow-auto custom-scrollbar">
+        <h2 class="mb-2">Chỉnh sửa người dùng</h2>
 
-        <a href="{{ route('nguoi-dung.index') }}" class="btn btn-outline-secondary mb-4">
+        <a href="{{ route('nguoi-dung.index') }}" class="btn btn-outline-secondary mb-2">
             <i class="fas fa-arrow-alt-circle-left me-2"></i>Danh sách người dùng
         </a>
-
-        {{-- @if ($errors->any())
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <ul class="list-unstyled m-0">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif --}}
-
-        {{-- @if (session('message'))
-        <div class="alert alert-{{ session('status') }} alert-dismissible fade show"      role="alert">
-        {{ session('message') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        @endif --}}
-
         <div class="card shadow-sm">
-            <div class="card-header bg-warning text-white">
-                <h5 class="mb-0">Thông tin người dùng</h5>
-            </div>
+            
             <div class="card-body">
                 <form method="POST" action="{{ route('nguoi-dung.cap-nhat', $nguoiDung->id) }}">
                     @csrf

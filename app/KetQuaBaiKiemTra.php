@@ -15,13 +15,10 @@ class KetQuaBaiKiemTra extends Model
         'id_thanh_vien_lop',
         'id_bai_kiem_tra',
         'ngay_lam',
+        'nop_qua_han',
         'so_cau_dung',
     ];
 
-    public function getNgayLamAttribute($value)
-    {
-        return $value ? Carbon::parse($value)->format('d/m/Y') : null;
-    }
     public function bai_kiem_tra()
     {
         return $this->belongsTo(BaiKiemTra::class, 'id_bai_kiem_tra');
