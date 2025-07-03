@@ -1,3 +1,16 @@
+#dropdownMenuButton1 {
+  background: none;
+  outline: none;
+  border: none;
+  padding: 0;
+}
+
+@media screen and (max-width: 575.99px) {
+  #dropdownMenuButton1 span {
+    display: none;
+  }
+}
+
 .sidebar.collapsed {
   width: 60px;
 }
@@ -70,5 +83,5 @@ ul.menu-sidebar a.nav-link i.fa-angle-down.rotated {
 }
 
 .content-row {
-  height: calc(100vh - 126px);
+  height: calc(100vh - 128px);
 }

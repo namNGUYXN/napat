@@ -134,6 +134,8 @@ $('#form-cap-nhat-thong-tin').on('submit', function (e) {
             Toast.fire({
                 icon: response.icon,
                 title: response.message
+            }).then(() => {
+                window.location.reload();
             });
             
             $('#ho_ten_error').text('');
