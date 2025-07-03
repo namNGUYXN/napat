@@ -39,7 +39,24 @@ class BaiKiemTraController extends Controller
         if ($thanhVienLop === null) {
             return view('modules.lop-hoc.thong-bao-nop-bai', [
                 'thanhCong' => false,
+                'noiDung' => "Không thể làm bài kiểm tra này",
                 'thongBao' => "Bạn không có quyền thực hiện yêu cầu này!!!",
+                'lop' => $baiKiemTra->lop_hoc_phan
+            ]);
+        }
+        if ($baiKiemTra->ngay_bat_dau > Carbon::now()) {
+            return view('modules.lop-hoc.thong-bao-nop-bai', [
+                'thanhCong' => false,
+                'noiDung' => "Không thể làm bài kiểm tra này",
+                'thongBao' => "Bài kiểm tra này chưa bắt đầu!!!",
+                'lop' => $baiKiemTra->lop_hoc_phan
+            ]);
+        }
+        if ($baiKiemTra->ngay_ket_thuc < Carbon::now()) {
+            return view('modules.lop-hoc.thong-bao-nop-bai', [
+                'thanhCong' => false,
+                'noiDung' => "Không thể làm bài kiểm tra này",
+                'thongBao' => "Bài kiểm tra này đã kết thúc rồi!!!",
                 'lop' => $baiKiemTra->lop_hoc_phan
             ]);
         }
@@ -174,6 +191,7 @@ class BaiKiemTraController extends Controller
         if (!$kiemTra['success']) {
             return view('modules.lop-hoc.thong-bao-nop-bai', [
                 'thanhCong' => false,
+                'noiDung' => "Không thể nộp bài",
                 'thongBao' => $kiemTra['message'],
                 'lop' => $baiKiemTra->lop_hoc_phan
             ]);
@@ -184,6 +202,7 @@ class BaiKiemTraController extends Controller
             if (!$this->baiKiemTraService->kiemTraNopQuaHan($baiKiemTra->id)) {
                 return view('modules.lop-hoc.thong-bao-nop-bai', [
                     'thanhCong' => false,
+                    'noiDung' => "Không thể nộp bài",
                     'thongBao' => "Không thể nộp bài do đã quá hạn nộp!!!",
                     'lop' => $baiKiemTra->lop_hoc_phan
                 ]);
@@ -195,6 +214,7 @@ class BaiKiemTraController extends Controller
         if (!$ketQua['success']) {
             return view('modules.lop-hoc.thong-bao-nop-bai', [
                 'thanhCong' => false,
+                'noiDung' => "Không thể nộp bài",
                 'thongBao' => $ketQua['message'],
                 'lop' => $baiKiemTra->lop_hoc_phan
             ]);
@@ -229,12 +249,12 @@ class BaiKiemTraController extends Controller
             'diem_toi_da.numeric' => 'Điểm tối đa phải là số.',
             'diem_toi_da.min' => 'Điểm tối đa không được âm.',
 
-            'ngay_bat_dau.required' => 'Vui lòng nhập ngày bắt đầu.',
-            'ngay_bat_dau.date_format' => 'Ngày bắt đầu phải đúng định dạng dd-mm-YYYY HH:ii:ss.',
+            'ngay_bat_dau.required' => 'Vui lòng nhập thời gian bắt đầu.',
+            'ngay_bat_dau.date_format' => 'Thời gian bắt đầu phải đúng định dạng dd-mm-YYYY HH:ii:ss.',
 
-            'ngay_ket_thuc.required' => 'Vui lòng nhập ngày kết thúc.',
-            'ngay_ket_thuc.date_format' => 'Ngày kết thúc phải đúng định dạng dd-mm-YYYY HH:ii:ss.',
-            'ngay_ket_thuc.after' => 'Ngày kết thúc phải sau ngày bắt đầu.',
+            'ngay_ket_thuc.required' => 'Vui lòng nhập thời gian kết thúc.',
+            'ngay_ket_thuc.date_format' => 'Thời gian kết thúc phải đúng định dạng dd-mm-YYYY HH:ii:ss.',
+            'ngay_ket_thuc.after' => 'Thời gian kết thúc phải sau thời gian bắt đầu.',
 
             'cho_phep_nop_qua_han.required' => 'Vui lòng chọn cho phép nộp quá hạn hay không.',
             'cho_phep_nop_qua_han.boolean' => 'Giá trị cho phép nộp quá hạn không hợp lệ.',
@@ -243,11 +263,12 @@ class BaiKiemTraController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'errors' => $validator->errors(), // <-- gửi mảng lỗi về
+                'errors' => $validator->errors(),
             ], 422);
         }
 
         $baiKiemTraHienTai = $this->baiKiemTraService->getById($request['id']);
+
 
         $kiemTra = $this->baiKiemTraService->kiemTraTieuDe(
             $request['tieu_de'],
@@ -264,8 +285,23 @@ class BaiKiemTraController extends Controller
             ]);
         }
 
+        $daBatDau = Carbon::parse($baiKiemTraHienTai->ngay_bat_dau)->lt(Carbon::now());
+
+        if ($daBatDau) {
+            // Nếu đã đến thời gian làm bài, chỉ cho cập nhật ngày_ket_thuc và cho_phep_nop_qua_han
+            $dataUpdate = [
+                'id' => $request['id'],
+                'ngay_ket_thuc' => $request['ngay_ket_thuc'],
+                'cho_phep_nop_qua_han' => $request['cho_phep_nop_qua_han'],
+                '__cap_nhat_gioi_han__' => true // cờ để xử lý trong service
+            ];
+        } else {
+            // Cập nhật toàn bộ nếu chưa đến giờ làm bài
+            $dataUpdate = $request->all();
+        }
+
         try {
-            $this->baiKiemTraService->capNhatBaiKiemTra($request->all());
+            $this->baiKiemTraService->capNhatBaiKiemTra($dataUpdate);
             $baiKiemTra = $this->baiKiemTraService->getById($request['id']);
             return response()->json(['success' => true, 'data' => $baiKiemTra]);
         } catch (\Exception $e) {

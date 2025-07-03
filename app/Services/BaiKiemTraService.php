@@ -123,6 +123,7 @@ class BaiKiemTraService
                     'id_thanh_vien_lop' => $idThanhVienLop,
                     'id_bai_kiem_tra' => $idBaiKiemTra,
                     'ngay_lam' => Carbon::now(),
+                    'nop_qua_han' => Carbon::now()->gt($baiKiemTra->ngay_ket_thuc),
                     'so_cau_dung' => 0,
                 ]);
 
@@ -297,6 +298,15 @@ class BaiKiemTraService
         DB::transaction(function () use ($data) {
             // Cập nhật bài kiểm tra
             $bai = BaiKiemTra::findOrFail($data['id']);
+            // Trường hợp chỉ cho phép cập nhật ngày kết thúc và cho phép nộp trễ
+            if (!empty($data['__cap_nhat_gioi_han__'])) {
+                $bai->update([
+                    'ngay_ket_thuc' => Carbon::createFromFormat('d-m-Y H:i:s', $data['ngay_ket_thuc'])->format('Y-m-d H:i:s'),
+                    'cho_phep_nop_qua_han' => $data['cho_phep_nop_qua_han'],
+                ]);
+                return;
+            }
+
             $bai->update([
                 'tieu_de' => $data['tieu_de'],
                 'diem_toi_da' => $data['diem_toi_da'],

@@ -111,7 +111,7 @@ class NguoiDungController extends Controller
     {
         $vaiTro = $request->input('vai_tro'); // null, 1, 2
         $keyword = $request->input('keyword');
-        $perPage = $request->input('per_page', 1);
+        $perPage = $request->input('per_page', 5);
 
         $danhSach = $this->nguoiDungService->danhSachNguoiDung($vaiTro, $keyword, $perPage);
 
@@ -177,6 +177,7 @@ class NguoiDungController extends Controller
                 ->with('icon', 'success');
         } catch (\Exception $e) {
             return back()
+                ->with('errors_import',)
                 ->with('message', 'Lỗi: ' . $e->getMessage())
                 ->with('icon', 'error');
         }

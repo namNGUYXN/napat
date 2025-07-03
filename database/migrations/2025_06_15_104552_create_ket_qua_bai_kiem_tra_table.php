@@ -18,6 +18,7 @@ class CreateKetQuaBaiKiemTraTable extends Migration
             $table->unsignedBigInteger('id_thanh_vien_lop');
             $table->unsignedBigInteger('id_bai_kiem_tra');
             $table->timestamp('ngay_lam');
+            $table->boolean('nop_qua_han');
             $table->smallInteger('so_cau_dung');
 
             $table->unique(['id_thanh_vien_lop', 'id_bai_kiem_tra']);
