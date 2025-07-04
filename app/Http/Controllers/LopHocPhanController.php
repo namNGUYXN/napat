@@ -431,7 +431,7 @@ class LopHocPhanController extends Controller
             if (!Str::contains($pathHinhAnh, 'no-image.png')) {
                 $this->uploadImageHelper->delete($pathHinhAnh);
             }
-            
+
             $page = $request->input('page', 1);
             $view = $request->input('view');
 
@@ -455,6 +455,45 @@ class LopHocPhanController extends Controller
         return response()->json([
             'message' => $result['message'],
             'icon' => 'error'
+        ]);
+    }
+
+    public function dangKy(Request $request, $id)
+    {
+        $lopHocPhan = $this->lopHocPhanService->layTheoId($id);
+        $khoa = $lopHocPhan->khoa;
+
+        $result = $this->thanhVienService->them($id);
+
+        if ($result['success']) {
+            $messageError = [];
+
+            // debug lỗi
+            if (!empty($messageError)) dd($messageError);
+
+            $page = $request->input('page', 1);
+            $view = $request->input('view');
+
+            if ($view == "lop-hoc-cua-toi") {
+                $dsLopHoc = $this->lopHocPhanService->getLopHocCuaToi($request, session('id_nguoi_dung'), $page);
+                $route = route('lop-hoc.lop-hoc-cua-toi');
+            } else if ($view == 'danh-sach') {
+                $dsLopHoc = $this->lopHocPhanService->layListTheoKhoa($request, $khoa->id, $page);
+                $route = route('lop-hoc.index', $khoa->slug);
+            } else dd("truyen view sai");
+
+            $html = view('partials.lop-hoc-phan.danh-sach.list', compact('dsLopHoc', 'view', 'route'))->render();
+
+            return response()->json([
+                'message' => 'Đã gửi đăng ký lớp học phần',
+                'icon' => 'success',
+                'html' => $html
+            ]);
+        }
+
+        return response()->json([
+            'message' => $result['message'],
+            'icon' => $result['icon']
         ]);
     }
 }

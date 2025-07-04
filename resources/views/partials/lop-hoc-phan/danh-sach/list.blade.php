@@ -75,6 +75,36 @@
                 </ul>
               </div>
             </div>
+          @elseif (session('vai_tro') == 'Sinh viên')
+            <div class="class-action-btn">
+              <div class="dropdown">
+                <button class="btn btn-transparent dropdown-toggle remove-arrow-down" type="button"
+                  data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="fas fa-ellipsis-v"></i>
+                </button>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a class="dropdown-item" href="{{ route('lop-hoc.detail', ['slug' => $lop->slug]) }}">
+                      Xem
+                    </a>
+                  </li>
+
+                  @php
+                    $thanhVienLopService = app(App\Services\ThanhVienLopService::class);
+                  @endphp
+
+                  @if (!$thanhVienLopService->daThamGiaLopHocPhan($lop->id))
+                    <li>
+                      <button class="dropdown-item btn-register-class" type="button"
+                        data-url-register="{{ route('lop-hoc-phan.register', $lop->id) }}">
+                        Đăng ký lớp
+                      </button>
+                    </li>
+                  @endif
+
+                </ul>
+              </div>
+            </div>
           @endif
         </div>
       </div>

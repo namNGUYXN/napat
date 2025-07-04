@@ -1107,7 +1107,7 @@ $(document).ready(function () {
     });
 
     //Nhấn chấp nhận yêu cầu tham gia lớp học
-    $(".btn-accept-request").click(function () {
+    $(document).on('click', '.btn-accept-request', function () {
         let id = $(this).data("id");
 
         Swal.fire({
@@ -1151,7 +1151,7 @@ $(document).ready(function () {
     });
 
     //Nhấn từ chối yêu cầu tham gia lớp học
-    $(".btn-reject-request").click(function () {
+    $(document).on('click', '.btn-reject-request', function () {
         let id = $(this).data("id");
 
         Swal.fire({

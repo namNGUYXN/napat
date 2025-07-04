@@ -133,6 +133,13 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien']], function (
 });
 
 
+// Các route cho sinh viên
+Route::group(['middleware' => ['auth.custom', 'vai_tro:sinh-vien']], function () {
+    // Đăng ký lớp
+    Route::post('/lop-hoc-phan/{id}/dang-ky', 'LopHocPhanController@dangKy')->name('lop-hoc-phan.register');
+});
+
+
 // Các route phía admin
 Route::group(['middleware' => ['auth.custom', 'vai_tro:admin']], function () {
 

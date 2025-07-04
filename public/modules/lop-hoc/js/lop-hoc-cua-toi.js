@@ -438,3 +438,73 @@ $(document).on('click', '.btn-delete-class', function () {
     }
   });
 });
+
+// Xử lý nút đăng ký lớp
+$(document).on('click', '.btn-register-class', function () {
+  const token = $('meta[name="csrf-token"]').attr('content');
+  const urlRegister = $(this).data('url-register');
+  const formData = new FormData(); // Lấy tất cả input từ form, bao gồm file
+  const params = new URLSearchParams(window.location.search);
+  const view = $('#modal-chinh-sua-lop-hoc-phan').data('view');
+
+  // Giá trị mặc định khi không có
+  const currentSort = params.get('sort') || 'newest';
+  const currentLimit = params.get('limit') || 3;
+  const currentSearch = params.get('search') || '';
+  const currentPage = params.get('page') || 1;
+
+  formData.append('_token', token);
+  formData.append('view', view);
+  formData.append('sort', currentSort);
+  formData.append('limit', currentLimit);
+  formData.append('search', currentSearch);
+  formData.append('page', currentPage);
+  
+  Swal.fire({
+    title: `Bạn có chắc chắn đăng ký lớp học phần này không?`,
+    // text: ``,
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Đăng ký",
+    cancelButtonText: "Hủy",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      $.ajax({
+        url: urlRegister,
+        type: 'POST',
+        data: formData,
+        contentType: false, // Để jQuery không set Content-Type
+        processData: false, // Để không chuyển FormData thành chuỗi query
+        dataType: "json",
+        success: function (response) {
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            width: "auto",
+            showConfirmButton: false,
+            timer: 3500,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+            },
+          });
+
+          Toast.fire({
+            icon: response.icon,
+            title: response.message,
+          });
+
+          $('#list-lop-hoc-phan').html(response.html);
+        },
+        error: function (xhr) {
+          alert(
+            "Đã xảy ra lỗi: " + xhr.status + " " + xhr.statusText
+          );
+        },
+      });
+    }
+  });
+});
