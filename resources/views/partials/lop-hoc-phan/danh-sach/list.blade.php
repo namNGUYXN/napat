@@ -67,7 +67,8 @@
                     </button>
                   </li>
                   <li>
-                    <button class="dropdown-item class-delete-btn" type="button">
+                    <button class="dropdown-item btn-delete-class" type="button"
+                      data-url-delete={{ route('lop-hoc-phan.delete', $lop->id) }}>
                       Xóa
                     </button>
                   </li>
@@ -79,6 +80,12 @@
       </div>
     @endforeach
   </div>
+
+  {{-- Dấu : báo hiệu cho blade đây là biểu thức php --}}
+  <x-pagination :paginator="$dsLopHoc" base-url="{{ $route }}" />
 @else
-  <h4 class="text-muted fst-italic text-center px-3 mt-5">Không tìm thấy hoặc chưa có lớp học phần</h4>
+  <h4 class="text-muted fst-italic text-center px-3 mt-5">
+    Không tìm thấy <span class="text-dark text-decoration-underline">{{ request('search', '') }}</span> hoặc chưa có
+    lớp học phần
+  </h4>
 @endif

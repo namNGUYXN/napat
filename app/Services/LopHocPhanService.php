@@ -219,4 +219,29 @@ class LopHocPhanService
             ];
         }
     }
+
+    public function xoa($lopHocPhan, $nguoiDung)
+    {
+        try {
+            DB::beginTransaction();
+
+            if ($lopHocPhan->id_giang_vien != $nguoiDung->id) {
+                throw new \Exception("Bạn không thể xóa lớp học phần của người khác");
+            }
+
+            $lopHocPhan->delete();
+
+            DB::commit();
+            return [
+                'success' => true,
+                'message' => "Xóa lớp học phần thành công",
+            ];
+        } catch (\Exception $e) {
+            DB::rollback();
+            return [
+                'success' => false,
+                'message' => $e->getMessage()
+            ];
+        }
+    }
 }

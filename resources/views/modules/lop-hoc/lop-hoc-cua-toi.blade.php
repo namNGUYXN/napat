@@ -19,11 +19,12 @@
     @endif --}}
 
     <div id="list-lop-hoc-phan">
-      @include('partials.lop-hoc-phan.danh-sach.list', [$dsLopHoc, 'view' => 'lop-hoc-cua-toi'])
+      @include('partials.lop-hoc-phan.danh-sach.list', [
+          $dsLopHoc,
+          'view' => 'lop-hoc-cua-toi',
+          'route' => route('lop-hoc.lop-hoc-cua-toi'),
+      ])
     </div>
-
-    {{-- Dấu : báo hiệu cho blade đây là biểu thức php --}}
-    <x-pagination :paginator="$dsLopHoc" base-url="{{ route('lop-hoc.lop-hoc-cua-toi') }}" />
 
     @if (session('vai_tro') == 'Giảng viên')
       <button type="button" class="class-add-btn btn btn-primary rounded-circle" data-bs-toggle="modal"
@@ -52,7 +53,9 @@
                   <span class="text-muted">(100 từ)</span>
                   <abbr class="text-danger" title="Bắt buộc">*</abbr>
                 </label>
-                <input type="text" name="ten" class="form-control" id="" required maxlength="100">
+                <input type="text" name="ten" class="form-control" id="" required maxlength="255"
+                  autocomplete="off">
+                <small class="text-danger ten-error"></small>
               </div>
               <div class="mb-3">
                 <label for="" class="form-label">Khoa</label>
@@ -62,6 +65,7 @@
                     <option value="{{ $khoa->id }}">{{ $khoa->ten }}</option>
                   @endforeach
                 </select>
+                <small class="text-danger id-khoa-error"></small>
               </div>
               <div class="mb-3">
                 <label for="" class="form-label">Bài giảng</label>
@@ -71,14 +75,17 @@
                     <option value="{{ $baiGiang->id }}">{{ $baiGiang->ten }}</option>
                   @endforeach
                 </select>
+                <small class="text-danger id-bai-giang-error"></small>
               </div>
               <div class="mb-3">
                 <label for="" class="form-label">Mô tả ngắn (255 từ)</label>
                 <textarea name="mo_ta_ngan" id="" rows="5" class="form-control" maxlength="255"></textarea>
+                <small class="text-danger mo-ta-ngan-error"></small>
               </div>
               <div class="mb-3">
                 <label for="img-upload-modal-them" class="form-label">Hình ảnh</label>
                 <input class="form-control" type="file" name="hinh_anh" id="img-upload-modal-them" accept="image/*">
+                <small class="text-danger d-block hinh-anh-error"></small>
                 <div id="img-preview-container-modal-them" class="mt-3 position-relative d-inline-block">
                   <img src="#" alt="Ảnh xem trước" class="img-preview img-thumbnail"
                     style="display: none; max-width: 200px; max-height: 200px;">
@@ -99,8 +106,8 @@
     <form action="" method="POST" enctype="multipart/form-data">
       @csrf
       @method('PUT')
-      <div class="modal fade" id="modal-chinh-sua-lop-hoc-phan" tabindex="-1" aria-hidden="true"
-        data-bs-focus="false" data-view="lop-hoc-cua-toi">
+      <div class="modal fade" id="modal-chinh-sua-lop-hoc-phan" tabindex="-1" aria-hidden="true" data-bs-focus="false"
+        data-view="lop-hoc-cua-toi">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
           <div class="modal-content">
             <div class="modal-header bg-warning text-white">
@@ -117,9 +124,9 @@
                   <span class="text-muted">(100 từ)</span>
                   <abbr class="text-danger" title="Bắt buộc">*</abbr>
                 </label>
-                <input type="text" name="ten" class="form-control" id="ten-lop-hoc-phan" required
-                  maxlength="100">
-                <small class="text-danger" id="ten-error"></small>
+                <input type="text" name="ten" class="form-control" id="ten-lop-hoc-phan" autocomplete="off"
+                  required maxlength="100">
+                <small class="text-danger ten-error"></small>
               </div>
               <div class="mb-3">
                 <label for="" class="form-label">Khoa</label>
@@ -129,7 +136,7 @@
                     <option value="{{ $khoa->id }}">{{ $khoa->ten }}</option>
                   @endforeach
                 </select>
-                <small class="text-danger" id="id-khoa-error"></small>
+                <small class="text-danger id-khoa-error"></small>
               </div>
               <div class="mb-3">
                 <label for="" class="form-label">Bài giảng</label>
@@ -139,18 +146,18 @@
                     <option value="{{ $baiGiang->id }}">{{ $baiGiang->ten }}</option>
                   @endforeach
                 </select>
-                <small class="text-danger" id="id-bai-giang-error"></small>
+                <small class="text-danger id-bai-giang-error"></small>
               </div>
               <div class="mb-3">
                 <label for="" class="form-label">Mô tả ngắn (255 từ)</label>
                 <textarea name="mo_ta_ngan" id="mo-ta-lop-hoc-phan" rows="5" class="form-control" maxlength="255"></textarea>
-                <small class="text-danger" id="mo-ta-ngan-error"></small>
+                <small class="text-danger mo-ta-ngan-error"></small>
               </div>
               <div class="mb-3">
                 <label for="img-upload-modal-chinh-sua" class="form-label">Hình ảnh</label>
                 <input class="form-control" type="file" name="hinh_anh" id="img-upload-modal-chinh-sua"
                   accept="image/*">
-                <small class="text-danger d-block" id="hinh-anh-error"></small>
+                <small class="text-danger d-block hinh-anh-error"></small>
                 <div id="img-preview-container-modal-chinh-sua" class="mt-3 position-relative d-inline-block">
                   <img src="#" alt="Ảnh xem trước" class="img-preview img-thumbnail"
                     style="display: none; max-width: 200px; max-height: 200px;">

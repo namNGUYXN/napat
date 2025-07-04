@@ -9,7 +9,7 @@ class SecureFileController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('secure_file')->only('privateImage', 'privateFile');
+        $this->middleware('secure_file')->only('privateImage', 'privateFile', 'privateImageWord');
     }
 
     private function downloadFile($id_nguoi_dung, $ten_file)

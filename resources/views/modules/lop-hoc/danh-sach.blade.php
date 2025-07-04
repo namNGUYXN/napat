@@ -10,11 +10,15 @@
     </h2>
 
     <div id="list-lop-hoc-phan">
-      @include('partials.lop-hoc-phan.danh-sach.list', ['dsLopHoc' => $listLopHocPhan, 'view' => 'danh-sach'])
+      @include('partials.lop-hoc-phan.danh-sach.list', [
+          'dsLopHoc' => $listLopHocPhan,
+          'view' => 'danh-sach',
+          'route' => route('lop-hoc.index', $khoa->slug),
+      ])
     </div>
 
     {{-- Dấu : báo hiệu cho blade đây là biểu thức php --}}
-    <x-pagination :paginator="$listLopHocPhan" base-url="{{ route('lop-hoc.index', $khoa->slug) }}" />
+    {{-- <x-pagination :paginator="$listLopHocPhan" base-url="{{  }}" /> --}}
 
     {{-- <button type="button" class="class-add-btn btn btn-primary rounded-circle" data-bs-toggle="modal"
       data-bs-target="#exampleModal">
@@ -128,8 +132,8 @@
                   <span class="img-remove-btn close-btn" style="display: none;">&times;</span>
                 </div>
                 <div class="mt-3 d-inline-block">
-                  <img src="" id="hinh-anh-lop-hoc-phan" data-url="{{ asset('storage/') }}"
-                    class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
+                  <img src="" id="hinh-anh-lop-hoc-phan" data-url="{{ asset('storage/') }}" class="img-thumbnail"
+                    style="max-width: 200px; max-height: 200px;">
                 </div>
               </div>
             </div>
