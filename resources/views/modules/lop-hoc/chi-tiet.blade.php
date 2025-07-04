@@ -494,7 +494,7 @@
   <script src="{{ asset('vendor/tinymce-5/tinymce.min.js') }}"></script>
   <script src="{{ asset('js/config-tinymce.js') }}"></script>
   <script src="{{ asset('modules/lop-hoc/js/chi-tiet-lop-hoc.js') }}"></script>
-  <script src="{{ asset('modules/lop-hoc/js/lop-hoc-cua-toi.js') }}"></script>
+  {{-- <script src="{{ asset('modules/lop-hoc/js/lop-hoc-cua-toi.js') }}"></script> --}}
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/vn.js"></script>

@@ -96,6 +96,7 @@ $(document).on('click', '.btn-update-class', function () {
     $('#mo-ta-lop-hoc-phan').val(lopHocPhan.mo_ta_ngan);
     $('#hinh-anh-lop-hoc-phan').attr('src', pathStorage + lopHocPhan.hinh_anh);
     formUpdate.attr('action', urlUpdate);
+    formUpdate.data('url-detail', urlDetail);
     $('#modal-chinh-sua-lop-hoc-phan').modal('show');
     return;
   }
@@ -125,11 +126,98 @@ $(document).on('click', '.btn-update-class', function () {
       $('#mo-ta-lop-hoc-phan').val(lopHocPhan.mo_ta_ngan);
       $('#hinh-anh-lop-hoc-phan').attr('src', pathStorage + lopHocPhan.hinh_anh);
       formUpdate.attr('action', urlUpdate);
+      formUpdate.data('url-detail', urlDetail);
       $('#modal-chinh-sua-lop-hoc-phan').modal('show');
     },
     error: function (xhr) {
       alert('Đã xảy ra lỗi: ' + xhr.status + ' ' + xhr.statusText);
     }
   });
+});
 
+// Xử lý submit form chỉnh sửa lớp học phần
+$('#modal-chinh-sua-lop-hoc-phan').closest('form').on('submit', function (e) {
+  e.preventDefault();
+
+  const token = $('meta[name="csrf-token"]').attr('content');
+  const form = $(this);
+  const urlUpdate = form.attr('action');
+  const formData = new FormData(this); // Lấy tất cả input từ form, bao gồm file
+  const currentPage = new URLSearchParams(window.location.search).get('page') || 1;
+  formData.append('page', currentPage);
+
+  $.ajax({
+    url: urlUpdate,
+    type: 'POST',
+    data: formData,
+    dataType: 'json',
+    contentType: false, // Để jQuery không set Content-Type
+    processData: false, // Để không chuyển FormData thành chuỗi query
+    headers: {
+      'X-CSRF-TOKEN': token
+    },
+    dataType: 'json',
+    success: function (response) {
+      const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        width: 'auto',
+        showConfirmButton: false,
+        timer: 3500,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        }
+      });
+
+      Toast.fire({
+        icon: response.icon,
+        title: response.message
+      });
+
+      // Reset input hinh_anh
+      const imgPreview = $('#img-preview-container-modal-chinh-sua .img-preview');
+      const imgUpload = $('#img-upload-modal-chinh-sua');
+      const imgRemoveBtn = $('#img-preview-container-modal-chinh-sua .img-remove-btn');
+      handleRemoveImg(imgPreview, imgUpload, imgRemoveBtn);
+
+      $('#list-lop-hoc-phan').html(response.html);
+      $('#modal-chinh-sua-lop-hoc-phan').modal('hide');
+
+      // Xóa cache chi tiết lớp cũ
+      delete cache[form.data('url-detail')];
+    },
+    error: function (xhr) {
+      if (xhr.status === 422) {
+        const errors = xhr.responseJSON.errors;
+
+        if (errors.ten) {
+          $('#ten-error').text(errors.ten[0]);
+        }
+
+        if (errors.id_khoa) {
+          $('#id-khoa-error').text(errors.id_khoa[0]);
+        }
+
+        if (errors.id_bai_giang) {
+          $('#id-bai-giang-error').text(errors.id_bai_giang[0]);
+        }
+
+        if (errors.mo_ta_ngan) {
+          $('#mo-ta-ngan-error').text(errors.mo_ta_ngan[0]);
+        }
+
+        if (errors.hinh_anh) {
+          $('#hinh-anh-error').text(errors.hinh_anh[0]);
+        }
+      } else {
+        alert('Đã xảy ra lỗi: ' + xhr.status + ' ' + xhr.statusText);
+      }
+    }
+  });
+});
+
+$('#modal-chinh-sua-lop-hoc-phan').on('hidden.bs.modal', function () {
+  $(this).find('small[class*="text-danger"]').text('');
 });

@@ -20,7 +20,7 @@ class LopHocPhanService
         return LopHocPhan::where('slug', $slug)->firstOrFail();
     }
 
-    public function getLopHocCuaToi($idNguoiDung, $perPage = -1)
+    public function getLopHocCuaToi($idNguoiDung, $perPage = -1, $page = -1)
     {
         if ($idNguoiDung != null) {
             $idLopHoc = ThanhVienLop::where('id_nguoi_dung', $idNguoiDung)
@@ -37,6 +37,9 @@ class LopHocPhanService
 
             if ($perPage > 0) {
                 return $listLopHocPhan->paginate($perPage);
+            }
+            else if ($page > 0) {
+                return $listLopHocPhan->paginate($perPage, ['*'], 'page', $page);
             }
             
             return $listLopHocPhan->get();

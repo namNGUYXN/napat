@@ -321,6 +321,7 @@ class LopHocPhanController extends Controller
 
     public function modalChinhSua(Request $request, $id)
     {
+        // dd($request->input('page'));
         $result = $this->handleChinhSua($request, $id);
 
         if ($result['success']) {
@@ -340,11 +341,23 @@ class LopHocPhanController extends Controller
                 if (!$resultInsert['success']) $messageError['bai_trong_lop.them'] = $resultInsert['message'];
             }
 
+            // debug lỗi
             if (!empty($messageError)) dd($messageError);
 
-            return redirect()->route('lop-hoc.lop-hoc-cua-toi')->with([
+            $page = $request->input('page', 1);
+            $perPage = 1;
+            $dsLopHoc = $this->lopHocPhanService->getLopHocCuaToi(session('id_nguoi_dung'), $perPage, $page);
+            $html = view('partials.lop-hoc-phan.danh-sach.list', compact('dsLopHoc'))->render();
+
+            // return redirect()->route('lop-hoc.lop-hoc-cua-toi')->with([
+            //     'message' => $result['message'],
+            //     'icon' => 'success'
+            // ]);
+
+            return response()->json([
                 'message' => $result['message'],
-                'icon' => 'success'
+                'icon' => 'success',
+                'html' => $html
             ]);
         }
 

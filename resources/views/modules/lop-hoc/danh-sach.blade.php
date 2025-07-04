@@ -9,66 +9,8 @@
       <span class="text-secondary fst-italic">{{ $khoa->ten }}</span>
     </h2>
 
-    <div class="class-grid">
-      @foreach ($listLopHocPhan as $lopHocPhan)
-        <div class="class-card rounded">
-          <a href="{{ route('lop-hoc.detail', ['slug' => $lopHocPhan->slug]) }}" class="class-img">
-            <img src="{{ asset('storage/' . $lopHocPhan->hinh_anh) }}" class="img-fluid rounded-top" alt="">
-          </a>
-          <div class="p-3">
-            <a href="{{ route('lop-hoc.detail', ['slug' => $lopHocPhan->slug]) }}"
-              class="text-dark class-name">{{ $lopHocPhan->ten }}</a>
-            <p class="mb-1"><b>Giảng viên: </b>{{ $lopHocPhan->giang_vien->ho_ten }}</p>
-            <p class="mb-1"><b>Mã lớp: </b>{{ $lopHocPhan->ma }}</p>
-            <p class="mb-1"><b>Khoa: </b>{{ $lopHocPhan->khoa->ten }}</p>
-            <small class="text-secondary fst-italic">{{ $lopHocPhan->mo_ta_ngan }}</small>
-
-            @if (session('vai_tro') == 'Giảng viên' && session('id_nguoi_dung') == $lopHocPhan->giang_vien->id)
-              <div class="class-action-btn">
-                <div class="dropdown">
-                  <button class="btn btn-transparent dropdown-toggle remove-arrow-down" type="button"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fas fa-ellipsis-v"></i>
-                  </button>
-                  <ul class="dropdown-menu">
-                    <li>
-                      <a class="dropdown-item" href="{{ route('lop-hoc.detail', ['slug' => $lopHocPhan->slug]) }}">
-                        Xem
-                      </a>
-                    </li>
-                    <li>
-                      <button class="dropdown-item btn-update-class" type="button"
-                        data-url-detail="{{ route('lop-hoc-phan.detail-modal', $lopHocPhan->id) }}"
-                        data-url-update="{{ route('lop-hoc-phan.update-modal', $lopHocPhan->id) }}">
-                        Chỉnh sửa
-                      </button>
-                    </li>
-                    <li>
-                      <button class="dropdown-item class-delete-btn" type="button">
-                        Xóa
-                      </button>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            @elseif (session('vai_tro') == 'Sinh viên')
-              <div class="class-action-btn">
-                <div class="dropdown">
-                  <button class="btn btn-transparent dropdown-toggle remove-arrow-down" type="button"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="fas fa-ellipsis-v"></i>
-                  </button>
-                  <ul class="dropdown-menu">
-                    <li><button class="dropdown-item" type="button">Đăng ký lớp học</button></li>
-                    <li><button class="dropdown-item" type="button">Rời lớp học</button></li>
-                  </ul>
-                </div>
-              </div>
-            @endif
-          </div>
-        </div>
-      @endforeach
-      <!-- Thêm các lớp khác nếu cần -->
+    <div id="list-lop-hoc-phan">
+      @include('partials.lop-hoc-phan.danh-sach.list', ['dsLopHoc' => $listLopHocPhan])
     </div>
 
     {{-- Dấu : báo hiệu cho blade đây là biểu thức php --}}
@@ -147,6 +89,7 @@
                   <abbr class="text-danger" title="Bắt buộc">*</abbr>
                 </label>
                 <input type="text" name="ten" class="form-control" id="ten-lop-hoc-phan" required maxlength="100">
+                <small class="text-danger" id="ten-error"></small>
               </div>
               <div class="mb-3">
                 <label for="" class="form-label">Khoa</label>
@@ -156,6 +99,7 @@
                     <option value="{{ $khoa->id }}">{{ $khoa->ten }}</option>
                   @endforeach
                 </select>
+                <small class="text-danger" id="id-khoa-error"></small>
               </div>
               <div class="mb-3">
                 <label for="" class="form-label">Bài giảng</label>
@@ -165,23 +109,26 @@
                     <option value="{{ $baiGiang->id }}">{{ $baiGiang->ten }}</option>
                   @endforeach
                 </select>
+                <small class="text-danger" id="id-bai-giang-error"></small>
               </div>
               <div class="mb-3">
                 <label for="" class="form-label">Mô tả ngắn (255 từ)</label>
                 <textarea name="mo_ta_ngan" id="mo-ta-lop-hoc-phan" rows="5" class="form-control" maxlength="255"></textarea>
+                <small class="text-danger" id="mo-ta-ngan-error"></small>
               </div>
               <div class="mb-3">
                 <label for="img-upload-modal-chinh-sua" class="form-label">Hình ảnh</label>
                 <input class="form-control" type="file" name="hinh_anh" id="img-upload-modal-chinh-sua"
                   accept="image/*">
+                <small class="text-danger d-block" id="hinh-anh-error"></small>
                 <div id="img-preview-container-modal-chinh-sua" class="mt-3 position-relative d-inline-block">
                   <img src="#" alt="Ảnh xem trước" class="img-preview img-thumbnail"
                     style="display: none; max-width: 200px; max-height: 200px;">
                   <span class="img-remove-btn close-btn" style="display: none;">&times;</span>
                 </div>
                 <div class="mt-3 d-inline-block">
-                  <img src="" id="hinh-anh-lop-hoc-phan" data-url="{{ asset('storage/') }}"
-                    class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
+                  <img src="" id="hinh-anh-lop-hoc-phan" data-url="{{ asset('storage/') }}" class="img-thumbnail"
+                    style="max-width: 200px; max-height: 200px;">
                 </div>
               </div>
             </div>
