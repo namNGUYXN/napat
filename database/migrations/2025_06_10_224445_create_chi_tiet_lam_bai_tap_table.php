@@ -15,14 +15,14 @@ class CreateChiTietLamBaiTapTable extends Migration
     {
         Schema::create('chi_tiet_lam_bai_tap', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('id_thanh_vien_lop');
+            $table->unsignedBigInteger('id_ket_qua');
             $table->unsignedBigInteger('id_cau_hoi');
             $table->string('dap_an_chon', 2);
             $table->boolean('chon_dung');
 
-            $table->unique(['id_thanh_vien_lop', 'id_cau_hoi']);
+            $table->unique(['id_ket_qua', 'id_cau_hoi']);
             // PK
-            $table->foreign('id_thanh_vien_lop')->references('id')->on('thanh_vien_lop')->onDelete('cascade');
+            $table->foreign('id_ket_qua')->references('id')->on('ket_qua_bai_tap')->onDelete('cascade');
             // FK
             $table->foreign('id_cau_hoi')->references('id')->on('cau_hoi_bai_tap')->onDelete('cascade');
         });

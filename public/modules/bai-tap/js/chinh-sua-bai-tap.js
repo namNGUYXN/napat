@@ -8,7 +8,6 @@ function addQuestion(
     correct = ""
 ) {
     questionCounter++;
-    console.log(questionCounter);
     $("div[id|='questionsFormContainer']").append(
         questionTemplate(questionCounter, questionText, answers, correct)
     );
@@ -38,7 +37,6 @@ function updateQuestionNumbers() {
             $this.find(".remove-question-btn").show();
         }
     });
-    console.log(questionCounter);
 }
 
 //Nhấn nút thêm câu hỏi
@@ -164,7 +162,7 @@ const questionTemplate = (
 $(document).ready(function () {
     let danhSachBaiTap = [];
 
-    const baiGiangId = $("#myTabContent").data("id-bai-giang");
+    const baiGiangId = $("#idBai").val();
 
     if (baiGiangId) {
         $.ajax({
@@ -174,7 +172,7 @@ $(document).ready(function () {
             success: function (data) {
                 danhSachBaiTap = data;
                 console.log("Đã load bài tập:", danhSachBaiTap);
-                // renderExerciseTable(baiTapList); // Gọi nếu bạn có hàm hiển thị
+                loadExerciseList(danhSachBaiTap);
             },
             error: function (xhr, status, error) {
                 console.error("Lỗi khi load danh sách bài tập:", error);
@@ -249,16 +247,6 @@ $(document).ready(function () {
         $(this).removeClass("was-validated");
     });
 
-    // --- Xử lý sự kiện cho Tab Bài tập ---
-
-    // Xử lý khi nhấn nút "Xóa" (icon thùng rác) của BÀI TẬP (giữ nguyên)
-    // $(document).on('click', '.delete-exercise-btn', function () {
-    //   const exerciseId = $(this).data('exercise-id');
-    //   if (confirm('Bạn có chắc chắn muốn xóa bài tập này (ID: ' + exerciseId + ')?')) {
-    //     alert('Đã xóa bài tập có ID: ' + exerciseId + '.');
-    //   }
-    // });
-
     // --- XỬ LÝ XEM CHI TIẾT BÀI TẬP ---
     $(document).on("click", ".view-exercise-detail-btn", function () {
         const exerciseId = $(this).data("exercise-id");
@@ -270,7 +258,7 @@ $(document).ready(function () {
         $("#modalExerciseTitle").text(exercise.tieu_de);
         $("#exerciseDetailTitle").text(exercise.tieu_de);
         $("#exerciseDetailType").text("Trắc nghiệm");
-        $("#exerciseDetailDate").text("");
+        $("#exerciseDetailDate").text(exercise.ngay_tao);
         $("#exerciseDetailContent").html("");
 
         // Xử lý danh sách câu hỏi nếu có
@@ -282,7 +270,7 @@ $(document).ready(function () {
         const $container = $("#exerciseQuestionsContainer");
         $container.empty();
 
-        const questions = exercise.cau_hoi_bai_taps || [];
+        const questions = exercise.list_cau_hoi || [];
 
         if (questions.length > 0) {
             $container.append('<h6 class="mt-3">Câu hỏi trắc nghiệm:</h6>');
@@ -406,30 +394,10 @@ $(document).ready(function () {
         // Đặt lại form khi modal mở
         $("#newExerciseForm")[0].reset();
         $("#newExerciseForm").removeClass("was-validated");
-        $("#questionsFormContainer").empty(); // Xóa tất cả câu hỏi cũ
+        $("div[id|='questionsFormContainer']").empty(); // Xóa tất cả câu hỏi cũ
         questionCounter = 0; // Đặt lại bộ đếm
         $("#noQuestionsMessage").show(); // Hiển thị thông báo khi không có câu hỏi
     });
-
-    // // --- Thêm câu hỏi mới ---
-    // $("#addQuestionBtn").on("click", function () {
-    //     questionCounter++;
-    //     $("#questionsFormContainer").append(questionTemplate(questionCounter));
-    //     updateQuestionNumbers();
-    // });
-
-    // // --- Xóa câu hỏi ---
-    // // Sử dụng event delegation vì các nút xóa được thêm động
-    // $(document).on("click", ".remove-question-btn", function () {
-    //     const $questionItemToRemove = $(this).closest(".question-item");
-    //     if ($("#questionsFormContainer .question-item").length > 1) {
-    //         // Chỉ xóa nếu có hơn 1 câu hỏi
-    //         $questionItemToRemove.remove();
-    //         updateQuestionNumbers();
-    //     } else {
-    //         alert("Bạn phải có ít nhất một câu hỏi.");
-    //     }
-    // });
 
     // Xử lý nhấn nút Lưu bài tập Trong Modal thêm bài tập
     $("#newExerciseForm").on("submit", function (e) {
@@ -441,7 +409,9 @@ $(document).ready(function () {
             return;
         }
 
-        if ($("#questionsFormContainer .question-item").length === 0) {
+        if (
+            $("div[id|='questionsFormContainer'] .question-item").length === 0
+        ) {
             $("#noQuestionsMessage").show();
             alert("Vui lòng thêm ít nhất một câu hỏi cho bài tập.");
             return;
@@ -454,13 +424,15 @@ $(document).ready(function () {
             diemToiDa: $("#newExerciseMaxScore").val()
                 ? parseInt($("#newExerciseMaxScore").val())
                 : null,
-            idBaiGiang: $("#idBaiGiang").val(),
+            idBaiGiang: $("#idBai").val(),
             danhSachCauHoi: [],
         };
 
         let isValid = true;
 
-        $("#questionsFormContainer .question-item").each(function (index) {
+        $("div[id|='questionsFormContainer'] .question-item").each(function (
+            index
+        ) {
             const $thisQuestion = $(this);
             const cauHoi = $thisQuestion.find(".question-text").val();
             const danhSachDapAn = [];
@@ -473,7 +445,7 @@ $(document).ready(function () {
                 if (
                     $thisQuestion
                         .find(
-                            `.correct-answer-radio[value="option${String.fromCharCode(
+                            `.correct-answer-radio[value="${String.fromCharCode(
                                 65 + optIndex
                             )}"]`
                         )
@@ -508,7 +480,7 @@ $(document).ready(function () {
 
         // Gửi AJAX
         $.ajax({
-            url: "/bai-tap", // Hoặc dùng route: `{{ route('bai_tap.store') }}`
+            url: "/bai-tap",
             method: "POST",
             contentType: "application/json",
             data: JSON.stringify(newExercise),
@@ -517,22 +489,38 @@ $(document).ready(function () {
             },
             success: function (response) {
                 if (response.success) {
-                    alert(response.message);
-                    $("#addExerciseModal").modal("hide");
-                    $("#newExerciseForm")[0].reset();
-                    $("#newExerciseForm").removeClass("was-validated");
-                    $("#questionsFormContainer").empty();
-                    $("#noQuestionsMessage").show();
-                    questionCounter = 0;
-                    // Cập nhật lại danh sách và hiển thị
-                    danhSachBaiTap = response.data;
-                    loadExerciseList(danhSachBaiTap);
+                    Swal.fire({
+                        icon: "success",
+                        title: "Thành công",
+                        text: response.message,
+                        confirmButtonText: "Đóng",
+                    }).then(() => {
+                        $("#addExerciseModal").modal("hide");
+                        $("#newExerciseForm")[0].reset();
+                        $("#newExerciseForm").removeClass("was-validated");
+                        $("div[id|='questionsFormContainer']").empty();
+                        $("#noQuestionsMessage").show();
+                        questionCounter = 0;
+                        // Cập nhật lại danh sách và hiển thị
+                        danhSachBaiTap = response.data;
+                        loadExerciseList(danhSachBaiTap);
+                    });
                 } else {
-                    alert("Tạo thất bại: " + response.message);
+                    Swal.fire({
+                        icon: "error",
+                        title: "Tạo thất bại",
+                        text: response.message,
+                        confirmButtonText: "Đóng",
+                    });
                 }
             },
             error: function (xhr) {
-                alert("Đã xảy ra lỗi phía server.");
+                Swal.fire({
+                    icon: "error",
+                    title: "Lỗi server",
+                    text: "Đã xảy ra lỗi phía server.",
+                    confirmButtonText: "Đóng",
+                });
                 console.error(xhr.responseText);
             },
         });

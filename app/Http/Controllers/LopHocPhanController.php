@@ -13,6 +13,7 @@ use App\Services\BanTinService;
 use App\Services\KhoaService;
 use App\Services\NguoiDungService;
 use App\Services\ThanhVienLopService;
+use App\Services\BaiTapService;
 use Illuminate\Support\Str;
 
 class LopHocPhanController extends Controller
@@ -27,6 +28,7 @@ class LopHocPhanController extends Controller
     protected $khoaService;
     protected $uploadImageHelper;
     protected $baiGiangService;
+    protected $baiTapService;
 
     public function __construct(
         AuthService $authService,
@@ -38,7 +40,8 @@ class LopHocPhanController extends Controller
         NguoiDungService $nguoiDungService,
         KhoaService $khoaService,
         UploadImageHelper $uploadImageHelper,
-        BaiGiangService $baiGiangService
+        BaiGiangService $baiGiangService,
+        BaiTapService $baiTapService
     ) {
         $this->authService = $authService;
         $this->lopHocPhanService = $lopHocPhanService;
@@ -53,6 +56,7 @@ class LopHocPhanController extends Controller
         $this->middleware('lop_hoc_phan')->only('chiTiet', 'modalChinhSua', 'chinhSua');
         $this->middleware('bai_trong_lop')->only('xemNoiDungBai');
         $this->middleware('bai_giang')->only('them', 'modalChinhSua', 'chinhSua');
+        $this->baiTapService = $baiTapService;
     }
 
     public function lopHocPhanTheoKhoa(Request $request, $slug)
@@ -201,6 +205,8 @@ class LopHocPhanController extends Controller
 
         $baiTrongLop = $this->baiTrongLopService->layBaiTrongLop($id, $bai->id, $giangVienXem);
 
+        $baiTap = $this->baiTapService->getByBaiGiangId($bai->id);
+
         $listChuong = $baiGiang->list_chuong;
         $listChuongTrongLop = $lopHocPhan->list_bai->groupBy('id_chuong');
 
@@ -210,7 +216,8 @@ class LopHocPhanController extends Controller
             'baiTrongLop',
             'lopHocPhan',
             'listChuong',
-            'listChuongTrongLop'
+            'listChuongTrongLop',
+            'baiTap'
         ));
     }
 
