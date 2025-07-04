@@ -5,6 +5,7 @@ namespace App\Services;
 use App\BaiGiangLop;
 use App\LopHocPhan;
 use App\ThanhVienLop;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -20,7 +21,7 @@ class LopHocPhanService
         return LopHocPhan::where('slug', $slug)->firstOrFail();
     }
 
-    public function getLopHocCuaToi($idNguoiDung, $perPage = -1, $page = -1)
+    public function getLopHocCuaToi(Request $request, $idNguoiDung, $page = -1)
     {
         if ($idNguoiDung != null) {
             $idLopHoc = ThanhVienLop::where('id_nguoi_dung', $idNguoiDung)
@@ -32,19 +33,91 @@ class LopHocPhanService
 
             $listLopHocPhan = LopHocPhan::with(['giang_vien'])
                 ->whereIn('id', $idLopHoc)
-                ->where('is_delete', false)
-                ->orderByDesc('ngay_tao');
+                ->where('is_delete', false);
 
-            if ($perPage > 0) {
-                return $listLopHocPhan->paginate($perPage);
+            // Tìm kiếm
+            if ($search = $request->input('search')) {
+                $listLopHocPhan->where(function ($q) use ($search) {
+                    $q->where('ten', 'LIKE', '%' . $search . '%')
+                        ->orWhere('ma', 'LIKE', '%' . $search . '%');
+                });
             }
-            else if ($page > 0) {
-                return $listLopHocPhan->paginate($perPage, ['*'], 'page', $page);
+
+            // Sắp xếp
+            switch ($request->input('sort')) {
+                case 'newest':
+                    $listLopHocPhan->orderByDesc('ngay_tao');
+                    break;
+                case 'oldest':
+                    $listLopHocPhan->orderBy('ngay_tao');
+                    break;
+                case 'name_asc':
+                    $listLopHocPhan->orderBy('ten');
+                    break;
+                case 'name_desc':
+                    $listLopHocPhan->orderByDesc('ten');
+                    break;
+                default:
+                    $listLopHocPhan->orderByDesc('ngay_tao'); // mặc định: mới nhất
             }
-            
+
+            // Số lượng hiển thị mỗi trang
+            $limit = $request->input('limit', 3); // mặc định: 3
+
+            if ($page > 0) {
+                return $listLopHocPhan->paginate($limit, ['*'], 'page', $page)->appends($request->query());
+            } else {
+                return $listLopHocPhan->paginate($limit)->appends($request->query());
+            }
+
             return $listLopHocPhan->get();
         }
         return collect();
+    }
+
+    public function layListTheoKhoa(Request $request, $idKhoa, $page = -1)
+    {
+        $listLopHocPhan = LopHocPhan::with(['giang_vien'])->where([
+            ['id_khoa', $idKhoa],
+            ['is_delete', false]
+        ]);
+
+        // Tìm kiếm
+        if ($search = $request->input('search')) {
+            $listLopHocPhan->where(function ($q) use ($search) {
+                $q->where('ten', 'LIKE', '%' . $search . '%')
+                    ->orWhere('ma', 'LIKE', '%' . $search . '%');
+            });
+        }
+
+        // Sắp xếp
+        switch ($request->input('sort')) {
+            case 'newest':
+                $listLopHocPhan->orderByDesc('ngay_tao');
+                break;
+            case 'oldest':
+                $listLopHocPhan->orderBy('ngay_tao');
+                break;
+            case 'name_asc':
+                $listLopHocPhan->orderBy('ten');
+                break;
+            case 'name_desc':
+                $listLopHocPhan->orderByDesc('ten');
+                break;
+            default:
+                $listLopHocPhan->orderByDesc('ngay_tao'); // mặc định: mới nhất
+        }
+
+        // Số lượng hiển thị mỗi trang
+        $limit = $request->input('limit', 3); // mặc định: 3
+
+        if ($page > 0) {
+            return $listLopHocPhan->paginate($limit, ['*'], 'page', $page)->appends($request->query());
+        } else {
+            return $listLopHocPhan->paginate($limit)->appends($request->query());
+        }
+
+        return $listLopHocPhan->get();
     }
 
     public function layChiTietLopHoc($slug)
@@ -63,7 +136,7 @@ class LopHocPhanService
             $slug = Str::slug($data['ten']);
             $checkExists = LopHocPhan::where([
                 ['id_giang_vien', session('id_nguoi_dung')],
-                ['slug', 'LIKE', $slug . '%']
+                ['slug', 'LIKE', $slug . '-' . '%']
             ])->exists();
 
             if ($checkExists) {

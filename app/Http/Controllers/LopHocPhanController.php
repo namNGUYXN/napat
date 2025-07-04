@@ -63,7 +63,7 @@ class LopHocPhanController extends Controller
         $khoa = $this->khoaService->layTheoSlug($slug);
         $listKhoa = $this->khoaService->layListKhoa();
         $listBaiGiang = $nguoiDung->list_bai_giang;
-        $listLopHocPhan = $khoa->list_lop_hoc_phan()->paginate(6);
+        $listLopHocPhan = $this->lopHocPhanService->layListTheoKhoa($request, $khoa->id);
 
         // Kiểm tra số trang
         $page = (int) $request->input('page', 1);
@@ -97,8 +97,7 @@ class LopHocPhanController extends Controller
         $idNguoiDung = session('id_nguoi_dung');
         $nguoiDung = $this->nguoiDungService->layTheoId($idNguoiDung);
 
-        $perPage = 6;
-        $dsLopHoc = $this->lopHocPhanService->getLopHocCuaToi($idNguoiDung, $perPage);
+        $dsLopHoc = $this->lopHocPhanService->getLopHocCuaToi($request, $idNguoiDung);
         $listBaiGiang = $nguoiDung->list_bai_giang;
         $listKhoa = $this->khoaService->layListKhoa();
 
@@ -321,7 +320,9 @@ class LopHocPhanController extends Controller
 
     public function modalChinhSua(Request $request, $id)
     {
-        // dd($request->input('page'));
+        // dd($request->all());
+        $idKhoa = $this->lopHocPhanService->layTheoId($id)->id_khoa;
+
         $result = $this->handleChinhSua($request, $id);
 
         if ($result['success']) {
@@ -345,14 +346,14 @@ class LopHocPhanController extends Controller
             if (!empty($messageError)) dd($messageError);
 
             $page = $request->input('page', 1);
-            $perPage = 1;
-            $dsLopHoc = $this->lopHocPhanService->getLopHocCuaToi(session('id_nguoi_dung'), $perPage, $page);
-            $html = view('partials.lop-hoc-phan.danh-sach.list', compact('dsLopHoc'))->render();
+            $view = $request->input('view');
+            if ($view == "lop-hoc-cua-toi") {
+                $dsLopHoc = $this->lopHocPhanService->getLopHocCuaToi($request, session('id_nguoi_dung'), $page);
+            } else if ($view == 'danh-sach') {
+                $dsLopHoc = $this->lopHocPhanService->layListTheoKhoa($request, $idKhoa, $page);
+            } else dd("truyen view sai");
 
-            // return redirect()->route('lop-hoc.lop-hoc-cua-toi')->with([
-            //     'message' => $result['message'],
-            //     'icon' => 'success'
-            // ]);
+            $html = view('partials.lop-hoc-phan.danh-sach.list', compact('dsLopHoc', 'view'))->render();
 
             return response()->json([
                 'message' => $result['message'],
@@ -361,7 +362,7 @@ class LopHocPhanController extends Controller
             ]);
         }
 
-        return redirect()->back()->with([
+        return response()->json([
             'message' => $result['message'],
             'icon' => 'error'
         ]);

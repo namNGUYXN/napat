@@ -10,7 +10,7 @@
     </h2>
 
     <div id="list-lop-hoc-phan">
-      @include('partials.lop-hoc-phan.danh-sach.list', ['dsLopHoc' => $listLopHocPhan])
+      @include('partials.lop-hoc-phan.danh-sach.list', ['dsLopHoc' => $listLopHocPhan, 'view' => 'danh-sach'])
     </div>
 
     {{-- Dấu : báo hiệu cho blade đây là biểu thức php --}}
@@ -71,7 +71,8 @@
     <form action="" method="POST" enctype="multipart/form-data">
       @csrf
       @method('PUT')
-      <div class="modal fade" id="modal-chinh-sua-lop-hoc-phan" tabindex="-1" aria-hidden="true">
+      <div class="modal fade" id="modal-chinh-sua-lop-hoc-phan" tabindex="-1" aria-hidden="true" data-bs-focus="false"
+        data-view="danh-sach">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
           <div class="modal-content">
             <div class="modal-header bg-warning text-white">
@@ -127,8 +128,8 @@
                   <span class="img-remove-btn close-btn" style="display: none;">&times;</span>
                 </div>
                 <div class="mt-3 d-inline-block">
-                  <img src="" id="hinh-anh-lop-hoc-phan" data-url="{{ asset('storage/') }}" class="img-thumbnail"
-                    style="max-width: 200px; max-height: 200px;">
+                  <img src="" id="hinh-anh-lop-hoc-phan" data-url="{{ asset('storage/') }}"
+                    class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
                 </div>
               </div>
             </div>

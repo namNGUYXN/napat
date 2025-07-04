@@ -7,7 +7,7 @@
   <div class="col bg-light p-4 overflow-auto custom-scrollbar">
     <h2 class="mb-3">Lớp học của tôi</h2>
 
-    @if ($errors->any())
+    {{-- @if ($errors->any())
       <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <ul class="list-unstyled m-0">
           @foreach ($errors->all() as $error)
@@ -16,19 +16,21 @@
         </ul>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
-    @endif
+    @endif --}}
 
     <div id="list-lop-hoc-phan">
-      @include('partials.lop-hoc-phan.danh-sach.list', [$dsLopHoc])
+      @include('partials.lop-hoc-phan.danh-sach.list', [$dsLopHoc, 'view' => 'lop-hoc-cua-toi'])
     </div>
 
     {{-- Dấu : báo hiệu cho blade đây là biểu thức php --}}
     <x-pagination :paginator="$dsLopHoc" base-url="{{ route('lop-hoc.lop-hoc-cua-toi') }}" />
 
-    <button type="button" class="class-add-btn btn btn-primary rounded-circle" data-bs-toggle="modal"
-      data-bs-target="#modal-them-lop-hoc-phan">
-      <i class="fas fa-plus"></i>
-    </button>
+    @if (session('vai_tro') == 'Giảng viên')
+      <button type="button" class="class-add-btn btn btn-primary rounded-circle" data-bs-toggle="modal"
+        data-bs-target="#modal-them-lop-hoc-phan">
+        <i class="fas fa-plus"></i>
+      </button>
+    @endif
 
     {{-- Modal thêm lớp học phần --}}
     <form action="{{ route('lop-hoc.store') }}" method="POST" enctype="multipart/form-data">
@@ -97,7 +99,8 @@
     <form action="" method="POST" enctype="multipart/form-data">
       @csrf
       @method('PUT')
-      <div class="modal fade" id="modal-chinh-sua-lop-hoc-phan" tabindex="-1" aria-hidden="true">
+      <div class="modal fade" id="modal-chinh-sua-lop-hoc-phan" tabindex="-1" aria-hidden="true"
+        data-bs-focus="false" data-view="lop-hoc-cua-toi">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
           <div class="modal-content">
             <div class="modal-header bg-warning text-white">

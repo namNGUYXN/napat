@@ -142,8 +142,20 @@ $('#modal-chinh-sua-lop-hoc-phan').closest('form').on('submit', function (e) {
   const token = $('meta[name="csrf-token"]').attr('content');
   const form = $(this);
   const urlUpdate = form.attr('action');
+  const view = $('#modal-chinh-sua-lop-hoc-phan').data('view');
   const formData = new FormData(this); // Lấy tất cả input từ form, bao gồm file
-  const currentPage = new URLSearchParams(window.location.search).get('page') || 1;
+  const params = new URLSearchParams(window.location.search);
+
+  // Giá trị mặc định khi không có
+  const currentSort = params.get('sort') || 'newest';
+  const currentLimit = params.get('limit') || 3;
+  const currentSearch = params.get('search') || '';
+  const currentPage = params.get('page') || 1;
+
+  formData.append('view', view);
+  formData.append('sort', currentSort);
+  formData.append('limit', currentLimit);
+  formData.append('search', currentSearch);
   formData.append('page', currentPage);
 
   $.ajax({
@@ -221,3 +233,44 @@ $('#modal-chinh-sua-lop-hoc-phan').closest('form').on('submit', function (e) {
 $('#modal-chinh-sua-lop-hoc-phan').on('hidden.bs.modal', function () {
   $(this).find('small[class*="text-danger"]').text('');
 });
+
+// Khi thay đổi sort, limit thì reload với tham số mới
+$(document).on('change', '#sort-select, #limit-select', function () {
+  redirectWithFilters();
+});
+
+// Khi submit thì cũng reload với tham số
+$(document).on('submit', '#form-filter', function (e) {
+  e.preventDefault();
+  redirectWithFilters();
+});
+
+function redirectWithFilters() {
+  const sort = $('#sort-select').val();
+  const limit = $('#limit-select').val();
+  const search = $('#search-input').val();
+  const path = window.location.pathname;
+
+  // Tạo query string
+  const params = new URLSearchParams();
+
+  // Chỉ thêm nếu search có giá trị
+  if (search && search.trim() !== '') {
+    params.set('search', search.trim());
+  }
+
+  // Chỉ thêm nếu khác giá trị mặc định
+  if (sort && sort !== 'newest') {
+    params.set('sort', sort);
+  }
+
+  if (limit && limit !== '3') {
+    params.set('limit', limit);
+  }
+
+  // Tạo URL cuối cùng
+  const queryString = params.toString();
+  const url = path + (queryString ? `?${queryString}` : '');
+
+  window.location.href = url;
+}
