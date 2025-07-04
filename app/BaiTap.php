@@ -31,6 +31,6 @@ class BaiTap extends Model
     public function list_thanh_vien_lop()
     {
         return $this->belongsToMany(ThanhVienLop::class, 'ket_qua_bai_tap', 'id_bai_tap', 'id_thanh_vien_lop')
-                ->withPivot('so_cau_dung', 'ngay_lam');
+            ->withPivot('so_cau_dung', 'ngay_lam');
     }
 }

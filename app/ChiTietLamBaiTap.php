@@ -11,9 +11,18 @@ class ChiTietLamBaiTap extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'id_thanh_vien_lop',
+        'id_ket_qua',
         'id_cau_hoi',
         'dap_an_chon',
         'chon_dung',
     ];
+
+    public function ket_qua()
+    {
+        return $this->belongsTo(KetQuaBaiTap::class, 'id_ket_qua');
+    }
+    public function cau_hoi()
+    {
+        return $this->belongsTo(CauHoiBaiTap::class, 'id_cau_hoi');
+    }
 }

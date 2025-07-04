@@ -18,6 +18,7 @@ class CreateBaiTapTable extends Migration
             $table->string('tieu_de', 100);
             $table->string('slug')->unique();
             $table->smallInteger('diem_toi_da');
+            $table->timestamp('ngay_tao')->useCurrent();
             $table->unsignedBigInteger('id_bai');
             $table->boolean('is_delete')->default(false);
 

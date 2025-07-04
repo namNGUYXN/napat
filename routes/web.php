@@ -72,12 +72,19 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien+sinh-vien']], 
     Route::post('/lop-hoc-phan/{slug}/bai/cong-khai', 'LopHocPhanController@congKhaiBaiTrongLop')->name('bai-trong-lop.public');
     Route::get('/lop-hoc-phan/{id}/bai/{slug}', 'LopHocPhanController@xemNoiDungBai')->name('bai-trong-lop.detail');
 
+    //Bài tập
+    Route::get('lop-hoc-phan/{lop}/bai-tap/{id}/chi-tiet', 'BaiTapController@layChiTiet');
+    Route::get('/lop-hoc-phan/{id_lop_hoc_phan}/lam-bai/{id}', 'BaiTapController@lamBai')
+        ->name('bai-tap.lam-bai');
+    Route::post('/bai-tap/nop-bai', 'BaiTapController@nopBai')->name('bai-tap.nop-bai');
 
     //Bài kiểm tra
     Route::get('/bai-kiem-tra/{idLopHoc}', 'BaiKiemTraController@danhSachBaiKiemTra');
     Route::get('/lam-bai/{id}', 'BaiKiemTraController@lamBai')->name('lambai');
     Route::post('/bai-kiem-tra/nop-bai', 'BaiKiemTraController@nopBai')->name('bai-kiem-tra.nop-bai');
     Route::get('/bai-kiem-tra/{id}/chi-tiet', 'BaiKiemTraController@layChiTiet');
+
+
 
     //Lấy giờ hệ thống
     Route::get('/server-time', function () {
@@ -94,7 +101,7 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien']], function (
     Route::post('/lop-hoc-phan/{id}/modal-chi-tiet', 'LopHocPhanController@modalChiTiet')->name('lop-hoc-phan.detail-modal');
     Route::put('/lop-hoc-phan/{id}/modal-chinh-sua', 'LopHocPhanController@modalChinhSua')->name('lop-hoc-phan.update-modal');
     Route::put('/lop-hoc-phan/{id}/chinh-sua', 'LopHocPhanController@chinhSua')->name('lop-hoc-phan.update');
-    
+
     // Bài giảng
     Route::get('/bai-giang', 'BaiGiangController@giaoDienQuanLy')->name('bai-giang.index');
     Route::get('/bai-giang/{id}/chi-tiet', 'BaiGiangController@chiTiet')->name('bai-giang.detail');

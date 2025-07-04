@@ -4,19 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Services\BaiTapService;
 use Illuminate\Http\Request;
+use App\Services\ThanhVienLopService;
+use App\Services\LopHocPhanService;
 
 class BaiTapController extends Controller
 {
     protected $baiTapService;
+    protected $thanhVienLopService;
+    protected $lopHocPhanService;
 
-    public function __construct(BaiTapService $baiTapService)
+    public function __construct(BaiTapService $baiTapService, ThanhVienLopService $thanhVienService, LopHocPhanService $lopHocPhanService)
     {
         $this->baiTapService = $baiTapService;
-    }
-
-    function lamBai()
-    {
-        return view('modules.lop-hoc.lam-bai');
+        $this->thanhVienLopService = $thanhVienService;
+        $this->lopHocPhanService = $lopHocPhanService;
     }
 
     public function danhSachBaiTap($id)
@@ -46,5 +47,98 @@ class BaiTapController extends Controller
                 'message' => 'Tạo bài tập thất bại: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    //Dữ liệu chi tiết bài kiểm tra theo id bài kiểm tra
+    public function layChiTiet($id, $lop)
+    {
+        $idNguoiDung = session('id_nguoi_dung');
+        $vaiTro = session('vai_tro');
+
+        $result = $this->baiTapService->layChiTietTheoVaiTro($id, $lop, $idNguoiDung, $vaiTro);
+
+        return response()->json($result);
+    }
+
+    //Trả về giao diện làm bài tập
+    function lamBai($id, $id_lop_hoc_phan)
+    {
+        $idNguoiDung = session('id_nguoi_dung');
+        $baiTap = $this->baiTapService->getById($id);
+        $thanhVienLop = $this->thanhVienLopService->layTheoLopVaNguoiDung(
+            $id_lop_hoc_phan,
+            $idNguoiDung
+        );
+
+        $lopHocPhan = $this->lopHocPhanService->layTheoId($id_lop_hoc_phan);
+
+        if ($thanhVienLop === null) {
+            return view('modules.lop-hoc.thong-bao-nop-bai', [
+                'thanhCong' => false,
+                'noiDung' => "Không thể làm bài tập này",
+                'thongBao' => "Bạn không có quyền thực hiện yêu cầu này!!!",
+                'lop' => $lopHocPhan
+            ]);
+        }
+        return view('modules.lop-hoc.lam-bai-tap', compact('baiTap', 'lopHocPhan'));
+    }
+
+    //Lưu lại kết quả làm bài của sinh viên
+    public function nopBai(Request $request)
+    {
+        $request->validate([
+            'id_bai_tap' => 'required|exists:bai_tap,id',
+            'answers' => 'required|array',
+        ]);
+
+        $idBaiTap = $request->input('id_bai_tap');
+        $answers = $request->input('answers');
+        $id_lop_hoc_phan = $request->input('id_lop_hoc_phan');
+
+        $baiTap = $this->baiTapService->getById($idBaiTap);
+
+        $idNguoiDung = session('id_nguoi_dung');
+
+        $thanhVienLop = $this->thanhVienLopService->layTheoLopVaNguoiDung(
+            $id_lop_hoc_phan,
+            $idNguoiDung
+        );
+        $lopHocPhan = $this->lopHocPhanService->layTheoId($id_lop_hoc_phan);
+        if ($thanhVienLop === null) {
+            return view('modules.lop-hoc.thong-bao-nop-bai', [
+                'thanhCong' => false,
+                'thongBao' => "Bạn không có quyền thực hiện yêu cầu này!!!",
+                'lop' => $lopHocPhan
+            ]);
+        }
+
+        // Kiểm tra trước khi cho nộp bài
+        $kiemTra = $this->baiTapService->kiemTraDaNopBai($idBaiTap, $thanhVienLop->id);
+
+        if (!$kiemTra['success']) {
+            return view('modules.lop-hoc.thong-bao-nop-bai', [
+                'thanhCong' => false,
+                'noiDung' => "Không thể nộp bài",
+                'thongBao' => $kiemTra['message'],
+                'lop' => $lopHocPhan
+            ]);
+        }
+
+        $ketQua = $this->baiTapService->nopBai($idBaiTap, $thanhVienLop->id, $answers);
+
+        if (!$ketQua['success']) {
+            return view('modules.lop-hoc.thong-bao-nop-bai', [
+                'thanhCong' => false,
+                'noiDung' => "Không thể nộp bài",
+                'thongBao' => $ketQua['message'],
+                'lop' => $lopHocPhan
+            ]);
+        }
+
+        return view('modules.lop-hoc.thong-bao-nop-bai', [
+            'thanhCong' => true,
+            'soCauDung' => $ketQua['data']->so_cau_dung,
+            'lop' => $lopHocPhan
+        ]);
     }
 }
