@@ -160,4 +160,41 @@ class ThanhVienLopService
             ];
         }
     }
+
+    public function xoa($idLopHocPhan)
+    {
+        try {
+            DB::beginTransaction();
+
+            $icon = 'error';
+            $thanhVienLop = ThanhVienLop::where([
+                ['id_lop_hoc_phan', $idLopHocPhan],
+                ['id_nguoi_dung', session('id_nguoi_dung')],
+                ['is_accept', true]
+            ]);
+
+            $checkExists = $thanhVienLop->exists();
+
+            if (!$checkExists) {
+                $icon = 'warning';
+                throw new \Exception('Bạn đang cố rời khỏi lớp học phần chưa từng tham gia!');
+            }
+
+            $thanhVienLop->delete();
+
+            DB::commit();
+
+            return [
+                'success' => true,
+                'message' => 'Rời khỏi lớp học phần thành công'
+            ];
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return [
+                'success' => false,
+                'icon' => $icon,
+                'message' => $e->getMessage()
+            ];
+        }
+    }
 }

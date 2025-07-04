@@ -466,21 +466,11 @@ class LopHocPhanController extends Controller
         $result = $this->thanhVienService->them($id);
 
         if ($result['success']) {
-            $messageError = [];
-
-            // debug lỗi
-            if (!empty($messageError)) dd($messageError);
-
             $page = $request->input('page', 1);
             $view = $request->input('view');
 
-            if ($view == "lop-hoc-cua-toi") {
-                $dsLopHoc = $this->lopHocPhanService->getLopHocCuaToi($request, session('id_nguoi_dung'), $page);
-                $route = route('lop-hoc.lop-hoc-cua-toi');
-            } else if ($view == 'danh-sach') {
-                $dsLopHoc = $this->lopHocPhanService->layListTheoKhoa($request, $khoa->id, $page);
-                $route = route('lop-hoc.index', $khoa->slug);
-            } else dd("truyen view sai");
+            $dsLopHoc = $this->lopHocPhanService->layListTheoKhoa($request, $khoa->id, $page);
+            $route = route('lop-hoc.index', $khoa->slug);
 
             $html = view('partials.lop-hoc-phan.danh-sach.list', compact('dsLopHoc', 'view', 'route'))->render();
 
@@ -488,6 +478,23 @@ class LopHocPhanController extends Controller
                 'message' => 'Đã gửi đăng ký lớp học phần',
                 'icon' => 'success',
                 'html' => $html
+            ]);
+        }
+
+        return response()->json([
+            'message' => $result['message'],
+            'icon' => $result['icon']
+        ]);
+    }
+
+    public function roiKhoi($id)
+    {
+        $result = $this->thanhVienService->xoa($id);
+
+        if ($result['success']) {
+            return response()->json([
+                'message' => $result['message'],
+                'icon' => 'success'
             ]);
         }
 

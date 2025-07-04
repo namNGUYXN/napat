@@ -137,6 +137,8 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien']], function (
 Route::group(['middleware' => ['auth.custom', 'vai_tro:sinh-vien']], function () {
     // Đăng ký lớp
     Route::post('/lop-hoc-phan/{id}/dang-ky', 'LopHocPhanController@dangKy')->name('lop-hoc-phan.register');
+    // Rời khỏi lớp
+    Route::delete('/lop-hoc-phan/{id}/roi-khoi', 'LopHocPhanController@roiKhoi')->name('lop-hoc-phan.leave');
 });
 
 
