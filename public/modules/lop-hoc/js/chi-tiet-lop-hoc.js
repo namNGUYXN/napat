@@ -1128,7 +1128,26 @@ $(document).ready(function () {
                     },
                     success: function (res) {
                         if (res.status) {
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: "top-end",
+                                width: "auto",
+                                showConfirmButton: false,
+                                timer: 3500,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.onmouseenter = Swal.stopTimer;
+                                    toast.onmouseleave = Swal.resumeTimer;
+                                },
+                            });
+
+                            Toast.fire({
+                                icon: 'success',
+                                title: 'Chấp nhận đăng ký lớp thành công',
+                            });
+
                             $("#list-thanh-vien").html(res.html);
+                            $('#member-tab span').text(res.tongSoThanhVien);
                         } else {
                             Swal.fire({
                                 icon: "error",
@@ -1908,6 +1927,63 @@ $(document).on('click', '.btn-leave-class', function () {
                     }).then(() => {
                         window.location.href = urlMyClass;
                     });
+                },
+                error: function (xhr) {
+                    alert(
+                        "Đã xảy ra lỗi: " + xhr.status + " " + xhr.statusText
+                    );
+                },
+            });
+        }
+    });
+});
+
+$(document).on('click', '.btn-remove-from-class', function () {
+    const formData = new FormData(); // Lấy tất cả input từ form, bao gồm file
+    const token = $('meta[name="csrf-token"]').attr('content');
+    const urlRemoveFrom = $(this).data('url-remove-from');
+
+    formData.append('_token', token);
+    formData.append('_method', 'DELETE');
+
+    Swal.fire({
+        title: `Bạn có chắc chắn xóa sinh viên này khỏi lớp?`,
+        text: `Các dữ liệu mà sinh viên thao tác trong lớp sẽ không thể khôi phục!`,
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Xóa khỏi lớp",
+        cancelButtonText: "Hủy",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: urlRemoveFrom,
+                type: 'POST',
+                data: formData,
+                contentType: false, // Để jQuery không set Content-Type
+                processData: false, // Để không chuyển FormData thành chuỗi query
+                dataType: "json",
+                success: function (response) {
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: "top-end",
+                        width: "auto",
+                        showConfirmButton: false,
+                        timer: 3500,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
+                        },
+                    });
+
+                    Toast.fire({
+                        icon: response.icon,
+                        title: response.message,
+                    });
+
+                    $("#list-thanh-vien").html(response.html);
                 },
                 error: function (xhr) {
                     alert(

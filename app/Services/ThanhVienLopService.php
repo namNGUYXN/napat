@@ -47,6 +47,13 @@ class ThanhVienLopService
             ];
         }
 
+        if ($thanhVien->lop_hoc_phan->id_giang_vien != session('id_nguoi_dung')) {
+            return [
+                'status' => false,
+                'message' => 'Không được chấp nhận yêu cầu ở lớp khác'
+            ];
+        }
+
         $thanhVien->is_accept = true;
         $thanhVien->save();
 
@@ -71,6 +78,13 @@ class ThanhVienLopService
             return [
                 'status' => false,
                 'message' => 'Yêu cầu đã được chấp nhận trước đó.'
+            ];
+        }
+
+        if ($thanhVien->lop_hoc_phan->id_giang_vien != session('id_nguoi_dung')) {
+            return [
+                'status' => false,
+                'message' => 'Không được từ chối yêu cầu ở lớp khác'
             ];
         }
 
@@ -161,7 +175,7 @@ class ThanhVienLopService
         }
     }
 
-    public function xoa($idLopHocPhan)
+    public function xoa($idLopHocPhan, $idNguoiDung)
     {
         try {
             DB::beginTransaction();
@@ -169,7 +183,7 @@ class ThanhVienLopService
             $icon = 'error';
             $thanhVienLop = ThanhVienLop::where([
                 ['id_lop_hoc_phan', $idLopHocPhan],
-                ['id_nguoi_dung', session('id_nguoi_dung')],
+                ['id_nguoi_dung', $idNguoiDung],
                 ['is_accept', true]
             ]);
 
@@ -185,8 +199,7 @@ class ThanhVienLopService
             DB::commit();
 
             return [
-                'success' => true,
-                'message' => 'Rời khỏi lớp học phần thành công'
+                'success' => true
             ];
         } catch (\Exception $e) {
             DB::rollBack();

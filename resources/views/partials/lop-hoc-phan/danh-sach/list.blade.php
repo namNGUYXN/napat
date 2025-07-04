@@ -43,7 +43,7 @@
           <p class="mb-1"><b>Giảng viên: </b>{{ $lop->giang_vien->ho_ten }}</p>
           <p class="mb-1"><b>Mã lớp: </b>{{ $lop->ma }}</p>
           <p class="mb-1"><b>Khoa: </b>{{ $lop->khoa->ten }}</p>
-          <small class="text-secondary fst-italic d-inline-block me-3">
+          <small class="text-secondary fst-italic d-inline-block me-3" title="{{ $lop->mo_ta_ngan }}">
             {{ Str::of($lop->mo_ta_ngan)->limit(100) }}
           </small>
           @if (session('id_nguoi_dung') == $lop->bai_giang->id_giang_vien)

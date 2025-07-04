@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\UploadImageHelper;
+use App\Imports\ThanhVienLopImport;
 use Illuminate\Http\Request;
 use App\Services\AuthService;
 use App\Services\BaiGiangService;
@@ -14,6 +15,7 @@ use App\Services\KhoaService;
 use App\Services\NguoiDungService;
 use App\Services\ThanhVienLopService;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 
 class LopHocPhanController extends Controller
 {
@@ -489,11 +491,11 @@ class LopHocPhanController extends Controller
 
     public function roiKhoi($id)
     {
-        $result = $this->thanhVienService->xoa($id);
+        $result = $this->thanhVienService->xoa($id, session('id_nguoi_dung'));
 
         if ($result['success']) {
             return response()->json([
-                'message' => $result['message'],
+                'message' => 'Rời khỏi lớp học phần thành công',
                 'icon' => 'success'
             ]);
         }
@@ -501,6 +503,110 @@ class LopHocPhanController extends Controller
         return response()->json([
             'message' => $result['message'],
             'icon' => $result['icon']
+        ]);
+    }
+
+    public function xoaKhoilop($idLopHocPhan, $idNguoiDung)
+    {
+        $lopHocPhan = $this->lopHocPhanService->layTheoId($idLopHocPhan);
+        $result = $this->thanhVienService->xoa($idLopHocPhan, $idNguoiDung);
+
+        if ($result['success']) {
+            $dsThanhVien = $this->thanhVienService->getAcceptedMembersByLopId($idLopHocPhan);
+            $dsYeuCau = $this->thanhVienService->getPendingMembersByLopId($idLopHocPhan);
+
+            $html = view('partials._thanh-vien-lop', [
+                'thanhVien' => $dsThanhVien,
+                'yeuCau' => $dsYeuCau,
+                'lopHocPhan' => $lopHocPhan
+            ])->render();
+
+            return response()->json([
+            'message' => 'Xóa sinh viên khỏi lớp thành công',
+            'icon' => 'success',
+            'html' => $html
+        ]);
+        }
+        
+        return response()->json([
+            'message' => $result['message'],
+            'icon' => $result['icon']
+        ]);
+    }
+
+    public function chapNhan($id)
+    {
+        $result = $this->thanhVienService->chapNhanYeuCau($id);
+
+        if ($result['status']) {
+            $lopId = $result['lop_id'];
+            $lopHocPhan = $this->lopHocPhanService->layTheoId($lopId);
+
+            $dsThanhVien = $this->thanhVienService->getAcceptedMembersByLopId($lopId);
+            $dsYeuCau = $this->thanhVienService->getPendingMembersByLopId($lopId);
+
+            $html = view('partials._thanh-vien-lop', [
+                'thanhVien' => $dsThanhVien,
+                'yeuCau' => $dsYeuCau,
+                'lopHocPhan' => $lopHocPhan
+            ])->render();
+
+            return response()->json([
+                'status' => true,
+                'message' => $result['message'],
+                'html' => $html,
+                'tongSoThanhVien' => $dsThanhVien->count()
+            ]);
+        }
+
+        return response()->json($result);
+    }
+
+    public function tuChoi($id)
+    {
+        $result = $this->thanhVienService->tuChoiYeuCau($id);
+
+        if ($result['status']) {
+            $lopId = $result['lop_id'];
+
+            $dsYeuCau = $this->thanhVienService->getPendingMembersByLopId($lopId);
+
+            $html = view('partials._danh-sach-yeu-cau', [
+                'yeuCau' => $dsYeuCau,
+            ])->render();
+
+            return response()->json([
+                'status' => true,
+                'message' => $result['message'],
+                'html' => $html
+            ]);
+        }
+
+        return response()->json($result);
+    }
+
+    public function themDanhSach(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls,csv',
+        ]);
+
+        $idLopHocPhan = $request->input('id_lop_hoc_phan');
+
+        $duocPhep = $this->thanhVienService->daThamGiaLopHocPhan($idLopHocPhan);
+
+        if ($duocPhep) {
+            Excel::import(new ThanhVienLopImport($idLopHocPhan), $request->file('file'));
+
+            return back()->with([
+                'message' => 'Đã import danh sách sinh viên!',
+                'icon' => 'success'
+            ]);
+        }
+
+        return back()->with([
+            'message' => 'Không được phép import danh sách sinh viên vào lớp khác',
+            'icon' => 'error'
         ]);
     }
 }

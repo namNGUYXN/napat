@@ -94,6 +94,7 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien']], function (
     Route::put('/lop-hoc-phan/{id}/modal-chinh-sua', 'LopHocPhanController@modalChinhSua')->name('lop-hoc-phan.update-modal');
     Route::put('/lop-hoc-phan/{id}/chinh-sua', 'LopHocPhanController@chinhSua')->name('lop-hoc-phan.update');
     Route::delete('/lop-hoc-phan/{id}/xoa', 'LopHocPhanController@xoa')->name('lop-hoc-phan.delete');
+    Route::delete('/lop-hoc-phan/{idLHP}/sinh-vien/{idND}', 'LopHocPhanController@xoaKhoiLop')->name('lop-hoc-phan.remove-from');
     
     // Bài giảng
     Route::get('/bai-giang', 'BaiGiangController@giaoDienQuanLy')->name('bai-giang.index');
@@ -123,9 +124,9 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien']], function (
     Route::post('/upload-image', 'BaiController@privateUploadImage')->name('upload.image');
 
     //Thành viên lớp
-    Route::post('/thanh-vien-lop/{id}/chap-nhan', 'ThanhVienLopController@chapNhan');
-    Route::post('/thanh-vien-lop/{id}/tu-choi', 'ThanhVienLopController@tuChoi');
-    Route::post('/thanh-vien/them-danh-sach', 'ThanhVienLopController@themDanhSach')->name('thanh-vien-lop.import');
+    Route::post('/thanh-vien-lop/{id}/chap-nhan', 'LopHocPhanController@chapNhan');
+    Route::post('/thanh-vien-lop/{id}/tu-choi', 'LopHocPhanController@tuChoi');
+    Route::post('/thanh-vien/them-danh-sach', 'LopHocPhanController@themDanhSach')->name('thanh-vien-lop.import');
 
     //Bài kiểm tra
     Route::post('/bai-kiem-tra', 'BaiKiemTraController@themBaiKiemTra')->name('bai_kiem_tra.them');

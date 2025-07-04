@@ -320,7 +320,7 @@
           </div>
           <div class="card-body">
             <div id="list-thanh-vien">
-              @include('partials._thanh-vien-lop')
+              @include('partials._thanh-vien-lop', [$lopHocPhan, $thanhVien])
             </div>
           </div>
         </div>
