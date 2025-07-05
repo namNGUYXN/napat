@@ -33,7 +33,7 @@ class BaiGiangController extends Controller
     function giaoDienQuanLy(Request $request)
     {
         $numPerPage = 3;
-        $listBaiGiang = $this->baiGiangService->layListTheoGiangVien($numPerPage);
+        $listBaiGiang = $this->baiGiangService->layListTheoGiangVien($request);
 
         // Kiểm tra số trang
         $page = (int) $request->input('page', 1);
@@ -43,6 +43,11 @@ class BaiGiangController extends Controller
             return redirect()->route('bai-giang.index', array_merge(
                 $request->except('page'),
                 ['page' => $lastPage]
+            ));
+        } else if ($page < 1) {
+                return redirect()->route('bai-giang.index', array_merge(
+                $request->except('page'),
+                ['page' => 1]
             ));
         }
 
@@ -103,20 +108,22 @@ class BaiGiangController extends Controller
         $result = $this->baiGiangService->them($data);
 
         if ($result['success']) {
-            return redirect()->route('bai-giang.index')->with([
+            $page = $request->input('page', 1);
+            $listBaiGiang = $this->baiGiangService->layListTheoGiangVien($request, $page);
+
+            $html = view('partials.bai-giang.list', compact('listBaiGiang'))->render();
+            
+            return response()->json([
                 'message' => $result['message'],
-                'icon' => 'success'
+                'icon' => 'success',
+                'html' => $html
             ]);
         }
 
-        return redirect()->back()->with([
+        return response()->json([
             'message' => $result['message'],
             'icon' => 'error'
         ]);
-
-        // echo "<pre>";
-        // print_r($data);
-        // echo "</pre>";
     }
 
     public function modalChiTiet($id)
@@ -132,7 +139,7 @@ class BaiGiangController extends Controller
     {
         $data = $request->validate(
             [
-                'ten' => 'sometimes|required|string|max:100',
+                'ten' => 'required|string|max:100',
                 'mo_ta_ngan' => 'nullable|string|max:255',
                 'hinh_anh' => 'image'
             ],
@@ -163,33 +170,52 @@ class BaiGiangController extends Controller
 
     public function modalChinhSua(Request $request, $id)
     {
+        // dd($request->all());
         $result = $this->handleChinhSua($request, $id);
 
         if ($result['success']) {
-            return redirect()->route('bai-giang.index')->with([
+            $page = $request->input('page', 1);
+            $listBaiGiang = $this->baiGiangService->layListTheoGiangVien($request, $page);
+
+            $html = view('partials.bai-giang.list', compact('listBaiGiang'))->render();
+
+            return response()->json([
                 'message' => $result['message'],
-                'icon' => 'success'
+                'icon' => 'success',
+                'html' => $html
             ]);
         }
 
-        return redirect()->back()->with([
+        return response()->json([
             'message' => $result['message'],
             'icon' => 'error'
         ]);
     }
 
-    public function xoa($id)
+    public function xoa(Request $request, $id)
     {
+        $pathHinhAnh = $this->baiGiangService->layTheoId($id)->hinh_anh;
         $result = $this->baiGiangService->xoa($id);
 
         if ($result['success']) {
-            return redirect()->route('bai-giang.index')->with([
+            // Xóa ảnh khỏi hệ thống
+            if (!Str::contains($pathHinhAnh, 'no-image.png')) {
+                $this->uploadImageHelper->delete($pathHinhAnh);
+            }
+
+            $page = $request->input('page', 1);
+            $listBaiGiang = $this->baiGiangService->layListTheoGiangVien($request, $page);
+
+            $html = view('partials.bai-giang.list', compact('listBaiGiang'))->render();
+
+            return response()->json([
                 'message' => $result['message'],
-                'icon' => 'success'
+                'icon' => 'success',
+                'html' => $html
             ]);
         }
 
-        return redirect()->route('bai-giang.index')->with([
+        return response()->json([
             'message' => $result['message'],
             'icon' => 'error'
         ]);

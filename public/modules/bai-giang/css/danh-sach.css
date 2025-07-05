@@ -51,10 +51,6 @@
   right: 10px;
 }
 
-.dropdown-toggle::after {
-  display: none !important;
-}
-
 @media (max-width: 1120px) {
   .document-grid {
     grid-template-columns: repeat(2, 1fr);

@@ -48,8 +48,9 @@
               data-bs-target="#modal-chinh-sua-bai-giang">
               <i class="fas fa-edit me-1"></i>Chỉnh sửa
             </button>
-            <button class="btn btn-danger btn-sm" id="delete-doc-btn" data-bs-toggle="modal"
-              data-bs-target="#modal-xoa-bai-giang">
+            <button class="btn btn-danger btn-sm document-delete-btn" id="delete-doc-btn"
+              data-url-delete="{{ route('bai-giang.delete', $baiGiang->id) }}"
+              data-url-my-lecture="{{ route('bai-giang.index') }}">
               <i class="fas fa-trash-alt me-1"></i>Xóa
             </button>
           </div>
@@ -176,7 +177,7 @@
                   <abbr class="text-danger" title="Bắt buộc">*</abbr>
                 </label>
                 <input type="text" name="tieu_de" class="form-control" id="" required maxlength="100"
-                  placeholder="Nhập tiêu đề chương...">
+                  placeholder="Nhập tiêu đề chương..." autocomplete="off">
               </div>
               <div class="mb-3">
                 <label for="" class="form-label">Mô tả ngắn <span class="text-muted">(255 ký tự)</span></label>
@@ -214,8 +215,8 @@
                   <span class="text-muted">(100 ký tự)</span>
                   <abbr class="text-danger" title="Bắt buộc">*</abbr>
                 </label>
-                <input type="text" name="tieu_de" class="form-control" id="tieu-de-chuong" required maxlength="100"
-                  placeholder="Nhập tiêu đề chương...">
+                <input type="text" name="tieu_de" class="form-control" id="tieu-de-chuong" required
+                  maxlength="100" placeholder="Nhập tiêu đề chương..." autocomplete="off">
               </div>
               <div class="mb-3">
                 <label for="" class="form-label">Mô tả ngắn <span class="text-muted">(255 ký tự)</span></label>
@@ -278,7 +279,7 @@
                   <abbr class="text-danger" title="Bắt buộc">*</abbr>
                 </label>
                 <input type="text" name="ten" class="form-control" id="ten-bai-giang"
-                  value="{{ $baiGiang->ten }}" placeholder="Nhập tên bài giảng...">
+                  value="{{ $baiGiang->ten }}" placeholder="Nhập tên bài giảng..." autocomplete="off">
               </div>
               <div class="mb-3">
                 <label for="" class="form-label">Mô tả ngắn <span class="text-muted">(255 ký tự)</span></label>
@@ -308,32 +309,7 @@
         </div>
       </div>
     </form>
-
-    <form action="{{ route('bai-giang.delete', $baiGiang->id) }}" method="POST">
-      @csrf
-      @method('DELETE')
-      <div class="modal fade" id="modal-xoa-bai-giang" tabindex="-1" aria-labelledby="" aria-hidden="true"
-        data-bs-focus="false">
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-            <div class="modal-header bg-danger text-white">
-              <h5 class="modal-title">
-                <i class="fas fa-trash-alt me-2"></i>Xác nhận xóa Bài giảng
-              </h5>
-              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <p>Bạn có chắc chắn muốn xóa bài giảng này không?</p>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-              <button type="submit" class="btn btn-danger">Xóa bài giảng</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </form>
+    
   </div>
 @endsection
 
