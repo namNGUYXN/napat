@@ -82,9 +82,10 @@
               <div id="url-cap-nhat-thu-tu-chuong" class="text-center text-muted fst-italic"
                 data-url="{{ route('thu-tu-chuong.update', $baiGiang->id) }}">
                 Giữ vào một chương 0.5s sau đó có thể kéo thả để thiết lập vị trí</div>
-              <form action="#" method="POST">
+              <form action="{{ route('chuong.quick-delete') }}" method="POST">
                 @csrf
-                @method('PUT')
+                @method('DELETE')
+                <input type="hidden" name="id_bai_giang" value="{{ $baiGiang->id }}">
                 <table class="table table-hover table-striped caption-top" style="min-width: 600px;">
                   <caption>Có {{ $listChuong->count() }} bản ghi chương</caption>
                   <thead>
@@ -102,7 +103,7 @@
                     @forelse ($listChuong as $chuong)
                       <tr data-id="{{ $chuong->id }}">
                         <th scope="row">
-                          <input type="checkbox" class="form-check-input row-checkbox" name="" id="">
+                          <input type="checkbox" class="form-check-input row-checkbox" name="list_id_chuong[]" value="{{ $chuong->id }}" id="">
                         </th>
                         <td class="align-middle">
                           <a href="{{ route('bai.index', $chuong->id) }}"
@@ -121,7 +122,8 @@
                             <i class="fas fa-edit"></i>
                           </button>
                           <button type="button" class="btn btn-danger btn-sm btn-xoa-chuong"
-                            data-url="{{ route('chuong.delete', $chuong->id) }}">
+                            data-url-delete="{{ route('chuong.delete', $chuong->id) }}"
+                            data-url-detail="{{ route('bai-giang.detail', $baiGiang->id) }}">
                             <i class="fas fa-trash-alt"></i>
                           </button>
                         </td>
@@ -309,7 +311,7 @@
         </div>
       </div>
     </form>
-    
+
   </div>
 @endsection
 

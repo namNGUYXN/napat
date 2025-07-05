@@ -145,4 +145,25 @@ class MenuController extends Controller
             'message' => $result['message'],
         ]);
     }
+
+    public function xoaHangLoat(Request $request) {
+        // dd($request->all());
+        if ($request->action == 'xoa') {
+            $listIdMenu = array_map('intval', $request->list_id_menu);
+
+            $result = $this->menuService->xoaHangLoat($listIdMenu);
+
+            if ($result['success']) {
+                return redirect()->route('menu.index')->with([
+                    'message' => $result['message'],
+                    'icon' => 'success'
+                ]);
+            }
+
+            return redirect()->route('menu.index')->with([
+                'message' => $result['message'],
+                'icon' => 'error'
+            ]);
+        }
+    }
 }

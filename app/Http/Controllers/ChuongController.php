@@ -15,8 +15,8 @@ class ChuongController extends Controller
     {
         $this->chuongService = $chuongService;
         $this->baiService = $baiService;
-        $this->middleware('bai_giang')->only('them');
-        $this->middleware('chuong')->only('giaoDienChinhSua', 'chinhSua', 'xoa', 'capNhatThuTu');
+        $this->middleware('bai_giang')->only('them', 'xoaHangLoat');
+        $this->middleware('chuong')->only('giaoDienChinhSua', 'chinhSua', 'xoa', 'capNhatThuTu', 'xoaHangLoat');
     }
 
     public function layListTheoBaiGiang(Request $request, $id)
@@ -76,8 +76,8 @@ class ChuongController extends Controller
     {
         $data = $request->validate(
             [
-                'tieu_de' => 'sometimes|required|string|max:100',
-                'mo_ta_ngan' => 'sometimes|nullable|string|max:255'
+                'tieu_de' => 'required|string|max:100',
+                'mo_ta_ngan' => 'nullable|string|max:255'
             ],
             [
                 'tieu_de.required' => 'Vui lòng nhập tiêu đề',
@@ -109,13 +109,13 @@ class ChuongController extends Controller
         $result = $this->chuongService->xoa($id);
 
         if ($result['success']) {
-            return redirect()->route('bai-giang.detail', $baiGiang->id)->with([
+            return response()->json([
                 'message' => $result['message'],
                 'icon' => 'success'
             ]);
         }
 
-        return redirect()->route('bai-giang.detail', $baiGiang->id)->with([
+        return response()->json([
             'message' => $result['message'],
             'icon' => 'error'
         ]);
@@ -133,5 +133,29 @@ class ChuongController extends Controller
             'success' => $result['success'],
             'message' => $result['message']
         ]);
+    }
+
+    public function xoaHangLoat(Request $request)
+    {
+        // dd($request->all());
+
+        if ($request->action == 'xoa') {
+            $listIdChuong = array_map('intval', $request->list_id_chuong);
+            // dd($listIdChuong);
+
+            $result = $this->chuongService->xoaHangLoat($listIdChuong);
+
+            if ($result['success']) {
+                return redirect()->route('bai-giang.detail', $request->id_bai_giang)->with([
+                    'message' => $result['message'],
+                    'icon' => 'success'
+                ]);
+            }
+
+            return redirect()->route('bai-giang.detail', $request->id_bai_giang)->with([
+                'message' => $result['message'],
+                'icon' => 'error'
+            ]);
+        }
     }
 }

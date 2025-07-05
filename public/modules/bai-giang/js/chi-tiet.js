@@ -45,23 +45,12 @@ function handleRemoveImg(imgPreview, imgUpload, imgRemoveBtn) {
 // Xử lý modal xóa bài giảng
 $(document).on('click', '.document-delete-btn', function () {
   const formData = new FormData(); // Lấy tất cả input từ form, bao gồm file
-  const params = new URLSearchParams(window.location.search);
   const token = $('meta[name="csrf-token"]').attr('content');
   const urlDelete = $(this).data("url-delete");
   const urlMyLecture = $(this).data('url-my-lecture');
 
-  // Giá trị mặc định khi không có
-  const currentSort = params.get('sort') || 'newest';
-  const currentLimit = params.get('limit') || 3;
-  const currentSearch = params.get('search') || '';
-  const currentPage = params.get('page') || 1;
-
   formData.append('_token', token);
   formData.append('_method', 'DELETE');
-  formData.append('sort', currentSort);
-  formData.append('limit', currentLimit);
-  formData.append('search', currentSearch);
-  formData.append('page', currentPage);
 
   Swal.fire({
     title: `Bạn có chắc chắn xóa bài giảng này không?`,
@@ -110,9 +99,6 @@ $(document).on('click', '.document-delete-btn', function () {
       });
     }
   });
-
-  formDelete.attr('action', urlDelete);
-  $('#modal-xoa-bai-giang').modal('show');
 });
 
 
@@ -160,13 +146,71 @@ $(document).on('click', '.btn-update-chuong', function () {
   });
 });
 
+
 // Xử lý modal xóa chương
 $(document).on('click', '.btn-xoa-chuong', function () {
-  const url = $(this).data('url');
-  const formXoaChuong = $('#btn-confirm-xoa-chuong').parent('form');
+  const formData = new FormData(); // Lấy tất cả input từ form, bao gồm file
+  const token = $('meta[name="csrf-token"]').attr('content');
+  const urlDelete = $(this).data("url-delete");
+  const urlDetail = $(this).data('url-detail');
 
-  formXoaChuong.attr('action', url);
-  $('#modal-xoa-chuong').modal('show');
+  formData.append('_token', token);
+  formData.append('_method', 'DELETE');
+
+  Swal.fire({
+    title: `Bạn có chắc chắn xóa chương này không?`,
+    text: `Bạn sẽ không thể khôi phục chương này!`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Xóa",
+    cancelButtonText: "Hủy",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      $.ajax({
+        url: urlDelete,
+        type: 'POST',
+        data: formData,
+        contentType: false, // Để jQuery không set Content-Type
+        processData: false, // Để không chuyển FormData thành chuỗi query
+        dataType: "json",
+        success: function (response) {
+          // const Toast = Swal.mixin({
+          //   toast: true,
+          //   position: "top-end",
+          //   width: "auto",
+          //   showConfirmButton: false,
+          //   timer: 3500,
+          //   timerProgressBar: true,
+          //   didOpen: (toast) => {
+          //     toast.onmouseenter = Swal.stopTimer;
+          //     toast.onmouseleave = Swal.resumeTimer;
+          //   },
+          // });
+
+          // Toast.fire({
+          //   icon: response.icon,
+          //   title: response.message,
+          // }).then(() => {
+          //   window.location.href = urlDetail;
+          // });
+
+          Swal.fire({
+            icon: response.icon,
+            title: response.message,
+          }).then(() => {
+            window.location.href = urlDetail;
+          });
+        },
+        error: function (xhr) {
+          alert(
+            "Đã xảy ra lỗi: " + xhr.status + " " + xhr.statusText
+          );
+        },
+      });
+    }
+  });
 });
 
 // Xử lý check tất cả bản ghi
@@ -183,12 +227,12 @@ $('.row-checkbox').on('change', function () {
 });
 
 
-$('#form-cap-nhat-thu-tu-chuong').on('submit', function (e) {
-  e.preventDefault();
+// $('#form-cap-nhat-thu-tu-chuong').on('submit', function (e) {
+//   e.preventDefault();
 
-  var sort1 = $('#list-chuong').sortable('toArray');
-  console.log(sort1);
-});
+//   var sort1 = $('#list-chuong').sortable('toArray');
+//   console.log(sort1);
+// });
 
 
 
@@ -222,3 +266,4 @@ function capNhatThuTu() {
     }
   });
 }
+

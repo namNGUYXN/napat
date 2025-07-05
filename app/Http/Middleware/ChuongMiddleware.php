@@ -46,7 +46,33 @@ class ChuongMiddleware
             return $next($request);
         }
 
-        $chuong = $this->chuongService->layTheoId($request->id);
+        $inputListId = $request->input('list_id_chuong');
+
+        if (isset($inputListId) && is_array($inputListId)) {
+            $inputListId = array_map('intval', $inputListId);
+            // dd ($inputListId);
+            foreach ($inputListId as $idChuong) {
+                try {
+                    $chuong = $this->chuongService->layTheoId($idChuong);
+                    $baiGiang = $chuong->bai_giang;
+
+                    if ($baiGiang->id_giang_vien != session('id_nguoi_dung')) {
+                        abort(403, 'Bạn không có quyền truy cập.');
+                    }
+                } catch (ModelNotFoundException $e) {
+                    abort(404);
+                }
+            }
+
+            return $next($request);
+        }
+
+        if (isset($request->id_chuong)) {
+            $chuong = $this->chuongService->layTheoId($request->id_chuong);
+        } else {
+            $chuong = $this->chuongService->layTheoId($request->id);
+        }
+        
         $baiGiang = $chuong->bai_giang;
 
         if ($baiGiang->id_giang_vien == session('id_nguoi_dung')) {

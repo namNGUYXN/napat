@@ -46,6 +46,28 @@ class BaiMiddleware
             return $next($request);
         }
 
+        $inputListIdBai = $request->input('list_id_bai');
+
+        if (isset($inputListIdBai) && is_array($inputListIdBai)) {
+            $listIdBai = array_map('intval', $inputListIdBai);
+            // dd($request->listThuTuBai->toArray());
+
+            foreach ($listIdBai as $idBai) {
+                try {
+                    $bai = $this->baiService->layTheoId($idBai);
+                    $baiGiang = $bai->chuong->bai_giang;
+
+                    if ($baiGiang->id_giang_vien != session('id_nguoi_dung')) {
+                        abort(403, 'Bạn không có quyền truy cập.');
+                    }
+                } catch (ModelNotFoundException $e) {
+                    abort(404);
+                }
+            }
+
+            return $next($request);
+        }
+
         $bai = $this->baiService->layTheoId($request->id);
         $baiGiang = $bai->chuong->bai_giang;
 

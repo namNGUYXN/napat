@@ -56,9 +56,10 @@
                 data-url="{{ route('thu-tu-bai.update', $chuong->id) }}">
                 Giữ vào một bài 0.5s sau đó có thể kéo thả để thiết lập vị trí
               </div>
-              <form action="#" method="POST">
+              <form action="{{ route('bai.quick-delete') }}" method="POST">
                 @csrf
-                @method('PUT')
+                @method('DELETE')
+                <input type="hidden" name="id_chuong" value="{{ $chuong->id }}">
                 <table class="table table-hover table-striped caption-top" style="min-width: 600px;">
                   <caption>Có {{ $listBai->count() }} bản ghi bài trong chương</caption>
                   <thead>
@@ -76,7 +77,8 @@
                     @forelse ($listBai as $bai)
                       <tr data-id="{{ $bai->id }}">
                         <th scope="row">
-                          <input type="checkbox" class="form-check-input row-checkbox" name="" id="">
+                          <input type="checkbox" class="form-check-input row-checkbox" name="list_id_bai[]"
+                            value="{{ $bai->id }}" id="">
                         </th>
                         <td class="align-middle">{{ $bai->tieu_de }}</td>
                         <td class="align-middle">{{ $bai->ngay_tao }}</td>

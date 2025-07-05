@@ -80,7 +80,7 @@ class MenuService
 
     function layTheoId($id)
     {
-        return Menu::find($id);
+        return Menu::findOrFail($id);
     }
 
     function chinhSua($id, array $data)
@@ -108,7 +108,7 @@ class MenuService
             DB::rollBack();
             return [
                 'success' => false,
-                'message' => 'Lỗi khi cập nhật menu: ' . $e->getMessage()
+                'message' => $e->getMessage()
             ];
         }
     }
@@ -136,7 +136,7 @@ class MenuService
             DB::rollBack();
             return [
                 'success' => false,
-                'message' => 'Lỗi khi xóa menu: ' . $e->getMessage()
+                'message' => $e->getMessage()
             ];
         }
     }
@@ -161,7 +161,50 @@ class MenuService
             DB::rollback();
             return [
                 'success' => false,
-                'message' => 'Lỗi khi cập nhật thứ tự: ' . $e->getMessage()
+                'message' => $e->getMessage()
+            ];
+        }
+    }
+
+    public function xoaHangLoat(array $listIdMenu)
+    {
+        try {
+            DB::beginTransaction();
+
+            $rows = 0;
+            $listIdMenuCoMenuCon = [];
+
+            // Duyệt qua các id menu cần xóa
+            foreach ($listIdMenu as $idMenu) {
+                if ($this->hasMenuCon($idMenu)) {
+                    $listIdMenuCoMenuCon[] = $idMenu;
+                    continue;
+                }
+
+                $temp = Menu::where('id', $idMenu)->delete();
+                $rows += $temp;
+            }
+
+            // Duyệt qua các id menu được lưu lại khi nó có menu con
+            foreach ($listIdMenuCoMenuCon as $id) {
+                if ($this->hasMenuCon($id)) {
+                    throw new \Exception('Có menu con liên kết đến các menu bạn đang xóa');
+                }
+
+                $temp = Menu::where('id', $id)->delete();
+                $rows += $temp;
+            }
+
+            DB::commit();
+            return [
+                'success' => true,
+                'message' => "Xóa {$rows} menu thành công"
+            ];
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return [
+                'success' => false,
+                'message' => $e->getMessage()
             ];
         }
     }

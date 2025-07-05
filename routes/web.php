@@ -110,7 +110,8 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien']], function (
     Route::post('/chuong/{id}/modal-chinh-sua', 'ChuongController@modalChinhSua')->name('chuong.edit');
     Route::put('/chuong/{id}/chinh-sua', 'ChuongController@chinhSua')->name('chuong.update');
     Route::put('/bai-giang/{id}/chuong/cap-nhat-thu-tu', 'ChuongController@capNhatThuTu')->name('thu-tu-chuong.update');
-    Route::delete('chuong/{id}/xoa', 'ChuongController@xoa')->name('chuong.delete');
+    Route::delete('/chuong/{id}/xoa', 'ChuongController@xoa')->name('chuong.delete');
+    Route::delete('/chuong/xoa-hang-loat', 'ChuongController@xoaHangLoat')->name('chuong.quick-delete');
 
     // Bài
     Route::get('/chuong/{id}/bai', 'BaiController@giaoDienQuanLy')->name('bai.index');
@@ -122,6 +123,7 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien']], function (
     Route::post('/bai/{id}/chi-tiet', 'BaiController@chiTiet')->name('bai.detail');
     Route::delete('/bai/{id}/xoa', 'BaiController@xoa')->name('bai.delete');
     Route::post('/upload-image', 'BaiController@privateUploadImage')->name('upload.image');
+    Route::delete('/bai/xoa-hang-loat', 'BaiController@xoaHangLoat')->name('bai.quick-delete');
 
     //Thành viên lớp
     Route::post('/thanh-vien-lop/{id}/chap-nhan', 'LopHocPhanController@chapNhan');
@@ -158,6 +160,7 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:admin']], function () {
     Route::put('/admin/menu/{id}', 'MenuController@chinhSua')->name('menu.update');
     Route::post('/admin/menu/cap-nhat-thu-tu', 'MenuController@capNhatThuTu')->name('thu-tu-menu.update');
     Route::delete('/admin/menu/{id}', 'MenuController@xoa')->name('menu.delete');
+    Route::delete('/menu/xoa-hang-loat', 'MenuController@xoaHangLoat')->name('menu.quick-delete');
 
     // Người dùng
 
