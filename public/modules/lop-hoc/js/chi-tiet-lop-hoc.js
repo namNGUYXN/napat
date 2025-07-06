@@ -588,11 +588,10 @@ const chuyenSangChinhSua = () => {
                         <div class="d-flex justify-content-center mt-1">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" value="1"
-                                    id="editChoPhepNopTre" name="cho_phep_nop_qua_han"  ${
-                                        currentBaiKiemTra.cho_phep_nop_qua_han
-                                            ? "checked"
-                                            : ""
-                                    }>
+                                    id="editChoPhepNopTre" name="cho_phep_nop_qua_han"  ${currentBaiKiemTra.cho_phep_nop_qua_han
+            ? "checked"
+            : ""
+        }>
                                 <label class="form-check-label" for="choPhepNopTre">
                                     Cho phép nộp quá hạn
                                 </label>
@@ -1107,7 +1106,7 @@ $(document).ready(function () {
     });
 
     //Nhấn chấp nhận yêu cầu tham gia lớp học
-    $(".btn-accept-request").click(function () {
+    $(document).on('click', '.btn-accept-request', function () {
         let id = $(this).data("id");
 
         Swal.fire({
@@ -1129,7 +1128,26 @@ $(document).ready(function () {
                     },
                     success: function (res) {
                         if (res.status) {
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: "top-end",
+                                width: "auto",
+                                showConfirmButton: false,
+                                timer: 3500,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.onmouseenter = Swal.stopTimer;
+                                    toast.onmouseleave = Swal.resumeTimer;
+                                },
+                            });
+
+                            Toast.fire({
+                                icon: 'success',
+                                title: 'Chấp nhận đăng ký lớp thành công',
+                            });
+
                             $("#list-thanh-vien").html(res.html);
+                            $('#member-tab span').text(res.tongSoThanhVien);
                         } else {
                             Swal.fire({
                                 icon: "error",
@@ -1151,7 +1169,7 @@ $(document).ready(function () {
     });
 
     //Nhấn từ chối yêu cầu tham gia lớp học
-    $(".btn-reject-request").click(function () {
+    $(document).on('click', '.btn-reject-request', function () {
         let id = $(this).data("id");
 
         Swal.fire({
@@ -1756,5 +1774,223 @@ $(document).on("submit", 'form[id|="form-update-reply"]', function (e) {
         error: function (xhr) {
             alert("Đã xảy ra lỗi: " + xhr.status + " " + xhr.statusText);
         },
+    });
+});
+
+$('#img-upload-modal-chinh-sua').on('change', function (event) {
+    const file = event.target.files[0];
+    const imgPreview = $('#img-preview-container-modal-chinh-sua .img-preview');
+    const imgRemoveBtn = $('#img-preview-container-modal-chinh-sua .img-remove-btn');
+
+    handleRenderImg(file, imgPreview, imgRemoveBtn);
+});
+
+function handleRenderImg(file, imgPreview, imgRemoveBtn) {
+    if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+            imgPreview.attr('src', e.target.result).show();
+            imgRemoveBtn.show(); // Hiển thị nút xóa
+        };
+
+        reader.readAsDataURL(file);
+    } else {
+        // Nếu không có file nào được chọn hoặc file không phải là ảnh
+        imgPreview.attr('src', '#').hide();
+        imgRemoveBtn.hide(); // Ẩn nút xóa
+    }
+}
+
+$('#img-preview-container-modal-chinh-sua .img-remove-btn').on('click', function () {
+    const imgPreview = $('#img-preview-container-modal-chinh-sua .img-preview');
+    const imgUpload = $('#img-upload-modal-chinh-sua');
+    const imgRemoveBtn = $('#img-preview-container-modal-chinh-sua .img-remove-btn');
+
+    handleRemoveImg(imgPreview, imgUpload, imgRemoveBtn);
+});
+
+function handleRemoveImg(imgPreview, imgUpload, imgRemoveBtn) {
+    // Reset thuộc tính src của ảnh preview và ẩn nó đi
+    imgPreview.attr('src', '#').hide();
+    imgRemoveBtn.hide();
+
+    // Reset giá trị của input file
+    // Đây là cách để xóa file đã chọn khỏi input file
+    imgUpload.val('');
+}
+
+$(document).on('click', '.btn-delete-class', function () {
+    const formData = new FormData(); // Lấy tất cả input từ form, bao gồm file
+    const token = $('meta[name="csrf-token"]').attr('content');
+    const view = $('#modal-chinh-sua-lop-hoc-phan').data('view');
+    const urlDelete = $(this).data('url-delete');
+    const urlMyClass = $(this).data('url-my-class');
+
+    formData.append('_token', token);
+    formData.append('_method', 'DELETE');
+    formData.append('view', view);
+
+    Swal.fire({
+        title: `Bạn có chắc chắn xóa lớp học phần này không?`,
+        text: `Bạn sẽ không thể khôi phục lớp học phần này!`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Xóa",
+        cancelButtonText: "Hủy",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: urlDelete,
+                type: 'POST',
+                data: formData,
+                contentType: false, // Để jQuery không set Content-Type
+                processData: false, // Để không chuyển FormData thành chuỗi query
+                dataType: "json",
+                success: function (response) {
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: "top-end",
+                        width: "auto",
+                        showConfirmButton: false,
+                        timer: 3500,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
+                        },
+                    });
+
+                    Toast.fire({
+                        icon: response.icon,
+                        title: response.message,
+                    }).then(() => {
+                        window.location.href = urlMyClass;
+                    });
+                },
+                error: function (xhr) {
+                    alert(
+                        "Đã xảy ra lỗi: " + xhr.status + " " + xhr.statusText
+                    );
+                },
+            });
+        }
+    });
+});
+
+$(document).on('click', '.btn-leave-class', function () {
+    const formData = new FormData(); // Lấy tất cả input từ form, bao gồm file
+    const token = $('meta[name="csrf-token"]').attr('content');
+    const urlLeave = $(this).data('url-leave');
+    const urlMyClass = $(this).data('url-my-class');
+
+    formData.append('_token', token);
+    formData.append('_method', 'DELETE');
+
+    Swal.fire({
+        title: `Bạn có chắc chắn rời lớp học phần này không?`,
+        // text: ``,
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Rời khỏi",
+        cancelButtonText: "Hủy",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: urlLeave,
+                type: 'POST',
+                data: formData,
+                contentType: false, // Để jQuery không set Content-Type
+                processData: false, // Để không chuyển FormData thành chuỗi query
+                dataType: "json",
+                success: function (response) {
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: "top-end",
+                        width: "auto",
+                        showConfirmButton: false,
+                        timer: 3500,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
+                        },
+                    });
+
+                    Toast.fire({
+                        icon: response.icon,
+                        title: response.message,
+                    }).then(() => {
+                        window.location.href = urlMyClass;
+                    });
+                },
+                error: function (xhr) {
+                    alert(
+                        "Đã xảy ra lỗi: " + xhr.status + " " + xhr.statusText
+                    );
+                },
+            });
+        }
+    });
+});
+
+$(document).on('click', '.btn-remove-from-class', function () {
+    const formData = new FormData(); // Lấy tất cả input từ form, bao gồm file
+    const token = $('meta[name="csrf-token"]').attr('content');
+    const urlRemoveFrom = $(this).data('url-remove-from');
+
+    formData.append('_token', token);
+    formData.append('_method', 'DELETE');
+
+    Swal.fire({
+        title: `Bạn có chắc chắn xóa sinh viên này khỏi lớp?`,
+        text: `Các dữ liệu mà sinh viên thao tác trong lớp sẽ không thể khôi phục!`,
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Xóa khỏi lớp",
+        cancelButtonText: "Hủy",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: urlRemoveFrom,
+                type: 'POST',
+                data: formData,
+                contentType: false, // Để jQuery không set Content-Type
+                processData: false, // Để không chuyển FormData thành chuỗi query
+                dataType: "json",
+                success: function (response) {
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: "top-end",
+                        width: "auto",
+                        showConfirmButton: false,
+                        timer: 3500,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
+                        },
+                    });
+
+                    Toast.fire({
+                        icon: response.icon,
+                        title: response.message,
+                    });
+
+                    $("#list-thanh-vien").html(response.html);
+                },
+                error: function (xhr) {
+                    alert(
+                        "Đã xảy ra lỗi: " + xhr.status + " " + xhr.statusText
+                    );
+                },
+            });
+        }
     });
 });

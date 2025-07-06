@@ -28,50 +28,9 @@
       </div>
     @endif --}}
 
-    <div class="document-grid">
-      @foreach ($listBaiGiang as $baiGiang)
-        <div class="document-card rounded">
-          <a href="{{ route('bai-giang.detail', $baiGiang->id) }}" class="document-img">
-            <img src="{{ asset('storage/' . $baiGiang->hinh_anh) }}" class="rounded-top" alt="">
-          </a>
-          <div class="p-3">
-            <a href="{{ route('bai-giang.detail', $baiGiang->id) }}"
-              class="text-dark document-name">{{ $baiGiang->ten }}</a>
-            <p class="mb-1">
-              <b>Số chương: </b>{{ $baiGiang->so_chuong }}
-              / <b>Số bài: </b>{{ $baiGiang->tong_so_bai }}
-            </p>
-            <p class="mb-1"><b>Ngày tạo: </b> {{ $baiGiang->ngay_tao }}</p>
-            <small class="text-secondary fst-italic d-inline-block me-3" title="{{ $baiGiang->mo_ta_ngan }}">
-              {{ Str::of($baiGiang->mo_ta_ngan)->limit(100) }}
-            </small>
-            <div class="document-action-btn">
-              <div class="dropdown">
-                <button class="btn btn-transparent dropdown-toggle" type="button" data-bs-toggle="dropdown"
-                  aria-expanded="false">
-                  <i class="fas fa-ellipsis-v"></i>
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="{{ route('bai-giang.detail', $baiGiang->id) }}">Xem</a></li>
-                  <li>
-                    <button type="button" class="dropdown-item document-edit-btn"
-                      data-url-detail="{{ route('bai-giang.detail-modal', $baiGiang->id) }}"
-                      data-url-update="{{ route('bai-giang.update-modal', $baiGiang->id) }}">Chỉnh sửa</button>
-                  </li>
-                  <li>
-                    <button type="button" class="dropdown-item document-delete-btn"
-                      data-url-delete="{{ route('bai-giang.delete', $baiGiang->id) }}">Xóa</button>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      @endforeach
+    <div id="list-bai-giang">
+      @include('partials.bai-giang.list', [$listBaiGiang])
     </div>
-
-    {{-- Dấu : báo hiệu cho blade đây là biểu thức php --}}
-    <x-pagination :paginator="$listBaiGiang" base-url="{{ route('bai-giang.index') }}" />
 
     <button type="button" class="btn btn-primary rounded-circle document-add-btn" data-bs-toggle="modal"
       data-bs-target="#modal-them-bai-giang">
@@ -99,16 +58,18 @@
                   <span class="text-muted">(100 từ)</span>
                   <abbr class="text-danger" title="Bắt buộc">*</abbr>
                 </label>
-                <input type="text" name="ten" class="form-control" id="" required maxlength="100">
+                <input type="text" name="ten" class="form-control" id="" required maxlength="100" autocomplete="off">
+                <small class="text-danger ten-error"></small>
               </div>
               <div class="mb-3">
                 <label for="" class="form-label">Mô tả ngắn <span class="text-muted">(255 từ)</span></label>
                 <textarea name="mo_ta_ngan" id="" class="form-control" rows="6" maxlength="255"></textarea>
+                <small class="text-danger mo-ta-ngan-error"></small>
               </div>
               <div class="mb-3">
                 <label for="img-upload-modal-them" class="form-label">Hình ảnh</label>
-                <input class="form-control" type="file" name="hinh_anh" id="img-upload-modal-them"
-                  accept="image/*">
+                <input class="form-control" type="file" name="hinh_anh" id="img-upload-modal-them" accept="image/*">
+                <small class="text-danger d-block hinh-anh-error"></small>
                 <div id="img-preview-container-modal-them" class="mt-3 position-relative d-inline-block">
                   <img src="#" alt="Ảnh xem trước" class="img-preview img-thumbnail"
                     style="display: none; max-width: 200px; max-height: 200px;">
@@ -147,24 +108,28 @@
                   <span class="text-muted">(100 từ)</span>
                   <abbr class="text-danger" title="Bắt buộc">*</abbr>
                 </label>
-                <input type="text" name="ten" class="form-control" id="ten-bai-giang">
+                <input type="text" name="ten" class="form-control" id="ten-bai-giang" required
+                  maxlength="100" autocomplete="off">
+                <small class="text-danger ten-error"></small>
               </div>
               <div class="mb-3">
                 <label for="" class="form-label">Mô tả ngắn <span class="text-muted">(255 từ)</span></label>
-                <textarea name="mo_ta_ngan" id="mo-ta-bai-giang" class="form-control" rows="6"></textarea>
+                <textarea name="mo_ta_ngan" id="mo-ta-bai-giang" class="form-control" rows="6" maxlength="255"></textarea>
+                <small class="text-danger mo-ta-ngan-error"></small>
               </div>
               <div class="mb-3">
                 <label for="img-upload-modal-chinh-sua" class="form-label">Hình ảnh</label>
                 <input class="form-control" type="file" name="hinh_anh" id="img-upload-modal-chinh-sua"
                   accept="image/*">
+                <small class="text-danger d-block hinh-anh-error"></small>
                 <div id="img-preview-container-modal-chinh-sua" class="mt-3 position-relative d-inline-block">
                   <img src="#" alt="Ảnh xem trước" class="img-preview img-thumbnail"
                     style="display: none; max-width: 200px; max-height: 200px;">
                   <span class="img-remove-btn close-btn" style="display: none;">&times;</span>
                 </div>
                 <div class="mt-3 d-inline-block">
-                  <img src="" id="hinh-anh-bai-giang" data-url="{{ asset('storage/') }}"
-                    class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
+                  <img src="" id="hinh-anh-bai-giang" data-url="{{ asset('storage/') }}" class="img-thumbnail"
+                    style="max-width: 200px; max-height: 200px;">
                 </div>
               </div>
             </div>
@@ -178,7 +143,7 @@
     </form>
 
     {{-- Modal xóa --}}
-    <form action="" method="POST">
+    {{-- <form action="" method="POST">
       @csrf
       @method('DELETE')
       <div class="modal fade" id="modal-xoa-bai-giang" tabindex="-1" aria-labelledby="" aria-hidden="true"
@@ -202,7 +167,7 @@
           </div>
         </div>
       </div>
-    </form>
+    </form> --}}
 
   </div>
 @endsection

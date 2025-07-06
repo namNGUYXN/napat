@@ -27,64 +27,69 @@
       <div class="card-body position-relative">
 
         <div class="table-responsive custom-scrollbar">
-          <table class="table table-hover caption-top table-striped" style="min-width: 600px;">
-            <caption>Có {{ count($listMenu) }} bản ghi menu</caption>
-            <thead>
-              <tr>
-                <th scope="col">
-                  <input type="checkbox" class="form-check-input" name="" id="check-all">
-                </th>
-                <th scope="col">Tên menu</th>
-                <th scope="col">Loại menu</th>
-                <th scope="col" class="text-center">Thao tác</th>
-              </tr>
-            </thead>
-            <tbody>
-              @forelse ($listMenu as $menu)
+          <form action="{{ route('menu.quick-delete') }}" method="POST">
+            @csrf
+            @method('DELETE')
+            <table class="table table-hover caption-top table-striped" style="min-width: 600px;">
+              <caption>Có {{ count($listMenu) }} bản ghi menu</caption>
+              <thead>
                 <tr>
-                  <th scope="row">
-                    <input type="checkbox" class="form-check-input row-checkbox" name="" id="">
+                  <th scope="col">
+                    <input type="checkbox" class="form-check-input" name="" id="check-all">
                   </th>
-                  <td class="align-middle">{{ $menu['ten'] }}</td>
-                  <td class="align-middle">
-                    <div class="d-inline-block text-white bg-success px-2 py-1 rounded">
-                      {{ $menu['loai_menu'] }}
-                    </div>
-                  </td>
-                  <td class="align-middle text-center">
-                    <a href="{{ route('menu.edit', $menu['id']) }}" class="btn btn-warning btn-sm me-1">
-                      <i class="fas fa-edit"></i>
-                    </a>
-                    <form action="{{ route('menu.delete', $menu['id']) }}" method="POST" class="d-inline-block"
-                      onsubmit="return confirm('Bạn có chắc chắn muốn xóa menu này?');">
-                      @csrf
-                      @method('DELETE')
-                      <button class="btn btn-danger btn-sm">
-                        <i class="fas fa-trash-alt"></i>
-                      </button>
-                    </form>
-
-                  </td>
+                  <th scope="col">Tên menu</th>
+                  <th scope="col">Loại menu</th>
+                  <th scope="col" class="text-center">Thao tác</th>
                 </tr>
-              @empty
-                <tr>
-                  <td colspan="5" class="text-center">
-                    Không có menu nào trên hệ thống
-                  </td>
-                </tr>
-              @endforelse
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                @forelse ($listMenu as $menu)
+                  <tr>
+                    <th scope="row">
+                      <input type="checkbox" class="form-check-input row-checkbox" name="list_id_menu[]"
+                        value="{{ $menu['id'] }}" id="">
+                    </th>
+                    <td class="align-middle">{{ $menu['ten'] }}</td>
+                    <td class="align-middle">
+                      <div class="d-inline-block text-white bg-success px-2 py-1 rounded">
+                        {{ $menu['loai_menu'] }}
+                      </div>
+                    </td>
+                    <td class="align-middle text-center">
+                      <a href="{{ route('menu.edit', $menu['id']) }}" class="btn btn-warning btn-sm me-1">
+                        <i class="fas fa-edit"></i>
+                      </a>
+                      <form action="{{ route('menu.delete', $menu['id']) }}" method="POST" class="d-inline-block"
+                        onsubmit="return confirm('Bạn có chắc chắn muốn xóa menu này?');">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn btn-danger btn-sm">
+                          <i class="fas fa-trash-alt"></i>
+                        </button>
+                      </form>
 
-          @if (count($listMenu) > 0)
-            <div class="input-group ms-1 mb-3" style="max-width: 210px;">
-              <select class="form-select" name="">
-                {{-- <option value="1">Cập nhật</option> --}}
-                <option value="xoa">Xóa</option>
-              </select>
-              <button type="submit" class="btn btn-success">Thực hiện</button>
-            </div>
-          @endif
+                    </td>
+                  </tr>
+                @empty
+                  <tr>
+                    <td colspan="5" class="text-center">
+                      Không có menu nào trên hệ thống
+                    </td>
+                  </tr>
+                @endforelse
+              </tbody>
+            </table>
+
+            @if (count($listMenu) > 0)
+              <div class="input-group ms-1 mb-3" style="max-width: 210px;">
+                <select class="form-select" name="action">
+                  {{-- <option value="1">Cập nhật</option> --}}
+                  <option value="xoa">Xóa</option>
+                </select>
+                <button type="submit" class="btn btn-success">Thực hiện</button>
+              </div>
+            @endif
+          </form>
         </div>
 
         <button class="btn btn-info text-white btn-update-thu-tu" type="button" data-bs-toggle="modal"

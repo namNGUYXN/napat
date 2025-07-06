@@ -53,7 +53,6 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien+sinh-vien']], 
     Route::get('/', 'HomeController@home')->name('home');
     Route::get('/trang-chu', 'HomeController@home');
 
-
     Route::post('/bai-tap', 'BaiTapController@themBaiTap')->name('bai_tap.them');
     Route::get('/bai-giang/{id}/bai-tap', 'BaiTapController@danhSachBaiTap')->name('bai-tap.by-bai-giang');
 
@@ -101,6 +100,9 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien']], function (
     Route::post('/lop-hoc-phan/{id}/modal-chi-tiet', 'LopHocPhanController@modalChiTiet')->name('lop-hoc-phan.detail-modal');
     Route::put('/lop-hoc-phan/{id}/modal-chinh-sua', 'LopHocPhanController@modalChinhSua')->name('lop-hoc-phan.update-modal');
     Route::put('/lop-hoc-phan/{id}/chinh-sua', 'LopHocPhanController@chinhSua')->name('lop-hoc-phan.update');
+    Route::delete('/lop-hoc-phan/{id}/xoa', 'LopHocPhanController@xoa')->name('lop-hoc-phan.delete');
+    Route::delete('/lop-hoc-phan/{idLHP}/sinh-vien/{idND}', 'LopHocPhanController@xoaKhoiLop')->name('lop-hoc-phan.remove-from');
+    
 
     // Bài giảng
     Route::get('/bai-giang', 'BaiGiangController@giaoDienQuanLy')->name('bai-giang.index');
@@ -116,7 +118,8 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien']], function (
     Route::post('/chuong/{id}/modal-chinh-sua', 'ChuongController@modalChinhSua')->name('chuong.edit');
     Route::put('/chuong/{id}/chinh-sua', 'ChuongController@chinhSua')->name('chuong.update');
     Route::put('/bai-giang/{id}/chuong/cap-nhat-thu-tu', 'ChuongController@capNhatThuTu')->name('thu-tu-chuong.update');
-    Route::delete('chuong/{id}/xoa', 'ChuongController@xoa')->name('chuong.delete');
+    Route::delete('/chuong/{id}/xoa', 'ChuongController@xoa')->name('chuong.delete');
+    Route::delete('/chuong/xoa-hang-loat', 'ChuongController@xoaHangLoat')->name('chuong.quick-delete');
 
     // Bài
     Route::get('/chuong/{id}/bai', 'BaiController@giaoDienQuanLy')->name('bai.index');
@@ -128,15 +131,25 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien']], function (
     Route::post('/bai/{id}/chi-tiet', 'BaiController@chiTiet')->name('bai.detail');
     Route::delete('/bai/{id}/xoa', 'BaiController@xoa')->name('bai.delete');
     Route::post('/upload-image', 'BaiController@privateUploadImage')->name('upload.image');
+    Route::delete('/bai/xoa-hang-loat', 'BaiController@xoaHangLoat')->name('bai.quick-delete');
 
     //Thành viên lớp
-    Route::post('/thanh-vien-lop/{id}/chap-nhan', 'ThanhVienLopController@chapNhan');
-    Route::post('/thanh-vien-lop/{id}/tu-choi', 'ThanhVienLopController@tuChoi');
-    Route::post('/thanh-vien/them-danh-sach', 'ThanhVienLopController@themDanhSach')->name('thanh-vien-lop.import');
+    Route::post('/thanh-vien-lop/{id}/chap-nhan', 'LopHocPhanController@chapNhan');
+    Route::post('/thanh-vien-lop/{id}/tu-choi', 'LopHocPhanController@tuChoi');
+    Route::post('/thanh-vien/them-danh-sach', 'LopHocPhanController@themDanhSach')->name('thanh-vien-lop.import');
 
     //Bài kiểm tra
     Route::post('/bai-kiem-tra', 'BaiKiemTraController@themBaiKiemTra')->name('bai_kiem_tra.them');
     Route::put('/bai-kiem-tra', 'BaiKiemTraController@capNhatBaiKiemTra')->name('bai_kiem_tra.cap-nhat');
+});
+
+
+// Các route cho sinh viên
+Route::group(['middleware' => ['auth.custom', 'vai_tro:sinh-vien']], function () {
+    // Đăng ký lớp
+    Route::post('/lop-hoc-phan/{id}/dang-ky', 'LopHocPhanController@dangKy')->name('lop-hoc-phan.register');
+    // Rời khỏi lớp
+    Route::delete('/lop-hoc-phan/{id}/roi-khoi', 'LopHocPhanController@roiKhoi')->name('lop-hoc-phan.leave');
 });
 
 
@@ -155,6 +168,7 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:admin']], function () {
     Route::put('/admin/menu/{id}', 'MenuController@chinhSua')->name('menu.update');
     Route::post('/admin/menu/cap-nhat-thu-tu', 'MenuController@capNhatThuTu')->name('thu-tu-menu.update');
     Route::delete('/admin/menu/{id}', 'MenuController@xoa')->name('menu.delete');
+    Route::delete('/menu/xoa-hang-loat', 'MenuController@xoaHangLoat')->name('menu.quick-delete');
 
     // Người dùng
 

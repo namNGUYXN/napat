@@ -22,8 +22,8 @@ class BaiController extends Controller
         $this->baiService = $baiService;
         $this->chuongService = $chuongService;
         $this->baiTrongLopService = $baiTrongLopService;
-        $this->middleware('chuong')->only('giaoDienThem', 'giaoDienQuanLy');
-        $this->middleware('bai')->only('giaoDienChinhSua', 'chinhSua', 'chiTiet', 'xoa', 'capNhatThuTu');
+        $this->middleware('chuong')->only('giaoDienThem', 'giaoDienQuanLy', 'xoaHangLoat');
+        $this->middleware('bai')->only('giaoDienChinhSua', 'chinhSua', 'chiTiet', 'xoa', 'capNhatThuTu', 'xoaHangLoat');
     }
 
     public function giaoDienQuanLy(Request $request, $idChuong)
@@ -188,5 +188,26 @@ class BaiController extends Controller
         }
 
         return response()->json(['error' => 'Không có ảnh'], 400);
+    }
+
+    public function xoaHangLoat(Request $request) {
+        if ($request->action == 'xoa') {
+            $listIdBai = array_map('intval', $request->list_id_bai);
+            // dd($listIdBai);
+
+            $result = $this->baiService->xoaHangLoat($listIdBai);
+
+            if ($result['success']) {
+                return redirect()->route('bai.index', $request->id_chuong)->with([
+                    'message' => $result['message'],
+                    'icon' => 'success'
+                ]);
+            }
+
+            return redirect()->route('bai.index', $request->id_chuong)->with([
+                'message' => $result['message'],
+                'icon' => 'error'
+            ]);
+        }
     }
 }

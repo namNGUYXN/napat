@@ -42,68 +42,71 @@ function handleRemoveImg(imgPreview, imgUpload, imgRemoveBtn) {
 }
 
 
+// Xử lý modal xóa bài giảng
+$(document).on('click', '.document-delete-btn', function () {
+  const formData = new FormData(); // Lấy tất cả input từ form, bao gồm file
+  const token = $('meta[name="csrf-token"]').attr('content');
+  const urlDelete = $(this).data("url-delete");
+  const urlMyLecture = $(this).data('url-my-lecture');
+
+  formData.append('_token', token);
+  formData.append('_method', 'DELETE');
+
+  Swal.fire({
+    title: `Bạn có chắc chắn xóa bài giảng này không?`,
+    text: `Bạn sẽ không thể khôi phục bài giảng này!`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Xóa",
+    cancelButtonText: "Hủy",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      $.ajax({
+        url: urlDelete,
+        type: 'POST',
+        data: formData,
+        contentType: false, // Để jQuery không set Content-Type
+        processData: false, // Để không chuyển FormData thành chuỗi query
+        dataType: "json",
+        success: function (response) {
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            width: "auto",
+            showConfirmButton: false,
+            timer: 3500,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+            },
+          });
+
+          Toast.fire({
+            icon: response.icon,
+            title: response.message,
+          }).then(() => {
+            window.location.href = urlMyLecture;
+          });
+        },
+        error: function (xhr) {
+          alert(
+            "Đã xảy ra lỗi: " + xhr.status + " " + xhr.statusText
+          );
+        },
+      });
+    }
+  });
+});
+
+
 $.ajaxSetup({
   headers: {
     'X-CSRF-TOKEN': $('#csrfForm input[name="_token"]').val()
   }
 });
-
-// let cache = {};
-
-// $(document).on('click', '.btn-detail-chuong', function () {
-//   const url = $(this).data('url');
-//   const tieuDeChuong = $(this).data('tieu-de');
-
-//   // console.log(url, tieuDeChuong);
-
-//   if (cache[url]) {
-//     const listBai = cache[url];
-
-//     $('#tieu-de-chuong').text(tieuDeChuong);
-//     $('#section-list-bai').html(renderListBai(listBai));
-//     $('#modal-chi-tiet-chuong').modal('show');
-//     return;
-//   }
-
-//   $.ajax({
-//     url: url,
-//     type: 'POST',
-//     dataType: 'json',
-//     success: function (response) {
-//       const listBai = response.data;
-//       cache[url] = listBai; // Lưu vào cache
-
-//       $('#tieu-de-chuong').text(tieuDeChuong);
-//       $('#section-list-bai').html(renderListBai(listBai));
-//       $('#modal-chi-tiet-chuong').modal('show');
-//     },
-//     error: function (xhr) {
-//       alert('Đã xảy ra lỗi: ' + xhr.status + ' ' + xhr.statusText);
-//     }
-//   });
-// });
-
-// function renderListBai(listBai) {
-//   if (listBai.length == 0) {
-//     return `
-//       <tr class="text-center">
-//         <td colspan="3">Không có bài nào trong chương</td>
-//       </tr>
-//     `;
-//   }
-
-//   const html = listBai.map((bai, index) => {
-//     return `
-//       <tr>
-//         <th scope="row">${index + 1}</th>
-//         <td>${bai.tieu_de}</td>
-//         <td>${bai.ngay_tao}</td>
-//       </tr>
-//     `;
-//   }).join('');
-
-//   return html;
-// }
 
 let cache = {};
 
@@ -143,13 +146,71 @@ $(document).on('click', '.btn-update-chuong', function () {
   });
 });
 
+
 // Xử lý modal xóa chương
 $(document).on('click', '.btn-xoa-chuong', function () {
-  const url = $(this).data('url');
-  const formXoaChuong = $('#btn-confirm-xoa-chuong').parent('form');
+  const formData = new FormData(); // Lấy tất cả input từ form, bao gồm file
+  const token = $('meta[name="csrf-token"]').attr('content');
+  const urlDelete = $(this).data("url-delete");
+  const urlDetail = $(this).data('url-detail');
 
-  formXoaChuong.attr('action', url);
-  $('#modal-xoa-chuong').modal('show');
+  formData.append('_token', token);
+  formData.append('_method', 'DELETE');
+
+  Swal.fire({
+    title: `Bạn có chắc chắn xóa chương này không?`,
+    text: `Bạn sẽ không thể khôi phục chương này!`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Xóa",
+    cancelButtonText: "Hủy",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      $.ajax({
+        url: urlDelete,
+        type: 'POST',
+        data: formData,
+        contentType: false, // Để jQuery không set Content-Type
+        processData: false, // Để không chuyển FormData thành chuỗi query
+        dataType: "json",
+        success: function (response) {
+          // const Toast = Swal.mixin({
+          //   toast: true,
+          //   position: "top-end",
+          //   width: "auto",
+          //   showConfirmButton: false,
+          //   timer: 3500,
+          //   timerProgressBar: true,
+          //   didOpen: (toast) => {
+          //     toast.onmouseenter = Swal.stopTimer;
+          //     toast.onmouseleave = Swal.resumeTimer;
+          //   },
+          // });
+
+          // Toast.fire({
+          //   icon: response.icon,
+          //   title: response.message,
+          // }).then(() => {
+          //   window.location.href = urlDetail;
+          // });
+
+          Swal.fire({
+            icon: response.icon,
+            title: response.message,
+          }).then(() => {
+            window.location.href = urlDetail;
+          });
+        },
+        error: function (xhr) {
+          alert(
+            "Đã xảy ra lỗi: " + xhr.status + " " + xhr.statusText
+          );
+        },
+      });
+    }
+  });
 });
 
 // Xử lý check tất cả bản ghi
@@ -166,12 +227,12 @@ $('.row-checkbox').on('change', function () {
 });
 
 
-$('#form-cap-nhat-thu-tu-chuong').on('submit', function (e) {
-  e.preventDefault();
+// $('#form-cap-nhat-thu-tu-chuong').on('submit', function (e) {
+//   e.preventDefault();
 
-  var sort1 = $('#list-chuong').sortable('toArray');
-  console.log(sort1);
-});
+//   var sort1 = $('#list-chuong').sortable('toArray');
+//   console.log(sort1);
+// });
 
 
 
@@ -205,3 +266,4 @@ function capNhatThuTu() {
     }
   });
 }
+

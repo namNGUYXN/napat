@@ -457,46 +457,25 @@
             <i class="fas fa-list-ul"></i>
         </button>
 
-        <div id="slideMenu" class="p-3 custom-scrollbar">
-            <h6>Danh sách chương & bài giảng</h6>
-            <hr>
-            <div class="list-group">
-                @foreach ($listChuong as $chuong)
-                    @php
-                        $chuongTrongLop = isset($listChuongTrongLop[$chuong->id])
-                            ? $listChuongTrongLop[$chuong->id]
-                            : collect([]);
-                        $hasBaiCongKhai = $chuongTrongLop->flatten(1)->contains(function ($bai) {
-                            return $bai->pivot->cong_khai == true;
-                        });
-                    @endphp
-                    @if ($hasBaiCongKhai || session('id_nguoi_dung') == $lopHocPhan->id_giang_vien)
-                        <div class="mb-3">
-                            <h5>{{ $chuong->tieu_de }}</h5>
-
-                            @forelse ($chuongTrongLop as $bai)
-                                @php
-                                    $isPublic = $bai->pivot->cong_khai;
-                                    $url = route('bai-trong-lop.detail', [$lopHocPhan->id, $bai->slug]);
-                                    $isActive = request()->url() == $url ? 'active' : '';
-                                @endphp
-
-                                @if ($isPublic || session('id_nguoi_dung') == $lopHocPhan->id_giang_vien)
-                                    <a href="{{ $url }}"
-                                        class="list-group-item list-group-item-action {{ $isActive }} ps-4">
-                                        {{ $bai->tieu_de }}
-                                    </a>
-                                @endif
-                            @empty
-                                <p>Chương chưa có bài học</p>
-                            @endforelse
-
-                        </div>
-                    @endif
-                @endforeach
-
-            </div>
+    <div id="slideMenu" class="p-3 custom-scrollbar">
+      <h6>Danh sách chương & bài giảng</h6>
+      <hr>
+      {{-- <form action="{{ route('bai-trong-lop.quick-search', $lopHocPhan->id) }}" id="form-search-bai" method="GET"> --}}
+      <form action="{{ route('bai-trong-lop.detail', [$lopHocPhan->id, $baiTrongLop->bai->slug]) }}" id="form-search-bai" method="GET">
+        <div class="input-group">
+          <input type="text" class="form-control" name="search" value="{{ request()->input('search') }}"
+            placeholder="Nhập tiêu đề bài cần tìm..." id="search-input" autocomplete="off">
+          <button class="btn btn-outline-secondary">
+            <i class="fas fa-search"></i> </button>
         </div>
+      </form>
+      <div class="list-group" id="list-bai">
+        @include('partials.lop-hoc-phan.noi-dung-bai.list-bai', [
+            $listChuong,
+            $listChuongTrongLop,
+            $lopHocPhan,
+        ])
+      </div>
     </div>
 @endsection
 

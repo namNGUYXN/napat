@@ -92,10 +92,36 @@
                         <i class="fas fa-ellipsis-v"></i>
                       </button>
                       <ul class="dropdown-menu">
-                        <li><button class="dropdown-item" type="button" data-bs-toggle="modal"
-                            data-bs-target="#modal-chinh-sua-lop-hoc-phan">Chỉnh sửa lớp học</button>
+                        <li>
+                          <button class="dropdown-item" type="button" data-bs-toggle="modal"
+                            data-bs-target="#modal-chinh-sua-lop-hoc-phan">Chỉnh sửa
+                          </button>
                         </li>
-                        <li><button class="dropdown-item" type="button">Xóa lớp học</button></li>
+                        <li>
+                          <button class="dropdown-item btn-delete-class" type="button"
+                            data-url-delete={{ route('lop-hoc-phan.delete', $lopHocPhan->id) }}
+                            data-url-my-class={{ route('lop-hoc.lop-hoc-cua-toi') }}>
+                            Xóa
+                          </button>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                @elseif (session('vai_tro') == 'Sinh viên')
+                  <div class="class-action-btn">
+                    <div class="dropdown">
+                      <button class="btn btn-transparent dropdown-toggle remove-arrow-down" type="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-ellipsis-v"></i>
+                      </button>
+                      <ul class="dropdown-menu">
+                        <li>
+                          <button class="dropdown-item btn-leave-class" type="button"
+                            data-url-leave={{ route('lop-hoc-phan.leave', $lopHocPhan->id) }}
+                            data-url-my-class={{ route('lop-hoc.lop-hoc-cua-toi') }}>
+                            Rời khỏi lớp này
+                          </button>
+                        </li>
                       </ul>
                     </div>
                   </div>
@@ -294,7 +320,7 @@
           </div>
           <div class="card-body">
             <div id="list-thanh-vien">
-              @include('partials._thanh-vien-lop')
+              @include('partials._thanh-vien-lop', [$lopHocPhan, $thanhVien])
             </div>
           </div>
         </div>
@@ -413,7 +439,8 @@
     <form action="{{ route('lop-hoc-phan.update', $lopHocPhan->id) }}" method="POST" enctype="multipart/form-data">
       @csrf
       @method('PUT')
-      <div class="modal fade" id="modal-chinh-sua-lop-hoc-phan" tabindex="-1" aria-hidden="true">
+      <div class="modal fade" id="modal-chinh-sua-lop-hoc-phan" tabindex="-1" aria-hidden="true"
+        data-bs-focus="false" data-view="lop-hoc-cua-toi">
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
           <div class="modal-content">
             <div class="modal-header bg-warning text-white">
@@ -494,7 +521,6 @@
   <script src="{{ asset('vendor/tinymce-5/tinymce.min.js') }}"></script>
   <script src="{{ asset('js/config-tinymce.js') }}"></script>
   <script src="{{ asset('modules/lop-hoc/js/chi-tiet-lop-hoc.js') }}"></script>
-  <script src="{{ asset('modules/lop-hoc/js/lop-hoc-cua-toi.js') }}"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/vn.js"></script>

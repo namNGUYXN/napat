@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\UploadImageHelper;
+use App\Imports\ThanhVienLopImport;
 use Illuminate\Http\Request;
 use App\Services\AuthService;
 use App\Services\BaiGiangService;
@@ -15,6 +16,7 @@ use App\Services\NguoiDungService;
 use App\Services\ThanhVienLopService;
 use App\Services\BaiTapService;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 
 class LopHocPhanController extends Controller
 {
@@ -54,7 +56,7 @@ class LopHocPhanController extends Controller
         $this->uploadImageHelper = $uploadImageHelper;
         $this->baiGiangService = $baiGiangService;
         $this->middleware('lop_hoc_phan')->only('chiTiet', 'modalChinhSua', 'chinhSua');
-        $this->middleware('bai_trong_lop')->only('xemNoiDungBai');
+        $this->middleware('bai_trong_lop')->only('xemNoiDungBai', 'timKiemNhanhBai');
         $this->middleware('bai_giang')->only('them', 'modalChinhSua', 'chinhSua');
         $this->baiTapService = $baiTapService;
     }
@@ -67,7 +69,7 @@ class LopHocPhanController extends Controller
         $khoa = $this->khoaService->layTheoSlug($slug);
         $listKhoa = $this->khoaService->layListKhoa();
         $listBaiGiang = $nguoiDung->list_bai_giang;
-        $listLopHocPhan = $khoa->list_lop_hoc_phan()->paginate(6);
+        $listLopHocPhan = $this->lopHocPhanService->layListTheoKhoa($request, $khoa->id);
 
         // Kiểm tra số trang
         $page = (int) $request->input('page', 1);
@@ -101,8 +103,7 @@ class LopHocPhanController extends Controller
         $idNguoiDung = session('id_nguoi_dung');
         $nguoiDung = $this->nguoiDungService->layTheoId($idNguoiDung);
 
-        $perPage = 6;
-        $dsLopHoc = $this->lopHocPhanService->getLopHocCuaToi($idNguoiDung, $perPage);
+        $dsLopHoc = $this->lopHocPhanService->getLopHocCuaToi($request, $idNguoiDung);
         $listBaiGiang = $nguoiDung->list_bai_giang;
         $listKhoa = $this->khoaService->layListKhoa();
 
@@ -196,7 +197,7 @@ class LopHocPhanController extends Controller
         ]);
     }
 
-    public function xemNoiDungBai($id, $slug)
+    public function xemNoiDungBai(Request $request, $id, $slug)
     {
         $bai = $this->baiService->layTheoSlug($slug);
         $baiGiang = $bai->chuong->bai_giang;
@@ -210,7 +211,25 @@ class LopHocPhanController extends Controller
         $listChuong = $baiGiang->list_chuong;
         $listChuongTrongLop = $lopHocPhan->list_bai->groupBy('id_chuong');
 
-        // dd($listChuongTrongLop->toArray());
+        if ($search = $request->input('search')) {
+            if ($search == 'all') $search = '';
+            else $search = Str::of($search)->trim();
+            
+            $listChuongTrongLop = $lopHocPhan->list_bai()->where([
+                ['tieu_de', 'LIKE', '%' . $search . '%']
+            ])->get()->groupBy('id_chuong');
+            // dd($listChuongTrongLop->toArray());
+
+            $html = view('partials.lop-hoc-phan.noi-dung-bai.list-bai', compact(
+                'listChuong',
+                'listChuongTrongLop',
+                'lopHocPhan'
+            ))->render();
+
+            return response()->json([
+                'html' => $html
+            ]);
+        }
 
         return view('modules.bai.chi-tiet', compact(
             'baiTrongLop',
@@ -223,6 +242,7 @@ class LopHocPhanController extends Controller
 
     public function them(Request $request)
     {
+        // dd($request->all());
         $data = $request->validate(
             [
                 'ten' => 'required|string|max:100',
@@ -232,8 +252,8 @@ class LopHocPhanController extends Controller
                 'hinh_anh' => 'image'
             ],
             [
-                'ten.required' => 'Vui lòng nhập tên bài giảng',
-                'ten.max' => 'Tên bài giảng tối đa 100 ký tự',
+                'ten.required' => 'Vui lòng nhập tên lớp học phần',
+                'ten.max' => 'Tên lớp học phần tối đa 100 ký tự',
                 'id_khoa.required' => 'Vui lòng chọn khoa',
                 'id_khoa.exists' => 'Khoa không tồn tại',
                 'id_bai_giang.required' => 'Vui lòng chọn bài giảng',
@@ -267,13 +287,21 @@ class LopHocPhanController extends Controller
 
             if (!empty($messageError)) dd($messageError);
 
-            return redirect()->route('lop-hoc.lop-hoc-cua-toi')->with([
+            $page = $request->input('page', 1);
+            $view = $request->input('view');
+            $route = route('lop-hoc.lop-hoc-cua-toi');
+            $dsLopHoc = $this->lopHocPhanService->getLopHocCuaToi($request, session('id_nguoi_dung'), $page);
+
+            $html = view('partials.lop-hoc-phan.danh-sach.list', compact('dsLopHoc', 'view', 'route'))->render();
+
+            return response()->json([
                 'message' => $result['message'],
-                'icon' => 'success'
+                'icon' => 'success',
+                'html' => $html
             ]);
         }
 
-        return redirect()->back()->with([
+        return response()->json([
             'message' => $result['message'],
             'icon' => 'error'
         ]);
@@ -328,6 +356,10 @@ class LopHocPhanController extends Controller
 
     public function modalChinhSua(Request $request, $id)
     {
+        // dd($request->all());
+        $lopHocPhan = $this->lopHocPhanService->layTheoId($id);
+        $khoa = $lopHocPhan->khoa;
+
         $result = $this->handleChinhSua($request, $id);
 
         if ($result['success']) {
@@ -347,15 +379,30 @@ class LopHocPhanController extends Controller
                 if (!$resultInsert['success']) $messageError['bai_trong_lop.them'] = $resultInsert['message'];
             }
 
+            // debug lỗi
             if (!empty($messageError)) dd($messageError);
 
-            return redirect()->route('lop-hoc.lop-hoc-cua-toi')->with([
+            $page = $request->input('page', 1);
+            $view = $request->input('view');
+
+            if ($view == "lop-hoc-cua-toi") {
+                $dsLopHoc = $this->lopHocPhanService->getLopHocCuaToi($request, session('id_nguoi_dung'), $page);
+                $route = route('lop-hoc.lop-hoc-cua-toi');
+            } else if ($view == 'danh-sach') {
+                $dsLopHoc = $this->lopHocPhanService->layListTheoKhoa($request, $khoa->id, $page);
+                $route = route('lop-hoc.index', $khoa->slug);
+            } else dd("truyen view sai");
+
+            $html = view('partials.lop-hoc-phan.danh-sach.list', compact('dsLopHoc', 'view', 'route'))->render();
+
+            return response()->json([
                 'message' => $result['message'],
-                'icon' => 'success'
+                'icon' => 'success',
+                'html' => $html
             ]);
         }
 
-        return redirect()->back()->with([
+        return response()->json([
             'message' => $result['message'],
             'icon' => 'error'
         ]);
@@ -392,6 +439,198 @@ class LopHocPhanController extends Controller
 
         return redirect()->back()->with([
             'message' => $result['message'],
+            'icon' => 'error'
+        ]);
+    }
+
+    public function xoa(Request $request, $id)
+    {
+        // dd($request->all());
+        $lopHocPhan = $this->lopHocPhanService->layTheoId($id);
+        $pathHinhAnh = $lopHocPhan->hinh_anh;
+        $khoa = $lopHocPhan->khoa;
+        $nguoiDung = $this->nguoiDungService->layTheoId(session('id_nguoi_dung'));
+
+        $result = $this->lopHocPhanService->xoa($lopHocPhan, $nguoiDung);
+
+        if ($result['success']) {
+            // Xóa ảnh khỏi hệ thống
+            if (!Str::contains($pathHinhAnh, 'no-image.png')) {
+                $this->uploadImageHelper->delete($pathHinhAnh);
+            }
+
+            $page = $request->input('page', 1);
+            $view = $request->input('view');
+
+            if ($view == "lop-hoc-cua-toi") {
+                $dsLopHoc = $this->lopHocPhanService->getLopHocCuaToi($request, session('id_nguoi_dung'), $page);
+                $route = route('lop-hoc.lop-hoc-cua-toi');
+            } else if ($view == 'danh-sach') {
+                $dsLopHoc = $this->lopHocPhanService->layListTheoKhoa($request, $khoa->id, $page);
+                $route = route('lop-hoc.index', $khoa->slug);
+            } else dd("truyen view sai");
+
+            $html = view('partials.lop-hoc-phan.danh-sach.list', compact('dsLopHoc', 'view', 'route'))->render();
+
+            return response()->json([
+                'message' => $result['message'],
+                'icon' => 'success',
+                'html' => $html
+            ]);
+        }
+
+        return response()->json([
+            'message' => $result['message'],
+            'icon' => 'error'
+        ]);
+    }
+
+    public function dangKy(Request $request, $id)
+    {
+        $lopHocPhan = $this->lopHocPhanService->layTheoId($id);
+        $khoa = $lopHocPhan->khoa;
+
+        $result = $this->thanhVienService->them($id);
+
+        if ($result['success']) {
+            $page = $request->input('page', 1);
+            $view = $request->input('view');
+
+            $dsLopHoc = $this->lopHocPhanService->layListTheoKhoa($request, $khoa->id, $page);
+            $route = route('lop-hoc.index', $khoa->slug);
+
+            $html = view('partials.lop-hoc-phan.danh-sach.list', compact('dsLopHoc', 'view', 'route'))->render();
+
+            return response()->json([
+                'message' => 'Đã gửi đăng ký lớp học phần',
+                'icon' => 'success',
+                'html' => $html
+            ]);
+        }
+
+        return response()->json([
+            'message' => $result['message'],
+            'icon' => $result['icon']
+        ]);
+    }
+
+    public function roiKhoi($id)
+    {
+        $result = $this->thanhVienService->xoa($id, session('id_nguoi_dung'));
+
+        if ($result['success']) {
+            return response()->json([
+                'message' => 'Rời khỏi lớp học phần thành công',
+                'icon' => 'success'
+            ]);
+        }
+
+        return response()->json([
+            'message' => $result['message'],
+            'icon' => $result['icon']
+        ]);
+    }
+
+    public function xoaKhoilop($idLopHocPhan, $idNguoiDung)
+    {
+        $lopHocPhan = $this->lopHocPhanService->layTheoId($idLopHocPhan);
+        $result = $this->thanhVienService->xoa($idLopHocPhan, $idNguoiDung);
+
+        if ($result['success']) {
+            $dsThanhVien = $this->thanhVienService->getAcceptedMembersByLopId($idLopHocPhan);
+            $dsYeuCau = $this->thanhVienService->getPendingMembersByLopId($idLopHocPhan);
+
+            $html = view('partials._thanh-vien-lop', [
+                'thanhVien' => $dsThanhVien,
+                'yeuCau' => $dsYeuCau,
+                'lopHocPhan' => $lopHocPhan
+            ])->render();
+
+            return response()->json([
+                'message' => 'Xóa sinh viên khỏi lớp thành công',
+                'icon' => 'success',
+                'html' => $html
+            ]);
+        }
+
+        return response()->json([
+            'message' => $result['message'],
+            'icon' => $result['icon']
+        ]);
+    }
+
+    public function chapNhan($id)
+    {
+        $result = $this->thanhVienService->chapNhanYeuCau($id);
+
+        if ($result['status']) {
+            $lopId = $result['lop_id'];
+            $lopHocPhan = $this->lopHocPhanService->layTheoId($lopId);
+
+            $dsThanhVien = $this->thanhVienService->getAcceptedMembersByLopId($lopId);
+            $dsYeuCau = $this->thanhVienService->getPendingMembersByLopId($lopId);
+
+            $html = view('partials._thanh-vien-lop', [
+                'thanhVien' => $dsThanhVien,
+                'yeuCau' => $dsYeuCau,
+                'lopHocPhan' => $lopHocPhan
+            ])->render();
+
+            return response()->json([
+                'status' => true,
+                'message' => $result['message'],
+                'html' => $html,
+                'tongSoThanhVien' => $dsThanhVien->count()
+            ]);
+        }
+
+        return response()->json($result);
+    }
+
+    public function tuChoi($id)
+    {
+        $result = $this->thanhVienService->tuChoiYeuCau($id);
+
+        if ($result['status']) {
+            $lopId = $result['lop_id'];
+
+            $dsYeuCau = $this->thanhVienService->getPendingMembersByLopId($lopId);
+
+            $html = view('partials._danh-sach-yeu-cau', [
+                'yeuCau' => $dsYeuCau,
+            ])->render();
+
+            return response()->json([
+                'status' => true,
+                'message' => $result['message'],
+                'html' => $html
+            ]);
+        }
+
+        return response()->json($result);
+    }
+
+    public function themDanhSach(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|file|mimes:xlsx,xls,csv',
+        ]);
+
+        $idLopHocPhan = $request->input('id_lop_hoc_phan');
+
+        $duocPhep = $this->thanhVienService->daThamGiaLopHocPhan($idLopHocPhan);
+
+        if ($duocPhep) {
+            Excel::import(new ThanhVienLopImport($idLopHocPhan), $request->file('file'));
+
+            return back()->with([
+                'message' => 'Đã import danh sách sinh viên!',
+                'icon' => 'success'
+            ]);
+        }
+
+        return back()->with([
+            'message' => 'Không được phép import danh sách sinh viên vào lớp khác',
             'icon' => 'error'
         ]);
     }
