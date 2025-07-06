@@ -53,7 +53,7 @@ class LopHocPhanController extends Controller
         $this->uploadImageHelper = $uploadImageHelper;
         $this->baiGiangService = $baiGiangService;
         $this->middleware('lop_hoc_phan')->only('chiTiet', 'modalChinhSua', 'chinhSua');
-        $this->middleware('bai_trong_lop')->only('xemNoiDungBai');
+        $this->middleware('bai_trong_lop')->only('xemNoiDungBai', 'timKiemNhanhBai');
         $this->middleware('bai_giang')->only('them', 'modalChinhSua', 'chinhSua');
     }
 
@@ -193,7 +193,7 @@ class LopHocPhanController extends Controller
         ]);
     }
 
-    public function xemNoiDungBai($id, $slug)
+    public function xemNoiDungBai(Request $request, $id, $slug)
     {
         $bai = $this->baiService->layTheoSlug($slug);
         $baiGiang = $bai->chuong->bai_giang;
@@ -205,7 +205,25 @@ class LopHocPhanController extends Controller
         $listChuong = $baiGiang->list_chuong;
         $listChuongTrongLop = $lopHocPhan->list_bai->groupBy('id_chuong');
 
-        // dd($listChuongTrongLop->toArray());
+        if ($search = $request->input('search')) {
+            if ($search == 'all') $search = '';
+            else $search = Str::of($search)->trim();
+            
+            $listChuongTrongLop = $lopHocPhan->list_bai()->where([
+                ['tieu_de', 'LIKE', '%' . $search . '%']
+            ])->get()->groupBy('id_chuong');
+            // dd($listChuongTrongLop->toArray());
+
+            $html = view('partials.lop-hoc-phan.noi-dung-bai.list-bai', compact(
+                'listChuong',
+                'listChuongTrongLop',
+                'lopHocPhan'
+            ))->render();
+
+            return response()->json([
+                'html' => $html
+            ]);
+        }
 
         return view('modules.bai.chi-tiet', compact(
             'baiTrongLop',
@@ -522,12 +540,12 @@ class LopHocPhanController extends Controller
             ])->render();
 
             return response()->json([
-            'message' => 'Xóa sinh viên khỏi lớp thành công',
-            'icon' => 'success',
-            'html' => $html
-        ]);
+                'message' => 'Xóa sinh viên khỏi lớp thành công',
+                'icon' => 'success',
+                'html' => $html
+            ]);
         }
-        
+
         return response()->json([
             'message' => $result['message'],
             'icon' => $result['icon']

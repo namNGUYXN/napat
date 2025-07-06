@@ -414,3 +414,26 @@ $(document).on('click', '.toggle-replies-btn', function (e) {
         $toggleBtn.html(currentText.replace('Ẩn ', 'Có ') + ' <i class="fas fa-caret-down"></i>');
     }
 });
+
+
+$(document).on('submit', '#form-search-bai', function (e) {
+    e.preventDefault();
+
+    const urlSearch = $(this).attr('action');
+    let queryString = $(this).serialize();
+
+    if (queryString == 'search=') queryString = 'search=all';
+
+    $.ajax({
+        url: urlSearch,
+        type: 'GET',
+        data: queryString,
+        dataType: 'json',
+        success: function (response) {
+            $('#list-bai').html(response.html);
+        },
+        error: function (xhr) {
+            alert('Đã xảy ra lỗi: ' + xhr.status + ' ' + xhr.statusText);
+        }
+    });
+});

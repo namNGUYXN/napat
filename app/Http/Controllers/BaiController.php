@@ -191,8 +191,6 @@ class BaiController extends Controller
     }
 
     public function xoaHangLoat(Request $request) {
-        dd($request->all());
-
         if ($request->action == 'xoa') {
             $listIdBai = array_map('intval', $request->list_id_bai);
             // dd($listIdBai);

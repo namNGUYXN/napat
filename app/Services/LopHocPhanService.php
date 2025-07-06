@@ -133,10 +133,9 @@ class LopHocPhanService
         try {
             DB::beginTransaction();
 
-            $slug = Str::slug($data['ten']);
             $checkExists = LopHocPhan::where([
                 ['id_giang_vien', session('id_nguoi_dung')],
-                ['slug', 'LIKE', $slug . '-' . '%']
+                ['ten', $data['ten']]
             ])->exists();
 
             if ($checkExists) {
@@ -154,7 +153,7 @@ class LopHocPhanService
                 'id_khoa' => $data['id_khoa']
             ]);
 
-            $lopHocPhan->slug = $slug . '-' . $lopHocPhan->id;
+            $lopHocPhan->slug = Str::slug($data['ten']) . '-' . $lopHocPhan->id;
             $lopHocPhan->save();
 
             DB::commit();
@@ -185,7 +184,7 @@ class LopHocPhanService
             $checkExists = LopHocPhan::where([
                 ['id', '!=', $id],
                 ['id_giang_vien', session('id_nguoi_dung')],
-                ['slug', 'LIKE', $slug . '%']
+                ['ten', $data['ten']]
             ])->exists();
 
             if ($checkExists) {
@@ -243,5 +242,23 @@ class LopHocPhanService
                 'message' => $e->getMessage()
             ];
         }
+    }
+
+    public function timKiemNhanhBai(Request $request, $idLopHocPhan)
+    {
+        $inputSearch = $request->input('search', '');
+        $search = Str::of($inputSearch)->trim();
+        $lopHocPhan = $this->layTheoId($idLopHocPhan);
+        $listChuong = $lopHocPhan->bai_giang->list_chuong;
+
+        $listChuongTrongLop = $lopHocPhan->list_bai()->where([
+            ['tieu_de', 'LIKE', '%' . $search . '%']
+        ])->get()->groupBy('id_chuong');
+
+        return [
+            'lopHocPhan' => $lopHocPhan,
+            'listChuong' => $listChuong,
+            'listChuongTrongLop' => $listChuongTrongLop
+        ];
     }
 }

@@ -70,10 +70,9 @@ class BaiGiangService
         try {
             DB::beginTransaction();
 
-            $slug = Str::slug($data['ten']);
             $checkExists = BaiGiang::where([
                 ['id_giang_vien', session('id_nguoi_dung')],
-                ['slug', 'LIKE', $slug . '-' . '%']
+                ['ten', $data['ten']]
             ])->exists();
 
             if ($checkExists) {
@@ -88,7 +87,7 @@ class BaiGiangService
                 'id_giang_vien' => session('id_nguoi_dung'),
             ]);
 
-            $baiGiang->slug = $slug . '-' . $baiGiang->id;
+            $baiGiang->slug = Str::slug($data['ten']) . '-' . $baiGiang->id;
             $baiGiang->save();
 
             DB::commit();
@@ -117,7 +116,7 @@ class BaiGiangService
             $checkExists = BaiGiang::where([
                 ['id', '!=', $id],
                 ['id_giang_vien', session('id_nguoi_dung')],
-                ['slug', 'LIKE', $slug . '-' . '%']
+                ['ten', $data['ten']]
             ])->exists();
 
             if ($checkExists) {

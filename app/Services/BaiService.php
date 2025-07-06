@@ -47,12 +47,11 @@ class BaiService
         try {
             DB::beginTransaction();
 
-            $slug = Str::slug($data['tieu_de']);
             $thuTuMax = Bai::where('id_chuong', $idChuong)->max('thu_tu');
 
             $checkExists = Bai::where([
                 ['id_chuong', $idChuong],
-                ['slug', 'LIKE', $slug . '%']
+                ['tieu_de', $data['tieu_de']]
             ])->exists();
 
             if ($checkExists) {
@@ -61,7 +60,6 @@ class BaiService
 
             $bai = Bai::create([
                 'tieu_de' => $data['tieu_de'],
-                // 'slug' => $slug,
                 'slug' => '',
                 'noi_dung' => $data['noi_dung'],
                 'id_chuong' => $idChuong,
@@ -102,7 +100,7 @@ class BaiService
             $checkExists = Bai::where([
                 ['id_chuong', $bai->id_chuong],
                 ['id', '!=', $id],
-                ['slug', 'LIKE', $slug . '%']
+                ['tieu_de', $data['tieu_de']]
             ])->exists();
 
             if ($checkExists) {
