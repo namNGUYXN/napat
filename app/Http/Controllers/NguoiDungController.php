@@ -158,15 +158,23 @@ class NguoiDungController extends Controller
     //Xử lý khi thêm hàng loạt người dùng(Excel)
     public function xuLyImportExcel(Request $request)
     {
-        $request->validate([
-            'file_excel' => 'required|file|mimes:xlsx,xls,csv',
-        ]);
+        try {
+            $request->validate([
+                'file_excel' => 'required|file|mimes:xlsx,xls,csv',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()
+                ->with('active_tab', 'import')
+                ->with('message', 'File không hợp lệ! Vui lòng chọn tệp Excel có định dạng xlsx, xls hoặc csv.')
+                ->with('icon', 'warning');
+        }
 
         try {
             $result = $this->nguoiDungService->importTuExcel($request->file('file_excel'));
 
             if (!$result['success']) {
                 return back()
+                    ->with('active_tab', 'import')
                     ->with('errors_import', $result['failures'])
                     ->with('message', 'Một số dòng bị lỗi, dữ liệu chưa được thêm!')
                     ->with('icon', 'warning');
@@ -177,6 +185,7 @@ class NguoiDungController extends Controller
                 ->with('icon', 'success');
         } catch (\Exception $e) {
             return back()
+                ->with('active_tab', 'import')
                 ->with('errors_import',)
                 ->with('message', 'Lỗi: ' . $e->getMessage())
                 ->with('icon', 'error');

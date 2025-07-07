@@ -16,6 +16,7 @@ class BaiKiemTraController extends Controller
     protected $baiKiemTraService;
     protected $nguoiDungService;
     protected $thanhVienLopService;
+
     public function __construct(
         BaiKiemTraService $baiKiemTraService,
         NguoiDungService $nguoiDungService,
@@ -26,51 +27,14 @@ class BaiKiemTraController extends Controller
         $this->thanhVienLopService = $thanhVienLopService;
     }
 
-    //Trả về giao diện làm bài kiểm tra
-    function lamBai($id)
-    {
-        $idNguoiDung = session('id_nguoi_dung');
-        $baiKiemTra = $this->baiKiemTraService->getById($id);
-        $thanhVienLop = $this->thanhVienLopService->layTheoLopVaNguoiDung(
-            $baiKiemTra->id_lop_hoc_phan,
-            $idNguoiDung
-        );
-
-        if ($thanhVienLop === null) {
-            return view('modules.lop-hoc.thong-bao-nop-bai', [
-                'thanhCong' => false,
-                'noiDung' => "Không thể làm bài kiểm tra này",
-                'thongBao' => "Bạn không có quyền thực hiện yêu cầu này!!!",
-                'lop' => $baiKiemTra->lop_hoc_phan
-            ]);
-        }
-        if ($baiKiemTra->ngay_bat_dau > Carbon::now()) {
-            return view('modules.lop-hoc.thong-bao-nop-bai', [
-                'thanhCong' => false,
-                'noiDung' => "Không thể làm bài kiểm tra này",
-                'thongBao' => "Bài kiểm tra này chưa bắt đầu!!!",
-                'lop' => $baiKiemTra->lop_hoc_phan
-            ]);
-        }
-        if ($baiKiemTra->ngay_ket_thuc < Carbon::now()) {
-            return view('modules.lop-hoc.thong-bao-nop-bai', [
-                'thanhCong' => false,
-                'noiDung' => "Không thể làm bài kiểm tra này",
-                'thongBao' => "Bài kiểm tra này đã kết thúc rồi!!!",
-                'lop' => $baiKiemTra->lop_hoc_phan
-            ]);
-        }
-        return view('modules.lop-hoc.lam-bai', compact('baiKiemTra'));
-    }
-
-    //Dữ liệu danh sách bài kiểm tra theo id của lớp học
+    //1 Lấy Dữ liệu danh sách bài kiểm tra(cả câu hỏi) theo id của lớp học
     public function danhSachBaiKiemTra($id)
     {
         $baiKiemTra = $this->baiKiemTraService->getByLopHocIdWithCauHoi($id);
         return response()->json($baiKiemTra);
     }
 
-    //Dữ liệu chi tiết bài kiểm tra theo id bài kiểm tra
+    //2 Lấy Dữ liệu chi tiết bài kiểm tra(thông tin+câu hỏi+kết quả) theo id bài kiểm tra
     public function layChiTiet($id)
     {
         $idNguoiDung = session('id_nguoi_dung');
@@ -81,7 +45,7 @@ class BaiKiemTraController extends Controller
         return response()->json($result);
     }
 
-    //Tạo bài kiểm tra mới
+    //3 Tạo bài kiểm tra mới
     public function themBaiKiemTra(Request $request)
     {
         $validator = Validator::make(
@@ -157,77 +121,7 @@ class BaiKiemTraController extends Controller
         }
     }
 
-    //Lưu lại kết quả làm bài của sinh viên
-    public function nopBai(Request $request)
-    {
-        $request->validate([
-            'id_bai_kiem_tra' => 'required|exists:bai_kiem_tra,id',
-            'answers' => 'required|array',
-        ]);
-
-        $idBaiKiemTra = $request->input('id_bai_kiem_tra');
-        $answers = $request->input('answers');
-
-        $baiKiemTra = $this->baiKiemTraService->getById($idBaiKiemTra);
-
-        $nguoiDung = $this->nguoiDungService->layTheoId(session('id_nguoi_dung'));
-
-        $thanhVienLop = $this->thanhVienLopService->layTheoLopVaNguoiDung(
-            $baiKiemTra->id_lop_hoc_phan,
-            $nguoiDung->id
-        );
-
-        if ($thanhVienLop === null) {
-            return view('modules.lop-hoc.thong-bao-nop-bai', [
-                'thanhCong' => false,
-                'thongBao' => "Bạn không có quyền thực hiện yêu cầu này!!!",
-                'lop' => $baiKiemTra->lop_hoc_phan
-            ]);
-        }
-
-        // Kiểm tra trước khi cho nộp bài
-        $kiemTra = $this->baiKiemTraService->kiemTraDaNopBai($idBaiKiemTra, $thanhVienLop->id);
-
-        if (!$kiemTra['success']) {
-            return view('modules.lop-hoc.thong-bao-nop-bai', [
-                'thanhCong' => false,
-                'noiDung' => "Không thể nộp bài",
-                'thongBao' => $kiemTra['message'],
-                'lop' => $baiKiemTra->lop_hoc_phan
-            ]);
-        }
-
-        $thoiGian = Carbon::now();
-        if ($thoiGian > $baiKiemTra->ngay_ket_thuc) {
-            if (!$this->baiKiemTraService->kiemTraNopQuaHan($baiKiemTra->id)) {
-                return view('modules.lop-hoc.thong-bao-nop-bai', [
-                    'thanhCong' => false,
-                    'noiDung' => "Không thể nộp bài",
-                    'thongBao' => "Không thể nộp bài do đã quá hạn nộp!!!",
-                    'lop' => $baiKiemTra->lop_hoc_phan
-                ]);
-            }
-        }
-
-        $ketQua = $this->baiKiemTraService->nopBai($idBaiKiemTra, $thanhVienLop->id, $answers);
-
-        if (!$ketQua['success']) {
-            return view('modules.lop-hoc.thong-bao-nop-bai', [
-                'thanhCong' => false,
-                'noiDung' => "Không thể nộp bài",
-                'thongBao' => $ketQua['message'],
-                'lop' => $baiKiemTra->lop_hoc_phan
-            ]);
-        }
-
-        return view('modules.lop-hoc.thong-bao-nop-bai', [
-            'thanhCong' => true,
-            'soCauDung' => $ketQua['data']->so_cau_dung,
-            'lop' => $baiKiemTra->lop_hoc_phan
-        ]);
-    }
-
-    //Cập nhật thông tin bài kiểm tra
+    //4 Cập nhật thông tin bài kiểm tra
     public function capNhatBaiKiemTra(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -307,5 +201,135 @@ class BaiKiemTraController extends Controller
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
+    }
+
+    //5 Trả về giao diện làm bài kiểm tra
+    function lamBai($id)
+    {
+        $idNguoiDung = session('id_nguoi_dung');
+        $baiKiemTra = $this->baiKiemTraService->getById($id);
+
+        //Không tồn tại bài kiểm tra
+        if ($baiKiemTra === null) {
+            return view('modules.lop-hoc.thong-bao', [
+                'thanhCong' => false,
+                'noiDung' => "Không thể làm bài kiểm tra này",
+                'thongBao' => "Bài kiểm tra không tồn tại!!!",
+                'lop' => null,
+            ]);
+        }
+
+        $thanhVienLop = $this->thanhVienLopService->layTheoLopVaNguoiDung(
+            $baiKiemTra->id_lop_hoc_phan,
+            $idNguoiDung
+        );
+
+        //Người làm bài không thuộc lớp học phần có bài kiểm tra đó
+        if ($thanhVienLop === null) {
+            return view('modules.lop-hoc.thong-bao', [
+                'thanhCong' => false,
+                'noiDung' => "Không thể làm bài kiểm tra này",
+                'thongBao' => "Bạn không có quyền thực hiện yêu cầu này!!!",
+                'lop' => $baiKiemTra->lop_hoc_phan
+            ]);
+        }
+
+        //Bài kiểm tra chưa bắt đầu
+        if ($baiKiemTra->ngay_bat_dau > Carbon::now()) {
+            return view('modules.lop-hoc.thong-bao', [
+                'thanhCong' => false,
+                'noiDung' => "Không thể làm bài kiểm tra này",
+                'thongBao' => "Bài kiểm tra này chưa bắt đầu!!!",
+                'lop' => $baiKiemTra->lop_hoc_phan
+            ]);
+        }
+
+        //Bài kiểm tra đã kết thúc
+        if ($baiKiemTra->ngay_ket_thuc < Carbon::now()) {
+            return view('modules.lop-hoc.thong-bao', [
+                'thanhCong' => false,
+                'noiDung' => "Không thể làm bài kiểm tra này",
+                'thongBao' => "Bài kiểm tra này đã kết thúc rồi!!!",
+                'lop' => $baiKiemTra->lop_hoc_phan
+            ]);
+        }
+
+        return view('modules.lop-hoc.lam-bai', compact('baiKiemTra'));
+    }
+
+    //6 Lưu lại kết quả làm bài của sinh viên
+    public function nopBai(Request $request)
+    {
+        //Validate dữ liệu submit
+        $request->validate([
+            'id_bai_kiem_tra' => 'required|exists:bai_kiem_tra,id',
+            'answers' => 'array',
+        ]);
+
+        $idBaiKiemTra = $request->input('id_bai_kiem_tra');
+        $answers = $request->input('answers');
+
+        $baiKiemTra = $this->baiKiemTraService->getById($idBaiKiemTra);
+
+        $nguoiDung = $this->nguoiDungService->layTheoId(session('id_nguoi_dung'));
+
+        $thanhVienLop = $this->thanhVienLopService->layTheoLopVaNguoiDung(
+            $baiKiemTra->id_lop_hoc_phan,
+            $nguoiDung->id
+        );
+
+        //Người nộp bài không thuộc lớp học phần có bài kiểm tra đang nộp
+        if ($thanhVienLop === null) {
+            return view('modules.lop-hoc.thong-bao', [
+                'thanhCong' => false,
+                'thongBao' => "Bạn không có quyền thực hiện yêu cầu này!!!",
+                'lop' => $baiKiemTra->lop_hoc_phan
+            ]);
+        }
+
+        // Kiểm tra trước khi cho nộp bài
+        $kiemTra = $this->baiKiemTraService->kiemTraDaNopBai($idBaiKiemTra, $thanhVienLop->id);
+
+        //Đã làm bài(nộp) 1 lần rồi
+        if (!$kiemTra['success']) {
+            return view('modules.lop-hoc.thong-bao', [
+                'thanhCong' => false,
+                'noiDung' => "Không thể nộp bài",
+                'thongBao' => $kiemTra['message'],
+                'lop' => $baiKiemTra->lop_hoc_phan
+            ]);
+        }
+
+        //Quá hạn nộp bài
+        $thoiGian = Carbon::now();
+        if ($thoiGian > $baiKiemTra->ngay_ket_thuc) {
+            if (!$this->baiKiemTraService->kiemTraNopQuaHan($baiKiemTra->id)) {
+                return view('modules.lop-hoc.thong-bao', [
+                    'thanhCong' => false,
+                    'noiDung' => "Không thể nộp bài",
+                    'thongBao' => "Không thể nộp bài do đã quá hạn nộp!!!",
+                    'lop' => $baiKiemTra->lop_hoc_phan
+                ]);
+            }
+        }
+
+        $ketQua = $this->baiKiemTraService->nopBai($idBaiKiemTra, $thanhVienLop->id, $answers);
+
+        //Lỗi khi nộp bài
+        if (!$ketQua['success']) {
+            return view('modules.lop-hoc.thong-bao', [
+                'thanhCong' => false,
+                'noiDung' => "Không thể nộp bài",
+                'thongBao' => $ketQua['message'],
+                'lop' => $baiKiemTra->lop_hoc_phan
+            ]);
+        }
+
+        //Thành công
+        return view('modules.lop-hoc.thong-bao', [
+            'thanhCong' => true,
+            'soCauDung' => $ketQua['data']->so_cau_dung,
+            'lop' => $baiKiemTra->lop_hoc_phan
+        ]);
     }
 }

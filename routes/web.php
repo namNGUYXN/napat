@@ -102,7 +102,7 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien']], function (
     Route::put('/lop-hoc-phan/{id}/chinh-sua', 'LopHocPhanController@chinhSua')->name('lop-hoc-phan.update');
     Route::delete('/lop-hoc-phan/{id}/xoa', 'LopHocPhanController@xoa')->name('lop-hoc-phan.delete');
     Route::delete('/lop-hoc-phan/{idLHP}/sinh-vien/{idND}', 'LopHocPhanController@xoaKhoiLop')->name('lop-hoc-phan.remove-from');
-    
+
 
     // Bài giảng
     Route::get('/bai-giang', 'BaiGiangController@giaoDienQuanLy')->name('bai-giang.index');
@@ -171,7 +171,6 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:admin']], function () {
     Route::delete('/menu/xoa-hang-loat', 'MenuController@xoaHangLoat')->name('menu.quick-delete');
 
     // Người dùng
-
     Route::prefix('nguoi-dung')->group(function () {
         Route::get('/', 'NguoiDungController@danhSachNguoiDung')->name('nguoi-dung.index');
         Route::get('/them', 'NguoiDungController@hienThiFormThem')->name('nguoi-dung.them');
@@ -179,6 +178,17 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:admin']], function () {
         Route::post('/import', 'NguoiDungController@xuLyImportExcel')->name('nguoi-dung.import');
         Route::get('/nguoi-dung/{id}/sua', 'NguoiDungController@suaNguoiDung')->name('nguoi-dung.sua');
         Route::put('/nguoi-dung/{id}', 'NguoiDungController@capNhatNguoiDung')->name('nguoi-dung.cap-nhat');
+    });
+
+    //Khoa
+    Route::prefix('khoa')->group(function () {
+        Route::get('/', 'KhoaController@danhSachKhoa')->name('khoa.index');
+        Route::get('/them-moi', 'KhoaController@hienThiFormThem')->name('khoa.them');
+        Route::post('/them-moi', 'KhoaController@xuLyThemKhoa')->name('khoa.luu');
+        Route::post('/import', 'KhoaController@xuLyImportExcel')->name('khoa.import');
+        Route::get('/cap-nhat/{id}', 'KhoaController@hienThiFormCapNhat')->name('khoa.cap-nhat');
+        Route::put('/cap-nhat/{id}', 'KhoaController@capNhat')->name('khoa.chinh-sua');
+        Route::delete('/xoa/{id}', 'KhoaController@xoa')->name('khoa.xoa');
     });
 });
 
