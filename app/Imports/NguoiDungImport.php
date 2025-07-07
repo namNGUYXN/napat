@@ -34,9 +34,9 @@ class NguoiDungImport implements OnEachRow, SkipsOnFailure
         ];
 
         $validator = Validator::make([
-            'ho_ten'  => $rowData[0] ?? null,
-            'email'   => $rowData[1] ?? null,
-            'sdt'     => $rowData[2] ?? null,
+            'ho_ten' => $rowData[0] ?? null,
+            'email' => $rowData[1] ?? null,
+            'sdt' => $rowData[2] ?? null,
             'vai_tro' => $rowData[3] ?? null,
         ], [
             'ho_ten' => ['required', 'regex:/^[\p{L}\s]+$/u'],
@@ -57,13 +57,14 @@ class NguoiDungImport implements OnEachRow, SkipsOnFailure
 
         // Nếu hợp lệ, lưu vào danh sách chờ
         $this->validRows[] = [
-            'ho_ten'    => $rowData[0],
-            'email'     => $rowData[1],
-            'sdt'       => $rowData[2],
-            'mat_khau'  => $this->taoMatKhauNgauNhien(),
-            'vai_tro'   => $rowData[3],
+            'ho_ten' => $rowData[0],
+            'email' => $rowData[1],
+            'sdt' => $rowData[2],
+            'mat_khau' => $this->taoMatKhauNgauNhien(),
+            'vai_tro' => $rowData[3],
+            'hinh_anh' => 'images/nguoi-dung/no-avatar.png',
             'is_active' => true,
-            'ngay_tao'  => now(),
+            'ngay_tao' => now(),
         ];
     }
 

@@ -5,12 +5,12 @@
 @endphp
 
 <header class="container-fluid">
-  <div class="row bg-info text-white py-3 pe-md-3 align-items-center">
+  <div class="row text-white py-3 pe-md-3 align-items-center" style="background: coral;">
     <div class="col-auto d-md-none">
       <button class="btn btn-light" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas">☰</button>
     </div>
     <div class="col d-flex justify-content-between align-items-center">
-      <a href="{{ route('dashboard') }}" class="text-white fs-4 fw-semibold text-decoration-none">NAPAT E-Learning</a>
+      <a href="{{ route('home') }}" class="text-white fs-4 fw-semibold text-decoration-none">NAPAT E-Learning</a>
       <div class="dropdown">
         <button class="dropdown-toggle" type="button" id="dropdownMenuButton1"
           data-bs-toggle="dropdown" aria-expanded="false">
