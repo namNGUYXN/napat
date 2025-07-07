@@ -175,10 +175,14 @@
                     <div class="modal fade" id="modalChiTiet" tabindex="-1">
                         <div class="modal-dialog modal-lg modal-dialog-centered">
                             <div class="modal-content">
-                                <div class="modal-header d-flex justify-content-between align-items-center">
-                                    <h5 class="modal-title">Chi tiết bài kiểm tra</h5>
-                                    <div class="modal-actions">
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                <div class="modal-header d-flex align-items-center">
+                                    <div class="modal-title flex-grow-1">
+                                    </div>
+
+                                    <div class="modal-actions ms-auto d-flex gap-2">
+
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
                                     </div>
                                 </div>
                                 <div class="modal-body overflow-auto" id="modalChiTietBody" style="max-height: 60vh;">
@@ -198,8 +202,12 @@
                                 <div class="modal-content">
 
                                     <!-- HEADER: luôn cố định -->
-                                    <div class="modal-header bg-success text-white">
-                                        <h5 class="modal-title" id="addExerciseModalLabel">Tạo mới bài kiểm tra</h5>
+                                    <div
+                                        class="modal-header bg-gradient bg-success text-white py-3 px-4 shadow-sm border-bottom border-white rounded-top">
+                                        <h5 class="modal-title fw-bold d-flex align-items-center gap-2"
+                                            id="addExerciseModalLabel">
+                                            <i class="fas fa-file-alt fa-lg"></i> Tạo mới bài kiểm tra
+                                        </h5>
                                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
                                     </div>
@@ -207,55 +215,76 @@
                                     <!-- BODY: chỉ phần này cuộn -->
                                     <div class="modal-body">
                                         <form id="newExerciseForm">
-                                            <div class="row mb-3">
-                                                <div class="col-sm-9 col-lg-10">
-                                                    <label for="newExerciseTitle" class="form-label">Tiêu đề
-                                                        <span class="text-danger">*</span></label>
-                                                    <input type="text" class="form-control" name="tieuDe"
-                                                        id="newExerciseTitle" placeholder="Nhập tiêu đề bài tập">
-                                                    <div class="invalid-feedback fw-bold">
+                                            <div class="row mb-4">
+                                                <!-- Tiêu đề -->
+                                                <div class="col-lg-10 col-sm-9 mb-3 mb-sm-0">
+                                                    <label for="newExerciseTitle"
+                                                        class="form-label fw-semibold text-primary">
+                                                        Tiêu đề <span class="text-danger">*</span>
+                                                    </label>
+                                                    <input type="text" class="form-control rounded-3 shadow-sm"
+                                                        name="tieuDe" id="newExerciseTitle"
+                                                        placeholder="Nhập tiêu đề bài tập">
+                                                    <div class="invalid-feedback fw-bold mt-1">
                                                         Vui lòng nhập tiêu đề cho bài kiểm tra.
                                                     </div>
                                                 </div>
-                                                <div class="col-sm-3 col-lg-2 mt-3 mt-sm-0"> <label
-                                                        for="newExerciseMaxScore" class="form-label">Điểm tối
-                                                        đa</label>
-                                                    <input type="number" class="form-control" name="diemToiDa"
-                                                        id="newExerciseMaxScore" placeholder="100" min="0"
-                                                        max="100">
-                                                    <div class="invalid-feedback fw-bold">
+
+                                                <!-- Điểm tối đa -->
+                                                <div class="col-lg-2 col-sm-3">
+                                                    <label for="newExerciseMaxScore"
+                                                        class="form-label fw-semibold text-primary">
+                                                        Điểm tối đa
+                                                    </label>
+                                                    <input type="number" class="form-control rounded-3 shadow-sm"
+                                                        name="diemToiDa" id="newExerciseMaxScore" placeholder="100"
+                                                        min="0" max="100">
+                                                    <div class="invalid-feedback fw-bold mt-1">
                                                         Vui lòng nhập điểm tối đa
                                                     </div>
                                                 </div>
-                                                <div class="row mb-3 mt-3 ">
-                                                    <div class="col-md-6">
-                                                        <label for="startTime">Thời gian bắt đầu</label>
-                                                        <input type="text" class="form-control" id="startTime"
-                                                            name="thoiGianBatDau" placeholder="Chọn thời gian">
-                                                        <div class="invalid-feedback fw-bold">
-                                                            Vui lòng chọn thời gian bắt đầu
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <label for="endTime">Thời gian kết thúc</label>
-                                                        <input type="text" class="form-control" id="endTime"
-                                                            name="thoiGianKetThuc" placeholder="Chọn thời gian">
-                                                        <div class="invalid-feedback fw-bold">
-                                                            Vui lòng chọn thời gian kết thúc
-                                                        </div>
+                                            </div>
+
+                                            <!-- Thời gian bắt đầu và kết thúc -->
+                                            <div class="row mb-4">
+                                                <div class="col-md-6">
+                                                    <label for="startTime" class="form-label fw-semibold text-primary">
+                                                        Thời gian bắt đầu
+                                                    </label>
+                                                    <input type="text" class="form-control rounded-3 shadow-sm"
+                                                        id="startTime" name="thoiGianBatDau"
+                                                        placeholder="Chọn thời gian">
+                                                    <div class="invalid-feedback fw-bold mt-1">
+                                                        Vui lòng chọn thời gian bắt đầu
                                                     </div>
                                                 </div>
-
-                                                <div class="d-flex justify-content-center mt-1">
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" value="1"
-                                                            id="choPhepNopTre" name="choPhepNopTre">
-                                                        <label class="form-check-label" for="choPhepNopTre">
-                                                            Cho phép nộp quá hạn
-                                                        </label>
+                                                <div class="col-md-6">
+                                                    <label for="endTime" class="form-label fw-semibold text-primary">
+                                                        Thời gian kết thúc
+                                                    </label>
+                                                    <input type="text" class="form-control rounded-3 shadow-sm"
+                                                        id="endTime" name="thoiGianKetThuc"
+                                                        placeholder="Chọn thời gian">
+                                                    <div class="invalid-feedback fw-bold mt-1">
+                                                        Vui lòng chọn thời gian kết thúc
                                                     </div>
                                                 </div>
                                             </div>
+
+                                            <!-- Cho phép nộp trễ -->
+                                            <div class="d-flex justify-content-center mt-3">
+                                                <div
+                                                    class="form-check form-check-lg d-flex align-items-center gap-2 px-3 py-2 border rounded-3 shadow-sm bg-light">
+                                                    <input class="form-check-input fs-4" type="checkbox" value="1"
+                                                        id="choPhepNopTre" name="choPhepNopTre"
+                                                        style="width: 1em; height: 1em;">
+                                                    <label class="form-check-label fw-bold fs-5 text-dark"
+                                                        for="choPhepNopTre">
+                                                        Cho phép nộp quá hạn
+                                                    </label>
+                                                </div>
+                                            </div>
+
 
                                             <hr>
 
@@ -276,25 +305,36 @@
                                     </div>
 
                                     <!-- FOOTER: chứa nút cố định -->
-                                    <div class="modal-footer d-flex flex-column align-items-stretch gap-3">
-                                        <div class="d-flex gap-2 w-100">
-                                            <button type="button" class="btn btn-outline-primary flex-fill"
+                                    <div class="modal-footer d-flex flex-column align-items-stretch gap-3 border-0 pt-0">
+                                        <!-- Nhóm nút Thêm và Chọn file -->
+                                        <div class="d-flex gap-3 w-100">
+                                            <!-- Nút thêm câu hỏi -->
+                                            <button type="button"
+                                                class="btn btn-outline-success flex-fill rounded-3 shadow-sm fw-semibold"
                                                 id="addQuestionBtn">
                                                 <i class="fas fa-plus me-2"></i>Thêm câu hỏi mới
                                             </button>
-                                            <label class="btn btn-outline-secondary flex-fill m-0" for="excelFileInput">
+
+                                            <!-- Nút chọn file -->
+                                            <label
+                                                class="btn btn-outline-info flex-fill rounded-3 shadow-sm fw-semibold m-0"
+                                                for="excelFileInput">
                                                 <i class="fas fa-file-excel me-2"></i>Chọn file Excel
                                             </label>
                                             <input type="file" id="excelFileInput" accept=".xlsx, .xls"
                                                 class="d-none">
                                         </div>
-                                        <div class="d-flex justify-content-end w-100">
-                                            <button type="button" class="btn btn-secondary me-2"
+
+                                        <!-- Nhóm nút Hủy và Lưu -->
+                                        <div class="d-flex justify-content-end gap-2 w-100">
+                                            <button type="button" class="btn btn-light border shadow-sm px-4 fw-semibold"
                                                 data-bs-dismiss="modal">Hủy</button>
-                                            <button type="submit" form="newExerciseForm" class="btn btn-primary">Lưu bài
-                                                kiểm tra</button>
+                                            <button type="submit" form="newExerciseForm"
+                                                class="btn btn-primary px-4 shadow-sm fw-semibold">Lưu bài kiểm
+                                                tra</button>
                                         </div>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
