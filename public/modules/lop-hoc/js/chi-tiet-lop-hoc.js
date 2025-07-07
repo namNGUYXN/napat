@@ -210,7 +210,11 @@ function xemChiTietKetQua(idKetQua, tenNguoiDung, diem, tieuDeBaiKT) {
     const content = renderChiTietBaiKiemTra({}, chiTiet);
 
     // Cập nhật tiêu đề
-    $("#modalChiTiet .modal-title").text(title);
+    $("#modalChiTiet .modal-title").html(
+        `<span class="text-primary fw-bold fs-5">
+                        <i class="bi bi-journal-text me-2"></i> ${currentBaiKiemTra.tieu_de}
+                </span>`
+    );
 
     // Thay nút đóng thành nút quay lại
     $("#modalChiTiet .modal-actions").html(`
@@ -351,12 +355,13 @@ function hienThiKetQua() {
     $("#modalChiTiet .modal-body").html(html);
     // Thay nút đóng thành nút quay lại
     $("#modalChiTiet .modal-actions").html(`
-        <button class="btn btn-secondary" onclick="quayLaiDanhSach(0)">
-            ← Quay lại 
-        </button>
+        <button class="btn btn-outline-primary rounded-pill px-3 py-2 shadow-sm     d-flex  align-items-center gap-1"
+                    onclick="quayLaiDanhSach(0)">
+                    <i class="bi bi-arrow-left"></i> Quay lại
+                </button>
     `);
     $("#modalChiTiet .modal-footer").html(`      
-            `);
+    `);
 }
 
 //Khi nhấn nút để xem danh sách câu hỏi của bài kiểm tra
@@ -364,31 +369,64 @@ function hienThiCauHoi() {
     const dsCauHoi = currentBaiKiemTra.list_cau_hoi || [];
 
     if (dsCauHoi.length === 0) {
-        $("#modalChiTiet .modal-body").html("<p>Không có câu hỏi nào.</p>");
+        $("#modalChiTiet .modal-body").html(`
+        <div class="alert alert-warning text-center">
+            <i class="bi bi-exclamation-circle me-2"></i> Không có câu hỏi nào trong bài kiểm tra này.
+        </div>
+    `);
         return;
     }
 
-    let html = "<h5 class='mb-3'>Danh sách câu hỏi:</h5>";
+    let html = "";
 
     dsCauHoi.forEach((cau, index) => {
-        html += `
-            <div class="mb-3 border rounded p-3 bg-light">
-                <strong>Câu ${index + 1}: ${cau.tieu_de}</strong>
-                <ul class="mt-2">
-                    <li>A. ${cau.dap_an_a}</li>
-                    <li>B. ${cau.dap_an_b}</li>
-                    <li>C. ${cau.dap_an_c}</li>
-                    <li>D. ${cau.dap_an_d}</li>
-                </ul>
-                <p><strong>Đáp án đúng:</strong> ${cau.dap_an_dung}</p>
-            </div>
+        const dapAn = {
+            A: cau.dap_an_a,
+            B: cau.dap_an_b,
+            C: cau.dap_an_c,
+            D: cau.dap_an_d,
+        };
+
+        let listDapAnHtml = "";
+
+        Object.entries(dapAn).forEach(([key, value]) => {
+            const isCorrect = key === cau.dap_an_dung;
+            listDapAnHtml += `
+            <li class="${isCorrect ? "text-success fw-bold" : ""}">
+                <span class="fw-semibold">${key}.</span> ${value}
+                ${isCorrect ? '<i class="bi bi-check-circle ms-1"></i>' : ""}
+            </li>
         `;
+        });
+
+        html += `
+        <div class="mb-4 p-3 border rounded shadow-sm bg-white">
+            <h6 class="mb-2 text-primary">
+                <i class="bi bi-question-circle me-2"></i> Câu ${index + 1}: ${
+            cau.tieu_de
+        }
+            </h6>
+            <div class="ps-3">
+                <ul class="list-unstyled">
+                    ${listDapAnHtml}
+                </ul>
+                <div class="mt-2">
+                    <span class="badge bg-success">
+                        <i class="bi bi-check-circle me-1"></i> Đáp án đúng: ${
+                            cau.dap_an_dung
+                        }
+                    </span>
+                </div>
+            </div>
+        </div>
+    `;
     });
     // Thay nút đóng thành nút quay lại
     $("#modalChiTiet .modal-actions").html(`
-        <button class="btn btn-secondary" onclick="quayLaiDanhSach(0)">
-            ← Quay lại 
-        </button>
+        <button class="btn btn-outline-primary rounded-pill px-3 py-2 shadow-sm     d-flex  align-items-center gap-1"
+                    onclick="quayLaiDanhSach(0)">
+                    <i class="bi bi-arrow-left"></i> Quay lại
+                </button>
     `);
     $("#modalChiTiet .modal-body").html(html);
 
@@ -403,8 +441,10 @@ function quayLaiDanhSach($action) {
                 currentBaiKiemTra,
                 currentKetQuaList
             );
-            $("#modalChiTiet .modal-title").text(
-                `Kết quả bài: ${currentBaiKiemTra.tieu_de}`
+            $("#modalChiTiet .modal-title").html(
+                `<span class="text-primary fw-bold fs-5">
+                        <i class="bi bi-journal-text me-2"></i> ${currentBaiKiemTra.tieu_de}
+                </span>`
             );
             $("#modalChiTiet .modal-body").html(html);
 
@@ -412,24 +452,35 @@ function quayLaiDanhSach($action) {
             `);
             /// Thay nút đóng thành nút quay lại
             $("#modalChiTiet .modal-actions").html(`
-                <button class="btn btn-secondary" onclick="quayLaiDanhSach(0)">
-                    ← Quay lại 
+                <button class="btn btn-outline-primary rounded-pill px-3 py-2 shadow-sm     d-flex  align-items-center gap-1"
+                    onclick="quayLaiDanhSach(0)">
+                    <i class="bi bi-arrow-left"></i> Quay lại
                 </button>
             `);
         }
     } else {
         if (currentBaiKiemTra && currentKetQuaList) {
-            $("#modalChiTiet .modal-title").text(
-                `Bài kiểm tra: ${currentBaiKiemTra.tieu_de}`
+            $("#modalChiTiet .modal-title").html(
+                `<span class="text-primary fw-bold fs-5">
+                        <i class="bi bi-journal-text me-2"></i>${currentBaiKiemTra.tieu_de}
+                </span>`
             );
             $("#modalChiTiet .modal-body").html(
                 renderChiTietBaiKiemTraGiangVien()
             );
             $("#modalChiTiet .modal-footer").html(`                   
-                <div class="mt-3 d-flex justify-content-end gap-2">
-                    <button class="btn btn-info" onclick="hienThiCauHoi()">Xem câu hỏi</button>
-                    <button class="btn btn-info" onclick="chuyenSangChinhSua()">Chỉnh sửa nội dung</button>
-                    <button class="btn btn-primary" onclick="hienThiKetQua()">Kết quả</button>
+                <div class="d-flex justify-content-end gap-2">
+                    <button class="btn btn-info rounded-pill shadow-sm px-3 py-2 d-flex align-items-center" onclick="hienThiCauHoi()">
+                        <i class="bi bi-eye me-2"></i> Xem câu hỏi
+                    </button>
+
+                    <button class="btn btn-warning rounded-pill shadow-sm px-3 py-2 d-flex align-items-center text-dark" onclick="chuyenSangChinhSua()">
+                        <i class="bi bi-pencil-square me-2"></i> Chỉnh sửa
+                    </button>
+
+                    <button class="btn btn-success rounded-pill shadow-sm px-3 py-2 d-flex align-items-center" onclick="hienThiKetQua()">
+                        <i class="bi bi-bar-chart-line me-2"></i> Kết quả
+                    </button>
                 </div>
             `);
 
@@ -465,23 +516,23 @@ function formatDateForFlatpickr(dateTimeStr) {
 
 function renderChiTietBaiKiemTraGiangVien() {
     const thongTinBaiKT = `
-                        <p><strong>Bài kiểm tra:</strong> ${
-                            currentBaiKiemTra.tieu_de
-                        }</p>
-                        <p><strong>Hạn chót nộp bài:</strong> ${formatNgay(
-                            currentBaiKiemTra.ngay_ket_thuc
-                        )}</p>
-                        
-                        <p><strong>Điểm tối đa:</strong> ${
-                            currentBaiKiemTra.diem_toi_da
-                        }</p>
-
-                        <p><strong>Hình thức:</strong> ${
-                            currentBaiKiemTra.hinh_thuc ?? "Trắc nghiệm"
-                        }</p>
-                        <p><strong>Số câu hỏi:</strong> ${
-                            currentBaiKiemTra.list_cau_hoi.length
-                        }</p>
+                         <div class="card p-3 shadow-sm rounded-3" style="font-family: 'Segoe UI', sans-serif; font-size: 16px;">
+            <h5 class="mb-3"><i class="bi bi-journal-check me-2 text-primary"></i><strong>${
+                currentBaiKiemTra.tieu_de
+            }</strong></h5>
+            <p><i class="bi bi-calendar-event me-2 text-secondary"></i><strong>Hạn chót nộp bài:</strong> ${formatNgay(
+                currentBaiKiemTra.ngay_ket_thuc
+            )}</p>
+            <p><i class="bi bi-star me-2 text-warning"></i><strong>Điểm tối đa:</strong> ${
+                currentBaiKiemTra.diem_toi_da
+            }</p>
+            <p><i class="bi bi-file-earmark-text me-2 text-info"></i><strong>Hình thức:</strong> ${
+                currentBaiKiemTra.hinh_thuc ?? "Trắc nghiệm"
+            }</p>
+            <p><i class="bi bi-list-ol me-2 text-success"></i><strong>Số câu hỏi:</strong> ${
+                currentBaiKiemTra.list_cau_hoi.length
+            }</p>
+        </div>
                     `;
     return thongTinBaiKT;
 }
@@ -554,62 +605,74 @@ const chuyenSangChinhSua = () => {
     let html = `<form id="editExerciseForm">
                     <input type="hidden" name="idBaiKiemTra" id="idBaiKiemTra"
                         value="${currentBaiKiemTra.id}">
-                    <div class="row mb-3">
-                        <div class="col-sm-9 col-lg-10">
-                            <label for="ExerciseTitle" class="form-label">Tiêu đề
-                                <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" name="tieu_de"
-                                id="ExerciseTitle" value="${
-                                    currentBaiKiemTra.tieu_de
-                                }" placeholder="Nhập tiêu đề bài kiểm tra" required>
+                    <div class="row g-3 mb-4">
+                        <!-- Tiêu đề -->
+                        <div class="col-lg-10 col-sm-9">
+                            <label for="ExerciseTitle" class="form-label fw-semibold">Tiêu đề <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control form-control-lg shadow-sm rounded-3"
+                                name="tieu_de"
+                                id="ExerciseTitle"
+                                value="${currentBaiKiemTra.tieu_de}"
+                                placeholder="Nhập tiêu đề bài kiểm tra"
+                                required>
                             <div class="invalid-feedback fw-bold">
-                            Vui lòng nhập tiêu đề cho bài kiểm tra.
-                            </div>
-                        </div>
-                        <div class="col-sm-3 col-lg-2 mt-3 mt-sm-0"> <label
-                            for="ExerciseMaxScore" class="form-label">Điểm tối
-                            đa</label>
-                            <input type="number" class="form-control" name="diem_toi_da" value="${
-                                currentBaiKiemTra.diem_toi_da
-                            }"
-                            id="ExerciseMaxScore" placeholder="100" min="0">
-                            <div class="invalid-feedback fw-bold">
-                            Vui lòng nhập tiêu đề cho bài kiểm tra.
-                            </div>
-                        </div>
-                        <div class="row mb-3 mt-3 ">
-                            <div class="col-md-6">
-                                <label for="editStartTime">Thời gian bắt đầu</label>
-                                <input type="text" class="form-control" id="editStartTime"
-                                    name="ngay_bat_dau" placeholder="Chọn thời gian">
-                                <div class="invalid-feedback fw-bold">
-                                    Vui lòng chọn thời gian bắt đầu
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="editEndTime">Thời gian kết thúc</label>
-                                <input type="text" class="form-control" id="editEndTime"
-                                    name="ngay_ket_thuc" placeholder="Chọn thời gian">
-                                <div class="invalid-feedback fw-bold">
-                                    Vui lòng chọn thời gian kết thúc
-                                </div>
+                                Vui lòng nhập tiêu đề cho bài kiểm tra.
                             </div>
                         </div>
 
-                        <div class="d-flex justify-content-center mt-1">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="1"
-                                    id="editChoPhepNopTre" name="cho_phep_nop_qua_han"  ${
-                                        currentBaiKiemTra.cho_phep_nop_qua_han
-                                            ? "checked"
-                                            : ""
-                                    }>
-                                <label class="form-check-label" for="choPhepNopTre">
-                                    Cho phép nộp quá hạn
-                                </label>
+                        <!-- Điểm tối đa -->
+                        <div class="col-lg-2 col-sm-3">
+                            <label for="ExerciseMaxScore" class="form-label fw-semibold">Điểm tối đa</label>
+                            <input type="number" class="form-control form-control-lg shadow-sm rounded-3"
+                                name="diem_toi_da"
+                                value="${currentBaiKiemTra.diem_toi_da}"
+                                id="ExerciseMaxScore"
+                                placeholder="100"
+                                min="0">
+                            <div class="invalid-feedback fw-bold">
+                                Vui lòng nhập điểm tối đa cho bài kiểm tra.
                             </div>
                         </div>
                     </div>
+
+                    <!-- Thời gian -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label for="editStartTime" class="form-label fw-semibold">Thời gian bắt đầu</label>
+                            <input type="text" class="form-control shadow-sm rounded-3"
+                                id="editStartTime"
+                                name="ngay_bat_dau"
+                                placeholder="Chọn thời gian">
+                            <div class="invalid-feedback fw-bold">
+                                Vui lòng chọn thời gian bắt đầu
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="editEndTime" class="form-label fw-semibold">Thời gian kết thúc</label>
+                            <input type="text" class="form-control shadow-sm rounded-3"
+                                id="editEndTime"
+                                name="ngay_ket_thuc"
+                                placeholder="Chọn thời gian">
+                            <div class="invalid-feedback fw-bold">
+                                Vui lòng chọn thời gian kết thúc
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cho phép nộp quá hạn -->
+                    <div class="text-center mt-2 mb-4">
+                        <div class="form-check form-switch d-inline-flex align-items-center gap-2">
+                            <input class="form-check-input" type="checkbox"
+                                value="1"
+                                id="editChoPhepNopTre"
+                                name="cho_phep_nop_qua_han"
+                                ${currentBaiKiemTra.cho_phep_nop_qua_han ? "checked" : ""}>
+                            <label class="form-check-label fw-semibold" for="editChoPhepNopTre">
+                                Cho phép nộp quá hạn
+                            </label>
+                        </div>
+                    </div>
+
                     <div id="questionsFormContainer-sua">`;
     questionCounter = 0;
     // Tạo HTML từ template
@@ -627,30 +690,32 @@ const chuyenSangChinhSua = () => {
             
         </form>`;
     $("#modalChiTiet .modal-actions").html(`
-        <button class="btn btn-secondary" onclick="quayLaiDanhSach(0)">
-            ← Quay lại 
-        </button>
+        <button class="btn btn-outline-primary rounded-pill px-3 py-2 shadow-sm     d-flex  align-items-center gap-1"
+                    onclick="quayLaiDanhSach(0)">
+                    <i class="bi bi-arrow-left"></i> Quay lại
+                </button>
     `);
 
     $("#modalChiTiet .modal-footer").html(`
-        <div class="d-flex gap-2 mb-3">
+        <div class="d-flex flex-wrap gap-2 mb-4">
             <!-- Nút Thêm câu hỏi mới -->
-            <button type="button" class="btn btn-outline-primary flex-fill"
+            <button type="button" class="btn btn-primary d-flex align-items-center px-4 py-2 shadow-sm rounded-3"
                 id="addQuestionBtn">
-                <i class="fas fa-plus me-2"></i>Thêm câu hỏi mới
+                <i class="fas fa-plus me-2"></i> Thêm câu hỏi
             </button>
 
-                
-            <label class="btn btn-outline-secondary flex-fill m-0"
+            <!-- Nút chọn file Excel -->
+            <label class="btn btn-outline-success d-flex align-items-center px-4 py-2 shadow-sm rounded-3 m-0"
                 for="excelFileInput">
-                <i class="fas fa-file-excel me-2"></i>Chọn file Excel
+                <i class="fas fa-file-excel me-2"></i> Chọn file Excel
             </label>
-            <input type="file" id="excelFileInput" accept=".xlsx, .xls"
-                class="d-none">
+            <input type="file" id="excelFileInput" accept=".xlsx, .xls" class="d-none">
+
             <!-- Nút lưu thay đổi -->
-        <button type="button" class="btn btn-success" id="submitEditFormBtn">
-            Lưu thay đổi
-        </button>
+            <button type="button" class="btn btn-success d-flex align-items-center px-4 py-2 shadow-sm rounded-3"
+                id="submitEditFormBtn">
+                <i class="fas fa-save me-2"></i> Lưu thay đổi
+            </button>
         </div>
         
     `);
@@ -815,8 +880,10 @@ $(document).ready(function () {
                               ).toLocaleDateString("vi-VN")
                             : "Không có";
 
-                        $("#modalChiTiet .modal-title").text(
-                            baiKiemTra.tieu_de
+                        $("#modalChiTiet .modal-title").html(
+                            `<span class="text-primary fw-bold fs-5">
+                                <i class="bi bi-journal-text me-2"></i> ${currentBaiKiemTra.tieu_de}
+                            </span>`
                         );
 
                         const lamBaiUrl = `/lam-bai/${baiKiemTra.id}`;
@@ -845,8 +912,10 @@ $(document).ready(function () {
                             });
                         });
                         // ✅ Hiển thị tiêu đề modal gồm tiêu đề + số câu đúng / tổng câu
-                        $("#modalChiTiet .modal-title").text(
-                            `${baiKiemTra.tieu_de} - Kết quả: ${soCauDung}/${tongCau} câu đúng`
+                        $("#modalChiTiet .modal-title").html(
+                            `<span class="text-primary fw-bold fs-5">
+                                <i class="bi bi-journal-text me-2"></i> ${currentBaiKiemTra.tieu_de} - Kết quả: ${soCauDung}/${tongCau} câu đúng
+                        </span>`
                         );
 
                         // ✅ Render nội dung chi tiết
@@ -875,18 +944,27 @@ $(document).ready(function () {
                         }
                     });
 
-                    $("#modalChiTiet .modal-title").text(
-                        `Bài kiểm tra: ${baiKiemTra.tieu_de}`
-                    );
-
+                    $("#modalChiTiet .modal-title").html(`
+                        <span class="text-primary fw-bold fs-5">
+                        <i class="bi bi-journal-text me-2"></i> ${baiKiemTra.tieu_de}
+                    </span>
+                    `);
                     $("#modalChiTiet .modal-body").html(
                         renderChiTietBaiKiemTraGiangVien()
                     );
                     $("#modalChiTiet .modal-footer").html(`                   
-                        <div class="mt-3 d-flex justify-content-end gap-2">
-                            <button class="btn btn-info" onclick="hienThiCauHoi()">Xem câu hỏi</button>
-                            <button class="btn btn-info" onclick="chuyenSangChinhSua()">Chỉnh sửa nội dung</button>
-                            <button class="btn btn-primary" onclick="hienThiKetQua()">Kết quả</button>
+                        <div class="d-flex justify-content-end gap-2">
+                            <button class="btn btn-info rounded-pill shadow-sm px-3 py-2 d-flex align-items-center" onclick="hienThiCauHoi()">
+                                <i class="bi bi-eye me-2"></i> Xem câu hỏi
+                            </button>
+
+                            <button class="btn btn-warning rounded-pill shadow-sm px-3 py-2 d-flex align-items-center text-dark" onclick="chuyenSangChinhSua()">
+                                <i class="bi bi-pencil-square me-2"></i> Chỉnh sửa
+                            </button>
+
+                            <button class="btn btn-success rounded-pill shadow-sm px-3 py-2 d-flex align-items-center" onclick="hienThiKetQua()">
+                                <i class="bi bi-bar-chart-line me-2"></i> Kết quả
+                            </button>
                         </div>
                     `);
 
