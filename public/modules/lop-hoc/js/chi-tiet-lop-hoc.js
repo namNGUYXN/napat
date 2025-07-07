@@ -267,8 +267,9 @@ function renderChiTietBaiKiemTra(baiKiemTra, chiTiet) {
         html += `</ul>
             <div class="mt-2">
                 <small><strong>Đáp án đúng:</strong> ${dapAnDung}</small><br/>
-                <small><strong>Đáp án chọn:</strong> ${dapAnChon || "<i>Không chọn</i>"
-            }</small>
+                <small><strong>Đáp án chọn:</strong> ${
+                    dapAnChon || "<i>Không chọn</i>"
+                }</small>
             </div>
         </div>`;
     });
@@ -325,13 +326,14 @@ function renderDanhSachKetQua(baiKiemTra, dsKetQua) {
             <td>${nopMuon}</td>
             <td>${item.diem ?? ""}</td>
             <td>
-                ${item.diem !== null
-                ? `<button class="btn btn-sm btn-primary"
+                ${
+                    item.diem !== null
+                        ? `<button class="btn btn-sm btn-primary"
                             onclick="xemChiTietKetQua('${idKetQua}', '${user.ten}', ${item.diem}, '${baiKiemTra.tieu_de}')">
                             Xem
                         </button>`
-                : ""
-            }
+                        : ""
+                }
             </td>
         </tr>`;
     });
@@ -463,19 +465,23 @@ function formatDateForFlatpickr(dateTimeStr) {
 
 function renderChiTietBaiKiemTraGiangVien() {
     const thongTinBaiKT = `
-                        <p><strong>Bài kiểm tra:</strong> ${currentBaiKiemTra.tieu_de
-        }</p>
+                        <p><strong>Bài kiểm tra:</strong> ${
+                            currentBaiKiemTra.tieu_de
+                        }</p>
                         <p><strong>Hạn chót nộp bài:</strong> ${formatNgay(
-            currentBaiKiemTra.ngay_ket_thuc
-        )}</p>
+                            currentBaiKiemTra.ngay_ket_thuc
+                        )}</p>
                         
-                        <p><strong>Điểm tối đa:</strong> ${currentBaiKiemTra.diem_toi_da
-        }</p>
+                        <p><strong>Điểm tối đa:</strong> ${
+                            currentBaiKiemTra.diem_toi_da
+                        }</p>
 
-                        <p><strong>Hình thức:</strong> ${currentBaiKiemTra.hinh_thuc ?? "Trắc nghiệm"
-        }</p>
-                        <p><strong>Số câu hỏi:</strong> ${currentBaiKiemTra.list_cau_hoi.length
-        }</p>
+                        <p><strong>Hình thức:</strong> ${
+                            currentBaiKiemTra.hinh_thuc ?? "Trắc nghiệm"
+                        }</p>
+                        <p><strong>Số câu hỏi:</strong> ${
+                            currentBaiKiemTra.list_cau_hoi.length
+                        }</p>
                     `;
     return thongTinBaiKT;
 }
@@ -498,13 +504,16 @@ const questionTemplate = (
                     <div class="input-group-text">
                         <input class="form-check-input mt-0 correct-answer-radio" 
                                type="radio" name="correctAnswer_${count}" 
-                               value="${value}" ${correctAnswer === value ? "checked" : ""
-                } required>
+                               value="${value}" ${
+                correctAnswer === value ? "checked" : ""
+            } required>
                     </div>
                     <input type="text" class="form-control answer-option" 
-                           value="${answerOptions[index] || ""
-                }" placeholder="Đáp án ${optionLabels[index]
-                }" required>
+                           value="${
+                               answerOptions[index] || ""
+                           }" placeholder="Đáp án ${
+                optionLabels[index]
+            }" required>
                 </div>
             </div>
         `
@@ -550,8 +559,9 @@ const chuyenSangChinhSua = () => {
                             <label for="ExerciseTitle" class="form-label">Tiêu đề
                                 <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" name="tieu_de"
-                                id="ExerciseTitle" value="${currentBaiKiemTra.tieu_de
-        }" placeholder="Nhập tiêu đề bài kiểm tra" required>
+                                id="ExerciseTitle" value="${
+                                    currentBaiKiemTra.tieu_de
+                                }" placeholder="Nhập tiêu đề bài kiểm tra" required>
                             <div class="invalid-feedback fw-bold">
                             Vui lòng nhập tiêu đề cho bài kiểm tra.
                             </div>
@@ -559,8 +569,9 @@ const chuyenSangChinhSua = () => {
                         <div class="col-sm-3 col-lg-2 mt-3 mt-sm-0"> <label
                             for="ExerciseMaxScore" class="form-label">Điểm tối
                             đa</label>
-                            <input type="number" class="form-control" name="diem_toi_da" value="${currentBaiKiemTra.diem_toi_da
-        }"
+                            <input type="number" class="form-control" name="diem_toi_da" value="${
+                                currentBaiKiemTra.diem_toi_da
+                            }"
                             id="ExerciseMaxScore" placeholder="100" min="0">
                             <div class="invalid-feedback fw-bold">
                             Vui lòng nhập tiêu đề cho bài kiểm tra.
@@ -588,10 +599,11 @@ const chuyenSangChinhSua = () => {
                         <div class="d-flex justify-content-center mt-1">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" value="1"
-                                    id="editChoPhepNopTre" name="cho_phep_nop_qua_han"  ${currentBaiKiemTra.cho_phep_nop_qua_han
-            ? "checked"
-            : ""
-        }>
+                                    id="editChoPhepNopTre" name="cho_phep_nop_qua_han"  ${
+                                        currentBaiKiemTra.cho_phep_nop_qua_han
+                                            ? "checked"
+                                            : ""
+                                    }>
                                 <label class="form-check-label" for="choPhepNopTre">
                                     Cho phép nộp quá hạn
                                 </label>
@@ -762,9 +774,13 @@ $(document).ready(function () {
             const html = `
                 <div class="col mb-3">
                     <div class="card shadow-sm h-100 cursor-pointer item-bai-kiem-tra" data-id="${item.id}">
-                        <div class="card-body">
-                            <h5 class="card-title">${item.tieu_de}</h5>
-                            <p class="card-text mb-1"><i class="bi bi-calendar-check"></i> Ngày đăng: ${item.ngay_tao}</p>
+                        <div class="card-body d-flex flex-column justify-content-center">
+                            <h5 class="card-title">
+                                <i class="bi bi-journal-text icon-exercise"></i> ${item.tieu_de}
+                            </h5>
+                            <p class="card-text mb-0">
+                                <i class="bi bi-calendar-check"></i> Ngày đăng: ${item.ngay_tao}
+                            </p>
                         </div>
                     </div>
                 </div>`;
@@ -795,8 +811,8 @@ $(document).ready(function () {
                         const tongCau = baiKiemTra.list_cau_hoi.length;
                         const ngayDenHan = baiKiemTra.ngay_ket_thuc
                             ? new Date(
-                                baiKiemTra.ngay_ket_thuc
-                            ).toLocaleDateString("vi-VN")
+                                  baiKiemTra.ngay_ket_thuc
+                              ).toLocaleDateString("vi-VN")
                             : "Không có";
 
                         $("#modalChiTiet .modal-title").text(
@@ -1009,7 +1025,8 @@ $(document).ready(function () {
                 dapAnDuocChon === null
             ) {
                 errorMessages.push(
-                    `• Câu hỏi ${index + 1
+                    `• Câu hỏi ${
+                        index + 1
                     }: Thiếu nội dung hoặc chưa chọn đáp án đúng.`
                 );
                 isValid = false;
@@ -1106,7 +1123,7 @@ $(document).ready(function () {
     });
 
     //Nhấn chấp nhận yêu cầu tham gia lớp học
-    $(document).on('click', '.btn-accept-request', function () {
+    $(document).on("click", ".btn-accept-request", function () {
         let id = $(this).data("id");
 
         Swal.fire({
@@ -1142,12 +1159,12 @@ $(document).ready(function () {
                             });
 
                             Toast.fire({
-                                icon: 'success',
-                                title: 'Chấp nhận đăng ký lớp thành công',
+                                icon: "success",
+                                title: "Chấp nhận đăng ký lớp thành công",
                             });
 
                             $("#list-thanh-vien").html(res.html);
-                            $('#member-tab span').text(res.tongSoThanhVien);
+                            $("#member-tab span").text(res.tongSoThanhVien);
                         } else {
                             Swal.fire({
                                 icon: "error",
@@ -1169,7 +1186,7 @@ $(document).ready(function () {
     });
 
     //Nhấn từ chối yêu cầu tham gia lớp học
-    $(document).on('click', '.btn-reject-request', function () {
+    $(document).on("click", ".btn-reject-request", function () {
         let id = $(this).data("id");
 
         Swal.fire({
@@ -1346,7 +1363,6 @@ $(document).ready(function () {
             });
         }
     });
-
 });
 
 let listBaiTrongLop = {};
@@ -1462,7 +1478,9 @@ $(document).on("click", ".btn-update-ban-tin", function () {
             const banTin = response.data;
             banTinCache[urlDetail] = banTin;
 
-            tinymce.get("noi-dung-ban-tin-chinh-sua").setContent(banTin.noi_dung);
+            tinymce
+                .get("noi-dung-ban-tin-chinh-sua")
+                .setContent(banTin.noi_dung);
             form.attr("action", urlUpdate);
             form.data("url-detail", urlDetail);
             $("#modal-chinh-sua-ban-tin").modal("show");
@@ -1474,107 +1492,111 @@ $(document).on("click", ".btn-update-ban-tin", function () {
 });
 
 // Xử lý model thêm bản tin
-$("#modal-them-ban-tin").parents("form").on("submit", function (e) {
-    e.preventDefault();
+$("#modal-them-ban-tin")
+    .parents("form")
+    .on("submit", function (e) {
+        e.preventDefault();
 
-    const form = $(this);
-    const actionUrl = form.attr("action");
-    const noiDung = tinymce.get("noi-dung-ban-tin-them").getContent();
-    const token = $('meta[name="csrf-token"]').attr("content");
+        const form = $(this);
+        const actionUrl = form.attr("action");
+        const noiDung = tinymce.get("noi-dung-ban-tin-them").getContent();
+        const token = $('meta[name="csrf-token"]').attr("content");
 
-    // console.log(noiDung);
+        // console.log(noiDung);
 
-    $.ajax({
-        url: actionUrl,
-        type: "POST",
-        data: {
-            _token: token,
-            noi_dung: noiDung,
-        },
-        dataType: "json",
-        success: function (response) {
-            const Toast = Swal.mixin({
-                toast: true,
-                position: "top-end",
-                width: "auto",
-                showConfirmButton: false,
-                timer: 3500,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.onmouseenter = Swal.stopTimer;
-                    toast.onmouseleave = Swal.resumeTimer;
-                },
-            });
+        $.ajax({
+            url: actionUrl,
+            type: "POST",
+            data: {
+                _token: token,
+                noi_dung: noiDung,
+            },
+            dataType: "json",
+            success: function (response) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    width: "auto",
+                    showConfirmButton: false,
+                    timer: 3500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    },
+                });
 
-            Toast.fire({
-                icon: response.icon,
-                title: response.message,
-            });
+                Toast.fire({
+                    icon: response.icon,
+                    title: response.message,
+                });
 
-            $("#wp-list-ban-tin").html(response.html);
-            $("#news-tab>span").text(response.tongSoBanTin);
+                $("#wp-list-ban-tin").html(response.html);
+                $("#news-tab>span").text(response.tongSoBanTin);
 
-            $("#modal-them-ban-tin").modal("hide");
+                $("#modal-them-ban-tin").modal("hide");
 
-            // Reset form
-            form[0].reset();
-        },
-        error: function (xhr) {
-            alert("Đã xảy ra lỗi: " + xhr.status + " " + xhr.statusText);
-        },
+                // Reset form
+                form[0].reset();
+            },
+            error: function (xhr) {
+                alert("Đã xảy ra lỗi: " + xhr.status + " " + xhr.statusText);
+            },
+        });
     });
-});
 
 // Xử lý modal chỉnh sửa bản tin
-$("#modal-chinh-sua-ban-tin").parents("form").on("submit", function (e) {
-    e.preventDefault();
+$("#modal-chinh-sua-ban-tin")
+    .parents("form")
+    .on("submit", function (e) {
+        e.preventDefault();
 
-    const form = $(this);
-    const actionUrl = form.attr("action");
-    const noiDung = tinymce.get("noi-dung-ban-tin-chinh-sua").getContent();
-    const token = $('meta[name="csrf-token"]').attr("content");
+        const form = $(this);
+        const actionUrl = form.attr("action");
+        const noiDung = tinymce.get("noi-dung-ban-tin-chinh-sua").getContent();
+        const token = $('meta[name="csrf-token"]').attr("content");
 
-    $.ajax({
-        url: actionUrl,
-        type: "PUT",
-        data: {
-            _token: token,
-            noi_dung: noiDung,
-        },
-        dataType: "json",
-        success: function (response) {
-            const Toast = Swal.mixin({
-                toast: true,
-                position: "top-end",
-                width: "auto",
-                showConfirmButton: false,
-                timer: 3500,
-                timerProgressBar: true,
-                didOpen: (toast) => {
-                    toast.onmouseenter = Swal.stopTimer;
-                    toast.onmouseleave = Swal.resumeTimer;
-                },
-            });
+        $.ajax({
+            url: actionUrl,
+            type: "PUT",
+            data: {
+                _token: token,
+                noi_dung: noiDung,
+            },
+            dataType: "json",
+            success: function (response) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    width: "auto",
+                    showConfirmButton: false,
+                    timer: 3500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    },
+                });
 
-            Toast.fire({
-                icon: response.icon,
-                title: response.message,
-            });
+                Toast.fire({
+                    icon: response.icon,
+                    title: response.message,
+                });
 
-            $("#wp-list-ban-tin").html(response.html);
+                $("#wp-list-ban-tin").html(response.html);
 
-            $("#modal-chinh-sua-ban-tin").modal("hide");
+                $("#modal-chinh-sua-ban-tin").modal("hide");
 
-            // Reset form
-            form[0].reset();
+                // Reset form
+                form[0].reset();
 
-            delete banTinCache[form.data("url-detail")];
-        },
-        error: function (xhr) {
-            alert("Đã xảy ra lỗi: " + xhr.status + " " + xhr.statusText);
-        },
+                delete banTinCache[form.data("url-detail")];
+            },
+            error: function (xhr) {
+                alert("Đã xảy ra lỗi: " + xhr.status + " " + xhr.statusText);
+            },
+        });
     });
-});
 
 // Xử lý xóa dữ liệu khi modal ẩn
 $("#modal-them-ban-tin").on("hidden.bs.modal", function () {
@@ -1777,59 +1799,68 @@ $(document).on("submit", 'form[id|="form-update-reply"]', function (e) {
     });
 });
 
-$('#img-upload-modal-chinh-sua').on('change', function (event) {
+$("#img-upload-modal-chinh-sua").on("change", function (event) {
     const file = event.target.files[0];
-    const imgPreview = $('#img-preview-container-modal-chinh-sua .img-preview');
-    const imgRemoveBtn = $('#img-preview-container-modal-chinh-sua .img-remove-btn');
+    const imgPreview = $("#img-preview-container-modal-chinh-sua .img-preview");
+    const imgRemoveBtn = $(
+        "#img-preview-container-modal-chinh-sua .img-remove-btn"
+    );
 
     handleRenderImg(file, imgPreview, imgRemoveBtn);
 });
 
 function handleRenderImg(file, imgPreview, imgRemoveBtn) {
-    if (file && file.type.startsWith('image/')) {
+    if (file && file.type.startsWith("image/")) {
         const reader = new FileReader();
 
         reader.onload = function (e) {
-            imgPreview.attr('src', e.target.result).show();
+            imgPreview.attr("src", e.target.result).show();
             imgRemoveBtn.show(); // Hiển thị nút xóa
         };
 
         reader.readAsDataURL(file);
     } else {
         // Nếu không có file nào được chọn hoặc file không phải là ảnh
-        imgPreview.attr('src', '#').hide();
+        imgPreview.attr("src", "#").hide();
         imgRemoveBtn.hide(); // Ẩn nút xóa
     }
 }
 
-$('#img-preview-container-modal-chinh-sua .img-remove-btn').on('click', function () {
-    const imgPreview = $('#img-preview-container-modal-chinh-sua .img-preview');
-    const imgUpload = $('#img-upload-modal-chinh-sua');
-    const imgRemoveBtn = $('#img-preview-container-modal-chinh-sua .img-remove-btn');
+$("#img-preview-container-modal-chinh-sua .img-remove-btn").on(
+    "click",
+    function () {
+        const imgPreview = $(
+            "#img-preview-container-modal-chinh-sua .img-preview"
+        );
+        const imgUpload = $("#img-upload-modal-chinh-sua");
+        const imgRemoveBtn = $(
+            "#img-preview-container-modal-chinh-sua .img-remove-btn"
+        );
 
-    handleRemoveImg(imgPreview, imgUpload, imgRemoveBtn);
-});
+        handleRemoveImg(imgPreview, imgUpload, imgRemoveBtn);
+    }
+);
 
 function handleRemoveImg(imgPreview, imgUpload, imgRemoveBtn) {
     // Reset thuộc tính src của ảnh preview và ẩn nó đi
-    imgPreview.attr('src', '#').hide();
+    imgPreview.attr("src", "#").hide();
     imgRemoveBtn.hide();
 
     // Reset giá trị của input file
     // Đây là cách để xóa file đã chọn khỏi input file
-    imgUpload.val('');
+    imgUpload.val("");
 }
 
-$(document).on('click', '.btn-delete-class', function () {
+$(document).on("click", ".btn-delete-class", function () {
     const formData = new FormData(); // Lấy tất cả input từ form, bao gồm file
-    const token = $('meta[name="csrf-token"]').attr('content');
-    const view = $('#modal-chinh-sua-lop-hoc-phan').data('view');
-    const urlDelete = $(this).data('url-delete');
-    const urlMyClass = $(this).data('url-my-class');
+    const token = $('meta[name="csrf-token"]').attr("content");
+    const view = $("#modal-chinh-sua-lop-hoc-phan").data("view");
+    const urlDelete = $(this).data("url-delete");
+    const urlMyClass = $(this).data("url-my-class");
 
-    formData.append('_token', token);
-    formData.append('_method', 'DELETE');
-    formData.append('view', view);
+    formData.append("_token", token);
+    formData.append("_method", "DELETE");
+    formData.append("view", view);
 
     Swal.fire({
         title: `Bạn có chắc chắn xóa lớp học phần này không?`,
@@ -1844,7 +1875,7 @@ $(document).on('click', '.btn-delete-class', function () {
         if (result.isConfirmed) {
             $.ajax({
                 url: urlDelete,
-                type: 'POST',
+                type: "POST",
                 data: formData,
                 contentType: false, // Để jQuery không set Content-Type
                 processData: false, // Để không chuyển FormData thành chuỗi query
@@ -1880,14 +1911,14 @@ $(document).on('click', '.btn-delete-class', function () {
     });
 });
 
-$(document).on('click', '.btn-leave-class', function () {
+$(document).on("click", ".btn-leave-class", function () {
     const formData = new FormData(); // Lấy tất cả input từ form, bao gồm file
-    const token = $('meta[name="csrf-token"]').attr('content');
-    const urlLeave = $(this).data('url-leave');
-    const urlMyClass = $(this).data('url-my-class');
+    const token = $('meta[name="csrf-token"]').attr("content");
+    const urlLeave = $(this).data("url-leave");
+    const urlMyClass = $(this).data("url-my-class");
 
-    formData.append('_token', token);
-    formData.append('_method', 'DELETE');
+    formData.append("_token", token);
+    formData.append("_method", "DELETE");
 
     Swal.fire({
         title: `Bạn có chắc chắn rời lớp học phần này không?`,
@@ -1902,7 +1933,7 @@ $(document).on('click', '.btn-leave-class', function () {
         if (result.isConfirmed) {
             $.ajax({
                 url: urlLeave,
-                type: 'POST',
+                type: "POST",
                 data: formData,
                 contentType: false, // Để jQuery không set Content-Type
                 processData: false, // Để không chuyển FormData thành chuỗi query
@@ -1938,13 +1969,13 @@ $(document).on('click', '.btn-leave-class', function () {
     });
 });
 
-$(document).on('click', '.btn-remove-from-class', function () {
+$(document).on("click", ".btn-remove-from-class", function () {
     const formData = new FormData(); // Lấy tất cả input từ form, bao gồm file
-    const token = $('meta[name="csrf-token"]').attr('content');
-    const urlRemoveFrom = $(this).data('url-remove-from');
+    const token = $('meta[name="csrf-token"]').attr("content");
+    const urlRemoveFrom = $(this).data("url-remove-from");
 
-    formData.append('_token', token);
-    formData.append('_method', 'DELETE');
+    formData.append("_token", token);
+    formData.append("_method", "DELETE");
 
     Swal.fire({
         title: `Bạn có chắc chắn xóa sinh viên này khỏi lớp?`,
@@ -1959,7 +1990,7 @@ $(document).on('click', '.btn-remove-from-class', function () {
         if (result.isConfirmed) {
             $.ajax({
                 url: urlRemoveFrom,
-                type: 'POST',
+                type: "POST",
                 data: formData,
                 contentType: false, // Để jQuery không set Content-Type
                 processData: false, // Để không chuyển FormData thành chuỗi query

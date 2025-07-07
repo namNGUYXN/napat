@@ -18,7 +18,7 @@
             </a>
             <ul class="submenu-sidebar custom-scrollbar">
                 <li>
-                    <a href="#" class="nav-link"><span class="nav-text">Xem danh sách</span></a>
+                    <a href="/khoa" class="nav-link"><span class="nav-text">Xem danh sách</span></a>
                 </li>
                 <li>
                     <a href="#" class="nav-link"><span class="nav-text">Thêm Khoa mới</span></a>

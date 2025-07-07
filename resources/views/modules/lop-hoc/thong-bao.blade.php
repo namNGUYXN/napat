@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Kết quả</title>
-    <meta http-equiv="refresh" content="5;url={{ route('lop-hoc.detail', ['slug' => $lop->slug]) }}">
+    @if (isset($lop))
+        <meta http-equiv="refresh" content="5;url={{ route('lop-hoc.detail', ['slug' => $lop->slug]) }}">
+    @endif
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -44,7 +46,9 @@
             <p>{{ $thongBao }}</p>
         @endif
 
-        <p>Trang sẽ chuyển về lớp học sau 5 giây...</p>
+        @if (isset($lop))
+            <p>Trang sẽ chuyển về lớp học sau 5 giây...</p>
+        @endif
     </div>
 </body>
 
