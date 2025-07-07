@@ -55,8 +55,8 @@ class LopHocPhanController extends Controller
         $this->khoaService = $khoaService;
         $this->uploadImageHelper = $uploadImageHelper;
         $this->baiGiangService = $baiGiangService;
-        $this->middleware('lop_hoc_phan')->only('chiTiet', 'modalChinhSua', 'chinhSua');
-        $this->middleware('bai_trong_lop')->only('xemNoiDungBai', 'timKiemNhanhBai');
+        $this->middleware('lop_hoc_phan')->only('chiTiet', 'modalChiTiet', 'modalChinhSua', 'chinhSua');
+        $this->middleware('bai_trong_lop')->only('xemNoiDungBai');
         $this->middleware('bai_giang')->only('them', 'modalChinhSua', 'chinhSua');
         $this->baiTapService = $baiTapService;
     }

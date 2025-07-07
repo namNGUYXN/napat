@@ -22,8 +22,8 @@ class LoaiMenuSeeder extends Seeder
                 'thu_tu' => 1
             ],
             [
-                'ten' => 'Lớp học của tôi',
-                'slug' => Str::slug('Lớp học của tôi'),
+                'ten' => 'Lớp học phần của tôi',
+                'slug' => Str::slug('Lớp học phần của tôi'),
                 'icon' => 'fas fa-users',
                 'thu_tu' => 2
             ],
