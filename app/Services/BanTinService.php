@@ -17,7 +17,6 @@ class BanTinService
         ])
             ->whereNull('id_ban_tin_cha') // chỉ bản tin cha
             ->where('id_lop_hoc_phan', $idLopHoc)
-            ->where('is_delete', false) // nếu có cờ xóa
             ->orderByDesc('ngay_tao')
             ->get();
     }

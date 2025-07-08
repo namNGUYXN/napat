@@ -18,7 +18,6 @@ class Khoa extends Model
         'mo_ta_ngan',
         'email',
         'ngay_tao',
-        'is_delete',
     ];
 
     public function getNgayTaoAttribute($value)

@@ -21,7 +21,6 @@ class CreateBaiGiangTable extends Migration
             $table->string('hinh_anh')->nullable();
             $table->unsignedBigInteger('id_giang_vien');
             $table->timestamp('ngay_tao')->useCurrent();
-            $table->boolean('is_delete')->default(false);
 
             // FK
             $table->foreign('id_giang_vien')->references('id')->on('nguoi_dung');

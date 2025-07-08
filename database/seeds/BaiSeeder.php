@@ -21,7 +21,6 @@ class BaiSeeder extends Seeder
                 'noi_dung' => '<p>Nội dung bài HTML...</p>',
                 'id_chuong' => 1,
                 'thu_tu' => 1,
-                'is_delete' => false,
             ],
             [
                 'tieu_de' => 'Giới thiệu Laravel',
@@ -29,7 +28,6 @@ class BaiSeeder extends Seeder
                 'noi_dung' => '<p>Laravel là một PHP framework mạnh mẽ...</p>',
                 'id_chuong' => 2,
                 'thu_tu' => 1,
-                'is_delete' => false,
             ],
             [
                 'tieu_de' => 'Bai demo tu chuong 2 lop 1',
@@ -39,7 +37,6 @@ class BaiSeeder extends Seeder
 <p style="text-align: center;"><img src="/storage/photos/2/cat_side_eye.png" alt="" width="507" height="507" /></p>',
                 'id_chuong' => 3,
                 'thu_tu' => 2,
-                'is_delete' => false,
             ],
             [
                 'tieu_de' => 'bai 2',
@@ -47,7 +44,6 @@ class BaiSeeder extends Seeder
                 'noi_dung' => '<p>gggg</p>',
                 'id_chuong' => 1,
                 'thu_tu' => 2,
-                'is_delete' => false,
             ],
             [
                 'tieu_de' => 'qqqqqq',
@@ -55,7 +51,6 @@ class BaiSeeder extends Seeder
                 'noi_dung' => '<p>sasasasas</p>',
                 'id_chuong' => 4,
                 'thu_tu' => 1,
-                'is_delete' => false,
             ],
             [
                 'tieu_de' => 'hahaha',
@@ -64,7 +59,6 @@ class BaiSeeder extends Seeder
 <p style="text-align: center;"><iframe style="width: 844px; height: 475px;" title="YouTube video player" src="https://www.youtube.com/embed/r5SS17LTfr8?si=IGB3xbR0A-HN_dvd" width="956" height="538" frameborder="0" allowfullscreen="allowfullscreen"></iframe></p>',
                 'id_chuong' => 3,
                 'thu_tu' => 1,
-                'is_delete' => false,
             ]
         ];
 

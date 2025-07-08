@@ -14,7 +14,6 @@ class Chuong extends Model
         'tieu_de',
         'mo_ta_ngan',
         'id_bai_giang',
-        'is_delete',
         'thu_tu',
     ];
 

@@ -21,7 +21,6 @@ class CreateKhoaTable extends Migration
             $table->string('mo_ta_ngan', 100)->nullable();
             $table->string('email', 100)->unique()->nullable();
             $table->timestamp('ngay_tao')->useCurrent();
-            $table->boolean('is_delete')->default(false);
         });
     }
 

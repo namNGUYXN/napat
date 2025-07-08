@@ -53,7 +53,7 @@ class BaiTrongLopService
 
     if (!$giangVienXem) $query[] = ['cong_khai', true];
 
-    return BaiTrongLop::where($query)->firstOrFail();
+    return BaiTrongLop::where($query)->with('lop', 'bai')->firstOrFail();
   }
 
   public function capNhatLaiListBai($listLopHocPhan, $idBai)

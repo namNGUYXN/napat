@@ -21,7 +21,6 @@ class CreateBaiTable extends Migration
             $table->unsignedBigInteger('id_chuong');
             $table->timestamp('ngay_tao')->useCurrent();
             $table->integer('thu_tu')->default(1);
-            $table->boolean('is_delete')->default(false);
 
             //FK
             $table->foreign('id_chuong')->references('id')->on('chuong');

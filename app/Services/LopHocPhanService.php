@@ -32,8 +32,7 @@ class LopHocPhanService
                 ->pluck('id_lop_hoc_phan');
 
             $listLopHocPhan = LopHocPhan::with(['giang_vien'])
-                ->whereIn('id', $idLopHoc)
-                ->where('is_delete', false);
+                ->whereIn('id', $idLopHoc);
 
             // Tìm kiếm
             if ($search = $request->input('search')) {
@@ -78,8 +77,7 @@ class LopHocPhanService
     public function layListTheoKhoa(Request $request, $idKhoa, $page = -1)
     {
         $listLopHocPhan = LopHocPhan::with(['giang_vien'])->where([
-            ['id_khoa', $idKhoa],
-            ['is_delete', false]
+            ['id_khoa', $idKhoa]
         ]);
 
         // Tìm kiếm
@@ -124,7 +122,6 @@ class LopHocPhanService
     {
         return LopHocPhan::with(['giang_vien'])
             ->where('slug', $slug)
-            ->where('is_delete', false)
             ->firstOrFail();
     }
 

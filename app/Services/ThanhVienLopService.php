@@ -123,6 +123,11 @@ class ThanhVienLopService
             })->exists();
     }
 
+    public function layTheoId($id)
+    {
+        return ThanhVienLop::findOrFail($id);
+    }
+
     public function layTheoLopVaNguoiDung($idLopHocPhan, $idNguoiDung)
     {
         return ThanhVienLop::where('id_lop_hoc_phan', $idLopHocPhan)

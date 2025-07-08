@@ -24,7 +24,6 @@ class CreateLopHocPhanTable extends Migration
             $table->unsignedBigInteger('id_bai_giang');
             $table->unsignedInteger('id_khoa');
             $table->timestamp('ngay_tao')->useCurrent();
-            $table->boolean('is_delete')->default(false);
 
             // FK
             $table->foreign('id_giang_vien')->references('id')->on('nguoi_dung');

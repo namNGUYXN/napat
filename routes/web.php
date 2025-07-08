@@ -58,7 +58,7 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien+sinh-vien']], 
 
     // Lớp học phần
     Route::get('/khoa/{slug}/lop-hoc-phan', 'LopHocPhanController@lopHocPhanTheoKhoa')->name('lop-hoc.index');
-    Route::get('lop-hoc-cua-toi', 'LopHocPhanController@lopHocCuaToi')->name('lop-hoc.lop-hoc-cua-toi');
+    Route::get('/lop-hoc-phan-cua-toi', 'LopHocPhanController@lopHocCuaToi')->name('lop-hoc.lop-hoc-cua-toi');
     Route::get('/lop-hoc-phan/{slug}', 'LopHocPhanController@chiTiet')->name('lop-hoc.detail');
     // -- Bản tin
     Route::post('/lop-hoc-phan/{id}/ban-tin/them', 'BanTinController@them')->name('ban-tin.store');
@@ -70,6 +70,11 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien+sinh-vien']], 
     // -- Bài
     Route::post('/lop-hoc-phan/{slug}/bai/cong-khai', 'LopHocPhanController@congKhaiBaiTrongLop')->name('bai-trong-lop.public');
     Route::get('/lop-hoc-phan/{id}/bai/{slug}', 'LopHocPhanController@xemNoiDungBai')->name('bai-trong-lop.detail');
+    // -- Bình luận
+    Route::post('/lop-hoc-phan/{lop}/bai/{bai}/binh-luan/them', 'BinhLuanController@them')->name('binh-luan.store');
+    Route::post('/lop-hoc-phan/{lop}/bai/{bai}/binh-luan/{binhluan}/phan-hoi', 'BinhLuanController@phanHoi')->name('binh-luan.phan-hoi');
+    Route::put('/binh-luan/{binhluan}/chinh-sua', 'BinhLuanController@chinhSua')->name('binh-luan.update');
+    Route::delete('/binh-luan/{binhluan}/xoa', 'BinhLuanController@xoa')->name('binh-luan.delete');
 
     //Bài tập
     Route::get('lop-hoc-phan/{lop}/bai-tap/{id}/chi-tiet', 'BaiTapController@layChiTiet');
@@ -102,7 +107,7 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien']], function (
     Route::put('/lop-hoc-phan/{id}/chinh-sua', 'LopHocPhanController@chinhSua')->name('lop-hoc-phan.update');
     Route::delete('/lop-hoc-phan/{id}/xoa', 'LopHocPhanController@xoa')->name('lop-hoc-phan.delete');
     Route::delete('/lop-hoc-phan/{idLHP}/sinh-vien/{idND}', 'LopHocPhanController@xoaKhoiLop')->name('lop-hoc-phan.remove-from');
-    
+
 
     // Bài giảng
     Route::get('/bai-giang', 'BaiGiangController@giaoDienQuanLy')->name('bai-giang.index');

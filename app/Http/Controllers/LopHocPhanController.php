@@ -15,6 +15,7 @@ use App\Services\KhoaService;
 use App\Services\NguoiDungService;
 use App\Services\ThanhVienLopService;
 use App\Services\BaiTapService;
+use App\Services\BinhLuanService;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -31,6 +32,7 @@ class LopHocPhanController extends Controller
     protected $uploadImageHelper;
     protected $baiGiangService;
     protected $baiTapService;
+    protected $binhLuanService;
 
     public function __construct(
         AuthService $authService,
@@ -43,7 +45,8 @@ class LopHocPhanController extends Controller
         KhoaService $khoaService,
         UploadImageHelper $uploadImageHelper,
         BaiGiangService $baiGiangService,
-        BaiTapService $baiTapService
+        BaiTapService $baiTapService,
+        BinhLuanService $binhLuanService
     ) {
         $this->authService = $authService;
         $this->lopHocPhanService = $lopHocPhanService;
@@ -55,10 +58,11 @@ class LopHocPhanController extends Controller
         $this->khoaService = $khoaService;
         $this->uploadImageHelper = $uploadImageHelper;
         $this->baiGiangService = $baiGiangService;
+        $this->baiTapService = $baiTapService;
+        $this->binhLuanService = $binhLuanService;
         $this->middleware('lop_hoc_phan')->only('chiTiet', 'modalChiTiet', 'modalChinhSua', 'chinhSua');
         $this->middleware('bai_trong_lop')->only('xemNoiDungBai');
         $this->middleware('bai_giang')->only('them', 'modalChinhSua', 'chinhSua');
-        $this->baiTapService = $baiTapService;
     }
 
     public function lopHocPhanTheoKhoa(Request $request, $slug)
@@ -204,9 +208,13 @@ class LopHocPhanController extends Controller
         $lopHocPhan = $this->lopHocPhanService->layTheoId($id);
         $giangVienXem = session('id_nguoi_dung') == $baiGiang->id_giang_vien;
 
-        $baiTrongLop = $this->baiTrongLopService->layBaiTrongLop($id, $bai->id, $giangVienXem);
+        $baiTrongLop = $this->baiTrongLopService->layBaiTrongLop($lopHocPhan->id, $bai->id, $giangVienXem);
 
         $baiTap = $this->baiTapService->getByBaiGiangId($bai->id);
+
+        $thanhVienLop = $this->thanhVienService->layTheoLopVaNguoiDung($lopHocPhan->id, session('id_nguoi_dung'));
+        $listBinhLuan = $this->binhLuanService->layListTheoBaiTrongLop($baiTrongLop->id);
+        // dd($listBinhLuan->toArray());
 
         $listChuong = $baiGiang->list_chuong;
         $listChuongTrongLop = $lopHocPhan->list_bai->groupBy('id_chuong');
@@ -214,7 +222,7 @@ class LopHocPhanController extends Controller
         if ($search = $request->input('search')) {
             if ($search == 'all') $search = '';
             else $search = Str::of($search)->trim();
-            
+
             $listChuongTrongLop = $lopHocPhan->list_bai()->where([
                 ['tieu_de', 'LIKE', '%' . $search . '%']
             ])->get()->groupBy('id_chuong');
@@ -233,10 +241,12 @@ class LopHocPhanController extends Controller
 
         return view('modules.bai.chi-tiet', compact(
             'baiTrongLop',
+            'thanhVienLop',
             'lopHocPhan',
             'listChuong',
             'listChuongTrongLop',
-            'baiTap'
+            'baiTap',
+            'listBinhLuan'
         ));
     }
 
