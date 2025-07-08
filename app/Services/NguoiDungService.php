@@ -18,6 +18,16 @@ class NguoiDungService
         return NguoiDung::findOrFail($id);
     }
 
+    public function layTheoSinhVien()
+    {
+        return NguoiDung::where('vai_tro', 'Sinh viên')->get();
+    }
+
+    public function layTheoGiangVien()
+    {
+        return NguoiDung::where('vai_tro', 'Giảng viên')->get();
+    }
+
     public function doiMatKhau(NguoiDung $nguoiDung, string $currentPassword, string $newPassword): array
     {
         if (!Hash::check($currentPassword, $nguoiDung->mat_khau)) {

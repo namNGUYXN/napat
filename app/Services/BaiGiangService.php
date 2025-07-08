@@ -11,6 +11,11 @@ use Illuminate\Support\Str;
 
 class BaiGiangService
 {
+    public function layTatCa()
+    {
+        return BaiGiang::all();
+    }
+    
     public function layListTheoGiangVien(Request $request, $page = -1)
     {
         $idNguoiDungHienTai = session('id_nguoi_dung');
