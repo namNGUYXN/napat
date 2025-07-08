@@ -20,6 +20,7 @@ class NguoiDung extends Model
         'mat_khau',
         'vai_tro',
         'is_active',
+        'is_logged',
         'ngay_tao'
     ];
 
@@ -41,7 +42,7 @@ class NguoiDung extends Model
     public function list_lop_hoc_phan()
     {
         return $this->belongsToMany(LopHocPhan::class, 'thanh_vien_lop', 'id_nguoi_dung', 'id_lop_hoc_phan')
-                ->withPivot('is_accept')->orderByDesc('ngay_tao');
+            ->withPivot('is_accept')->orderByDesc('ngay_tao');
     }
 
     public function list_lop_hoc_phan_gv()

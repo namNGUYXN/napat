@@ -25,6 +25,11 @@ class AuthController extends Controller
         return view('auth.dang-nhap');
     }
 
+    function giaoDienDangNhapLanDau()
+    {
+        return view('auth.dang-nhap-lan-dau');
+    }
+
     function dangNhap(Request $request)
     {
         $request->validate(
@@ -156,5 +161,29 @@ class AuthController extends Controller
             'message' => $result['message'],
             'status' => 'danger'
         ]);
+    }
+
+    public function doiMatKhauLanDau(Request $request)
+    {
+        $request->validate([
+            'mat_khau' => 'required|string|min:6|max:32'
+        ]);
+
+        $idNguoiDung = session('id_nguoi_dung');
+
+        if (!$idNguoiDung) {
+            return redirect()->route('dang-nhap')->with('message', 'Vui lòng đăng nhập.');
+        }
+
+        $ketQua = $this->authService->doiMatKhauLanDau($idNguoiDung, $request->mat_khau);
+
+        if ($ketQua['status']) {
+            // Đánh dấu đã đổi mật khẩu
+            session(['is_logged' => 1]);
+
+            return redirect()->route('home')->with('message', $ketQua['message']);
+        }
+
+        return redirect()->back()->with('message', $ketQua['message']);
     }
 }

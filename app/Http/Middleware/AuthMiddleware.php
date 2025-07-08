@@ -18,7 +18,13 @@ class AuthMiddleware
     {
         // Kiểm tra session
         if ($request->session()->has('id_nguoi_dung')) {
-            return $next($request);
+            if (session('is_logged') === 1) {
+                return $next($request);
+            }
+            return redirect()->route('dang-nhap-lan-dau')->with([
+                'message' => 'Đăng nhập lần đầu vào hệ thống hãy đặt mật khẩu cho mình.',
+                'status' => 'danger'
+            ]);
         }
 
         // Kiểm tra cookie token_remember
@@ -30,15 +36,22 @@ class AuthMiddleware
                 session([
                     'id_nguoi_dung' => $nguoiDung->id,
                     'ho_ten' => $nguoiDung->ho_ten,
-                    'vai_tro' => $nguoiDung->vai_tro
+                    'vai_tro' => $nguoiDung->vai_tro,
+                    'is_logged' => $nguoiDung->is_logged,
                 ]);
-                return $next($request);
+                if (session('is_logged') === 1) {
+                    return $next($request);
+                }
+                return redirect()->route('dang-nhap-lan-dau')->with([
+                    'message' => 'Đăng nhập lần đầu vào hệ thống hãy đặt mật khẩu cho mình.',
+                    'status' => 'danger'
+                ]);
             }
         }
 
         return redirect()->route('dang-nhap')->with([
-                'message' => 'Vui lòng đăng nhập.',
-                'status' => 'danger'
-            ]);
+            'message' => 'Vui lòng đăng nhập.',
+            'status' => 'danger'
+        ]);
     }
 }

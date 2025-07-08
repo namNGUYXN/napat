@@ -403,7 +403,7 @@ function hienThiCauHoi() {
 
         html += `
         <div class="mb-4 p-3 border rounded shadow-sm bg-white">
-            <h6 class="mb-2 text-primary">
+            <h6 class="mb-2 text-primary fw-bold">
                 <i class="bi bi-question-circle me-2"></i> Câu ${index + 1}: ${
             cau.tieu_de
         }
@@ -413,7 +413,7 @@ function hienThiCauHoi() {
                     ${listDapAnHtml}
                 </ul>
                 <div class="mt-2">
-                    <span class="badge bg-success">
+                    <span class="badge bg-success fw-bold">
                         <i class="bi bi-check-circle me-1"></i> Đáp án đúng: ${
                             cau.dap_an_dung
                         }
@@ -827,6 +827,14 @@ $(document).ready(function () {
         method: "GET",
         success: function (data) {
             danhSachBaiKiemTra = data;
+            // Cập nhật số bài kiểm tra trong badge
+            const examTabButton = document.getElementById("exam-tab");
+            if (examTabButton) {
+                const badge = examTabButton.querySelector("span");
+                if (badge) {
+                    badge.textContent = danhSachBaiKiemTra.length;
+                }
+            }
             renderDanhSach(danhSachBaiKiemTra);
             dsTieuDe = danhSachBaiKiemTra.map((item) =>
                 item.tieu_de.toLowerCase().trim()
@@ -1183,8 +1191,17 @@ $(document).ready(function () {
                         $("#noQuestionsMessage").show();
                         questionCounter = 0;
                         // Cập nhật lại danh sách và hiển thị
-                        danhSachBaiTap = response.data;
-                        renderDanhSach(danhSachBaiTap);
+                        danhSachBaiKiemTra = response.data;
+                        // Cập nhật số bài kiểm tra trong badge
+                        const examTabButton =
+                            document.getElementById("exam-tab");
+                        if (examTabButton) {
+                            const badge = examTabButton.querySelector("span");
+                            if (badge) {
+                                badge.textContent = danhSachBaiKiemTra.length;
+                            }
+                        }
+                        renderDanhSach(danhSachBaiKiemTra);
                     });
                 } else {
                     if (response.errors) {

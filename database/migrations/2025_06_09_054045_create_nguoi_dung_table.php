@@ -23,6 +23,7 @@ class CreateNguoiDungTable extends Migration
             $table->enum('vai_tro', ['Admin', 'Giảng viên', 'Sinh viên']);
             $table->string('token_remember', 100)->nullable();
             $table->boolean('is_active');
+            $table->boolean('is_logged')->default(false);
             $table->timestamp('ngay_tao')->useCurrent();
         });
     }

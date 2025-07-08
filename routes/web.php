@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Storage;
 
 // Các route về auth
 Route::get('/dang-nhap', 'AuthController@giaoDienDangNhap')->name('dang-nhap');
+Route::get('/dang-nhap-lan-dau', 'AuthController@giaoDienDangNhapLanDau')->name('dang-nhap-lan-dau');
+Route::post('/doi-mat-khau-lan-dau', 'AuthController@doiMatKhauLanDau')->name('doi-mat-khau-lan-dau');
 Route::post('/dang-nhap', 'AuthController@dangNhap');
 Route::post('/dang-xuat', 'AuthController@dangXuat')->name('dang-xuat');
 Route::get('/quen-mat-khau', 'AuthController@giaoDienQuenMatKhau')->name('quen-mat-khau');
@@ -31,6 +33,7 @@ Route::group([
 ], function () {
     \UniSharp\LaravelFilemanager\Lfm::routes();
 });
+
 Route::group(['middleware' => ['auth.custom']], function () {
     Route::get('/storage/files/shares/thumbs/{ten_file}', 'SecureFileController@publicFile');
     Route::get('/storage/files/shares/{ten_file}', 'SecureFileController@publicFile');
@@ -44,7 +47,6 @@ Route::group(['middleware' => ['auth.custom']], function () {
 
     Route::get('/storage/photos/{id_nguoi_dung}/{ten_thu_muc}/{ten_anh}', 'SecureFileController@privateImageWord');
 });
-
 
 // Các route phía client
 Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien+sinh-vien']], function () {
@@ -95,7 +97,6 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien+sinh-vien']], 
         return response()->json(['now' => now()->format('Y-m-d H:i:s')]);
     });
 });
-
 
 // Các route cho giảng viên
 Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien']], function () {
@@ -148,7 +149,6 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien']], function (
     Route::put('/bai-kiem-tra', 'BaiKiemTraController@capNhatBaiKiemTra')->name('bai_kiem_tra.cap-nhat');
 });
 
-
 // Các route cho sinh viên
 Route::group(['middleware' => ['auth.custom', 'vai_tro:sinh-vien']], function () {
     // Đăng ký lớp
@@ -156,7 +156,6 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:sinh-vien']], function ()
     // Rời khỏi lớp
     Route::delete('/lop-hoc-phan/{id}/roi-khoi', 'LopHocPhanController@roiKhoi')->name('lop-hoc-phan.leave');
 });
-
 
 // Các route phía admin
 Route::group(['middleware' => ['auth.custom', 'vai_tro:admin']], function () {

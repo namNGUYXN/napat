@@ -25,11 +25,11 @@
         <!-- PHẦN DƯỚI: TAB NỘI DUNG -->
         <ul class="nav nav-tabs mb-3" id="classTab" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="news-tab" data-bs-toggle="tab" data-bs-target="#news" type="button"
-                    role="tab">Bảng tin <span class="badge text-bg-danger">{{ $listBanTin->count() }}</span>
+                <button class="nav-link active fw-bold" id="news-tab" data-bs-toggle="tab" data-bs-target="#news" type="button"
+                    role="tab">Bản tin <span class="badge text-bg-danger">{{ $listBanTin->count() }}</span>
                 </button>
             </li>
-            <li class="nav-item" role="presentation">
+            <li class="nav-item fw-bold" role="presentation">
                 @php
                     $tongSoBaiCongKhai = $listChuongTrongLop
                         ->flatten(1)
@@ -41,11 +41,11 @@
                 <button class="nav-link" id="lecture-tab" data-bs-toggle="tab" data-bs-target="#lecture" type="button"
                     role="tab">Bài giảng <span class="badge text-bg-danger">{{ $tongSoBaiCongKhai }}</span></button>
             </li>
-            <li class="nav-item" role="presentation">
+            <li class="nav-item fw-bold" role="presentation">
                 <button class="nav-link" id="exam-tab" data-bs-toggle="tab" data-bs-target="#exam" type="button"
-                    role="tab">Bài kiểm tra <span class="badge text-bg-danger">4</span></button>
+                    role="tab">Bài kiểm tra <span class="badge text-bg-danger"></span></button>
             </li>
-            <li class="nav-item" role="presentation">
+            <li class="nav-item fw-bold" role="presentation">
                 <button class="nav-link" id="member-tab" data-bs-toggle="tab" data-bs-target="#member" type="button"
                     role="tab">Thành viên <span class="badge text-bg-danger">{{ $thanhVien->count() }}</span></button>
             </li>
@@ -155,7 +155,6 @@
             <!--Bài giảng-->
             <div class="tab-pane fade" id="lecture" role="tabpanel">
                 <div class="card">
-                    <h5 class="card-header bg-dark text-white">Danh sách bài học trong chương</h5>
                     <div class="card-body">
                         <div class="accordion" id="accordion-chuong">
 
