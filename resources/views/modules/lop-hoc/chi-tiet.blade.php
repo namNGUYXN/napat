@@ -58,87 +58,95 @@
             <div class="tab-pane fade show active" id="news" role="tabpanel">
 
                 <!-- PHẦN TRÊN: THÔNG TIN LỚP HỌC -->
-                <div class="card mb-4">
+                <div class="card mb-4 shadow-sm border-0 rounded-4 overflow-hidden">
                     <div class="row g-0">
-                        <div class="col-md-4">
-                            <img src="{{ asset('storage/' . $lopHocPhan->hinh_anh) }}" class="img-fluid rounded-start"
-                                alt="">
+                        <!-- Hình ảnh lớp học -->
+                        <div class="col-md-4 bg-light d-flex align-items-center">
+                            <img src="{{ asset('storage/' . $lopHocPhan->hinh_anh) }}"
+                                class="w-100 h-100 object-fit-cover rounded-start" alt="">
                         </div>
-                        <div class="col-md-8 position-relative">
-                            <div class="card-body">
-                                <h5 class="card-title mb-3">{{ $lopHocPhan->ten }}</h5>
-                                <p class="card-text mb-1"><strong>Giảng viên:</strong>
-                                    {{ $lopHocPhan->giang_vien->ho_ten }}
-                                </p>
-                                <p class="card-text mb-1"><strong>Mã lớp:</strong>
-                                    {{ $lopHocPhan->ma }}
-                                </p>
-                                <p class="card-text mb-1"><strong>Khoa:</strong>
-                                    {{ $lopHocPhan->khoa->ten }}
-                                </p>
-                                @if (session('vai_tro') == 'Giảng viên')
-                                    <p class="card-text mb-1"><strong>Bài giảng:</strong>
-                                        {{ $lopHocPhan->bai_giang->ten }}
-                                    </p>
-                                @endif
-                                <p class="card-text mt-3 mb-0">
+
+                        <!-- Nội dung lớp học -->
+                        <div class="col-md-8 position-relative bg-white">
+                            <div class="card-body px-4 py-4">
+                                <h4 class="card-title mb-3 fw-bold text-primary">
+                                    <i class="fas fa-chalkboard-teacher me-2 text-secondary"></i>{{ $lopHocPhan->ten }}
+                                </h4>
+
+                                <ul class="list-unstyled mb-3">
+                                    <li class="mb-2">
+                                        <i class="fas fa-user me-2 text-muted"></i><strong>Giảng viên:</strong>
+                                        {{ $lopHocPhan->giang_vien->ho_ten }}
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-barcode me-2 text-muted"></i><strong>Mã lớp:</strong>
+                                        {{ $lopHocPhan->ma }}
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-building me-2 text-muted"></i><strong>Khoa:</strong>
+                                        {{ $lopHocPhan->khoa->ten }}
+                                    </li>
+                                    @if (session('vai_tro') == 'Giảng viên')
+                                        <li class="mb-2">
+                                            <i class="fas fa-book me-2 text-muted"></i><strong>Bài giảng:</strong>
+                                            {{ $lopHocPhan->bai_giang->ten }}
+                                        </li>
+                                    @endif
+                                </ul>
+
+                                <p class="card-text mb-0">
+                                    <i class="fas fa-info-circle me-2 text-muted"></i>
                                     <small class="text-muted">{{ $lopHocPhan->mo_ta_ngan }}</small>
                                 </p>
 
-                                @if (session('vai_tro') == 'Giảng viên')
-                                    <div class="class-action-btn">
-                                        <div class="dropdown">
-                                            <button class="btn btn-transparent dropdown-toggle remove-arrow-down"
-                                                type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <i class="fas fa-ellipsis-v"></i>
-                                            </button>
-                                            <ul class="dropdown-menu">
+                                <!-- Nút hành động -->
+                                <div class="class-action-btn position-absolute top-0 end-0 p-3">
+                                    <div class="dropdown">
+                                        <button
+                                            class="btn btn-light btn-sm rounded-circle shadow-sm dropdown-toggle remove-arrow-down"
+                                            type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fas fa-ellipsis-v text-secondary"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            @if (session('vai_tro') == 'Giảng viên')
                                                 <li>
                                                     <button class="dropdown-item" type="button" data-bs-toggle="modal"
-                                                        data-bs-target="#modal-chinh-sua-lop-hoc-phan">Chỉnh sửa
+                                                        data-bs-target="#modal-chinh-sua-lop-hoc-phan">
+                                                        <i class="fas fa-edit me-2"></i>Chỉnh sửa
                                                     </button>
                                                 </li>
                                                 <li>
                                                     <button class="dropdown-item btn-delete-class" type="button"
-                                                        data-url-delete={{ route('lop-hoc-phan.delete', $lopHocPhan->id) }}
-                                                        data-url-my-class={{ route('lop-hoc.lop-hoc-cua-toi') }}>
-                                                        Xóa
+                                                        data-url-delete="{{ route('lop-hoc-phan.delete', $lopHocPhan->id) }}"
+                                                        data-url-my-class="{{ route('lop-hoc.lop-hoc-cua-toi') }}">
+                                                        <i class="fas fa-trash-alt me-2 text-danger"></i>Xóa
                                                     </button>
                                                 </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                @elseif (session('vai_tro') == 'Sinh viên')
-                                    <div class="class-action-btn">
-                                        <div class="dropdown">
-                                            <button class="btn btn-transparent dropdown-toggle remove-arrow-down"
-                                                type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <i class="fas fa-ellipsis-v"></i>
-                                            </button>
-                                            <ul class="dropdown-menu">
+                                            @elseif (session('vai_tro') == 'Sinh viên')
                                                 <li>
                                                     <button class="dropdown-item btn-leave-class" type="button"
-                                                        data-url-leave={{ route('lop-hoc-phan.leave', $lopHocPhan->id) }}
-                                                        data-url-my-class={{ route('lop-hoc.lop-hoc-cua-toi') }}>
-                                                        Rời khỏi lớp này
+                                                        data-url-leave="{{ route('lop-hoc-phan.leave', $lopHocPhan->id) }}"
+                                                        data-url-my-class="{{ route('lop-hoc.lop-hoc-cua-toi') }}">
+                                                        <i class="fas fa-sign-out-alt me-2 text-warning"></i>Rời khỏi lớp
                                                     </button>
                                                 </li>
-                                            </ul>
-                                        </div>
+                                            @endif
+                                        </ul>
                                     </div>
-                                @endif
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
 
                 <div id="wp-list-ban-tin">
                     @include('partials.ban-tin.list', [$listBanTin, $lopHocPhan, $nguoiDung])
                 </div>
 
                 @if (session('vai_tro') == 'Giảng viên')
-                    <button type="button" class="newsletter-add-btn btn btn-primary rounded-circle" title="Tạo bản tin mới"
-                        data-bs-toggle="modal" data-bs-target="#modal-them-ban-tin">
+                    <button type="button" class="newsletter-add-btn btn btn-primary rounded-circle"
+                        title="Tạo bản tin mới" data-bs-toggle="modal" data-bs-target="#modal-them-ban-tin">
                         <i class="fas fa-plus"></i>
                     </button>
                 @endif
