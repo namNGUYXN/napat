@@ -9,15 +9,15 @@
 
     <ul class="nav nav-tabs mb-4" id="lectureTabs" role="tablist">
       <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="content-tab" data-bs-toggle="tab" data-bs-target="#content" type="button"
+        <button class="nav-link active fw-bold" id="content-tab" data-bs-toggle="tab" data-bs-target="#content" type="button"
           role="tab" aria-controls="content" aria-selected="true">Nội dung</button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link" id="exercise-tab" data-bs-toggle="tab" data-bs-target="#exercise" type="button"
+        <button class="nav-link fw-bold" id="exercise-tab" data-bs-toggle="tab" data-bs-target="#exercise" type="button"
           role="tab" aria-controls="exercise" aria-selected="false">Bài tập</button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link" id="discussion-tab" data-bs-toggle="tab" data-bs-target="#discussion" type="button"
+        <button class="nav-link fw-bold" id="discussion-tab" data-bs-toggle="tab" data-bs-target="#discussion" type="button"
           role="tab" aria-controls="discussion" aria-selected="false">Thảo luận</button>
       </li>
     </ul>

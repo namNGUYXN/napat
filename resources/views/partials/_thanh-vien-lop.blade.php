@@ -1,11 +1,11 @@
 @if (session('vai_tro') == 'Giảng viên')
-    <h6 class="mb-3 text-primary"><i class="fas fa-user-clock me-1"></i> Yêu cầu vào lớp</h6>
+    <h6 class="mb-3 text-primary fw-bold"><i class="fas fa-user-clock me-1"></i> Yêu cầu vào lớp</h6>
     <div class="list-group mb-4 yeuCau">
         @include('partials._danh-sach-yeu-cau')
     </div>
 @endif
 
-<h6 class="mb-3 text-success"><i class="fas fa-users me-1"></i> Thành viên trong lớp</h6>
+<h6 class="mb-3 text-success fw-bold"><i class="fas fa-users me-1"></i> Thành viên trong lớp</h6>
 <div class="list-group">
     @forelse($thanhVien as $tv)
         <div class="list-group-item d-flex align-items-center justify-content-between rounded-30px custom-list-item">
@@ -38,6 +38,6 @@
         </div>
 
     @empty
-        <div class="text-muted">Chưa có thành viên nào trong lớp.</div>
+        <div class="text-muted fw-bold">Chưa có thành viên nào trong lớp.</div>
     @endforelse
 </div>

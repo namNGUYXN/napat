@@ -55,6 +55,7 @@ class NguoiDungService
         ];
     }
 
+
     public function capNhatThongTin(array $data, $nguoiDung)
     {
         try {

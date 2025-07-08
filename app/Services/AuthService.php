@@ -34,7 +34,8 @@ class AuthService
     session([
       'id_nguoi_dung' => $nguoiDung->id,
       'ho_ten' => $nguoiDung->ho_ten,
-      'vai_tro' => $nguoiDung->vai_tro
+      'vai_tro' => $nguoiDung->vai_tro,
+      'is_logged' => $nguoiDung->is_logged
     ]);
 
     if ($ghiNhoDangNhap) {
@@ -43,7 +44,7 @@ class AuthService
       $nguoiDung->save();
 
       // Lưu token vào cookie
-      Cookie::queue('token_remember', $token, 60*24*30); // 1 thang
+      Cookie::queue('token_remember', $token, 60 * 24 * 30); // 1 thang
     }
 
     return [
@@ -65,7 +66,7 @@ class AuthService
     Cookie::queue(Cookie::forget('token_remember'));
     return ['success' => true, 'message' => 'Đã đăng xuất'];
   }
-  
+
   public function layIdNguoiDungDangNhap()
   {
     return session('id_nguoi_dung');
@@ -74,9 +75,9 @@ class AuthService
   public function layNguoiDungDangNhap()
   {
     return (object)[
-        'id' => session('id_nguoi_dung'),
-        'ho_ten' => session('ho_ten'),
-        'vai_tro' => session('vai_tro')
+      'id' => session('id_nguoi_dung'),
+      'ho_ten' => session('ho_ten'),
+      'vai_tro' => session('vai_tro')
     ];
   }
 
@@ -163,6 +164,29 @@ class AuthService
     return [
       'success' => true,
       'message' => 'Mật khẩu đã được đặt lại thành công.',
+    ];
+  }
+
+  public function doiMatKhauLanDau(int $idNguoiDung, string $newPassword): array
+  {
+    // Kiểm tra mật khẩu mới
+    $passwordPattern = '/^[A-Z](?=.*[a-z])(?=.*\d)(?=.*[\W_]).{5,31}$/';
+    if (!preg_match($passwordPattern, $newPassword)) {
+      return [
+        'status' => false,
+        'message' => 'Mật khẩu mới phải bắt đầu bằng chữ in hoa, chứa ít nhất 1 chữ thường, 1 số, 1 ký tự đặc biệt và có độ dài từ 6 đến 32 ký tự.'
+      ];
+    }
+
+    $nguoiDung = NguoiDung::findOrFail($idNguoiDung);
+
+    $nguoiDung->mat_khau = $newPassword;
+    $nguoiDung->is_logged = true;
+    $nguoiDung->save();
+
+    return [
+      'status' => true,
+      'message' => 'Thay đổi mật khẩu thành công.'
     ];
   }
 }

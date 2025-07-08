@@ -16,7 +16,7 @@ class NguoiDungSeeder extends Seeder
     public function run()
     {
         $now = Carbon::now();
-        
+
         $data = [
             [
                 'ho_ten' => 'Nguyễn Phương Nam',
@@ -26,6 +26,7 @@ class NguoiDungSeeder extends Seeder
                 'mat_khau' => Hash::make('Nam1234!'),
                 'vai_tro' => 'Admin',
                 'is_active' => true,
+                'is_logged' => true,
                 'ngay_tao' => $now,
             ],
             [
