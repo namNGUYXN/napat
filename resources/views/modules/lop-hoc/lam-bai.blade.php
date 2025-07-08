@@ -13,23 +13,65 @@
             <div class="col-md-8">
                 <div id="questions">
                     @foreach ($baiKiemTra->list_cau_hoi as $index => $item)
-                        <div class="question-card" data-question="{{ $index + 1 }}"
-                            data-id-question="{{ $item->id }}">
-                            <h6>Câu {{ $index + 1 }}: {{ $item->tieu_de }}</h6>
-                            <div>
-                                <div><input type="radio" name="answers[{{ $item->id }}]" value="A">
-                                    {{ $item->dap_an_a }}</div>
-                                <div><input type="radio" name="answers[{{ $item->id }}]" value="B">
-                                    {{ $item->dap_an_b }}</div>
-                                <div><input type="radio" name="answers[{{ $item->id }}]" value="C">
-                                    {{ $item->dap_an_c }}</div>
-                                <div><input type="radio" name="answers[{{ $item->id }}]" value="D">
-                                    {{ $item->dap_an_d }}</div>
+                        <div class="card mb-4 shadow-sm border-0 question-card rounded-4 p-3"
+                            data-question="{{ $index + 1 }}" data-id-question="{{ $item->id }}">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary mb-3">
+                                    <i class="fas fa-question-circle me-2"></i>
+                                    Câu {{ $index + 1 }}: {{ $item->tieu_de }}
+                                </h5>
+
+                                <!-- Row với khoảng cách ngang giữa các đáp án -->
+                                <div class="row row-cols-1 row-cols-md-2 gx-4 gy-3">
+                                    <div class="col">
+                                        <div class="form-check p-3 border rounded hover-effect">
+                                            <input class="form-check-input" type="radio"
+                                                name="answers[{{ $item->id }}]" value="A"
+                                                id="q{{ $item->id }}a">
+                                            <label class="form-check-label ms-2" for="q{{ $item->id }}a">
+                                                {{ $item->dap_an_a }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-check p-3 border rounded hover-effect">
+                                            <input class="form-check-input" type="radio"
+                                                name="answers[{{ $item->id }}]" value="B"
+                                                id="q{{ $item->id }}b">
+                                            <label class="form-check-label ms-2" for="q{{ $item->id }}b">
+                                                {{ $item->dap_an_b }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-check p-3 border rounded hover-effect">
+                                            <input class="form-check-input" type="radio"
+                                                name="answers[{{ $item->id }}]" value="C"
+                                                id="q{{ $item->id }}c">
+                                            <label class="form-check-label ms-2" for="q{{ $item->id }}c">
+                                                {{ $item->dap_an_c }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="form-check p-3 border rounded hover-effect">
+                                            <input class="form-check-input" type="radio"
+                                                name="answers[{{ $item->id }}]" value="D"
+                                                id="q{{ $item->id }}d">
+                                            <label class="form-check-label ms-2" for="q{{ $item->id }}d">
+                                                {{ $item->dap_an_d }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                     @endforeach
                 </div>
             </div>
+
+
 
             <!-- Right: Navigation -->
             <div class="col-md-4 d-none d-md-block">

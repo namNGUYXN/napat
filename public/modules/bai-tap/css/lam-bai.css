@@ -77,3 +77,18 @@
     display: none !important;
   }
 }
+
+.hover-effect {
+    transition: 0.2s;
+    cursor: pointer;
+}
+
+.hover-effect:hover {
+    background-color: #f0f8ff;
+    border-color: #0d6efd;
+}
+
+.form-check-input {
+    transform: scale(1.3);
+    margin-top: 0.35rem; /* canh giữa */
+}

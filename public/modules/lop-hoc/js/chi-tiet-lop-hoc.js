@@ -283,69 +283,71 @@ function renderChiTietBaiKiemTra(baiKiemTra, chiTiet) {
 
 function renderDanhSachKetQua(baiKiemTra, dsKetQua) {
     let html = `
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped table-hover table-sm table-nowrap align-middle mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th>STT</th>
-                        <th>Họ tên</th>
-                        <th>Email</th>
-                        <th>Ngày nộp</th>
-                        <th>Quá hạn nộp</th>
-                        <th>Điểm</th>
-                        <th>Chi tiết</th>
-                    </tr>
-                </thead>
-                <tbody>`;
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover table-sm table-nowrap align-middle shadow-sm rounded">
+            <thead class="table-primary text-center">
+                <tr>
+                    <th>STT</th>
+                    <th>Họ tên</th>
+                    <th>Email</th>
+                    <th>Ngày nộp</th>
+                    <th>Trạng thái</th>
+                    <th>Điểm</th>
+                    <th>Chi tiết</th>
+                </tr>
+            </thead>
+            <tbody>`;
 
     dsKetQua.forEach((item, index) => {
         const user = item.sinh_vien;
         const ketQua = item.ket_qua;
         const idKetQua = ketQua?.id || 0;
 
-        // Xử lý ngày nộp
-        let ngayNop = "Chưa nộp";
+        // Ngày nộp
+        let ngayNop = `<span class="text-muted fst-italic">Chưa nộp</span>`;
         if (ketQua?.ngay_lam) {
-            ngayNop = formatNgay(ketQua.ngay_lam);
+            ngayNop = `<span class="text-dark">${formatNgay(
+                ketQua.ngay_lam
+            )}</span>`;
         }
 
-        // Xử lý nộp muộn
-        let nopMuon = "Chưa nộp";
+        // Trạng thái nộp
+        let trangThai = `<span class="badge bg-secondary">Chưa nộp</span>`;
         if (ketQua?.ngay_lam !== null && ketQua?.ngay_lam !== undefined) {
             if (ketQua.nop_qua_han === 1) {
-                nopMuon = `<span class="text-danger">Nộp trễ</span>`;
+                trangThai = `<span class="badge bg-danger"><i class="fas fa-clock me-1"></i> Nộp trễ</span>`;
             } else if (ketQua.nop_qua_han === 0) {
-                nopMuon = `<span class="text-success">Đúng hạn</span>`;
-            } else {
-                nopMuon = "Không rõ";
+                trangThai = `<span class="badge bg-success"><i class="fas fa-check-circle me-1"></i> Đúng hạn</span>`;
             }
         }
 
+        // Nút xem chi tiết
+        const nutChiTiet =
+            item.diem !== null
+                ? `<button class="btn btn-sm btn-outline-primary"
+                    onclick="xemChiTietKetQua('${idKetQua}', '${user.ten}', ${item.diem}, '${baiKiemTra.tieu_de}')"
+                    title="Xem chi tiết bài làm">
+                    <i class="fas fa-eye me-1"></i> Xem
+                </button>`
+                : `<span class="text-muted">-</span>`;
+
         html += `
         <tr>
-            <td>${index + 1}</td>
+            <td class="text-center fw-bold">${index + 1}</td>
             <td class="text-nowrap">${user.ten}</td>
             <td class="text-nowrap">${user.email}</td>
-            <td class="text-nowrap">${ngayNop}</td>
-            <td>${nopMuon}</td>
-            <td>${item.diem ?? ""}</td>
-            <td>
-                ${
-                    item.diem !== null
-                        ? `<button class="btn btn-sm btn-primary"
-                            onclick="xemChiTietKetQua('${idKetQua}', '${user.ten}', ${item.diem}, '${baiKiemTra.tieu_de}')">
-                            Xem
-                        </button>`
-                        : ""
-                }
-            </td>
+            <td class="text-center">${ngayNop}</td>
+            <td class="text-center">${trangThai}</td>
+            <td class="text-center fw-semibold">${item.diem ?? "-"}</td>
+            <td class="text-center">${nutChiTiet}</td>
         </tr>`;
     });
 
     html += `
-        </tbody>
-    </table>
-</div>`;
+            </tbody>
+        </table>
+    </div>`;
+
     return html;
 }
 
@@ -666,7 +668,11 @@ const chuyenSangChinhSua = () => {
                                 value="1"
                                 id="editChoPhepNopTre"
                                 name="cho_phep_nop_qua_han"
-                                ${currentBaiKiemTra.cho_phep_nop_qua_han ? "checked" : ""}>
+                                ${
+                                    currentBaiKiemTra.cho_phep_nop_qua_han
+                                        ? "checked"
+                                        : ""
+                                }>
                             <label class="form-check-label fw-semibold" for="editChoPhepNopTre">
                                 Cho phép nộp quá hạn
                             </label>
@@ -882,20 +888,46 @@ $(document).ready(function () {
 
                         $("#modalChiTiet .modal-title").html(
                             `<span class="text-primary fw-bold fs-5">
-                                <i class="bi bi-journal-text me-2"></i> ${currentBaiKiemTra.tieu_de}
+                                <i class="bi bi-journal-text me-2"></i> ${baiKiemTra.tieu_de}
                             </span>`
                         );
 
                         const lamBaiUrl = `/lam-bai/${baiKiemTra.id}`;
 
                         $("#modalChiTiet .modal-body").html(`
-                            <div class="text-center py-4">
-                                <p><strong>Số câu hỏi:</strong> ${tongCau}</p>
-                                <p><strong>Hạn cuối làm bài:</strong> ${ngayDenHan}</p>
-                                <p><strong>Điểm tối đa:</strong> ${baiKiemTra.diem_toi_da}</p>
-                                <p>Bạn chưa làm bài kiểm tra này.</p>
-                                <a href="${lamBaiUrl}" target="_blank" class="btn btn-primary">
-                                    Làm bài ngay
+                            <div class="card shadow-sm border-0 rounded-4 p-3 text-center bg-light-subtle">
+                                <h4 class="mb-3 text-primary fw-bold">
+                                    <i class="fas fa-clipboard-list me-2"></i> Thông tin bài kiểm tra
+                                </h4>
+
+                                <div class="row justify-content-center mb-3">
+                                    <div class="col-md-4 col-6 mb-2">
+                                        <div class="bg-white border rounded-3 p-3 h-100">
+                                            <i class="fas fa-question-circle fa-lg text-info mb-1"></i>
+                                            <p class="mb-0 fw-semibold">Số câu hỏi</p>
+                                            <span class="text-dark fs-5">${tongCau}</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-6 mb-2">
+                                        <div class="bg-white border rounded-3 p-3 h-100">
+                                            <i class="fas fa-clock fa-lg text-warning mb-1"></i>
+                                            <p class="mb-0 fw-semibold">Hạn cuối</p>
+                                            <span class="text-dark fs-6">${ngayDenHan}</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-6 mb-2">
+                                        <div class="bg-white border rounded-3 p-3 h-100">
+                                            <i class="fas fa-star fa-lg text-danger mb-1"></i>
+                                            <p class="mb-0 fw-semibold">Điểm tối đa</p>
+                                            <span class="text-dark fs-5">${baiKiemTra.diem_toi_da}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <p class="text-muted mb-4 fw-bold">Bạn chưa làm bài kiểm tra này.</p>
+
+                                <a href="${lamBaiUrl}" target="_blank" class="btn btn-lg btn-success px-4 shadow">
+                                    <i class="fas fa-pen-nib me-2"></i> Làm bài ngay
                                 </a>
                             </div>
                         `);
@@ -914,7 +946,7 @@ $(document).ready(function () {
                         // ✅ Hiển thị tiêu đề modal gồm tiêu đề + số câu đúng / tổng câu
                         $("#modalChiTiet .modal-title").html(
                             `<span class="text-primary fw-bold fs-5">
-                                <i class="bi bi-journal-text me-2"></i> ${currentBaiKiemTra.tieu_de} - Kết quả: ${soCauDung}/${tongCau} câu đúng
+                                <i class="bi bi-journal-text me-2"></i> ${baiKiemTra.tieu_de} - Kết quả: ${soCauDung}/${tongCau} câu đúng
                         </span>`
                         );
 
