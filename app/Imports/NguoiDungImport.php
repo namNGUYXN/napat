@@ -29,6 +29,7 @@ class NguoiDungImport implements OnEachRow, SkipsOnFailure
             'email.required' => 'Email là bắt buộc.',
             'email.unique' => 'Email đã tồn tại trong hệ thống.',
             'sdt.numeric' => 'Số điện thoại phải là số.',
+            'sdt.unique' => 'Số điện thoại đã tồn tại trong hệ thống.',
             'vai_tro.required' => 'Vai trò là bắt buộc.',
             'vai_tro.in' => 'Vai trò chỉ được là Giảng viên, Sinh viên hoặc Admin.',
         ];
@@ -41,7 +42,7 @@ class NguoiDungImport implements OnEachRow, SkipsOnFailure
         ], [
             'ho_ten' => ['required', 'regex:/^[\p{L}\s]+$/u'],
             'email' => ['required', 'unique:nguoi_dung,email'],
-            'sdt' => ['nullable', 'numeric'],
+            'sdt' => ['nullable', 'numeric', 'unique:nguoi_dung,sdt'],
             'vai_tro' => ['required', Rule::in(['Giảng viên', 'Sinh viên', 'Admin'])],
         ], $messages);
 

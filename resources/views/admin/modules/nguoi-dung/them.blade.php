@@ -1,10 +1,11 @@
 @extends('layouts.admin')
 
 @section('content')
-    <div class="col bg-light p-3 overflow-auto custom-scrollbar">
+    <div class="col bg-light p-4 overflow-auto custom-scrollbar">
+        <h2 class="mb-3">Thêm Người dùng mới</h2>
 
         <!--Nút quay về trang danh sách người dùng - Start -->
-        <a href="{{ route('nguoi-dung.index') }}" class="btn btn-outline-secondary mb-2">
+        <a href="{{ route('nguoi-dung.index') }}" class="btn btn-outline-secondary mb-4">
             <i class="fas fa-arrow-alt-circle-left me-2"></i>Danh sách người dùng
         </a>
         <!--Nút quay về trang danh sách người dùng - End -->
