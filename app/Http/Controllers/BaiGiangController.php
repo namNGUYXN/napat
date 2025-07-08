@@ -57,20 +57,20 @@ class BaiGiangController extends Controller
     public function chiTiet(Request $request, $id)
     {
         $baiGiang = $this->baiGiangService->layTheoId($id);
-        $numPerPage = 5;
+        $numPerPage = -1;
         $listChuong = $this->chuongService->layListTheoBaiGiang($request, $id, $numPerPage);
 
         // Kiểm tra số trang
-        $page = (int) $request->input('page', 1);
-        $lastPage = $listChuong->lastPage();
+        // $page = (int) $request->input('page', 1);
+        // $lastPage = $listChuong->lastPage();
 
-        if ($page > $lastPage && $lastPage > 0) {
-            return redirect()->route('bai-giang.detail', array_merge(
-                ['id' => $id],
-                $request->except('page'),
-                ['page' => $lastPage]
-            ));
-        }
+        // if ($page > $lastPage && $lastPage > 0) {
+        //     return redirect()->route('bai-giang.detail', array_merge(
+        //         ['id' => $id],
+        //         $request->except('page'),
+        //         ['page' => $lastPage]
+        //     ));
+        // }
 
         return view(
             'modules.bai-giang.chi-tiet',

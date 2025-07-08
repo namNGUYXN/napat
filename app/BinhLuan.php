@@ -17,12 +17,11 @@ class BinhLuan extends Model
         'id_thanh_vien_lop',
         'id_bai_trong_lop',
         'ngay_tao',
-        'is_delete',
     ];
 
     public function getNgayTaoAttribute($value)
     {
-        return $value ? Carbon::parse($value)->format('d/m/Y') : null;
+        return $value ? Carbon::parse($value)->format('d/m/Y - H:i') : null;
     }
 
     public function binh_luan_cha()
@@ -32,12 +31,7 @@ class BinhLuan extends Model
 
     public function list_binh_luan_con()
     {
-        return $this->hasMany(BinhLuan::class, 'id_binh_luan_cha');
-    }
-
-    public function nguoi_dung()
-    {
-        return $this->belongsTo(NguoiDung::class, 'id_nguoi_dung');
+        return $this->hasMany(BinhLuan::class, 'id_binh_luan_cha')->orderByDesc('ngay_tao');
     }
 
     public function lop_hoc()

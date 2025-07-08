@@ -19,7 +19,6 @@ class CreateChuongTable extends Migration
             $table->string('mo_ta_ngan')->nullable();
             $table->unsignedBigInteger('id_bai_giang');
             $table->integer('thu_tu')->default(1);
-            $table->boolean('is_delete')->default(false);
             
             // FK
             $table->foreign('id_bai_giang')->references('id')->on('bai_giang');

@@ -17,7 +17,6 @@ class Bai extends Model
         'noi_dung',
         'id_chuong',
         'ngay_tao',
-        'is_delete',
         'thu_tu',
     ];
 

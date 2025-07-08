@@ -45,33 +45,6 @@ function createCommentHtml(comment, currentLevel = 0) {
   `
         : "";
 
-    const showReplyButton = currentLevel < MAX_NESTING_LEVEL - 1;
-    const replyButtonHtml = showReplyButton
-        ? `
-      <a href="#" class="text-primary me-2 reply-btn" data-comment-id="${commentId}" data-comment-author="${commentAuthor}" data-comment-level="${currentLevel}">Phản hồi</a>
-  `
-        : "";
-
-    const nestedRepliesHtml =
-        comment.replies && comment.replies.length > 0
-            ? comment.replies
-                  .map((reply) => createCommentHtml(reply, currentLevel + 1))
-                  .join("")
-            : "";
-
-    const totalReplies = comment.replies ? comment.replies.length : 0;
-
-    let toggleRepliesButtonHtml = "";
-    if (totalReplies > 0) {
-        toggleRepliesButtonHtml = `
-        <small>
-            <a href="#" class="toggle-replies-btn text-muted" data-comment-id="${commentId}" data-has-replies="true" data-toggle-state="hidden">
-                Có ${totalReplies} phản hồi <i class="fas fa-caret-down"></i>
-            </a>
-        </small>
-    `;
-    }
-
     return `
       <div class="list-group-item comment-item" data-comment-id="${commentId}" data-comment-owner-id="${comment.ownerId}" data-comment-level="${currentLevel}">
           <div class="d-flex w-100 justify-content-between align-items-center">
@@ -90,126 +63,67 @@ function createCommentHtml(comment, currentLevel = 0) {
                   <button type="button" class="btn btn-sm btn-secondary cancel-edit-btn">Hủy</button>
               </form>
           </div>
-          
-          <small class="comment-action-links">
-              ${replyButtonHtml}
-          </small>
-          
-          ${toggleRepliesButtonHtml}
-
-          <div class="reply-form-container mt-2" style="display: none;">
-              <form class="reply-form d-flex align-items-end">
-                  <div class="flex-grow-1 me-2">
-                      <textarea class="form-control form-control-sm" rows="2" placeholder="Phản hồi lại ${commentAuthor}..." required></textarea>
-                  </div>
-                  <button type="submit" class="btn btn-sm btn-outline-primary">Gửi</button>
-              </form>
-          </div>
-          
-          <div class="replies-container mt-2 hidden-replies">
-              ${nestedRepliesHtml}
-          </div>
       </div>
   `;
 }
 
-const mockCommentsData = [
-    {
-        id: "cmt1",
-        author: "Người dùng A",
-        ownerId: "userA",
-        timeAgo: "2 giờ trước",
-        content: "Đây là nội dung của bình luận đầu tiên.",
-        parentId: null,
-        replies: [
-            {
-                id: "cmt1.1",
-                author: "Người dùng B",
-                ownerId: "userB",
-                timeAgo: "1 giờ trước",
-                content: "@Người dùng A: Tôi hoàn toàn đồng ý!",
-                parentId: "cmt1",
-                replies: [
-                    {
-                        id: "cmt1.1.1",
-                        author: "Người dùng C",
-                        ownerId: "userC",
-                        timeAgo: "30 phút trước",
-                        content: "@Người dùng B: Cảm ơn bạn đã xác nhận!",
-                        parentId: "cmt1.1",
-                        replies: [
-                            {
-                                id: "cmt1.1.1.1",
-                                author: "Người dùng D",
-                                ownerId: "userD",
-                                timeAgo: "15 phút trước",
-                                content:
-                                    "@Người dùng C: Không có gì, rất vui được thảo luận.",
-                                parentId: "cmt1.1.1",
-                                replies: [],
-                            },
-                        ],
-                    },
-                    {
-                        id: "cmt1.1.2",
-                        author: "Người dùng E",
-                        ownerId: "userE",
-                        timeAgo: "20 phút trước",
-                        content:
-                            "@Người dùng B: Bình luận của bạn rất có giá trị.",
-                        parentId: "cmt1.1",
-                        replies: [],
-                    },
-                ],
-            },
-        ],
-    },
-    {
-        id: "cmt2",
-        author: "Admin",
-        ownerId: "userA",
-        timeAgo: "Hôm qua",
-        content: "Chào mừng các bạn đến với phần bình luận!",
-        parentId: null,
-        replies: [],
-    },
-];
-
-function loadInitialComments() {
-    if ($("#loadingCommentsMessage").length) {
-        $("#loadingCommentsMessage").hide();
-    }
-    const commentsHtml = mockCommentsData
-        .map((comment) => createCommentHtml(comment, 0))
-        .join("");
-    $("#commentsList").html(commentsHtml);
-}
-loadInitialComments();
-
 $("#commentForm").on("submit", function (e) {
     e.preventDefault();
-    const commentContent = $("#newCommentContent").val().trim();
-    if (commentContent === "") {
-        alert("Vui lòng nhập nội dung bình luận.");
-        return;
-    }
-    const newComment = {
-        id: "cmt" + Date.now(),
-        author: "Bạn",
-        ownerId: currentUser,
-        timeAgo: "Vừa xong",
-        content: commentContent,
-        parentId: null,
-        replies: [],
-    };
-    const newCommentHtml = createCommentHtml(newComment, 0);
-    $("#commentsList").prepend(newCommentHtml);
-    $("#newCommentContent").val("");
-    console.log("Gửi bình luận mới:", newComment);
+
+    const urlCreate = $(this).attr('action');
+    const form = $(this);
+    const formData = new FormData(this);
+
+    $.ajax({
+        url: urlCreate,
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        dataType: 'json',
+        success: function (response) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                width: 'auto',
+                showConfirmButton: false,
+                timer: 3500,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+
+            Toast.fire({
+                icon: response.icon,
+                title: response.message
+            });
+
+            $('#commentsList').html(response.html);
+
+            form.find('.binh-luan-error').text('');
+
+            form[0].reset();
+        },
+        error: function (xhr) {
+            if (xhr.status === 422) {
+                const errors = xhr.responseJSON.errors;
+
+                if (errors.noi_dung) {
+                    form.find('.binh-luan-error').text(errors.noi_dung[0]);
+                }
+            } else {
+                alert('Đã xảy ra lỗi: ' + xhr.status + ' ' + xhr.statusText);
+            }
+        }
+    });
 });
 
 $(document).on("click", ".reply-btn", function (e) {
     e.preventDefault();
+    $('.comment-item .binh-luan-error').text('');
+
     const $replyBtn = $(this);
     const $commentItem = $replyBtn.closest(".comment-item");
     const $replyFormContainer = $commentItem.find(
@@ -224,13 +138,13 @@ $(document).on("click", ".reply-btn", function (e) {
     $(".reply-form-container").not($replyFormContainer).slideUp(200);
     $(".edit-form-container").slideUp(200);
 
-    // Đóng các replies-container đang mở, TRỪ container cha của bình luận hiện tại và TRỪ chính nó
+    // Đóng các replies-container đang mở, trừ container cha của bình luận hiện tại và trừ chính nó
     // Tìm tất cả các replies-container đang hiển thị
     $(".replies-container:not(.hidden-replies)").each(function () {
         const $openContainer = $(this);
-        // Kiểm tra xem container đang mở có phải là tổ tiên của bình luận hiện tại không
+        // Kiểm tra xem container đang mở có phải là tổ tiên của bình luận hiện tại ko
         const isAncestor = $.contains($openContainer[0], $commentItem[0]);
-        // Nếu không phải tổ tiên (và không phải chính $repliesContainer của $commentItem), thì đóng nó
+        // Nếu ko phải tổ tiên (và ko phải chính $repliesContainer của $commentItem), thì đóng nó
         if (
             !isAncestor &&
             !$openContainer.is($commentItem.find(".replies-container:first"))
@@ -249,7 +163,7 @@ $(document).on("click", ".reply-btn", function (e) {
                 .prevAll(".toggle-replies-btn:first")
                 .html(
                     currentText.replace("Ẩn ", "Có ") +
-                        ' <i class="fas fa-caret-down"></i>'
+                    ' <i class="fas fa-caret-down"></i>'
                 );
         }
     });
@@ -263,106 +177,118 @@ $(document).on("click", ".reply-btn", function (e) {
 
 $(document).on("submit", ".reply-form", function (e) {
     e.preventDefault();
-    const $form = $(this);
-    const replyContent = $form.find("textarea").val().trim();
-    if (replyContent === "") {
-        alert("Vui lòng nhập nội dung phản hồi.");
-        return;
-    }
-    const $parentCommentItem = $form.closest(".comment-item");
-    const parentCommentId = $parentCommentItem.data("comment-id");
-    const parentCommentAuthor = $parentCommentItem.find("h6").text().trim();
-    const parentCommentLevel = parseInt(
-        $parentCommentItem.data("comment-level")
-    );
 
-    const newReplyLevel = parentCommentLevel + 1;
+    const form = $(this);
+    const formData = new FormData(this);
+    const urlReply = form.attr('action');
 
-    const newReply = {
-        id: parentCommentId + ".rep" + Date.now(),
-        author: "Bạn",
-        ownerId: currentUser,
-        timeAgo: "Vừa xong",
-        content: `@${parentCommentAuthor}: ${replyContent}`,
-        parentId: parentCommentId,
-        replies: [],
-    };
+    $.ajax({
+        url: urlReply,
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        dataType: 'json',
+        success: function (response) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                width: 'auto',
+                showConfirmButton: false,
+                timer: 3500,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
 
-    const newReplyHtml = createCommentHtml(newReply, newReplyLevel);
-    const $repliesContainer = $parentCommentItem.find(
-        ".replies-container:first"
-    );
+            Toast.fire({
+                icon: response.icon,
+                title: response.message
+            });
 
-    // Thêm phản hồi mới vào container
-    $repliesContainer.append(newReplyHtml);
+            const $parentCommentItem = form.closest(".comment-item");
+            const parentCommentId = $parentCommentItem.data("comment-id");
 
-    // Cập nhật số lượng và trạng thái nút toggle
-    let $toggleBtn = $parentCommentItem.find(".toggle-replies-btn:first");
-    if (!$toggleBtn.length) {
-        // Nếu chưa có nút toggle (trước đó không có phản hồi)
-        const count = $repliesContainer.children(".comment-item").length; // Đếm lại số con
-        const newToggleHtml = `
+            const newReplyHtml = response.html;
+            const itemBinhLuanCon = $parentCommentItem.find('.item-binh-luan-con');
+            const $repliesContainer = itemBinhLuanCon.parent('.replies-container');
+
+            // Thêm phản hồi mới vào container
+            itemBinhLuanCon.prepend(newReplyHtml);
+
+            // Cập nhật số lượng và trạng thái nút toggle
+            let $toggleBtn = $parentCommentItem.find(".toggle-replies-btn:first");
+            if (!$toggleBtn.length) {
+                // Nếu chưa có nút toggle (trước đó không có phản hồi)
+                const count = itemBinhLuanCon.children(".comment-item").length; // Đếm lại số con
+                const newToggleHtml = `
                 <small>
                     <a href="#" class="toggle-replies-btn text-muted" data-comment-id="${parentCommentId}" data-has-replies="true" data-toggle-state="shown">
                         Có ${count} phản hồi <i class="fas fa-caret-up"></i>
                     </a>
                 </small>`;
-        // Thêm nút toggle vào sau comment-action-links
-        $parentCommentItem.find(".comment-action-links").after(newToggleHtml);
-        $toggleBtn = $parentCommentItem.find(".toggle-replies-btn:first"); // Lấy lại tham chiếu đến nút mới
-    } else {
-        const currentCount = parseInt($toggleBtn.text().match(/\d+/)) || 0;
-        $toggleBtn
-            .html(
-                `Có ${
-                    currentCount + 1
-                } phản hồi <i class="fas fa-caret-up"></i>`
-            )
-            .data("toggle-state", "shown");
-    }
+                // Thêm nút toggle vào sau comment-action-links
+                $parentCommentItem.find(".comment-action-links").after(newToggleHtml);
+                $toggleBtn = $parentCommentItem.find(".toggle-replies-btn:first"); // Lấy lại tham chiếu đến nút mới
+            }
+            else {
+                const currentCount = parseInt($toggleBtn.text().match(/\d+/)) || 0;
+                $toggleBtn
+                    .html(
+                        `Có ${currentCount + 1
+                        } phản hồi <i class="fas fa-caret-up"></i>`
+                    )
+                    .data("toggle-state", "shown");
+            }
 
-    // Đảm bảo container hiển thị khi có phản hồi mới
-    if ($repliesContainer.hasClass("hidden-replies")) {
-        $repliesContainer.slideDown(200).removeClass("hidden-replies");
-        $toggleBtn
-            .find("i")
-            .removeClass("fa-caret-down")
-            .addClass("fa-caret-up");
-        const currentText = $toggleBtn.text();
-        $toggleBtn.html(
-            currentText.replace("Có ", "Ẩn ") +
-                ' <i class="fas fa-caret-up"></i>'
-        );
-    }
+            // Đảm bảo container hiển thị khi có phản hồi mới
+            if ($repliesContainer.hasClass("hidden-replies")) {
+                $repliesContainer.slideDown(200).removeClass("hidden-replies");
+                $toggleBtn
+                    .find("i")
+                    .removeClass("fa-caret-down")
+                    .addClass("fa-caret-up");
+                const currentText = $toggleBtn.text();
+                $toggleBtn.html(
+                    currentText.replace("Có ", "Ẩn ") +
+                    ' <i class="fas fa-caret-up"></i>'
+                );
+            }
 
-    $form.find("textarea").val("");
-    $form.closest(".reply-form-container").slideUp(200);
+            form.find("textarea").val("");
+            form.closest(".reply-form-container").slideUp(200);
+        },
+        error: function (xhr) {
+            if (xhr.status === 422) {
+                const errors = xhr.responseJSON.errors;
 
-    console.log("Gửi phản hồi:", newReply);
+                if (errors.noi_dung) {
+                    form.find('.binh-luan-error').text(errors.noi_dung[0]);
+                }
+            } else {
+                alert('Đã xảy ra lỗi: ' + xhr.status + ' ' + xhr.statusText);
+            }
+        }
+    });
+
 });
 
-$(document).on("click", ".edit-comment-btn", function (e) {
-    e.preventDefault();
+$(document).on("click", ".edit-comment-btn", function () {
+    $('.comment-item .binh-luan-error').text('');
+
     const $editBtn = $(this);
     const $commentItem = $editBtn.closest(".comment-item");
-    const commentId = $commentItem.data("comment-id");
-    const ownerId = $commentItem.data("comment-owner-id");
 
-    if (ownerId !== currentUser) {
-        alert("Bạn không có quyền chỉnh sửa bình luận này.");
-        return;
-    }
-
-    const $commentContentText = $commentItem.find(
-        ".comment-content-text:first"
-    );
+    const $commentContentText = $commentItem.find(".comment-content-text:first");
     const $editFormContainer = $commentItem.find(".edit-form-container:first");
     const $editTextArea = $editFormContainer.find("textarea");
 
     $(".reply-form-container").slideUp(200);
     $(".edit-form-container").not($editFormContainer).slideUp(200);
 
-    // Đóng các replies-container đang mở, TRỪ container cha của bình luận hiện tại và TRỪ chính nó
+    // Đóng các replies-container đang mở, trừ container cha của bình luận hiện tại và trừ chính nó
     $(".replies-container:not(.hidden-replies)").each(function () {
         const $openContainer = $(this);
         const isAncestor = $.contains($openContainer[0], $commentItem[0]);
@@ -384,7 +310,7 @@ $(document).on("click", ".edit-comment-btn", function (e) {
                 .prevAll(".toggle-replies-btn:first")
                 .html(
                     currentText.replace("Ẩn ", "Có ") +
-                        ' <i class="fas fa-caret-down"></i>'
+                    ' <i class="fas fa-caret-down"></i>'
                 );
         }
     });
@@ -411,80 +337,150 @@ $(document).on("click", ".cancel-edit-btn", function () {
     $editFormContainer.slideUp(200, function () {
         $commentContentText.show();
     });
+
+    $('.comment-item .binh-luan-error').text('');
 });
 
 $(document).on("submit", ".edit-comment-form", function (e) {
     e.preventDefault();
-    const $form = $(this);
-    const newContent = $form.find("textarea").val().trim();
-    const $commentItem = $form.closest(".comment-item");
-    const commentId = $commentItem.data("comment-id");
-    const ownerId = $commentItem.data("comment-owner-id");
 
-    if (ownerId !== currentUser) {
-        alert("Bạn không có quyền chỉnh sửa bình luận này.");
-        return;
-    }
-    if (newContent === "") {
-        alert("Nội dung bình luận không được để trống.");
-        return;
-    }
-    console.log(
-        `Đang lưu chỉnh sửa bình luận ID: ${commentId}, Nội dung mới: "${newContent}"`
-    );
-    $commentItem.find(".comment-content-text:first").text(newContent).show();
-    $form.closest(".edit-form-container").slideUp(200);
-    alert("Bình luận đã được cập nhật thành công!");
+    const form = $(this);
+    const formData = new FormData(this);
+    const urlUpdate = form.attr('action');
+    const $commentItem = form.closest(".comment-item");
+    const inputNoiDung = form.find('textarea[name="noi_dung"]');
+    // alert(urlUpdate);
+    // return;
+
+    $.ajax({
+        url: urlUpdate,
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        dataType: 'json',
+        success: function (response) {
+            const binhLuan = response.binhLuan;
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                width: 'auto',
+                showConfirmButton: false,
+                timer: 3500,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+
+            Toast.fire({
+                icon: response.icon,
+                title: response.message
+            });
+
+            $commentItem.find(".comment-content-text:first").text(binhLuan.noi_dung).show();
+            form.closest(".edit-form-container").slideUp(200);
+            inputNoiDung.val(binhLuan.noi_dung);
+        },
+        error: function (xhr) {
+            if (xhr.status === 422) {
+                const errors = xhr.responseJSON.errors;
+
+                if (errors.noi_dung) {
+                    form.find('.binh-luan-error').text(errors.noi_dung[0]);
+                }
+            } else {
+                alert('Đã xảy ra lỗi: ' + xhr.status + ' ' + xhr.statusText);
+            }
+        }
+    });
 });
 
-$(document).on("click", ".delete-comment-btn", function (e) {
-    e.preventDefault();
+$(document).on("click", ".delete-comment-btn", function () {
+    const token = $('meta[name="csrf-token"]').attr('content');
     const $deleteBtn = $(this);
     const $commentItem = $deleteBtn.closest(".comment-item");
-    const commentId = $commentItem.data("comment-id");
-    const ownerId = $commentItem.data("comment-owner-id");
+    const $parentRepliesContainer = $commentItem.parent(".replies-container .item-binh-luan-con");
+    const urlDelete = $deleteBtn.data('url-delete');
 
-    if (ownerId !== currentUser) {
-        alert("Bạn không có quyền xóa bình luận này.");
-        return;
-    }
+    Swal.fire({
+        title: `Bạn có chắc chắn xóa bình luận này không?`,
+        // text: `Bạn sẽ không thể khôi phục bình luận này!`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Xóa",
+        cancelButtonText: "Hủy",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: urlDelete,
+                type: 'POST',
+                data: {
+                    _token: token,
+                    _method: 'DELETE'
+                },
+                dataType: "json",
+                success: function (response) {
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: "top-end",
+                        width: "auto",
+                        showConfirmButton: false,
+                        timer: 3500,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
+                        },
+                    });
 
-    if (confirm("Bạn có chắc chắn muốn xóa bình luận này không?")) {
-        console.log(`Đang xóa bình luận ID: ${commentId}`);
-        const $parentRepliesContainer =
-            $commentItem.parent(".replies-container");
+                    Toast.fire({
+                        icon: response.icon,
+                        title: response.message,
+                    });
 
-        $commentItem.slideUp(300, function () {
-            $(this).remove();
-            alert("Bình luận đã được xóa thành công!");
+                    $commentItem.slideUp(300, function () {
+                        $(this).remove();
 
-            if ($parentRepliesContainer.length) {
-                const $parentCommentItem =
-                    $parentRepliesContainer.closest(".comment-item");
-                const $toggleBtn = $parentCommentItem.find(
-                    ".toggle-replies-btn:first"
-                );
-                if ($toggleBtn.length) {
-                    const newCount =
-                        $parentRepliesContainer.children(
-                            ".comment-item"
-                        ).length; // Đếm lại số con
-                    if (newCount === 0) {
-                        $toggleBtn.remove();
-                    } else {
-                        $toggleBtn.html(
-                            `Có ${newCount} phản hồi <i class="fas fa-caret-up"></i>`
-                        );
+                        if ($parentRepliesContainer.length) {
+                            const $parentCommentItem = $parentRepliesContainer.closest(".comment-item");
+                            const $toggleBtn = $parentCommentItem.find(".toggle-replies-btn:first");
+                            // console.log($toggleBtn);
+                            if ($toggleBtn.length) {
+                                const newCount = $parentRepliesContainer.children(".comment-item").length; // Đếm lại số con
+                                // console.log(newCount);
+                                if (newCount === 0) {
+                                    $toggleBtn.remove();
+                                } else {
+                                    $toggleBtn.html(
+                                        `Có ${newCount} phản hồi <i class="fas fa-caret-up"></i>`
+                                    );
+                                }
+                            }
+                        }
+                    });
+
+                    const itemBinhLuanThu2 = $('#list-binh-luan>.comment-item:nth-child(2)');
+                    if (!itemBinhLuanThu2.length) {
+                        $('#list-binh-luan-card').remove();
                     }
-                }
-            }
-        });
-    }
+                },
+                error: function (xhr) {
+                    alert(
+                        "Đã xảy ra lỗi: " + xhr.status + " " + xhr.statusText
+                    );
+                },
+            });
+        }
+    });
 });
 
-// --- SỬA LỖI: Xử lý sự kiện click nút "Hiện/Ẩn phản hồi" ---
 $(document).on("click", ".toggle-replies-btn", function (e) {
     e.preventDefault();
+    $('.comment-item .binh-luan-error').text('');
     const $toggleBtn = $(this);
     const $commentItem = $toggleBtn.closest(".comment-item");
     const $repliesContainer = $commentItem.find(".replies-container:first");
@@ -495,7 +491,7 @@ $(document).on("click", ".toggle-replies-btn", function (e) {
     $(".edit-form-container").slideUp(200);
 
     // Logic chính để đóng các container khác:
-    // Đóng TẤT CẢ các replies-container đang mở (không có class hidden-replies)
+    // Đóng tất cả các replies-container đang mở (không có class hidden-replies)
     // ngoại trừ container của chính bình luận cha mà bạn đang click vào,
     // và ngoại trừ các container là tổ tiên của nó.
     $(".replies-container:not(.hidden-replies)").each(function () {
@@ -521,7 +517,7 @@ $(document).on("click", ".toggle-replies-btn", function (e) {
                 const currentText = $associatedToggleBtn.text();
                 $associatedToggleBtn.html(
                     currentText.replace("Ẩn ", "Có ") +
-                        ' <i class="fas fa-caret-down"></i>'
+                    ' <i class="fas fa-caret-down"></i>'
                 );
             }
         }
@@ -534,7 +530,7 @@ $(document).on("click", ".toggle-replies-btn", function (e) {
         const currentText = $toggleBtn.text();
         $toggleBtn.html(
             currentText.replace("Có ", "Ẩn ") +
-                ' <i class="fas fa-caret-up"></i>'
+            ' <i class="fas fa-caret-up"></i>'
         );
     } else {
         $repliesContainer.slideUp(200).addClass("hidden-replies");
@@ -542,7 +538,7 @@ $(document).on("click", ".toggle-replies-btn", function (e) {
         const currentText = $toggleBtn.text();
         $toggleBtn.html(
             currentText.replace("Ẩn ", "Có ") +
-                ' <i class="fas fa-caret-down"></i>'
+            ' <i class="fas fa-caret-down"></i>'
         );
     }
 });
@@ -684,14 +680,13 @@ function renderDanhSachKetQua(baiKiemTra, dsKetQua) {
             <td class="text-nowrap">${ngayNop}</td>
             <td>${item.diem ?? ""}</td>
             <td>
-                ${
-                    item.diem !== null
-                        ? `<button class="btn btn-sm btn-primary"
+                ${item.diem !== null
+                ? `<button class="btn btn-sm btn-primary"
                             onclick="xemChiTietKetQua('${idKetQua}', '${user.ten}', ${item.diem}, '${baiKiemTra.tieu_de}')">
                             Xem
                         </button>`
-                        : ""
-                }
+                : ""
+            }
             </td>
         </tr>`;
     });
@@ -730,18 +725,14 @@ function hienThiKetQua() {
 
 function renderChiTietBaiTapGiangVien() {
     const thongTinBaiKT = `
-                        <p><strong>Bài Tập:</strong> ${
-                            currentBaiKiemTra.tieu_de
-                        }</p>               
-                        <p><strong>Điểm tối đa:</strong> ${
-                            currentBaiKiemTra.diem_toi_da
-                        }</p>
-                        <p><strong>Hình thức:</strong> ${
-                            currentBaiKiemTra.hinh_thuc ?? "Trắc nghiệm"
-                        }</p>
-                        <p><strong>Số câu hỏi:</strong> ${
-                            currentBaiKiemTra.list_cau_hoi.length
-                        }</p>
+                        <p><strong>Bài Tập:</strong> ${currentBaiKiemTra.tieu_de
+        }</p>               
+                        <p><strong>Điểm tối đa:</strong> ${currentBaiKiemTra.diem_toi_da
+        }</p>
+                        <p><strong>Hình thức:</strong> ${currentBaiKiemTra.hinh_thuc ?? "Trắc nghiệm"
+        }</p>
+                        <p><strong>Số câu hỏi:</strong> ${currentBaiKiemTra.list_cau_hoi.length
+        }</p>
                     `;
     return thongTinBaiKT;
 }
@@ -904,9 +895,8 @@ function renderChiTietBaiKiemTra(baiKiemTra, chiTiet) {
         html += `</ul>
             <div class="mt-2">
                 <small><strong>Đáp án đúng:</strong> ${dapAnDung}</small><br/>
-                <small><strong>Đáp án chọn:</strong> ${
-                    dapAnChon || "<i>Không chọn</i>"
-                }</small>
+                <small><strong>Đáp án chọn:</strong> ${dapAnChon || "<i>Không chọn</i>"
+            }</small>
             </div>
         </div>`;
     });

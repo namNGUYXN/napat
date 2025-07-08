@@ -40,6 +40,6 @@ class BaiTrongLopMiddleware
 
         if ($daThamGiaLopHoc) return $next($request);
 
-        abort(404);
+        abort(403, 'Bạn chưa tham gia lớp học phần này');
     }
 }

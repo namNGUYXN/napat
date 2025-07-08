@@ -5,7 +5,7 @@
 @endphp
 
 <header class="container-fluid">
-  <div class="row bg-info text-white py-3 pe-md-3 align-items-center">
+  <div class="row text-white py-3 pe-md-3 align-items-center" style="background-color: coral;">
     <div class="col-auto d-md-none">
       <button class="btn btn-light" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas">☰</button>
     </div>

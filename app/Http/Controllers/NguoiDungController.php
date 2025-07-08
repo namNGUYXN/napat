@@ -128,7 +128,7 @@ class NguoiDungController extends Controller
         $validated = $request->validate([
             'ho_ten' => ['required', 'regex:/^[\p{L}\s]+$/u', 'max:255'],
             'email' => 'required|email|unique:nguoi_dung,email',
-            'sdt' => ['nullable', 'regex:/^0\d{9,10}$/'],
+            'sdt' => ['nullable', 'regex:/^0\d{9,10}$/', 'unique:nguoi_dung,sdt'],
             'vai_tro' => ['required', Rule::in(['Giảng viên', 'Sinh viên', 'Admin'])],
         ], [
             'ho_ten.required' => 'Vui lòng nhập họ tên.',
@@ -138,6 +138,7 @@ class NguoiDungController extends Controller
             'email.email' => 'Email không hợp lệ.',
             'email.unique' => 'Email đã tồn tại trong hệ thống.',
             'sdt.regex' => 'Số điện thoại phải là số và bắt đầu bằng số 0 và không quá 11 số',
+            'sdt.unique' => 'Số điện thoại đã tồn tại trong hệ thống.',
             'vai_tro.required' => 'Vui lòng chọn vai trò.',
             'vai_tro.in' => 'Vai trò chỉ được là Giảng viên, Sinh viên hoặc Admin.',
         ], [
@@ -148,11 +149,20 @@ class NguoiDungController extends Controller
         ]);
 
 
-        $this->nguoiDungService->themNguoiDung($validated);
+        $result = $this->nguoiDungService->themNguoiDung($validated);
 
-        return redirect()->route('nguoi-dung.index')
-            ->with('message', 'Thêm người dùng thành công!')
-            ->with('icon', 'success');
+        if ($result['success']) {
+
+            return redirect()->route('nguoi-dung.index')->with([
+                'message' => $result['message'],
+                'icon' => 'success'
+            ]);
+        }
+        
+        return redirect()->route('nguoi-dung.index')->with([
+            'message' => $result['message'],
+            'icon' => 'error'
+        ]);
     }
 
     //Xử lý khi thêm hàng loạt người dùng(Excel)

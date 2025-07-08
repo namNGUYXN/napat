@@ -8,8 +8,8 @@
 
 @section('content')
   <div class="text-center">
-    <h1>404 - Không tìm thấy trang</h1>
-    <p>Trang bạn tìm không tồn tại hoặc đã bị xóa.</p>
-    <a href="{{ $url }}" class="btn btn-info">Về trang chủ</a>
+    <h1>Không tìm thấy trang</h1>
+    <p>Trang không tồn tại hoặc đã bị xóa.</p>
+    <a href="{{ $url }}" class="btn text-light mt-4" style="background-color: coral;">Về trang chủ</a>
   </div>
 @endsection

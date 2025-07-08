@@ -47,7 +47,6 @@ class BaiController extends Controller
             [
                 'tieu_de' => 'required|string|max:255',
                 'noi_dung' => 'required|string',
-                'is_delete' => 'nullable|boolean'
             ],
             [
                 'tieu_de.required' => 'Vui lòng nhập tiêu đề',

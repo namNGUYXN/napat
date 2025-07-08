@@ -42,6 +42,6 @@ class LopHocPhanMiddleware
 
         if ($daThamGiaLopHoc) return $next($request);
 
-        abort(403, 'Bạn không có quyền truy cập lớp này');
+        abort(403, 'Bạn không thể truy cập vào lớp học phần này');
     }
 }

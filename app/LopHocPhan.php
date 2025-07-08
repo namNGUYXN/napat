@@ -23,7 +23,6 @@ class LopHocPhan extends Model
         'id_bai_giang',
         'id_khoa',
         'ngay_tao',
-        'is_delete',
     ];
 
     public function getNgayTaoAttribute($value)
@@ -49,7 +48,7 @@ class LopHocPhan extends Model
 
     public function list_ban_tin()
     {
-        return $this->hasMany(BanTin::class, 'id_lop_hoc_phan')->where('is_delete', false)->orderByDesc('ngay_dang');
+        return $this->hasMany(BanTin::class, 'id_lop_hoc_phan')->orderByDesc('ngay_dang');
     }
 
     public function bai_giang()

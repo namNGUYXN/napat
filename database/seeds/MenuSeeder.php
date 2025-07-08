@@ -43,7 +43,7 @@ class MenuSeeder extends Seeder
                 'thu_tu' => 2
             ],
             [
-                'ten' => 'Lớp học của tôi',
+                'ten' => 'Lớp học phần của tôi',
                 'id_loai_menu' => 2,
                 'id_menu_cha' => null,
                 'gia_tri' => '',

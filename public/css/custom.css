@@ -1,6 +1,8 @@
 :root {
   --pink-40: #f9e6e6;
   --pink-50: #f2c2c2;
+  --orange-40: #ffd5be;
+  --orange-50: #efa37a;
 }
 
 /* --------------------
@@ -19,7 +21,7 @@
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
   border-radius: 10px;
-  background-color: var(--pink-50);
+  background-color: var(--orange-50);
 }
 
 /* --------------------

@@ -17,7 +17,6 @@ class BanTin extends Model
         'id_thanh_vien_lop',
         'id_lop_hoc_phan',
         'ngay_tao',
-        'is_delete',
     ];
 
     public function getNgayTaoAttribute($value)

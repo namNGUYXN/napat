@@ -8,8 +8,8 @@
 
 @section('content')
   <div class="text-center">
-    <h1>403 - Bạn không được phép truy cập vào đây</h1>
-    <p>Trang này đã ngăn chặn việc truy cập trái phép.</p>
-    <a href="{{ $url }}" class="btn btn-info">Về trang chủ</a>
+    <h1>{{ $message }}</h1>
+    {{-- <p>Trang này đã ngăn chặn việc truy cập trái phép.</p> --}}
+    <a href="{{ $url }}" class="btn text-light mt-4" style="background-color: coral;">Về trang chủ</a>
   </div>
 @endsection

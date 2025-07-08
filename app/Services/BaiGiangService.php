@@ -11,12 +11,16 @@ use Illuminate\Support\Str;
 
 class BaiGiangService
 {
+    public function layTatCa()
+    {
+        return BaiGiang::all();
+    }
+    
     public function layListTheoGiangVien(Request $request, $page = -1)
     {
         $idNguoiDungHienTai = session('id_nguoi_dung');
         $listBaiGiang = BaiGiang::where([
             ['id_giang_vien', $idNguoiDungHienTai],
-            ['is_delete', false]
         ])->withCount(['list_chuong as so_chuong']);
 
         // Tìm kiếm
@@ -60,7 +64,6 @@ class BaiGiangService
     public function layTheoId($id)
     {
         return BaiGiang::where('id', $id)
-            ->where('is_delete', false)
             ->withCount(['list_chuong as so_chuong'])
             ->firstOrFail();
     }

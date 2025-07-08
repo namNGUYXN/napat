@@ -5,7 +5,7 @@
 @section('content')
   <!-- Main Content -->
   <div class="col bg-light p-4 overflow-auto custom-scrollbar">
-    <h2 class="mb-3">Lớp học của tôi</h2>
+    <h2 class="mb-3">Lớp học phần của tôi</h2>
 
     {{-- @if ($errors->any())
       <div class="alert alert-danger alert-dismissible fade show" role="alert">

@@ -9,13 +9,24 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\NguoiDungImport;
-
+use App\Mail\ThemNguoiDungMail;
+use Illuminate\Support\Facades\Mail;
 
 class NguoiDungService
 {
     public function layTheoId($id)
     {
         return NguoiDung::findOrFail($id);
+    }
+
+    public function layTheoSinhVien()
+    {
+        return NguoiDung::where('vai_tro', 'Sinh viên')->get();
+    }
+
+    public function layTheoGiangVien()
+    {
+        return NguoiDung::where('vai_tro', 'Giảng viên')->get();
     }
 
     public function doiMatKhau(NguoiDung $nguoiDung, string $currentPassword, string $newPassword): array
@@ -90,7 +101,7 @@ class NguoiDungService
     public function themNguoiDung($data)
     {
         $matKhau = $this->taoMatKhauNgauNhien(); // Tạo mật khẩu ngẫu nhiên
-        return NguoiDung::create([
+        $nguoiDung = NguoiDung::create([
             'ho_ten' => $data['ho_ten'],
             'email' => $data['email'],
             'sdt' => $data['sdt'] ?? null,
@@ -99,6 +110,25 @@ class NguoiDungService
             'is_active' => true,
             'ngay_tao' => Carbon::now(),
         ]);
+
+        // Gửi email
+        try {
+            $data = [
+                'nguoiDung' => $nguoiDung,
+                'matKhau' => $matKhau
+            ];
+
+            Mail::to($nguoiDung->email)->send(new ThemNguoiDungMail($data));
+            return [
+                'success' => true,
+                'message' => 'Thêm người dùng thành công!'
+            ];
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'message' => 'Không thể gửi email. Vui lòng thử lại sau.',
+            ];
+        }
     }
 
     public function importTuExcel($file)
@@ -114,12 +144,26 @@ class NguoiDungService
             ];
         }
 
-        // Lưu toàn bộ dữ liệu hợp lệ
-        foreach ($import->getValidRows() as $row) {
-            NguoiDung::create($row);
-        }
+        try {
+            // Lưu toàn bộ dữ liệu hợp lệ
+            foreach ($import->getValidRows() as $row) {
+                $nguoiDung = NguoiDung::create($row);
 
-        return ['success' => true];
+                $data = [
+                    'nguoiDung' => $nguoiDung,
+                    'matKhau' => $row['mat_khau']
+                ];
+
+                Mail::to($nguoiDung->email)->send(new ThemNguoiDungMail($data));
+            }
+
+            return ['success' => true];
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'message' => 'Không thể gửi email. Vui lòng thử lại sau.',
+            ];
+        }
     }
 
     private function taoMatKhauNgauNhien($length = 6)

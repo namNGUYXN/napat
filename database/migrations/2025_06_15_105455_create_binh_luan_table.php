@@ -20,7 +20,6 @@ class CreateBinhLuanTable extends Migration
             $table->unsignedBigInteger('id_thanh_vien_lop');
             $table->unsignedBigInteger('id_bai_trong_lop');
             $table->timestamp('ngay_tao')->useCurrent();
-            $table->boolean('is_delete')->default(false);
 
             // FK
             $table->foreign('id_thanh_vien_lop')->references('id')->on('thanh_vien_lop')->onDelete('cascade');

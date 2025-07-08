@@ -20,7 +20,6 @@ class CreateBanTinTable extends Migration
             $table->unsignedBigInteger('id_thanh_vien_lop');
             $table->unsignedBigInteger('id_lop_hoc_phan');
             $table->timestamp('ngay_tao')->useCurrent();
-            $table->boolean('is_delete')->default(false);
 
             // FK
             $table->foreign('id_thanh_vien_lop')->references('id')->on('thanh_vien_lop')->onDelete('cascade');

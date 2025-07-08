@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -50,6 +51,15 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
+        // return parent::render($request, $exception);
+
+        // Bắt lỗi 403 và truyền thông điệp vào view
+        if ($exception instanceof HttpException && $exception->getStatusCode() === 403) {
+            return response()->view('errors.403', [
+                'message' => $exception->getMessage() ?: 'Bạn không có quyền truy cập.'
+            ], 403);
+        }
+
         return parent::render($request, $exception);
     }
 }

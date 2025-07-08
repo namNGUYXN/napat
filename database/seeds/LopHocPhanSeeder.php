@@ -27,7 +27,6 @@ class LopHocPhanSeeder extends Seeder
                 'id_bai_giang' => 1,
                 'id_khoa' => 1,
                 'ngay_tao' => $now,
-                'is_delete' => false,
             ],
             [
                 'ma' => 'LARAVEL01',
@@ -39,7 +38,6 @@ class LopHocPhanSeeder extends Seeder
                 'id_bai_giang' => 2,
                 'id_khoa' => 1,
                 'ngay_tao' => $now,
-                'is_delete' => false,
             ],
         ];
 

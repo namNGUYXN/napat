@@ -19,7 +19,6 @@ class BaiGiang extends Model
         'hinh_anh',
         'id_giang_vien',
         'ngay_tao',
-        'is_delete',
     ];
 
     public function getNgayTaoAttribute($value)

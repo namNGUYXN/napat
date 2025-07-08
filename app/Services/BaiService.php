@@ -10,18 +10,6 @@ use Illuminate\Support\Str;
 
 class BaiService
 {
-    // public function layChiTietBai($id)
-    // {
-    //     return Bai::with([
-    //         'list_bai_tap' => function ($query) {
-    //             $query->where('is_delete', false);
-    //         }
-    //     ])
-    //         ->where('id', $id)
-    //         ->where('is_delete', false)
-    //         ->firstOrFail();
-    // }
-
     public function layTheoSlug($slug)
     {
         return Bai::where('slug', $slug)->firstOrFail();
