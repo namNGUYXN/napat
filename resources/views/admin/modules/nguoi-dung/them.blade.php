@@ -16,12 +16,15 @@
                 <!-- Thẻ tab - Start -->
                 <ul class="nav nav-tabs" id="userTab" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <a class="nav-link active fw-bold" id="form-tab" data-bs-toggle="tab" href="#form-input"
-                            role="tab" aria-controls="form-input" aria-selected="true">Nhập thủ công</a>
+                        <a class="nav-link fw-bold  {{ session('active_tab', 'manual') == 'manual' ? 'active' : '' }}"
+                            id="form-tab" data-bs-toggle="tab" href="#form-input" role="tab" aria-controls="form-input"
+                            aria-selected="{{ session('active_tab', 'manual') == 'manual' ? 'true' : 'false' }}">Nhập thủ
+                            công</a>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <a class="nav-link fw-bold" id="import-tab" data-bs-toggle="tab" href="#form-import" role="tab"
-                            aria-controls="form-import" aria-selected="false">Thêm từ file</a>
+                        <a class="nav-link fw-bold {{ session('active_tab') == 'import' ? 'active' : '' }}" id="import-tab"
+                            data-bs-toggle="tab" href="#form-import" role="tab" aria-controls="form-import"
+                            aria-selected="{{ session('active_tab') == 'import' ? 'true' : 'false' }}">Thêm từ file</a>
                     </li>
                 </ul>
                 <!-- Thẻ tab - End -->
@@ -29,7 +32,8 @@
                 <!-- Nội dung thẻ tab - Start -->
                 <div class="tab-content mt-3" id="userTabContent">
                     <!--Tab nhập thủ công - Start-->
-                    <div class="tab-pane fade show active" id="form-input" role="tabpanel" aria-labelledby="form-tab">
+                    <div class="tab-pane {{ session('active_tab', 'manual') == 'manual' ? 'show active' : '' }}"
+                        id="form-input" role="tabpanel" aria-labelledby="form-tab">
                         <form method="POST" action="{{ route('nguoi-dung.xu-ly-them') }}">
                             @csrf
                             {{-- Họ tên --}}
@@ -82,7 +86,8 @@
                     <!--Tab nhập thủ công - End-->
 
                     <!--Tab Import file - Start-->
-                    <div class="tab-pane fade" id="form-import" role="tabpanel" aria-labelledby="import-tab">
+                    <div class="tab-pane {{ session('active_tab') == 'import' ? 'show active' : '' }}" id="form-import"
+                        role="tabpanel" aria-labelledby="import-tab">
                         <!--Thẻ hiển thị lỗi - Start-->
                         @if (session('errors_import'))
                             @php $failures = session('errors_import'); @endphp
