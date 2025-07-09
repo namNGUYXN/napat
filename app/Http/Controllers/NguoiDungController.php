@@ -158,7 +158,7 @@ class NguoiDungController extends Controller
                 'icon' => 'success'
             ]);
         }
-        
+
         return redirect()->route('nguoi-dung.index')->with([
             'message' => $result['message'],
             'icon' => 'error'
@@ -216,7 +216,7 @@ class NguoiDungController extends Controller
             'ho_ten' => 'required|string|max:255',
             'email' => ['required', 'email', Rule::unique('nguoi_dung')->ignore($id)],
             'sdt' => 'nullable|string|max:20',
-            'vai_tro' => 'required',
+            'vai_tro' => ['required', Rule::in(['Giảng viên', 'Sinh viên', 'Admin'])],
         ], [
             'ho_ten.required' => 'Vui lòng nhập họ tên.',
             'ho_ten.max' => 'Họ tên không được vượt quá :max ký tự.',
@@ -228,6 +228,7 @@ class NguoiDungController extends Controller
             'sdt.max' => 'Số điện thoại không được vượt quá :max ký tự.',
 
             'vai_tro.required' => 'Vui lòng chọn vai trò.',
+            'vai_tro.in' => 'Vai trò không hợp lệ.',
         ], [
 
             'ho_ten' => 'Họ tên',
@@ -241,5 +242,12 @@ class NguoiDungController extends Controller
         return redirect()->route('nguoi-dung.index')
             ->with('message', 'Chỉnh sửa người dùng thành công!')
             ->with('icon', 'success');
+    }
+
+    public function khoaMo($id)
+    {
+        $this->nguoiDungService->khoaMo($id);
+
+        return back()->with('success', 'Cập nhật trạng thái người dùng thành công.');
     }
 }

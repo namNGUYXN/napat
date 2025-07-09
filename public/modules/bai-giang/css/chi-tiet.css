@@ -20,3 +20,29 @@
 .img-remove-btn:hover {
   opacity: 1;
 }
+
+.folder-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    line-clamp: 1; /* fallback cho một số trình duyệt */
+    white-space: normal;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.folder-description {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    white-space: normal;
+    color: #6c757d;
+    font-size: 0.875rem;
+    line-height: 1.4;
+}
+

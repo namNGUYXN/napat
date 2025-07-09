@@ -889,9 +889,7 @@ $(document).ready(function () {
                     ) {
                         const tongCau = baiKiemTra.list_cau_hoi.length;
                         const ngayDenHan = baiKiemTra.ngay_ket_thuc
-                            ? new Date(
-                                  baiKiemTra.ngay_ket_thuc
-                              ).toLocaleDateString("vi-VN")
+                            ? baiKiemTra.ngay_ket_thuc
                             : "Không có";
 
                         $("#modalChiTiet .modal-title").html(
@@ -920,14 +918,18 @@ $(document).ready(function () {
                                         <div class="bg-white border rounded-3 p-3 h-100">
                                             <i class="fas fa-clock fa-lg text-warning mb-1"></i>
                                             <p class="mb-0 fw-semibold">Hạn cuối</p>
-                                            <span class="text-dark fs-6">${ngayDenHan}</span>
+                                            <span class="text-dark fs-6">${formatNgay(
+                                                ngayDenHan
+                                            )}</span>
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-6 mb-2">
                                         <div class="bg-white border rounded-3 p-3 h-100">
                                             <i class="fas fa-star fa-lg text-danger mb-1"></i>
                                             <p class="mb-0 fw-semibold">Điểm tối đa</p>
-                                            <span class="text-dark fs-5">${baiKiemTra.diem_toi_da}</span>
+                                            <span class="text-dark fs-5">${
+                                                baiKiemTra.diem_toi_da
+                                            }</span>
                                         </div>
                                     </div>
                                 </div>
