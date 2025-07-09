@@ -25,9 +25,9 @@ class BaiKiemTra extends Model
 
     public function getNgayTaoAttribute($value)
     {
-        return $value ? Carbon::parse($value)->format('d/m/Y') : null;
+        return $value ? Carbon::parse($value)->format('d/m/Y H:i') : null;
     }
-
+    
     public function lop_hoc_phan()
     {
         return $this->belongsTo(LopHocPhan::class, 'id_lop_hoc_phan');

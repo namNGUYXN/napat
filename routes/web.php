@@ -182,6 +182,7 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:admin']], function () {
         Route::post('/import', 'NguoiDungController@xuLyImportExcel')->name('nguoi-dung.import');
         Route::get('/nguoi-dung/{id}/sua', 'NguoiDungController@suaNguoiDung')->name('nguoi-dung.sua');
         Route::put('/nguoi-dung/{id}', 'NguoiDungController@capNhatNguoiDung')->name('nguoi-dung.cap-nhat');
+        Route::patch('/nguoi-dung/{id}/khoa-mo', 'NguoiDungController@khoaMo')->name('nguoi-dung.khoa-mo');
     });
 
     //Khoa

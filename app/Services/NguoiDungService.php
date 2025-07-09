@@ -189,13 +189,25 @@ class NguoiDungService
     {
         $nguoiDung = NguoiDung::findOrFail($id);
 
-        $nguoiDung->update([
+        $updateData = [
             'ho_ten' => $data['ho_ten'],
-            'email' => $data['email'],
             'sdt' => $data['sdt'] ?? null,
             'vai_tro' => $data['vai_tro'],
-        ]);
+        ];
+
+        if (!$nguoiDung->is_logged) {
+            $updateData['email'] = $data['email'];
+        }
+
+        $nguoiDung->update($updateData);
 
         return $nguoiDung;
+    }
+
+    public function khoaMo($id)
+    {
+        $nguoiDung = NguoiDung::findOrFail($id);
+        $nguoiDung->is_active = !$nguoiDung->is_active;
+        $nguoiDung->save();
     }
 }

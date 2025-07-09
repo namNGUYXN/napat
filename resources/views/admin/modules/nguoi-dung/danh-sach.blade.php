@@ -21,9 +21,8 @@
             </div>
             <div class="card-body position-relative">
                 <div class="container mt-4">
-                    
                     <div class="row mb-3">
-                        <div class="col-md-3">
+                        <div class="col-12 col-md-3 mb-2 mb-md-0">
                             <select id="vaiTroSelect" class="form-select">
                                 <option value="">Tất cả vai trò</option>
                                 <option value="Giảng viên" {{ request('vai_tro') == 1 ? 'selected' : '' }}>Giảng viên
@@ -31,19 +30,22 @@
                                 <option value="Sinh viên" {{ request('vai_tro') == 2 ? 'selected' : '' }}>Sinh viên</option>
                             </select>
                         </div>
-                        <div class="col-md-5">
+
+                        <div class="col-12 col-md-5 mb-2 mb-md-0">
                             <input type="text" id="searchInput" class="form-control"
                                 placeholder="Tìm kiếm theo tên, email, SĐT..." value="{{ request('keyword') }}">
                         </div>
-                        <div class="col-md-2">
+
+                        <div class="col-12 col-md-2 mb-2 mb-md-0">
                             <select id="perPageSelect" class="form-select">
                                 <option value="5">5 dòng</option>
                                 <option value="10">10 dòng</option>
                                 <option value="20">20 dòng</option>
                             </select>
                         </div>
-                        <div class="col-md-2">
-                            <button id="btnSearch" class="btn btn-primary">Tìm</button>
+
+                        <div class="col-12 col-md-2">
+                            <button id="btnSearch" class="btn btn-primary w-100">Tìm</button>
                         </div>
                     </div>
 
@@ -51,16 +53,18 @@
                         @include('admin.partials.nguoi-dung._table', ['danhSach' => $danhSach])
                     </div>
                 </div>
-
             </div>
+
         </div>
     </div>
 @endsection
 
 @section('styles')
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 @endsection
 
 @section('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="{{ asset('modules/nguoi-dung/js/danh-sach.js') }}"></script>
 
     @if (session('message'))

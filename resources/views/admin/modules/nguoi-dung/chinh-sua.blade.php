@@ -8,56 +8,85 @@
             <i class="fas fa-arrow-alt-circle-left me-2"></i>Danh sách người dùng
         </a>
         <div class="card shadow-sm">
-            
+
             <div class="card-body">
-                <form method="POST" action="{{ route('nguoi-dung.cap-nhat', $nguoiDung->id) }}">
+                <form method="POST" id="form-input" action="{{ route('nguoi-dung.cap-nhat', $nguoiDung->id) }}">
                     @csrf
                     @method('PUT')
 
                     <div class="mb-3">
-                        <label>Họ tên</label>
+                        <label class="form-label fw-semibold">Họ tên</label>
                         <input type="text" name="ho_ten" class="form-control @error('ho_ten') is-invalid @enderror"
                             value="{{ old('ho_ten', $nguoiDung->ho_ten) }}">
-                        @error('ho_ten')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <div class="invalid-feedback">
+                            @error('ho_ten')
+                                {{ $message }}
+                            @enderror
+                        </div>
                     </div>
 
                     <div class="mb-3">
-                        <label>Email</label>
+                        <label class="form-label fw-semibold">Email</label>
                         <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
-                            value="{{ old('email', $nguoiDung->email) }}">
-                        @error('email')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                            value="{{ old('email', $nguoiDung->email) }}" {{ $nguoiDung->is_logged ? 'readonly' : '' }}>
+
+                        <div class="invalid-feedback"> @error('email')
+                                {{ $message }}
+                            @enderror
+                        </div>
+
+
+                        @if ($nguoiDung->is_logged)
+                            <div class="alert alert-warning mt-2 py-1 px-2 small mb-0">
+                                <i class="bi bi-exclamation-circle me-1"></i>
+                                Tài khoản đã đăng nhập – không thể thay đổi email.
+                            </div>
+                        @endif
                     </div>
 
                     <div class="mb-3">
-                        <label>Số điện thoại</label>
+                        <label class="form-label fw-semibold">Số điện thoại</label>
                         <input type="text" name="sdt" class="form-control @error('sdt') is-invalid @enderror"
                             value="{{ old('sdt', $nguoiDung->sdt) }}">
-                        @error('sdt')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                        <div class="invalid-feedback">
+                            @error('sdt')
+                                {{ $message }}
+                            @enderror
+                        </div>
+
                     </div>
 
                     <div class="mb-3">
-                        <label>Vai trò</label>
-                        <select name="vai_tro" class="form-select">
-                            <option value="Giảng viên" {{ $nguoiDung->vai_tro == 'Giảng viên' ? 'selected' : '' }}>Giảng
-                                viên</option>
-                            <option value="Sinh viên" {{ $nguoiDung->vai_tro == 'Sinh viên' ? 'selected' : '' }}>Sinh viên
+                        <label class="form-label fw-semibold">Vai trò</label>
+                        <select name="vai_tro" class="form-select @error('vai_tro') is-invalid @enderror">
+                            <option value="Giảng viên"
+                                {{ old('vai_tro', $nguoiDung->vai_tro) == 'Giảng viên' ? 'selected' : '' }}>Giảng viên
                             </option>
+                            <option value="Sinh viên"
+                                {{ old('vai_tro', $nguoiDung->vai_tro) == 'Sinh viên' ? 'selected' : '' }}>Sinh viên
+                            </option>
+                            <option value="Admin" {{ old('vai_tro', $nguoiDung->vai_tro) == 'Admin' ? 'selected' : '' }}>
+                                Admin</option>
                         </select>
+                        <div class="invalid-feedback">
+                            @error('vai_tro')
+                                {{ $message }}
+                            @enderror
+                        </div>
                     </div>
+
 
                     <div class="mb-3 form-check">
                         <input type="checkbox" class="form-check-input" name="is_active" value="1"
                             {{ $nguoiDung->is_active ? 'checked' : '' }}>
-                        <label class="form-check-label">Kích hoạt</label>
+                        <label class="form-check-label fw-semibold">Kích hoạt tài khoản</label>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">Cập nhật</button>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-save me-1"></i> Cập nhật
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -68,5 +97,5 @@
 @endsection
 
 @section('scripts')
-    <script src="{{ asset('modules/nguoi-dung/js/danh-sach.js') }}"></script>
+    <script src="{{ asset('modules/nguoi-dung/js/chinh-sua.js') }}"></script>
 @endsection
