@@ -301,7 +301,7 @@ class BaiKiemTraService
             // Trường hợp chỉ cho phép cập nhật ngày kết thúc và cho phép nộp trễ
             if (!empty($data['__cap_nhat_gioi_han__'])) {
                 $bai->update([
-                    'ngay_ket_thuc' => Carbon::createFromFormat('d-m-Y H:i:s', $data['ngay_ket_thuc'])->format('Y-m-d H:i:s'),
+                    'ngay_ket_thuc' => Carbon::createFromFormat('d-m-Y H:i', $data['ngay_ket_thuc']),
                     'cho_phep_nop_qua_han' => $data['cho_phep_nop_qua_han'],
                 ]);
                 return;
@@ -311,8 +311,8 @@ class BaiKiemTraService
                 'tieu_de' => $data['tieu_de'],
                 'diem_toi_da' => $data['diem_toi_da'],
                 'slug' => Str::slug($data['tieu_de']),
-                'ngay_bat_dau' => Carbon::createFromFormat('d-m-Y H:i:s', $data['ngay_bat_dau'])->format('Y-m-d H:i:s'),
-                'ngay_ket_thuc' => Carbon::createFromFormat('d-m-Y H:i:s', $data['ngay_ket_thuc'])->format('Y-m-d H:i:s'),
+                'ngay_bat_dau' => Carbon::createFromFormat('d-m-Y H:i', $data['ngay_bat_dau']),
+                'ngay_ket_thuc' => Carbon::createFromFormat('d-m-Y H:i', $data['ngay_ket_thuc']),
                 'cho_phep_nop_qua_han' => $data['cho_phep_nop_qua_han'],
             ]);
 
