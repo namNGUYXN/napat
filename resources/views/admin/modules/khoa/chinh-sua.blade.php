@@ -1,10 +1,10 @@
 @extends('layouts.admin')
 
 @section('content')
-    <div class="col bg-light p-3 overflow-auto custom-scrollbar">
-        <h2 class="mb-2">Chỉnh sửa khoa</h2>
+    <div class="col bg-light p-4 overflow-auto custom-scrollbar">
+        <h2 class="mb-3">Chỉnh sửa Khoa</h2>
 
-        <a href="{{ route('khoa.index') }}" class="btn btn-outline-secondary mb-2">
+        <a href="{{ route('khoa.index') }}" class="btn btn-outline-secondary mb-4">
             <i class="fas fa-arrow-alt-circle-left me-2"></i>Danh sách khoa
         </a>
 

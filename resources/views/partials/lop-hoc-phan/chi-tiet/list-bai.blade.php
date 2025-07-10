@@ -90,7 +90,7 @@
 
 {{-- Nút Cập nhật cố định ở cuối --}}
 @if (session('id_nguoi_dung') == $lopHocPhan->id_giang_vien)
-    <div class="text-end position-sticky bottom-0 bg-white pt-2 pb-2" style="z-index: 10;">
+    <div class="text-end position-sticky bottom-0 bg-transparent pt-2 pb-2" style="z-index: 10;">
         <button type="button" class="btn btn-success btn-public-bai px-4 py-2"
             title="Cập nhật trạng thái công khai cho các bài học">
             <i class="bi bi-cloud-upload me-2"></i> Cập nhật

@@ -2,7 +2,7 @@
 
 @section('content')
   <div class="col bg-light p-4 overflow-auto custom-scrollbar">
-    <h2 class="mb-4">Chỉnh sửa Menu</h2>
+    <h2 class="mb-3">Chỉnh sửa Menu</h2>
 
     <a href="{{ route('menu.index') }}" class="btn btn-outline-secondary mb-4">
       <i class="fas fa-arrow-alt-circle-left me-2"></i>Danh sách Menu

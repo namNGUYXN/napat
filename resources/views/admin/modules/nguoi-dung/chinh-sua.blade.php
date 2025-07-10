@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="col bg-light p-4 overflow-auto custom-scrollbar">
-        <h2 class="mb-4">Chỉnh sửa người dùng</h2>
+        <h2 class="mb-3">Chỉnh sửa người dùng</h2>
 
         <a href="{{ route('nguoi-dung.index') }}" class="btn btn-outline-secondary mb-4">
             <i class="fas fa-arrow-alt-circle-left me-2"></i>Danh sách người dùng

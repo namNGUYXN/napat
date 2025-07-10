@@ -21,28 +21,37 @@
   opacity: 1;
 }
 
+.ghost {
+  opacity: 0.4;
+}
+
+.folder-item.chosen {
+  background-color: var(--orange-50) !important;
+  transition: all 0.3s ease-in-out;
+}
+
 .folder-title {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 1;
-    line-clamp: 1; /* fallback cho một số trình duyệt */
-    white-space: normal;
-    font-weight: 600;
-    line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  /* fallback cho một số trình duyệt */
+  white-space: normal;
+  font-weight: 600;
+  line-height: 1.4;
 }
 
 .folder-description {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    white-space: normal;
-    color: #6c757d;
-    font-size: 0.875rem;
-    line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  white-space: normal;
+  color: #6c757d;
+  font-size: 0.875rem;
+  line-height: 1.4;
 }
-
