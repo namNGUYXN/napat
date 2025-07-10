@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
         dateFormat: "d/m/Y H:i",
         time_24hr: true,
         allowInput: true,
+        minDate: new Date(),
         onChange: function (selectedDates, dateStr, instance) {
             // Gợi ý thời gian kết thúc ≥ thời gian bắt đầu
             if (selectedDates.length > 0) {
@@ -731,24 +732,30 @@ const chuyenSangChinhSua = () => {
 
     //Cấu hình Flatpickr - START
     flatpickr.localize(flatpickr.l10ns.vn);
+    const startDate = new Date(currentBaiKiemTra.ngay_bat_dau);
+    const now = new Date();
+
+    const minStartDate = startDate < now ? null : now;
+
     const editStartPicker = flatpickr("#editStartTime", {
         enableTime: true,
-        dateFormat: "d-m-Y H:i:S",
+        dateFormat: "d-m-Y H:i",
         time_24hr: true,
         allowInput: true,
-        defaultDate: formatDateForFlatpickr(currentBaiKiemTra.ngay_bat_dau),
+        defaultDate: startDate,
+        minDate: minStartDate,
         onChange: function (selectedDates, dateStr, instance) {
             // Gợi ý thời gian kết thúc ≥ thời gian bắt đầu
             if (selectedDates.length > 0) {
                 const startDate = selectedDates[0];
-                endPicker.set("minDate", startDate);
+                editEndPicker.set("minDate", startDate);
             }
         },
     });
 
     const editEndPicker = flatpickr("#editEndTime", {
         enableTime: true,
-        dateFormat: "d-m-Y H:i:S",
+        dateFormat: "d-m-Y H:i",
         time_24hr: true,
         allowInput: true,
         defaultDate: formatDateForFlatpickr(currentBaiKiemTra.ngay_ket_thuc),
@@ -1399,6 +1406,9 @@ $(document).ready(function () {
 
                 if (id) currentQuestionIDs.push(id); // để so sánh xem câu nào bị xóa
             });
+
+            const start = new Date(ngayBatDau);
+            const end = new Date(ngayKetThuc);
 
             // Xác định ID các câu hỏi cũ bị xóa (không còn trong DOM)
             const deletedQuestionIDs = currentBaiKiemTra.list_cau_hoi

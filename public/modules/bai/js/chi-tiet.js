@@ -70,39 +70,39 @@ function createCommentHtml(comment, currentLevel = 0) {
 $("#commentForm").on("submit", function (e) {
     e.preventDefault();
 
-    const urlCreate = $(this).attr('action');
+    const urlCreate = $(this).attr("action");
     const form = $(this);
     const formData = new FormData(this);
 
     $.ajax({
         url: urlCreate,
-        type: 'POST',
+        type: "POST",
         data: formData,
         contentType: false,
         processData: false,
-        dataType: 'json',
+        dataType: "json",
         success: function (response) {
             const Toast = Swal.mixin({
                 toast: true,
-                position: 'top-end',
-                width: 'auto',
+                position: "top-end",
+                width: "auto",
                 showConfirmButton: false,
                 timer: 3500,
                 timerProgressBar: true,
                 didOpen: (toast) => {
                     toast.onmouseenter = Swal.stopTimer;
                     toast.onmouseleave = Swal.resumeTimer;
-                }
+                },
             });
 
             Toast.fire({
                 icon: response.icon,
-                title: response.message
+                title: response.message,
             });
 
-            $('#commentsList').html(response.html);
+            $("#commentsList").html(response.html);
 
-            form.find('.binh-luan-error').text('');
+            form.find(".binh-luan-error").text("");
 
             form[0].reset();
         },
@@ -111,18 +111,18 @@ $("#commentForm").on("submit", function (e) {
                 const errors = xhr.responseJSON.errors;
 
                 if (errors.noi_dung) {
-                    form.find('.binh-luan-error').text(errors.noi_dung[0]);
+                    form.find(".binh-luan-error").text(errors.noi_dung[0]);
                 }
             } else {
-                alert('Đã xảy ra lỗi: ' + xhr.status + ' ' + xhr.statusText);
+                alert("Đã xảy ra lỗi: " + xhr.status + " " + xhr.statusText);
             }
-        }
+        },
     });
 });
 
 $(document).on("click", ".reply-btn", function (e) {
     e.preventDefault();
-    $('.comment-item .binh-luan-error').text('');
+    $(".comment-item .binh-luan-error").text("");
 
     const $replyBtn = $(this);
     const $commentItem = $replyBtn.closest(".comment-item");
@@ -163,7 +163,7 @@ $(document).on("click", ".reply-btn", function (e) {
                 .prevAll(".toggle-replies-btn:first")
                 .html(
                     currentText.replace("Ẩn ", "Có ") +
-                    ' <i class="fas fa-caret-down"></i>'
+                        ' <i class="fas fa-caret-down"></i>'
                 );
         }
     });
@@ -180,46 +180,51 @@ $(document).on("submit", ".reply-form", function (e) {
 
     const form = $(this);
     const formData = new FormData(this);
-    const urlReply = form.attr('action');
+    const urlReply = form.attr("action");
 
     $.ajax({
         url: urlReply,
-        type: 'POST',
+        type: "POST",
         data: formData,
         contentType: false,
         processData: false,
-        dataType: 'json',
+        dataType: "json",
         success: function (response) {
             const Toast = Swal.mixin({
                 toast: true,
-                position: 'top-end',
-                width: 'auto',
+                position: "top-end",
+                width: "auto",
                 showConfirmButton: false,
                 timer: 3500,
                 timerProgressBar: true,
                 didOpen: (toast) => {
                     toast.onmouseenter = Swal.stopTimer;
                     toast.onmouseleave = Swal.resumeTimer;
-                }
+                },
             });
 
             Toast.fire({
                 icon: response.icon,
-                title: response.message
+                title: response.message,
             });
 
             const $parentCommentItem = form.closest(".comment-item");
             const parentCommentId = $parentCommentItem.data("comment-id");
 
             const newReplyHtml = response.html;
-            const itemBinhLuanCon = $parentCommentItem.find('.item-binh-luan-con');
-            const $repliesContainer = itemBinhLuanCon.parent('.replies-container');
+            const itemBinhLuanCon = $parentCommentItem.find(
+                ".item-binh-luan-con"
+            );
+            const $repliesContainer =
+                itemBinhLuanCon.parent(".replies-container");
 
             // Thêm phản hồi mới vào container
             itemBinhLuanCon.prepend(newReplyHtml);
 
             // Cập nhật số lượng và trạng thái nút toggle
-            let $toggleBtn = $parentCommentItem.find(".toggle-replies-btn:first");
+            let $toggleBtn = $parentCommentItem.find(
+                ".toggle-replies-btn:first"
+            );
             if (!$toggleBtn.length) {
                 // Nếu chưa có nút toggle (trước đó không có phản hồi)
                 const count = itemBinhLuanCon.children(".comment-item").length; // Đếm lại số con
@@ -230,14 +235,19 @@ $(document).on("submit", ".reply-form", function (e) {
                     </a>
                 </small>`;
                 // Thêm nút toggle vào sau comment-action-links
-                $parentCommentItem.find(".comment-action-links").after(newToggleHtml);
-                $toggleBtn = $parentCommentItem.find(".toggle-replies-btn:first"); // Lấy lại tham chiếu đến nút mới
-            }
-            else {
-                const currentCount = parseInt($toggleBtn.text().match(/\d+/)) || 0;
+                $parentCommentItem
+                    .find(".comment-action-links")
+                    .after(newToggleHtml);
+                $toggleBtn = $parentCommentItem.find(
+                    ".toggle-replies-btn:first"
+                ); // Lấy lại tham chiếu đến nút mới
+            } else {
+                const currentCount =
+                    parseInt($toggleBtn.text().match(/\d+/)) || 0;
                 $toggleBtn
                     .html(
-                        `Có ${currentCount + 1
+                        `Có ${
+                            currentCount + 1
                         } phản hồi <i class="fas fa-caret-up"></i>`
                     )
                     .data("toggle-state", "shown");
@@ -253,7 +263,7 @@ $(document).on("submit", ".reply-form", function (e) {
                 const currentText = $toggleBtn.text();
                 $toggleBtn.html(
                     currentText.replace("Có ", "Ẩn ") +
-                    ' <i class="fas fa-caret-up"></i>'
+                        ' <i class="fas fa-caret-up"></i>'
                 );
             }
 
@@ -265,23 +275,24 @@ $(document).on("submit", ".reply-form", function (e) {
                 const errors = xhr.responseJSON.errors;
 
                 if (errors.noi_dung) {
-                    form.find('.binh-luan-error').text(errors.noi_dung[0]);
+                    form.find(".binh-luan-error").text(errors.noi_dung[0]);
                 }
             } else {
-                alert('Đã xảy ra lỗi: ' + xhr.status + ' ' + xhr.statusText);
+                alert("Đã xảy ra lỗi: " + xhr.status + " " + xhr.statusText);
             }
-        }
+        },
     });
-
 });
 
 $(document).on("click", ".edit-comment-btn", function () {
-    $('.comment-item .binh-luan-error').text('');
+    $(".comment-item .binh-luan-error").text("");
 
     const $editBtn = $(this);
     const $commentItem = $editBtn.closest(".comment-item");
 
-    const $commentContentText = $commentItem.find(".comment-content-text:first");
+    const $commentContentText = $commentItem.find(
+        ".comment-content-text:first"
+    );
     const $editFormContainer = $commentItem.find(".edit-form-container:first");
     const $editTextArea = $editFormContainer.find("textarea");
 
@@ -310,7 +321,7 @@ $(document).on("click", ".edit-comment-btn", function () {
                 .prevAll(".toggle-replies-btn:first")
                 .html(
                     currentText.replace("Ẩn ", "Có ") +
-                    ' <i class="fas fa-caret-down"></i>'
+                        ' <i class="fas fa-caret-down"></i>'
                 );
         }
     });
@@ -338,7 +349,7 @@ $(document).on("click", ".cancel-edit-btn", function () {
         $commentContentText.show();
     });
 
-    $('.comment-item .binh-luan-error').text('');
+    $(".comment-item .binh-luan-error").text("");
 });
 
 $(document).on("submit", ".edit-comment-form", function (e) {
@@ -346,7 +357,7 @@ $(document).on("submit", ".edit-comment-form", function (e) {
 
     const form = $(this);
     const formData = new FormData(this);
-    const urlUpdate = form.attr('action');
+    const urlUpdate = form.attr("action");
     const $commentItem = form.closest(".comment-item");
     const inputNoiDung = form.find('textarea[name="noi_dung"]');
     // alert(urlUpdate);
@@ -354,32 +365,35 @@ $(document).on("submit", ".edit-comment-form", function (e) {
 
     $.ajax({
         url: urlUpdate,
-        type: 'POST',
+        type: "POST",
         data: formData,
         contentType: false,
         processData: false,
-        dataType: 'json',
+        dataType: "json",
         success: function (response) {
             const binhLuan = response.binhLuan;
             const Toast = Swal.mixin({
                 toast: true,
-                position: 'top-end',
-                width: 'auto',
+                position: "top-end",
+                width: "auto",
                 showConfirmButton: false,
                 timer: 3500,
                 timerProgressBar: true,
                 didOpen: (toast) => {
                     toast.onmouseenter = Swal.stopTimer;
                     toast.onmouseleave = Swal.resumeTimer;
-                }
+                },
             });
 
             Toast.fire({
                 icon: response.icon,
-                title: response.message
+                title: response.message,
             });
 
-            $commentItem.find(".comment-content-text:first").text(binhLuan.noi_dung).show();
+            $commentItem
+                .find(".comment-content-text:first")
+                .text(binhLuan.noi_dung)
+                .show();
             form.closest(".edit-form-container").slideUp(200);
             inputNoiDung.val(binhLuan.noi_dung);
         },
@@ -388,21 +402,23 @@ $(document).on("submit", ".edit-comment-form", function (e) {
                 const errors = xhr.responseJSON.errors;
 
                 if (errors.noi_dung) {
-                    form.find('.binh-luan-error').text(errors.noi_dung[0]);
+                    form.find(".binh-luan-error").text(errors.noi_dung[0]);
                 }
             } else {
-                alert('Đã xảy ra lỗi: ' + xhr.status + ' ' + xhr.statusText);
+                alert("Đã xảy ra lỗi: " + xhr.status + " " + xhr.statusText);
             }
-        }
+        },
     });
 });
 
 $(document).on("click", ".delete-comment-btn", function () {
-    const token = $('meta[name="csrf-token"]').attr('content');
+    const token = $('meta[name="csrf-token"]').attr("content");
     const $deleteBtn = $(this);
     const $commentItem = $deleteBtn.closest(".comment-item");
-    const $parentRepliesContainer = $commentItem.parent(".replies-container .item-binh-luan-con");
-    const urlDelete = $deleteBtn.data('url-delete');
+    const $parentRepliesContainer = $commentItem.parent(
+        ".replies-container .item-binh-luan-con"
+    );
+    const urlDelete = $deleteBtn.data("url-delete");
 
     Swal.fire({
         title: `Bạn có chắc chắn xóa bình luận này không?`,
@@ -417,10 +433,10 @@ $(document).on("click", ".delete-comment-btn", function () {
         if (result.isConfirmed) {
             $.ajax({
                 url: urlDelete,
-                type: 'POST',
+                type: "POST",
                 data: {
                     _token: token,
-                    _method: 'DELETE'
+                    _method: "DELETE",
                 },
                 dataType: "json",
                 success: function (response) {
@@ -446,11 +462,19 @@ $(document).on("click", ".delete-comment-btn", function () {
                         $(this).remove();
 
                         if ($parentRepliesContainer.length) {
-                            const $parentCommentItem = $parentRepliesContainer.closest(".comment-item");
-                            const $toggleBtn = $parentCommentItem.find(".toggle-replies-btn:first");
+                            const $parentCommentItem =
+                                $parentRepliesContainer.closest(
+                                    ".comment-item"
+                                );
+                            const $toggleBtn = $parentCommentItem.find(
+                                ".toggle-replies-btn:first"
+                            );
                             // console.log($toggleBtn);
                             if ($toggleBtn.length) {
-                                const newCount = $parentRepliesContainer.children(".comment-item").length; // Đếm lại số con
+                                const newCount =
+                                    $parentRepliesContainer.children(
+                                        ".comment-item"
+                                    ).length; // Đếm lại số con
                                 // console.log(newCount);
                                 if (newCount === 0) {
                                     $toggleBtn.remove();
@@ -463,9 +487,11 @@ $(document).on("click", ".delete-comment-btn", function () {
                         }
                     });
 
-                    const itemBinhLuanThu2 = $('#list-binh-luan>.comment-item:nth-child(2)');
+                    const itemBinhLuanThu2 = $(
+                        "#list-binh-luan>.comment-item:nth-child(2)"
+                    );
                     if (!itemBinhLuanThu2.length) {
-                        $('#list-binh-luan-card').remove();
+                        $("#list-binh-luan-card").remove();
                     }
                 },
                 error: function (xhr) {
@@ -480,7 +506,7 @@ $(document).on("click", ".delete-comment-btn", function () {
 
 $(document).on("click", ".toggle-replies-btn", function (e) {
     e.preventDefault();
-    $('.comment-item .binh-luan-error').text('');
+    $(".comment-item .binh-luan-error").text("");
     const $toggleBtn = $(this);
     const $commentItem = $toggleBtn.closest(".comment-item");
     const $repliesContainer = $commentItem.find(".replies-container:first");
@@ -517,7 +543,7 @@ $(document).on("click", ".toggle-replies-btn", function (e) {
                 const currentText = $associatedToggleBtn.text();
                 $associatedToggleBtn.html(
                     currentText.replace("Ẩn ", "Có ") +
-                    ' <i class="fas fa-caret-down"></i>'
+                        ' <i class="fas fa-caret-down"></i>'
                 );
             }
         }
@@ -530,7 +556,7 @@ $(document).on("click", ".toggle-replies-btn", function (e) {
         const currentText = $toggleBtn.text();
         $toggleBtn.html(
             currentText.replace("Có ", "Ẩn ") +
-            ' <i class="fas fa-caret-up"></i>'
+                ' <i class="fas fa-caret-up"></i>'
         );
     } else {
         $repliesContainer.slideUp(200).addClass("hidden-replies");
@@ -538,69 +564,100 @@ $(document).on("click", ".toggle-replies-btn", function (e) {
         const currentText = $toggleBtn.text();
         $toggleBtn.html(
             currentText.replace("Ẩn ", "Có ") +
-            ' <i class="fas fa-caret-down"></i>'
+                ' <i class="fas fa-caret-down"></i>'
         );
     }
 });
 
-
-$(document).on('submit', '#form-search-bai', function (e) {
+$(document).on("submit", "#form-search-bai", function (e) {
     e.preventDefault();
 
-    const urlSearch = $(this).attr('action');
+    const urlSearch = $(this).attr("action");
     let queryString = $(this).serialize();
 
-    if (queryString == 'search=') queryString = 'search=all';
+    if (queryString == "search=") queryString = "search=all";
 
     $.ajax({
         url: urlSearch,
-        type: 'GET',
+        type: "GET",
         data: queryString,
-        dataType: 'json',
+        dataType: "json",
         success: function (response) {
-            $('#list-bai').html(response.html);
+            $("#list-bai").html(response.html);
         },
         error: function (xhr) {
-            alert('Đã xảy ra lỗi: ' + xhr.status + ' ' + xhr.statusText);
-        }
+            alert("Đã xảy ra lỗi: " + xhr.status + " " + xhr.statusText);
+        },
     });
 });
 
-//Khi nhấn nút để xem danh sách câu hỏi của bài kiểm tra
 function hienThiCauHoi() {
     const dsCauHoi = currentBaiKiemTra.list_cau_hoi || [];
 
     if (dsCauHoi.length === 0) {
-        $("#modalChiTiet .modal-body").html("<p>Không có câu hỏi nào.</p>");
+        $("#modalChiTiet .modal-body").html(`
+            <div class="text-center py-4 text-muted">
+                <i class="bi bi-exclamation-circle fs-1 mb-2"></i>
+                <p class="fs-5">Không có câu hỏi nào trong bài kiểm tra này.</p>
+            </div>
+        `);
         return;
     }
 
-    let html = "<h5 class='mb-3'>Danh sách câu hỏi:</h5>";
+    let html = `
+        <div class="d-flex flex-column gap-3">
+    `;
 
     dsCauHoi.forEach((cau, index) => {
+        const dapAnDung = cau.dap_an_dung?.trim().toUpperCase();
+
         html += `
-            <div class="mb-3 border rounded p-3 bg-light">
-                <strong>Câu ${index + 1}: ${cau.tieu_de}</strong>
-                <ul class="mt-2">
-                    <li>A. ${cau.dap_an_a}</li>
-                    <li>B. ${cau.dap_an_b}</li>
-                    <li>C. ${cau.dap_an_c}</li>
-                    <li>D. ${cau.dap_an_d}</li>
-                </ul>
-                <p><strong>Đáp án đúng:</strong> ${cau.dap_an_dung}</p>
+            <div class="border rounded p-3 bg-light shadow-sm">
+                <div class="mb-2">
+                    <strong class="text-dark">Câu ${index + 1}:</strong> ${
+            cau.tieu_de
+        }
+                </div>
+                <div class="row row-cols-2 g-2 ps-3 mt-2">
+                    ${["A", "B", "C", "D"]
+                        .map(
+                            (k) => `
+                        <div class="col">
+                            <div class="p-2 rounded ${
+                                dapAnDung === k
+                                    ? "bg-success text-white fw-bold"
+                                    : "bg-white border"
+                            }">
+                                ${k}. ${cau[`dap_an_${k.toLowerCase()}`]}
+                            </div>
+                        </div>
+                    `
+                        )
+                        .join("")}
+                </div>
             </div>
         `;
     });
-    // Thay nút đóng thành nút quay lại
-    $("#modalChiTiet .modal-actions").html(`
-        <button class="btn btn-secondary" onclick="quayLaiDanhSach(0)">
-            ← Quay lại 
-        </button>
-    `);
+
+    html += `</div>`;
+
+    $("#modalChiTiet .modal-title").html(
+        `
+            <i class="bi bi-list-task text-primary me-2 fs-4"></i> Danh sách câu hỏi
+        `
+    );
+
     $("#modalChiTiet .modal-body").html(html);
 
-    $("#modalChiTiet .modal-footer").html(`      
-            `);
+    // Nút quay lại
+    $("#modalChiTiet .modal-actions").html(`
+            <button class="btn btn-outline-secondary" onclick="quayLaiDanhSach(0)">
+                <i class="bi bi-arrow-left"></i> Quay lại
+            </button>
+    `);
+
+    // Xoá footer nếu có
+    $("#modalChiTiet .modal-footer").html("");
 }
 
 function quayLaiDanhSach($action) {
@@ -610,9 +667,10 @@ function quayLaiDanhSach($action) {
                 currentBaiKiemTra,
                 currentKetQuaList
             );
-            $("#modalChiTiet .modal-title").text(
-                `Kết quả bài: ${currentBaiKiemTra.tieu_de}`
-            );
+            $("#modalChiTiet .modal-title").html(`
+                    <i class="bi bi-journal-text text-primary me-2 fs-4"></i>
+                    <span class="fw-semibold">${currentBaiKiemTra.tieu_de}</span>
+                `);
             $("#modalChiTiet .modal-body").html(html);
 
             $("#modalChiTiet .modal-footer").html(`      
@@ -626,15 +684,20 @@ function quayLaiDanhSach($action) {
         }
     } else {
         if (currentBaiKiemTra && currentKetQuaList) {
-            $("#modalChiTiet .modal-title").text(
-                `Bài Tập: ${currentBaiKiemTra.tieu_de}`
-            );
+            $("#modalChiTiet .modal-title").html(`
+                    <i class="bi bi-journal-text text-primary me-2 fs-4"></i>
+                    <span class="fw-semibold">${currentBaiKiemTra.tieu_de}</span>
+                `);
             $("#modalChiTiet .modal-body").html(renderChiTietBaiTapGiangVien());
             $("#modalChiTiet .modal-footer").html(`                   
-                <div class="mt-3 d-flex justify-content-end gap-2">
-                    <button class="btn btn-info" onclick="hienThiCauHoi()">Xem câu hỏi</button>
-                    <button class="btn btn-primary" onclick="hienThiKetQua()">Kết quả</button>
-                </div>
+                <div class=" d-flex justify-content-end gap-2">
+                        <button class="btn btn-outline-info d-flex align-items-center px-3 py-2 fw-semibold" onclick="hienThiCauHoi()">
+                            <i class="bi bi-question-circle me-2 fs-5"></i> Xem câu hỏi
+                        </button>
+                        <button class="btn btn-primary d-flex align-items-center px-3 py-2 fw-semibold" onclick="hienThiKetQua()">
+                            <i class="bi bi-bar-chart-line-fill me-2 fs-5"></i> Kết quả
+                        </button>
+                    </div>
             `);
 
             // Khôi phục lại nút đóng mặc định
@@ -680,13 +743,14 @@ function renderDanhSachKetQua(baiKiemTra, dsKetQua) {
             <td class="text-nowrap">${ngayNop}</td>
             <td>${item.diem ?? ""}</td>
             <td>
-                ${item.diem !== null
-                ? `<button class="btn btn-sm btn-primary"
+                ${
+                    item.diem !== null
+                        ? `<button class="btn btn-sm btn-primary"
                             onclick="xemChiTietKetQua('${idKetQua}', '${user.ten}', ${item.diem}, '${baiKiemTra.tieu_de}')">
                             Xem
                         </button>`
-                : ""
-            }
+                        : ""
+                }
             </td>
         </tr>`;
     });
@@ -725,15 +789,38 @@ function hienThiKetQua() {
 
 function renderChiTietBaiTapGiangVien() {
     const thongTinBaiKT = `
-                        <p><strong>Bài Tập:</strong> ${currentBaiKiemTra.tieu_de
-        }</p>               
-                        <p><strong>Điểm tối đa:</strong> ${currentBaiKiemTra.diem_toi_da
-        }</p>
-                        <p><strong>Hình thức:</strong> ${currentBaiKiemTra.hinh_thuc ?? "Trắc nghiệm"
-        }</p>
-                        <p><strong>Số câu hỏi:</strong> ${currentBaiKiemTra.list_cau_hoi.length
-        }</p>
-                    `;
+        <div class="px-2 text-center">
+            <h5 class="fw-bold text-primary mb-4 d-flex justify-content-center align-items-center">
+                <i class="bi bi-journal-text me-2 fs-4"></i> Thông tin bài tập
+            </h5>
+
+            <div class="d-flex flex-wrap justify-content-center gap-4">
+                <div class="text-center">
+                    <i class="bi bi-bookmark-fill text-danger fs-3 mb-1"></i>
+                    <div><strong>Bài tập</strong></div>
+                    <div>${currentBaiKiemTra.tieu_de}</div>
+                </div>
+
+                <div class="text-center">
+                    <i class="bi bi-star-fill text-warning fs-3 mb-1"></i>
+                    <div><strong>Điểm tối đa</strong></div>
+                    <div>${currentBaiKiemTra.diem_toi_da}</div>
+                </div>
+
+                <div class="text-center">
+                    <i class="bi bi-ui-checks text-success fs-3 mb-1"></i>
+                    <div><strong>Hình thức</strong></div>
+                    <div>${currentBaiKiemTra.hinh_thuc ?? "Trắc nghiệm"}</div>
+                </div>
+
+                <div class="text-center">
+                    <i class="bi bi-list-ol text-primary fs-3 mb-1"></i>
+                    <div><strong>Số câu hỏi</strong></div>
+                    <div>${currentBaiKiemTra.list_cau_hoi.length}</div>
+                </div>
+            </div>
+        </div>
+    `;
     return thongTinBaiKT;
 }
 
@@ -774,15 +861,31 @@ function openModalChiTiet(id, lopId) {
                     const lamBaiUrl = `/lop-hoc-phan/${lopId}/lam-bai/${baiKiemTra.id}`;
 
                     $("#modalChiTiet .modal-body").html(`
-                            <div class="text-center py-4">
-                                <p><strong>Số câu hỏi:</strong> ${tongCau}</p>
-                                <p><strong>Điểm tối đa:</strong> ${baiKiemTra.diem_toi_da}</p>
-                                <p>Bạn chưa làm bài kiểm tra này.</p>
-                                <a href="${lamBaiUrl}" target="_blank" class="btn btn-primary">
-                                    Làm bài ngay
-                                </a>
+                        <div class="text-center py-4">
+                            <div class="mb-4">
+                                <i class="bi bi-journal-text text-primary" style="font-size: 3rem;"></i>
                             </div>
-                        `);
+                            <h4 class="fw-bold mb-3 text-dark">Thông tin bài tập</h4>
+
+                            <div class="mb-2">
+                                <i class="bi bi-list-ol text-success me-2"></i>
+                                <strong>Số câu hỏi:</strong> ${tongCau}
+                            </div>
+                            <div class="mb-3">
+                                <i class="bi bi-star-fill text-warning me-2"></i>
+                                <strong>Điểm tối đa:</strong> ${baiKiemTra.diem_toi_da}
+                            </div>
+
+                            <p class="text-muted mt-3 mb-4 fs-6">
+                                <i class="bi bi-info-circle text-secondary me-1"></i>
+                                Bạn chưa làm bài này.
+                            </p>
+
+                            <a href="${lamBaiUrl}" target="_blank" class="btn btn-lg btn-success px-4">
+                                <i class="bi bi-pencil-square me-2"></i> Làm bài ngay
+                            </a>
+                        </div>
+                    `);
 
                     $("#modalChiTiet").modal("show");
                 } else {
@@ -825,19 +928,24 @@ function openModalChiTiet(id, lopId) {
                     }
                 });
 
-                $("#modalChiTiet .modal-title").text(
-                    `Bài tập: ${baiTap.tieu_de}`
-                );
+                $("#modalChiTiet .modal-title").html(`
+                    <i class="bi bi-journal-text text-primary me-2 fs-4"></i>
+                    <span class="fw-semibold">${baiTap.tieu_de}</span>
+                `);
 
                 $("#modalChiTiet .modal-body").html(
                     renderChiTietBaiTapGiangVien()
                 );
                 $("#modalChiTiet .modal-footer").html(`
-                        <div class="mt-3 d-flex justify-content-end gap-2">
-                            <button class="btn btn-info" onclick="hienThiCauHoi()">Xem câu hỏi</button>
-                            <button class="btn btn-primary" onclick="hienThiKetQua()">Kết quả</button>
-                        </div>
-                    `);
+                    <div class=" d-flex justify-content-end gap-2">
+                        <button class="btn btn-outline-info d-flex align-items-center px-3 py-2 fw-semibold" onclick="hienThiCauHoi()">
+                            <i class="bi bi-question-circle me-2 fs-5"></i> Xem câu hỏi
+                        </button>
+                        <button class="btn btn-primary d-flex align-items-center px-3 py-2 fw-semibold" onclick="hienThiKetQua()">
+                            <i class="bi bi-bar-chart-line-fill me-2 fs-5"></i> Kết quả
+                        </button>
+                    </div>
+                `);
 
                 $("#modalChiTiet .modal-actions").html(`
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -895,8 +1003,9 @@ function renderChiTietBaiKiemTra(baiKiemTra, chiTiet) {
         html += `</ul>
             <div class="mt-2">
                 <small><strong>Đáp án đúng:</strong> ${dapAnDung}</small><br/>
-                <small><strong>Đáp án chọn:</strong> ${dapAnChon || "<i>Không chọn</i>"
-            }</small>
+                <small><strong>Đáp án chọn:</strong> ${
+                    dapAnChon || "<i>Không chọn</i>"
+                }</small>
             </div>
         </div>`;
     });

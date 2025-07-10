@@ -128,8 +128,8 @@ class BaiKiemTraController extends Controller
             'id' => 'required|exists:bai_kiem_tra,id',
             'tieu_de' => 'required|string|max:255',
             'diem_toi_da' => 'required|numeric|min:0',
-            'ngay_bat_dau' => 'required|date_format:d-m-Y H:i:s',
-            'ngay_ket_thuc' => 'required|date_format:d-m-Y H:i:s|after:ngay_bat_dau',
+            'ngay_bat_dau' => 'required|date_format:d-m-Y H:i',
+            'ngay_ket_thuc' => 'required|date_format:d-m-Y H:i|after:ngay_bat_dau',
             'cho_phep_nop_qua_han' => 'required|boolean',
         ], [
             'id.required' => 'Thiếu ID bài kiểm tra.',
@@ -144,10 +144,10 @@ class BaiKiemTraController extends Controller
             'diem_toi_da.min' => 'Điểm tối đa không được âm.',
 
             'ngay_bat_dau.required' => 'Vui lòng nhập thời gian bắt đầu.',
-            'ngay_bat_dau.date_format' => 'Thời gian bắt đầu phải đúng định dạng dd-mm-YYYY HH:ii:ss.',
+            'ngay_bat_dau.date_format' => 'Thời gian bắt đầu phải đúng định dạng dd-mm-YYYY HH:ii:.',
 
             'ngay_ket_thuc.required' => 'Vui lòng nhập thời gian kết thúc.',
-            'ngay_ket_thuc.date_format' => 'Thời gian kết thúc phải đúng định dạng dd-mm-YYYY HH:ii:ss.',
+            'ngay_ket_thuc.date_format' => 'Thời gian kết thúc phải đúng định dạng dd-mm-YYYY HH:ii:.',
             'ngay_ket_thuc.after' => 'Thời gian kết thúc phải sau thời gian bắt đầu.',
 
             'cho_phep_nop_qua_han.required' => 'Vui lòng chọn cho phép nộp quá hạn hay không.',
@@ -263,11 +263,12 @@ class BaiKiemTraController extends Controller
         //Validate dữ liệu submit
         $request->validate([
             'id_bai_kiem_tra' => 'required|exists:bai_kiem_tra,id',
-            'answers' => 'array',
         ]);
 
+
         $idBaiKiemTra = $request->input('id_bai_kiem_tra');
-        $answers = $request->input('answers');
+
+        $answers = $request->input('answers') ?? [];
 
         $baiKiemTra = $this->baiKiemTraService->getById($idBaiKiemTra);
 

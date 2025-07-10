@@ -106,6 +106,7 @@ class BaiTapService
             throw $e; // Để controller xử lý trả lỗi JSON
         }
     }
+    
     public function layChiTietTheoVaiTro($idBaiTap, $idLop, $idNguoiDung, $vaiTro)
     {
         if ($vaiTro == "Sinh viên") {

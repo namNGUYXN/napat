@@ -93,3 +93,18 @@
 .img-remove-btn:hover {
   opacity: 1;
 }
+
+.class-title-link {
+  font-size: 1.25rem; /* tương đương fs-5 */
+  font-weight: 700; /* fw-bold */
+  color: #1d3557; /* màu xanh đậm dễ chịu */
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.25s ease;
+}
+
+.class-title-link:hover {
+  color: #457b9d; /* xanh nhạt khi hover */
+  text-decoration: underline;
+  transform: translateY(-2px);
+}

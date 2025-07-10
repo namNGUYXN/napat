@@ -88,11 +88,10 @@ class BaiTapController extends Controller
     {
         $request->validate([
             'id_bai_tap' => 'required|exists:bai_tap,id',
-            'answers' => 'required|array',
         ]);
 
         $idBaiTap = $request->input('id_bai_tap');
-        $answers = $request->input('answers');
+        $answers = $request->input('answers') ?? [];
         $id_lop_hoc_phan = $request->input('id_lop_hoc_phan');
 
         $baiTap = $this->baiTapService->getById($idBaiTap);
@@ -105,7 +104,7 @@ class BaiTapController extends Controller
         );
         $lopHocPhan = $this->lopHocPhanService->layTheoId($id_lop_hoc_phan);
         if ($thanhVienLop === null) {
-            return view('modules.lop-hoc.thong-bao-nop-bai', [
+            return view('modules.lop-hoc.thong-bao', [
                 'thanhCong' => false,
                 'thongBao' => "Bạn không có quyền thực hiện yêu cầu này!!!",
                 'lop' => $lopHocPhan
@@ -116,7 +115,7 @@ class BaiTapController extends Controller
         $kiemTra = $this->baiTapService->kiemTraDaNopBai($idBaiTap, $thanhVienLop->id);
 
         if (!$kiemTra['success']) {
-            return view('modules.lop-hoc.thong-bao-nop-bai', [
+            return view('modules.lop-hoc.thong-bao', [
                 'thanhCong' => false,
                 'noiDung' => "Không thể nộp bài",
                 'thongBao' => $kiemTra['message'],
@@ -127,7 +126,7 @@ class BaiTapController extends Controller
         $ketQua = $this->baiTapService->nopBai($idBaiTap, $thanhVienLop->id, $answers);
 
         if (!$ketQua['success']) {
-            return view('modules.lop-hoc.thong-bao-nop-bai', [
+            return view('modules.lop-hoc.thong-bao', [
                 'thanhCong' => false,
                 'noiDung' => "Không thể nộp bài",
                 'thongBao' => $ketQua['message'],
@@ -135,7 +134,7 @@ class BaiTapController extends Controller
             ]);
         }
 
-        return view('modules.lop-hoc.thong-bao-nop-bai', [
+        return view('modules.lop-hoc.thong-bao', [
             'thanhCong' => true,
             'soCauDung' => $ketQua['data']->so_cau_dung,
             'lop' => $lopHocPhan
