@@ -177,11 +177,20 @@ class KhoaController extends Controller
         }
     }
 
-    //Xóa
     public function xoa($id)
     {
-        $this->khoaService->xoaKhoa($id);
+        $result = $this->khoaService->xoaKhoa($id);
 
-        return redirect()->back()->with('success', 'Xóa khoa thành công!');
+        if ($result === true) {
+            return redirect()->back()->with([
+                'message' => 'Xóa khoa thành công.',
+                'icon' => 'success'
+            ]);
+        }
+
+        return redirect()->back()->with([
+            'message' => $result, // chuỗi thông báo lỗi từ service
+            'icon' => 'error'
+        ]);
     }
 }

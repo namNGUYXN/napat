@@ -43,3 +43,30 @@ $(document).ready(function () {
         loadKhoa(page);
     });
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    // Gán sự kiện submit cho các form xóa, kể cả khi được thêm sau
+    document.body.addEventListener("submit", function (e) {
+        const form = e.target;
+
+        // Kiểm tra nếu form có class 'form-xoa'
+        if (form.classList.contains("form-xoa")) {
+            e.preventDefault(); // Ngăn submit mặc định
+
+            Swal.fire({
+                title: "Bạn có chắc chắn?",
+                text: "Khoa này sẽ bị xóa!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#6c757d",
+                confirmButtonText: "Xóa",
+                cancelButtonText: "Hủy",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit(); // Gửi form khi xác nhận
+                }
+            });
+        }
+    });
+});

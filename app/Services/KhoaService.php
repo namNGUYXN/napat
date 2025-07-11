@@ -85,11 +85,20 @@ class KhoaService
     }
   }
 
-  //Xóa
   public function xoaKhoa($id)
   {
-    $khoa = $this->layTheoId($id);
+    $khoa = Khoa::find($id);
+
+    if (!$khoa) {
+      return 'Khoa không tồn tại.';
+    }
+
+    if ($khoa->list_lop_hoc_phan()->exists()) {
+      return 'Không thể xóa vì khoa đang có lớp học phần.';
+    }
+
     $khoa->update(['is_delete' => true]);
+
     return true;
   }
 }
