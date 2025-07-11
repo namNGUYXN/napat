@@ -38,11 +38,10 @@
                 <td>{{ $khoa->ngay_tao }}</td>
                 <td>
                     <a href="{{ route('khoa.cap-nhat', $khoa->id) }}" class="btn btn-sm btn-warning">Sửa</a>
-                    <form action="{{ route('khoa.xoa', $khoa->id) }}" method="POST" class="d-inline-block"
-                        onsubmit="return confirm('Xóa khoa này?')">
+                    <form action="{{ route('khoa.xoa', $khoa->id) }}" method="POST" class="form-xoa d-inline-block">
                         @csrf
                         @method('DELETE')
-                        <button class="btn btn-sm btn-danger">Xóa</button>
+                        <button type="submit" class="btn btn-sm btn-danger btn-confirm-delete">Xóa</button>
                     </form>
                 </td>
             </tr>
