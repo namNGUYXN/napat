@@ -175,7 +175,7 @@
 @endsection
 
 @section('styles')
-  <link rel="stylesheet" href="{{ asset('vendor/sortable/css/sortable.css') }}">
+  {{-- <link rel="stylesheet" href="{{ asset('vendor/sortable/css/sortable.css') }}"> --}}
   <link rel="stylesheet" href="{{ asset('modules/bai/css/danh-sach.css') }}">
 @endsection
 

@@ -844,7 +844,7 @@ function openModalChiTiet(id, lopId) {
                 const ketQua = res.ket_qua;
                 const chiTiet = res.chi_tiet;
 
-                // ✅ Đếm số câu đúng
+                //  Đếm số câu đúng
                 let soCauDung = 0;
                 let tongCau = 0;
 
@@ -898,17 +898,17 @@ function openModalChiTiet(id, lopId) {
                             }
                         });
                     });
-                    // ✅ Hiển thị tiêu đề modal gồm tiêu đề + số câu đúng / tổng câu
+                    //  Hiển thị tiêu đề modal gồm tiêu đề + số câu đúng / tổng câu
                     $("#modalChiTiet .modal-title").text(
                         `${baiKiemTra.tieu_de} - Kết quả: ${soCauDung}/${tongCau} câu đúng`
                     );
 
-                    // ✅ Render nội dung chi tiết
+                    //  Render nội dung chi tiết
                     $("#modalChiTiet .modal-body").html(
                         renderChiTietBaiKiemTra(baiKiemTra, chiTiet)
                     );
 
-                    // ✅ Hiển thị modal
+                    //  Hiển thị modal
                     $("#modalChiTiet").modal("show");
                 }
             }

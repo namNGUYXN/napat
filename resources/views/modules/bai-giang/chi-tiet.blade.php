@@ -91,7 +91,7 @@
               <div id="list-chuong" class="d-flex flex-column gap-2">
                 @forelse ($listChuong as $chuong)
                   <div class="p-3 bg-light border rounded shadow-sm folder-item" data-id="{{ $chuong->id }}"
-                    style="cursor: grab;" draggable="true">
+                    draggable="true">
 
                     <!-- Phần trên: icon + text -->
                     <div class="d-flex flex-column flex-md-row justify-content-between gap-2">

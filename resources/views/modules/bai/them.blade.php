@@ -72,7 +72,7 @@
 
 @section('scripts')
   {{-- <script src="{{ asset('vendor/tinymce-5/tinymce.min.js') }}"></script> --}}
-  <script src="https://cdn.tiny.cloud/1/k2apqj0nxvjz66nrdnv89thl120v2jdw25bu9t947a47bgn0/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+  <script src="https://cdn.tiny.cloud/1/po7o4s0ef6r58jtnxjdqrao0o46qm20hdq4juv4rej5zpolm/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
   <script src="{{ asset('js/mammoth.browser.min.js') }}"></script>
 
   <script>

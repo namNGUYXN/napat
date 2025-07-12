@@ -87,7 +87,7 @@
   <!-- Modal Đổi mật khẩu -->
   <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel"
     aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered"> <!-- ✅ Canh giữa -->
+    <div class="modal-dialog modal-dialog-centered"> <!--  Canh giữa -->
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="changePasswordModalLabel">Đổi mật khẩu</h5>

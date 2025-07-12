@@ -1,6 +1,6 @@
 // document.addEventListener("DOMContentLoaded", () => {
 
-//     const form = document.getElementById("form-input"); // ✅ chỉ form-input được kiểm tra
+//     const form = document.getElementById("form-input"); //  chỉ form-input được kiểm tra
 
 //     if (!form) return; // nếu không có form-input thì thoát
 
@@ -92,7 +92,7 @@
 //         });
 
 //         if (!isValid) {
-//             e.preventDefault(); // ✅ chỉ chặn submit của form-input
+//             e.preventDefault(); //  chỉ chặn submit của form-input
 //         }
 //     });
 // });
