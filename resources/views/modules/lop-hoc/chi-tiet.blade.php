@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Lớp học - chi tiết')
+@section('title', 'Chi tiết lớp học phần')
 
 @section('content')
   <form id="csrfForm" class="d-none">

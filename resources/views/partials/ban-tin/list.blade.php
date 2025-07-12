@@ -23,10 +23,10 @@
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
               <li><button class="dropdown-item btn-update-ban-tin" type="button"
-                data-url-detail="{{ route('ban-tin.detail', $banTin->id) }}"
-                data-url-update="{{ route('ban-tin.update', $banTin->id) }}">✏️ Chỉnh sửa</button></li>
-              <li><button class="dropdown-item btn-delete-ban-tin text-danger" type="button"
-                data-type="bản tin" data-url-delete="{{ route('ban-tin.delete', $banTin->id) }}">🗑️ Xóa</button></li>
+                  data-url-detail="{{ route('ban-tin.detail', $banTin->id) }}"
+                  data-url-update="{{ route('ban-tin.update', $banTin->id) }}">✏️ Chỉnh sửa</button></li>
+              <li><button class="dropdown-item btn-delete-ban-tin text-danger" type="button" data-type="bản tin"
+                  data-url-delete="{{ route('ban-tin.delete', $banTin->id) }}">🗑️ Xóa</button></li>
             </ul>
           </div>
         @endif
@@ -54,9 +54,11 @@
         id="form-reply-{{ $banTin->id }}" class="form-reply mb-2">
         @csrf
         <div class="d-flex align-items-start">
-          <img src="{{ asset('storage/' . $nguoiDung->hinh_anh) }}" class="rounded-circle me-3" width="40" height="40" alt="Avatar">
+          <img src="{{ asset('storage/' . $nguoiDung->hinh_anh) }}" class="rounded-circle me-3" width="40"
+            height="40" alt="Avatar">
           <div class="input-group">
-            <input type="text" class="form-control" name="noi_dung" placeholder="Nhập phản hồi..." autocomplete="off">
+            <input type="text" class="form-control" name="noi_dung" placeholder="Nhập phản hồi..."
+              autocomplete="off">
             <button class="btn btn-outline-primary" type="submit">
               <i class="fas fa-paper-plane"></i>
             </button>
@@ -68,9 +70,11 @@
       <form action="" method="POST" id="form-update-reply-{{ $banTin->id }}" style="display: none;">
         @csrf
         <div class="d-flex align-items-start mb-2">
-          <img src="{{ asset('storage/' . $nguoiDung->hinh_anh) }}" class="rounded-circle me-3" width="40" height="40" alt="Avatar">
+          <img src="{{ asset('storage/' . $nguoiDung->hinh_anh) }}" class="rounded-circle me-3" width="40"
+            height="40" alt="Avatar">
           <div class="input-group">
-            <input type="text" class="form-control" name="noi_dung" placeholder="Nhập phản hồi..." autocomplete="off">
+            <input type="text" class="form-control" name="noi_dung" placeholder="Nhập phản hồi..."
+              autocomplete="off">
             <button class="btn btn-outline-success" type="submit">Chỉnh sửa</button>
             <button class="btn btn-outline-secondary btn-cancel-update-reply" type="button"
               data-form-reply="#form-reply-{{ $banTin->id }}">Hủy</button>
@@ -82,19 +86,20 @@
       <div class="collapse comments mt-3" id="comments-{{ $banTin->id }}">
         @foreach ($banTin->list_ban_tin_con as $cmt)
           <div class="d-flex align-items-start mb-3 position-relative">
-            <img src="{{ asset('storage/' . $cmt->thanh_vien_lop->nguoi_dung->hinh_anh) }}"
-              class="rounded-circle me-3" width="40" height="40" alt="Avatar">
+            <img src="{{ asset('storage/' . $cmt->thanh_vien_lop->nguoi_dung->hinh_anh) }}" class="rounded-circle me-3"
+              width="40" height="40" alt="Avatar">
             <div class="bg-light rounded p-2 w-100">
               <div class="d-flex justify-content-between">
                 <h6 class="mb-1">{{ $cmt->thanh_vien_lop->nguoi_dung->ho_ten }}</h6>
-                <small class="text-muted">
+                <small class="text-muted me-5">
                   <i class="far fa-clock me-1"></i> {{ $cmt->ngay_tao }}
                 </small>
               </div>
-              <p class="mb-1">{{ $cmt->noi_dung }}</p>
+
+              <p class="mb-1 noi-dung-phan-hoi">{{ $cmt->noi_dung }}</p>
 
               @if ($nguoiDung->id == $cmt->thanh_vien_lop->nguoi_dung->id)
-                <div class="dropdown text-end">
+                <div class="dropdown text-end child-news-action-btn">
                   <button class="btn btn-sm btn-light" data-bs-toggle="dropdown">
                     <i class="fas fa-ellipsis-h"></i>
                   </button>
@@ -108,8 +113,8 @@
                       </button>
                     </li>
                     <li>
-                      <button class="dropdown-item text-danger btn-delete-ban-tin" type="button"
-                        data-type="phản hồi" data-url-delete="{{ route('ban-tin.delete', $cmt->id) }}">
+                      <button class="dropdown-item text-danger btn-delete-ban-tin" type="button" data-type="phản hồi"
+                        data-url-delete="{{ route('ban-tin.delete', $cmt->id) }}">
                         🗑️ Xóa phản hồi
                       </button>
                     </li>
@@ -123,4 +128,3 @@
     </div>
   </div>
 @endforeach
-

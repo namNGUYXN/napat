@@ -259,7 +259,7 @@ class LopHocPhanController extends Controller
                 'id_khoa' => 'required|exists:khoa,id',
                 'id_bai_giang' => 'required|exists:bai_giang,id',
                 'mo_ta_ngan' => 'nullable|string|max:255',
-                'hinh_anh' => 'image'
+                'hinh_anh' => 'image|max:2048'
             ],
             [
                 'ten.required' => 'Vui lòng nhập tên lớp học phần',
@@ -269,7 +269,8 @@ class LopHocPhanController extends Controller
                 'id_bai_giang.required' => 'Vui lòng chọn bài giảng',
                 'id_bai_giang.exists' => 'Bài giảng không tồn tại',
                 'mo_ta_ngan.max' => 'Mô tả tối đa 255 ký tự',
-                'hinh_anh.image' => 'Hình ảnh không hợp lệ'
+                'hinh_anh.image' => 'Hình ảnh không hợp lệ',
+                'hinh_anh.max' => 'Kích thước ảnh tối đa 2MB'
             ]
         );
         $data['hinh_anh'] = NULL;
@@ -334,7 +335,7 @@ class LopHocPhanController extends Controller
                 'id_khoa' => 'required|exists:khoa,id',
                 'id_bai_giang' => 'required|exists:bai_giang,id',
                 'mo_ta_ngan' => 'nullable|string|max:255',
-                'hinh_anh' => 'image'
+                'hinh_anh' => 'image|max:2048'
             ],
             [
                 'ten.required' => 'Vui lòng nhập tên lớp học phần',
@@ -344,7 +345,8 @@ class LopHocPhanController extends Controller
                 'id_bai_giang.required' => 'Vui lòng chọn bài giảng',
                 'id_bai_giang.exists' => 'Bài giảng không tồn tại',
                 'mo_ta_ngan.max' => 'Mô tả tối đa 255 ký tự',
-                'hinh_anh.image' => 'Hình ảnh không hợp lệ'
+                'hinh_anh.image' => 'Hình ảnh không hợp lệ',
+                'hinh_anh.max' => 'Kích thước ảnh tối đa 2MB'
             ]
         );
         $data['hinh_anh'] = NULL;

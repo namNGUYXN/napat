@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\UploadImageHelper;
 use App\Services\BaiService;
 use App\Services\BaiTrongLopService;
 use App\Services\ChuongService;
@@ -13,15 +14,18 @@ class BaiController extends Controller
     protected $baiService;
     protected $chuongService;
     protected $baiTrongLopService;
+    protected $uploadImageHelper;
 
     public function __construct(
         BaiService $baiService,
         ChuongService $chuongService,
-        BaiTrongLopService $baiTrongLopService
+        BaiTrongLopService $baiTrongLopService,
+        UploadImageHelper $uploadImageHelper
     ) {
         $this->baiService = $baiService;
         $this->chuongService = $chuongService;
         $this->baiTrongLopService = $baiTrongLopService;
+        $this->uploadImageHelper = $uploadImageHelper;
         $this->middleware('chuong')->only('giaoDienThem', 'giaoDienQuanLy', 'xoaHangLoat');
         $this->middleware('bai')->only('giaoDienChinhSua', 'chinhSua', 'chiTiet', 'xoa', 'capNhatThuTu', 'xoaHangLoat');
     }
@@ -132,19 +136,37 @@ class BaiController extends Controller
         ]);
     }
 
-    function xoa(Request $request, $id)
+    function xoa($id)
     {
-        $idChuong = $this->baiService->layTheoId($id)->chuong->id;
+        // $bai = $this->baiService->layTheoId($id);
+        // dd($bai->toArray());
+
         $result = $this->baiService->xoa($id);
 
         if ($result['success']) {
-            return redirect()->route('bai.index', $idChuong)->with([
+            $noiDung = $result['data'];
+            $idNguoiDung = session('id_nguoi_dung');
+
+            // Tìm tất cả các ảnh trong HTML
+            preg_match_all('/<img[^>]+src="([^">]+)"/i', $noiDung, $matches);
+
+            foreach ($matches[1] as $src) {
+                if (strpos($src, "/storage/photos/{$idNguoiDung}/import") === 0) {
+                    $path = str_replace('/storage', '', $src);
+
+                    // dd($src, $path);
+
+                    $this->uploadImageHelper->delete($path, 'lfm_private');
+                }
+            }
+
+            return response()->json([
                 'message' => $result['message'],
                 'icon' => 'success'
             ]);
         }
 
-        return redirect()->route('bai.index', $idChuong)->with([
+        return response()->json([
             'message' => $result['message'],
             'icon' => 'error'
         ]);
@@ -189,7 +211,8 @@ class BaiController extends Controller
         return response()->json(['error' => 'Không có ảnh'], 400);
     }
 
-    public function xoaHangLoat(Request $request) {
+    public function xoaHangLoat(Request $request)
+    {
         if ($request->action == 'xoa') {
             $listIdBai = array_map('intval', $request->list_id_bai);
             // dd($listIdBai);
@@ -197,13 +220,13 @@ class BaiController extends Controller
             $result = $this->baiService->xoaHangLoat($listIdBai);
 
             if ($result['success']) {
-                return redirect()->route('bai.index', $request->id_chuong)->with([
+                return response()->json([
                     'message' => $result['message'],
                     'icon' => 'success'
                 ]);
             }
 
-            return redirect()->route('bai.index', $request->id_chuong)->with([
+            return response()->json([
                 'message' => $result['message'],
                 'icon' => 'error'
             ]);

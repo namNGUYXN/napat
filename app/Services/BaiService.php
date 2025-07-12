@@ -122,18 +122,15 @@ class BaiService
             DB::beginTransaction();
 
             $bai = Bai::findOrFail($id);
-
-            // Kiểm tra bài có lớp học liên kết
-            // if (false) {
-            //     throw new \Exception('');
-            // }
+            $noiDung = $bai->noi_dung;
 
             $bai->delete();
 
             DB::commit();
             return [
                 'success' => true,
-                'message' => 'Xóa bài thành công'
+                'message' => 'Xóa bài thành công',
+                'data' => $noiDung
             ];
         } catch (ModelNotFoundException $e) {
             return [

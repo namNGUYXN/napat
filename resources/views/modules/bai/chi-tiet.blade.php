@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'Chi tiết bài học')
+
 @section('content')
     <!-- Main Content -->
     <div class="col bg-light p-4 overflow-auto custom-scrollbar">

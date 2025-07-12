@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'Thêm bài học')
+
 @section('content')
   <!-- Loading Overlay -->
   <div id="loading-overlay"
@@ -45,7 +47,7 @@
               <abbr class="text-danger" title="Bắt buộc">*</abbr>
             </label>
             <input type="text" class="form-control @error('tieu_de') is-invalid @enderror" name="tieu_de"
-              placeholder="Nhập tiêu đề bài..." id="lecture-title" required maxlength="255">
+              placeholder="Nhập tiêu đề bài..." id="lecture-title" required maxlength="255" autocomplete="off">
             <small class="text-danger" id="tieu-de-error"></small>
           </div>
           <div class="mb-3">
@@ -72,7 +74,7 @@
 
 @section('scripts')
   {{-- <script src="{{ asset('vendor/tinymce-5/tinymce.min.js') }}"></script> --}}
-  <script src="https://cdn.tiny.cloud/1/po7o4s0ef6r58jtnxjdqrao0o46qm20hdq4juv4rej5zpolm/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
+  <script src="https://cdn.tiny.cloud/1/{{env('TINYMCE_KEY')}}/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
   <script src="{{ asset('js/mammoth.browser.min.js') }}"></script>
 
   <script>
