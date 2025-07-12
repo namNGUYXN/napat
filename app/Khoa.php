@@ -10,7 +10,7 @@ class Khoa extends Model
     protected $table = 'khoa';
 
     public $timestamps = false;
-    
+
     protected $fillable = [
         'ma',
         'ten',
@@ -23,7 +23,7 @@ class Khoa extends Model
 
     public function getNgayTaoAttribute($value)
     {
-        return $value ? Carbon::parse($value)->format('d/m/Y') : null;
+        return $value ? Carbon::parse($value)->format('H:i d/m/Y') : null;
     }
 
     function list_lop_hoc_phan()

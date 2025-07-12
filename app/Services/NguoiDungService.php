@@ -83,6 +83,7 @@ class NguoiDungService
     public function danhSachNguoiDung($vaiTro = null, $keyword = null, $perPage = 5)
     {
         $query = NguoiDung::query();
+        $query->where('vai_tro', '!=', 'Admin');
 
         if ($vaiTro !== null) {
             $query->where('vai_tro', $vaiTro); // 1: giảng viên, 2: sinh viên

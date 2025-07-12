@@ -26,7 +26,7 @@ class NguoiDung extends Model
 
     public function getNgayTaoAttribute($value)
     {
-        return $value ? Carbon::parse($value)->format('d/m/Y') : null;
+        return $value ? Carbon::parse($value)->format('H:i d/m/Y') : null;
     }
 
     function setMatKhauAttribute($value)
