@@ -10,7 +10,7 @@ class TienDoHocTapService
 {
     public function tinhTienDoLopHoc(int $lopHocPhanId, int $nguoiDungId): array
     {
-        // 2. Lấy danh sách bài trong lớp kèm bài và chương
+        // Lấy danh sách bài trong lớp kèm bài và chương
         $baiTrongLop = BaiTrongLop::with([
             'bai.chuong' => function ($query) {
                 $query->orderBy('thu_tu');
@@ -71,20 +71,20 @@ class TienDoHocTapService
             'so_bai_cong_khai' => $soBaiCongKhai,
             'so_bai_hoan_thanh' => $soBaiHoanThanh,
             'tiendo_phan_tram' => $tiendoPhanTram,
-            'chi_tiet' => $chiTietTheoChuong, // Đã nhóm theo tên chương
+            'chi_tiet' => $chiTietTheoChuong, 
         ];
     }
 
     public function tinhTienDoTheoBaiTrongLop(int $lopHocPhanId): array
     {
-        // 1. Lấy danh sách sinh viên
+        // Lấy danh sách sinh viên
         $sinhVienIds = ThanhVienLop::where('id_lop_hoc_phan', $lopHocPhanId)
             ->where('is_accept', true)
             ->pluck('id');
 
         $tongSoSinhVien = $sinhVienIds->count();
 
-        // 2. Lấy danh sách bài trong lớp kèm bài và chương
+        // Lấy danh sách bài trong lớp kèm bài và chương
         $baiTrongLop = BaiTrongLop::with([
             'bai.chuong' => function ($query) {
                 $query->orderBy('thu_tu');
@@ -102,7 +102,7 @@ class TienDoHocTapService
             })
             ->values();
 
-        // 3. Lấy tiến độ học tập
+        // Lấy tiến độ học tập
         $tienDoHocTap = TienDoHocTap::whereIn('id_bai_trong_lop', $baiTrongLop->pluck('id'))
             ->whereIn('id_thanh_vien', $sinhVienIds)
             ->where('da_hoan_thanh', true)
@@ -110,7 +110,7 @@ class TienDoHocTapService
 
         $tienDoTheoBai = $tienDoHocTap->groupBy('id_bai_trong_lop');
 
-        // 4. Thống kê từng bài
+        // Thống kê từng bài
         $thongKe = $baiTrongLop->map(function ($baiTL) use ($tienDoTheoBai, $tongSoSinhVien) {
             $tienDo = $tienDoTheoBai->get($baiTL->id);
             $daHoanThanh = $tienDo ? $tienDo->count() : 0;

@@ -334,6 +334,7 @@ class BaiKiemTraController extends Controller
         ]);
     }
 
+    //7 Công khai kết quả bài làm 
     public function congKhai($id)
     {
         $this->baiKiemTraService->congKhaiKetQua($id);
