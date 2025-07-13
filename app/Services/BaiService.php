@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Bai;
+use App\Services\KeywordAIService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -46,10 +47,13 @@ class BaiService
                 throw new \Exception('Tiêu đề bài này đã tồn tại');
             }
 
+            //$keywords = KeywordAIService::extractKeywordsOptimized($data['noi_dung']);
+
             $bai = Bai::create([
                 'tieu_de' => $data['tieu_de'],
                 'slug' => '',
                 'noi_dung' => $data['noi_dung'],
+                //'keyword' => $keywords,
                 'id_chuong' => $idChuong,
                 'thu_tu' => $thuTuMax + 1
             ]);

@@ -16,6 +16,7 @@ use App\Services\NguoiDungService;
 use App\Services\ThanhVienLopService;
 use App\Services\BaiTapService;
 use App\Services\BinhLuanService;
+use App\Services\TienDoHocTapService;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -33,6 +34,7 @@ class LopHocPhanController extends Controller
     protected $baiGiangService;
     protected $baiTapService;
     protected $binhLuanService;
+    protected $tienDoHocTapService;
 
     public function __construct(
         AuthService $authService,
@@ -46,7 +48,8 @@ class LopHocPhanController extends Controller
         UploadImageHelper $uploadImageHelper,
         BaiGiangService $baiGiangService,
         BaiTapService $baiTapService,
-        BinhLuanService $binhLuanService
+        BinhLuanService $binhLuanService,
+        TienDoHocTapService $tienDoHocTapService
     ) {
         $this->authService = $authService;
         $this->lopHocPhanService = $lopHocPhanService;
@@ -60,6 +63,7 @@ class LopHocPhanController extends Controller
         $this->baiGiangService = $baiGiangService;
         $this->baiTapService = $baiTapService;
         $this->binhLuanService = $binhLuanService;
+        $this->tienDoHocTapService = $tienDoHocTapService;
         $this->middleware('lop_hoc_phan')->only('chiTiet', 'modalChiTiet', 'modalChinhSua', 'chinhSua');
         $this->middleware('bai_trong_lop')->only('xemNoiDungBai');
         $this->middleware('bai_giang')->only('them', 'modalChinhSua', 'chinhSua');
@@ -136,13 +140,21 @@ class LopHocPhanController extends Controller
 
     public function chiTiet($slug)
     {
+        $idNguoiDung = session('id_nguoi_dung');
+
         $lopHocPhan = $this->lopHocPhanService->layChiTietLopHoc($slug);
+        $tv = $this->thanhVienService->layTheoLopVaNguoiDung($lopHocPhan->id, $idNguoiDung);
         $listBanTin = $this->tinService->layBanTinLopHoc($lopHocPhan->id);
         $nguoiDung = $this->nguoiDungService->layTheoId(session('id_nguoi_dung'));
         $thanhVien = $this->thanhVienService->getAcceptedMembersByLopId($lopHocPhan->id);
         $yeuCau = $this->thanhVienService->getPendingMembersByLopId($lopHocPhan->id);
         $listChuong = $lopHocPhan->bai_giang->list_chuong;
         $listChuongTrongLop = $lopHocPhan->list_bai->groupBy('id_chuong');
+        if (session('vai_tro') == 'Sinh viên') {
+            $tienDoHocTap = $this->tienDoHocTapService->tinhTienDoLopHoc($lopHocPhan->id, $tv->id);
+        } else {
+            $tienDoHocTap = $this->tienDoHocTapService->tinhTienDoTheoBaiTrongLop($lopHocPhan->id);
+        }
         // return $listChuongTrongLop[3][0]->pivot->cong_khai;
         // return $listChuongTrongLop[1]->flatten(1);
         // return $listChuongTrongLop;
@@ -161,7 +173,8 @@ class LopHocPhanController extends Controller
                 'listChuong',
                 'listChuongTrongLop',
                 'listKhoa',
-                'listBaiGiang'
+                'listBaiGiang',
+                'tienDoHocTap',
             )
         );
     }
@@ -216,6 +229,8 @@ class LopHocPhanController extends Controller
         $listBinhLuan = $this->binhLuanService->layListTheoBaiTrongLop($baiTrongLop->id);
         // dd($listBinhLuan->toArray());
 
+        $daHoanThanh = $this->tienDoHocTapService->kiemTraTonTaiTienDoHocTap($thanhVienLop->id, $baiTrongLop->id);
+
         $listChuong = $baiGiang->list_chuong;
         $listChuongTrongLop = $lopHocPhan->list_bai->groupBy('id_chuong');
 
@@ -246,7 +261,8 @@ class LopHocPhanController extends Controller
             'listChuong',
             'listChuongTrongLop',
             'baiTap',
-            'listBinhLuan'
+            'listBinhLuan',
+            'daHoanThanh'
         ));
     }
 
@@ -645,5 +661,16 @@ class LopHocPhanController extends Controller
             'message' => 'Không được phép import danh sách sinh viên vào lớp khác',
             'icon' => 'error'
         ]);
+    }
+
+    public function capNhatHoanThanh(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'hoan_thanh_khi' => 'required|in:0,1',
+        ]);
+
+        $this->baiTrongLopService->capNhatHoanThanhKhi($id, $validated['hoan_thanh_khi']);
+
+        return response()->json(['message' => 'Cập nhật thành công.']);
     }
 }

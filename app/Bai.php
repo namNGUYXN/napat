@@ -15,9 +15,13 @@ class Bai extends Model
         'tieu_de',
         'slug',
         'noi_dung',
+        'keyword',
         'id_chuong',
         'ngay_tao',
         'thu_tu',
+    ];
+    protected $casts = [
+        'keyword' => 'array',
     ];
 
     public function getNgayTaoAttribute($value)
@@ -29,8 +33,8 @@ class Bai extends Model
     {
         return $this->belongsTo(Chuong::class, 'id_chuong');
     }
-    
-    public function list_bai_tap()          
+
+    public function list_bai_tap()
     {
         return $this->hasMany(BaiTap::class, 'id_bai');
     }
@@ -43,7 +47,6 @@ class Bai extends Model
     public function list_lop()
     {
         return $this->belongsToMany(LopHocPhan::class, 'bai_trong_lop', 'id_bai', 'id_lop_hoc_phan')
-                ->withPivot('cong_khai');
+            ->withPivot('cong_khai');
     }
 }
-

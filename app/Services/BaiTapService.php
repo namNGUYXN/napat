@@ -27,6 +27,15 @@ class BaiTapService
             ->where('is_delete', false)->first();
     }
 
+    // Lấy bài tập theo ID
+    public function getByIdWithBai($id)
+    {
+        return BaiTap::with('list_cau_hoi')
+            ->with('bai')
+            ->where('id', $id)
+            ->where('is_delete', false)->first();
+    }
+
     // Lấy danh sách bài tập theo id bài giảng
     public function getByBaiGiangId($id_bai_giang)
     {
@@ -106,7 +115,7 @@ class BaiTapService
             throw $e; // Để controller xử lý trả lỗi JSON
         }
     }
-    
+
     public function layChiTietTheoVaiTro($idBaiTap, $idLop, $idNguoiDung, $vaiTro)
     {
         if ($vaiTro == "Sinh viên") {

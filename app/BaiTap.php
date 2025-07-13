@@ -23,9 +23,9 @@ class BaiTap extends Model
         return $this->hasMany(CauHoiBaiTap::class, 'id_bai_tap');
     }
 
-    public function bai_giang()
+    public function bai()
     {
-        return $this->belongsTo(BaiGiang::class, 'id_bai_giang');
+        return $this->belongsTo(Bai::class, 'id_bai');
     }
 
     public function list_thanh_vien_lop()
