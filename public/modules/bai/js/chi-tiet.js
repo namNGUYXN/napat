@@ -598,7 +598,7 @@ function hienThiCauHoi() {
         $("#modalChiTiet .modal-body").html(`
             <div class="text-center py-4 text-muted">
                 <i class="bi bi-exclamation-circle fs-1 mb-2"></i>
-                <p class="fs-5">Không có câu hỏi nào trong bài kiểm tra này.</p>
+                <p class="fs-5">Không có câu hỏi nào trong bài tập này.</p>
             </div>
         `);
         return;
@@ -773,7 +773,7 @@ function formatNgay(ngayGoc) {
     return `${gio}:${phut} Ngày: ${ngay}/${thang}/${nam}`;
 }
 
-//Khi nhấn nút để xem danh sách kết quả của bài kiểm tra
+//Khi nhấn nút để xem danh sách kết quả của bài tập
 function hienThiKetQua() {
     const html = renderDanhSachKetQua(currentBaiKiemTra, currentKetQuaList);
     $("#modalChiTiet .modal-body").html(html);
@@ -830,6 +830,68 @@ $(document).ready(function () {
         const lopId = $("#danhSachBaiTap").data("lop-id");
 
         openModalChiTiet(id, lopId);
+    });
+    $("#formDanhDauHoanThanh").on("submit", function (e) {
+        e.preventDefault();
+
+        let form = $(this);
+        let url = form.data("url");
+        let token = form.find('input[name="_token"]').val();
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            data: { _token: token },
+            success: function (response) {
+                // Xóa form và thay thế bằng thông báo thành công
+                $("#formWrapper").html(`
+                <div class="alert alert-success mt-4 d-inline-flex align-items-center" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>
+                    Bạn đã hoàn thành bài học này.
+                </div>
+            `);
+            },
+            error: function (xhr) {
+                alert("Đánh dấu thất bại. Vui lòng thử lại!");
+                console.error(xhr.responseText);
+            },
+        });
+    });
+    $("#formHoanThanhBai").on("submit", function (e) {
+        e.preventDefault();
+
+        let form = $(this);
+        let url = form.data("url");
+        let token = form.find('input[name="_token"]').val();
+        let hoanThanhKhi = form
+            .find('input[name="hoan_thanh_khi"]:checked')
+            .val();
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            data: {
+                _token: token,
+                hoan_thanh_khi: hoanThanhKhi,
+            },
+            success: function (response) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Thành công",
+                    text: "Cập nhật cách hoàn thành bài học thành công.",
+                    timer: 2000,
+                    showConfirmButton: false,
+                });
+            },
+            error: function (xhr) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Thất bại",
+                    text: "Không thể lưu thay đổi. Vui lòng thử lại.",
+                });
+                console.error(xhr.responseText);
+            },
+        });
     });
 });
 
@@ -954,14 +1016,14 @@ function openModalChiTiet(id, lopId) {
             }
         },
         error: function () {
-            alert("Không lấy được dữ liệu bài kiểm tra.");
+            alert("Không lấy được dữ liệu bài tập.");
         },
     });
 }
 
 function renderChiTietBaiKiemTra(baiKiemTra, chiTiet) {
     if (!chiTiet || !chiTiet.cauHoiVaDapAn) {
-        return `<p>Bạn chưa làm bài kiểm tra này.</p>`;
+        return `<p>Bạn chưa làm bài tập này.</p>`;
     }
 
     let html = "";

@@ -44,6 +44,11 @@ class BaiTrongLopService
     }
   }
 
+  public function layTheoId($id)
+  {
+    return BaiTrongLop::findOrFail($id);
+  }
+
   public function layBaiTrongLop($idLopHocPhan, $idBai, $giangVienXem = false)
   {
     $query = [
@@ -144,5 +149,14 @@ class BaiTrongLopService
         'message' => $e->getMessage()
       ];
     }
+  }
+
+  public function capNhatHoanThanhKhi($id, $hoanThanhKhi)
+  {
+    $bai = BaiTrongLop::findOrFail($id);
+    $bai->hoan_thanh_khi = $hoanThanhKhi;
+    $bai->save();
+
+    return $bai;
   }
 }

@@ -147,6 +147,12 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien']], function (
     //Bài kiểm tra
     Route::post('/bai-kiem-tra', 'BaiKiemTraController@themBaiKiemTra')->name('bai_kiem_tra.them');
     Route::put('/bai-kiem-tra', 'BaiKiemTraController@capNhatBaiKiemTra')->name('bai_kiem_tra.cap-nhat');
+
+    //Tiến độ
+    Route::get('/tien-do/bai/{id}', 'BaiController@layChiTietSinhVien');
+
+    Route::post('/bai-trong-lop/{id}/cap-nhat-hoan-thanh', 'LopHocPhanController@capNhatHoanThanh')
+        ->name('bai-trong-lop.cap-nhat-hoan-thanh');
 });
 
 // Các route cho sinh viên
@@ -155,6 +161,8 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:sinh-vien']], function ()
     Route::post('/lop-hoc-phan/{id}/dang-ky', 'LopHocPhanController@dangKy')->name('lop-hoc-phan.register');
     // Rời khỏi lớp
     Route::delete('/lop-hoc-phan/{id}/roi-khoi', 'LopHocPhanController@roiKhoi')->name('lop-hoc-phan.leave');
+    Route::post('/danh-dau-hoan-thanh/{idBaiTrongLop}', 'BaiController@danhDauHoanThanh')
+        ->name('tien-do-hoc-tap.danh-dau-hoan-thanh');
 });
 
 // Các route phía admin

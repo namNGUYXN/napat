@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Services\BaiService;
 use App\Services\BaiTrongLopService;
 use App\Services\ChuongService;
+use App\Services\TienDoHocTapService;
+use App\Services\ThanhVienLopService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -13,15 +15,21 @@ class BaiController extends Controller
     protected $baiService;
     protected $chuongService;
     protected $baiTrongLopService;
+    protected $tienDoHocTapService;
+    protected $thanhVienService;
 
     public function __construct(
         BaiService $baiService,
         ChuongService $chuongService,
-        BaiTrongLopService $baiTrongLopService
+        BaiTrongLopService $baiTrongLopService,
+        TienDoHocTapService $tienDoHocTapService,
+        ThanhVienLopService $thanhVienService
     ) {
         $this->baiService = $baiService;
         $this->chuongService = $chuongService;
         $this->baiTrongLopService = $baiTrongLopService;
+        $this->tienDoHocTapService = $tienDoHocTapService;
+        $this->thanhVienService = $thanhVienService;
         $this->middleware('chuong')->only('giaoDienThem', 'giaoDienQuanLy', 'xoaHangLoat');
         $this->middleware('bai')->only('giaoDienChinhSua', 'chinhSua', 'chiTiet', 'xoa', 'capNhatThuTu', 'xoaHangLoat');
     }
@@ -189,7 +197,8 @@ class BaiController extends Controller
         return response()->json(['error' => 'Không có ảnh'], 400);
     }
 
-    public function xoaHangLoat(Request $request) {
+    public function xoaHangLoat(Request $request)
+    {
         if ($request->action == 'xoa') {
             $listIdBai = array_map('intval', $request->list_id_bai);
             // dd($listIdBai);
@@ -208,5 +217,26 @@ class BaiController extends Controller
                 'icon' => 'error'
             ]);
         }
+    }
+
+    public function layChiTietSinhVien($id)
+    {
+        $chiTiet = $this->tienDoHocTapService->layChiTietSinhVien($id);
+
+        return response()->json($chiTiet);
+    }
+
+    public function danhDauHoanThanh(Request $request, $idBaiTrongLop)
+    {
+        $baiTrongLop = $this->baiTrongLopService->layTheoId($idBaiTrongLop);
+        $thanhVienLop = $this->thanhVienService->layTheoLopVaNguoiDung($baiTrongLop->id_lop_hoc_phan, session('id_nguoi_dung'));
+
+        $this->tienDoHocTapService->danhDauHoanThanh($thanhVienLop->id, $idBaiTrongLop);
+
+        if ($request->ajax()) {
+            return response()->json(['success' => true]);
+        }
+
+        return back();
     }
 }
