@@ -121,7 +121,7 @@ class NguoiDungService
                 'matKhau' => $matKhau
             ];
 
-            Mail::to($nguoiDung->email)->send(new ThemNguoiDungMail($data));
+            Mail::to($nguoiDung->email)->queue(new ThemNguoiDungMail($data));
             return [
                 'success' => true,
                 'message' => 'Thêm người dùng thành công!'
@@ -157,7 +157,7 @@ class NguoiDungService
                     'matKhau' => $row['mat_khau']
                 ];
 
-                Mail::to($nguoiDung->email)->send(new ThemNguoiDungMail($data));
+                Mail::to($nguoiDung->email)->queue(new ThemNguoiDungMail($data));
             }
 
             return ['success' => true];

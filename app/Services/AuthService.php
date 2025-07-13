@@ -109,7 +109,7 @@ class AuthService
         'nguoi_dung' => $nguoiDung
       ];
 
-      Mail::to($nguoiDung->email)->send(new DatLaiMatKhauMail($data));
+      Mail::to($nguoiDung->email)->queue(new DatLaiMatKhauMail($data));
     } catch (\Exception $e) {
       return [
         'success' => false,
