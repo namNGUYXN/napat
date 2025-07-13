@@ -12,7 +12,7 @@ class KhoaService
 {
   public function layListKhoa()
   {
-    return Khoa::all();
+    return Khoa::where('is_delete', false)->get();
   }
 
   public function layTheoId($id)
