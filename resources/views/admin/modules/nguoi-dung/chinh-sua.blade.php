@@ -65,21 +65,12 @@
                             <option value="Sinh viên"
                                 {{ old('vai_tro', $nguoiDung->vai_tro) == 'Sinh viên' ? 'selected' : '' }}>Sinh viên
                             </option>
-                            <option value="Admin" {{ old('vai_tro', $nguoiDung->vai_tro) == 'Admin' ? 'selected' : '' }}>
-                                Admin</option>
                         </select>
                         <div class="invalid-feedback">
                             @error('vai_tro')
                                 {{ $message }}
                             @enderror
                         </div>
-                    </div>
-
-
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" name="is_active" value="1"
-                            {{ $nguoiDung->is_active ? 'checked' : '' }}>
-                        <label class="form-check-label fw-semibold">Kích hoạt tài khoản</label>
                     </div>
 
                     <div class="d-grid">

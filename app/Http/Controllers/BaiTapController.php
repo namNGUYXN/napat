@@ -55,7 +55,7 @@ class BaiTapController extends Controller
         }
     }
 
-    //Dữ liệu chi tiết bài kiểm tra theo id bài kiểm tra
+    //Dữ liệu chi tiết bài kiểm tra theo id bài tập
     public function layChiTiet($lop, $id)
     {
         $idNguoiDung = session('id_nguoi_dung');

@@ -58,6 +58,7 @@ class BaiKiemTraService
         return $baiTap->save();
     }
 
+    //Tạo bài kiểm tra mới
     public function createExercise(array $data)
     {
         DB::beginTransaction();
@@ -96,6 +97,7 @@ class BaiKiemTraService
         }
     }
 
+    //Kiểm tra đã nộp bài chưa
     public function kiemTraDaNopBai(int $idBaiKiemTra, int $idThanhVienLop): array
     {
         $daNop = KetQuaBaiKiemTra::where('id_bai_kiem_tra', $idBaiKiemTra)
@@ -175,7 +177,6 @@ class BaiKiemTraService
         }
         throw new \Exception("Vai trò không hợp lệ");
     }
-
 
     public function layChiTietChoSinhVien($idBaiKiemTra, $idNguoiDung)
     {
@@ -282,7 +283,7 @@ class BaiKiemTraService
             ->get();
 
         $danhSachKetQua = [];
-        $thongKeCauHoi = []; // <-- thêm mảng thống kê
+        $thongKeCauHoi = []; 
 
         foreach ($danhSachThanhVien as $thanhVien) {
             $ketQua = KetQuaBaiKiemTra::where([
@@ -373,7 +374,7 @@ class BaiKiemTraService
             'role' => 'giang_vien',
             'bai_kiem_tra' => $baiKiemTra,
             'danh_sach_ket_qua' => $danhSachKetQua,
-            'thong_ke_cau_hoi' => array_values($thongKeCauHoi) // Để trả về dạng danh sách
+            'thong_ke_cau_hoi' => array_values($thongKeCauHoi)
         ];
     }
 
