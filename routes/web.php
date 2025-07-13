@@ -147,6 +147,7 @@ Route::group(['middleware' => ['auth.custom', 'vai_tro:giang-vien']], function (
     //Bài kiểm tra
     Route::post('/bai-kiem-tra', 'BaiKiemTraController@themBaiKiemTra')->name('bai_kiem_tra.them');
     Route::put('/bai-kiem-tra', 'BaiKiemTraController@capNhatBaiKiemTra')->name('bai_kiem_tra.cap-nhat');
+    Route::post('/bai-kiem-tra/{id}/cong-khai', 'BaiKiemTraController@congKhai');
 
     //Tiến độ
     Route::get('/tien-do/bai/{id}', 'BaiController@layChiTietSinhVien');

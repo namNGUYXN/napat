@@ -23,6 +23,7 @@ class CreateBaiKiemTraTable extends Migration
             $table->boolean('cho_phep_nop_qua_han')->default(false);
             $table->unsignedBigInteger('id_lop_hoc_phan');
             $table->timestamp('ngay_tao')->useCurrent();
+            $table->boolean('cong_khai')->default(false);
             $table->boolean('is_delete')->default(false);
 
             $table->foreign('id_lop_hoc_phan')->references('id')->on('lop_hoc_phan')->onDelete('cascade');

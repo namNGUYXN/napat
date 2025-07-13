@@ -20,6 +20,7 @@ class BaiKiemTra extends Model
         'cho_phep_nop_qua_han',
         'id_lop_hoc_phan',
         'ngay_tao',
+        'cong_khai',
         'is_delete',
     ];
 
@@ -27,7 +28,7 @@ class BaiKiemTra extends Model
     {
         return $value ? Carbon::parse($value)->format('d/m/Y H:i') : null;
     }
-    
+
     public function lop_hoc_phan()
     {
         return $this->belongsTo(LopHocPhan::class, 'id_lop_hoc_phan');

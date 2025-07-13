@@ -204,10 +204,11 @@ class BaiKiemTraService
             'bai_kiem_tra' => $baiKiemTra,
             'ket_qua' => $ketQua,
             'chi_tiet' => $chiTiet,
+            'duoc_xem_ket_qua' => $baiKiemTra->cong_khai && $chiTiet != null,
         ];
     }
 
-    public function layChiTietChoGiangVien($idBaiKiemTra)
+    public function layChiTietChoGiangVienTemp($idBaiKiemTra)
     {
         $baiKiemTra = BaiKiemTra::with('list_cau_hoi')->findOrFail($idBaiKiemTra);
 
@@ -268,7 +269,140 @@ class BaiKiemTraService
         ];
     }
 
+    public function layChiTietChoGiangVien($idBaiKiemTra)
+    {
+        $baiKiemTra = BaiKiemTra::with('list_cau_hoi')->findOrFail($idBaiKiemTra);
+
+        $danhSachThanhVien = ThanhVienLop::with('nguoi_dung')
+            ->where('id_lop_hoc_phan', $baiKiemTra->id_lop_hoc_phan)
+            ->where('is_accept', true)
+            ->get();
+
+        $danhSachKetQua = [];
+        $thongKeCauHoi = []; // <-- thêm mảng thống kê
+
+        foreach ($danhSachThanhVien as $thanhVien) {
+            $ketQua = KetQuaBaiKiemTra::where([
+                ['id_bai_kiem_tra', $baiKiemTra->id],
+                ['id_thanh_vien_lop', $thanhVien->id],
+            ])->first();
+
+            $chiTiet = null;
+            $diem = null;
+
+            if ($ketQua) {
+                $chiTiet = $this->layChiTietLamBai($ketQua->id);
+
+                if (!empty($chiTiet['cauHoiVaDapAn'])) {
+                    $tongCau = count($chiTiet['cauHoiVaDapAn']);
+                    $soCauDung = 0;
+
+                    foreach ($chiTiet['cauHoiVaDapAn'] as $index => $item) {
+                        $idCauHoi = $item['id'];
+                        $daTraLoi = false;
+                        $dung = false;
+
+                        foreach ($item['danh_sach_dap_an'] as $dapAn) {
+                            if ($dapAn['duoc_chon']) {
+                                $daTraLoi = true;
+                            }
+
+                            if ($dapAn['la_dap_an_dung'] && $dapAn['duoc_chon']) {
+                                $soCauDung++;
+                                $dung = true;
+                            }
+                        }
+
+                        // Khởi tạo mảng thống kê nếu chưa có
+                        if (!isset($thongKeCauHoi[$idCauHoi])) {
+                            $thongKeCauHoi[$idCauHoi] = [
+                                'id' => $item['id'],
+                                'cau_hoi' => $item['noi_dung'],
+                                'so_nguoi_dung' => 0,
+                                'so_dung' => 0,
+                                'so_sai' => 0,
+                                'so_khong_tra_loi' => 0,
+                            ];
+                        }
+
+                        $thongKeCauHoi[$idCauHoi]['so_nguoi_dung']++;
+
+                        if (!$daTraLoi) {
+                            $thongKeCauHoi[$idCauHoi]['so_khong_tra_loi']++;
+                        } elseif ($dung) {
+                            $thongKeCauHoi[$idCauHoi]['so_dung']++;
+                        } else {
+                            $thongKeCauHoi[$idCauHoi]['so_sai']++;
+                        }
+                    }
+
+                    $diem = $tongCau > 0 ? round(($soCauDung / $tongCau) * 10, 2) : null;
+                }
+            }
+
+            $danhSachKetQua[] = [
+                'sinh_vien' => [
+                    'id' => $thanhVien->nguoi_dung->id,
+                    'ten' => $thanhVien->nguoi_dung->ho_ten,
+                    'email' => $thanhVien->nguoi_dung->email,
+                ],
+                'ket_qua' => $ketQua,
+                'diem' => $diem,
+                'chi_tiet' => $chiTiet
+            ];
+        }
+
+        // Tính tỉ lệ %
+        foreach ($thongKeCauHoi as $id => &$item) {
+            $tong = $item['so_nguoi_dung'];
+            if ($tong > 0) {
+                $item['ti_le_dung'] = round($item['so_dung'] / $tong * 100, 1);
+                $item['ti_le_sai'] = round($item['so_sai'] / $tong * 100, 1);
+                $item['ti_le_khong_tra_loi'] = round($item['so_khong_tra_loi'] / $tong * 100, 1);
+            } else {
+                $item['ti_le_dung'] = 0;
+                $item['ti_le_sai'] = 0;
+                $item['ti_le_khong_tra_loi'] = 0;
+            }
+        }
+
+        return [
+            'role' => 'giang_vien',
+            'bai_kiem_tra' => $baiKiemTra,
+            'danh_sach_ket_qua' => $danhSachKetQua,
+            'thong_ke_cau_hoi' => array_values($thongKeCauHoi) // Để trả về dạng danh sách
+        ];
+    }
+
     private function layChiTietLamBai($idKetQua)
+    {
+        $dsChiTiet = ChiTietLamBaiKiemTra::with('cau_hoi')
+            ->where('id_ket_qua', $idKetQua)
+            ->get();
+
+        $result = [];
+
+        foreach ($dsChiTiet as $item) {
+            $cauHoi = $item->cau_hoi;
+
+            $result[] = [
+                'id' => $cauHoi->id,
+                'noi_dung' => $cauHoi->tieu_de,
+                'cau_hoi' => $cauHoi->tieu_de,
+                'danh_sach_dap_an' => [
+                    ['ma' => 'A', 'noi_dung' => $cauHoi->dap_an_a, 'la_dap_an_dung' => $cauHoi->dap_an_dung === 'A', 'duoc_chon' => $item->dap_an_chon === 'A'],
+                    ['ma' => 'B', 'noi_dung' => $cauHoi->dap_an_b, 'la_dap_an_dung' => $cauHoi->dap_an_dung === 'B', 'duoc_chon' => $item->dap_an_chon === 'B'],
+                    ['ma' => 'C', 'noi_dung' => $cauHoi->dap_an_c, 'la_dap_an_dung' => $cauHoi->dap_an_dung === 'C', 'duoc_chon' => $item->dap_an_chon === 'C'],
+                    ['ma' => 'D', 'noi_dung' => $cauHoi->dap_an_d, 'la_dap_an_dung' => $cauHoi->dap_an_dung === 'D', 'duoc_chon' => $item->dap_an_chon === 'D'],
+                ]
+            ];
+        }
+
+        return ['cauHoiVaDapAn' => $result];
+    }
+
+
+    private function layChiTietLamBaiTemp($idKetQua)
     {
         $dsChiTiet = ChiTietLamBaiKiemTra::with('cau_hoi')
             ->where('id_ket_qua', $idKetQua)
@@ -387,5 +521,14 @@ class BaiKiemTraService
             'ton_tai' => $tonTai,
             'danh_sach_tieu_de' => $danhSachTieuDe,
         ];
+    }
+
+    public function congKhaiKetQua($id)
+    {
+        $baiKiemTra = BaiKiemTra::findOrFail($id);
+        $baiKiemTra->cong_khai = true;
+        $baiKiemTra->save();
+
+        return $baiKiemTra;
     }
 }

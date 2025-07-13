@@ -333,4 +333,11 @@ class BaiKiemTraController extends Controller
             'lop' => $baiKiemTra->lop_hoc_phan
         ]);
     }
+
+    public function congKhai($id)
+    {
+        $this->baiKiemTraService->congKhaiKetQua($id);
+
+        return response()->json(['success' => true]);
+    }
 }
