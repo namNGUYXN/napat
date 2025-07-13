@@ -1021,7 +1021,7 @@ function openModalChiTiet(id, lopId) {
     });
 }
 
-function renderChiTietBaiKiemTra(baiKiemTra, chiTiet) {
+function renderChiTietBaiKiemTra(baiTap, chiTiet) {
     if (!chiTiet || !chiTiet.cauHoiVaDapAn) {
         return `<p>Bạn chưa làm bài tập này.</p>`;
     }
@@ -1075,7 +1075,7 @@ function renderChiTietBaiKiemTra(baiKiemTra, chiTiet) {
     return html;
 }
 
-function xemChiTietKetQua(idKetQua, tenNguoiDung, diem, tieuDeBaiKT) {
+function xemChiTietKetQua(idKetQua, tenNguoiDung, diem, tieuDeBaiTap) {
     const chiTiet = allChiTietTheoKetQua[idKetQua];
 
     let soCauDung = 0;
