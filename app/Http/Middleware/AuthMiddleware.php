@@ -18,7 +18,7 @@ class AuthMiddleware
     {
         // Kiểm tra session
         if ($request->session()->has('id_nguoi_dung')) {
-            if (session('is_logged') === 1) {
+            if (session('is_change_pass') === 1) {
                 return $next($request);
             }
             return redirect()->route('dang-nhap-lan-dau')->with([
@@ -37,9 +37,9 @@ class AuthMiddleware
                     'id_nguoi_dung' => $nguoiDung->id,
                     'ho_ten' => $nguoiDung->ho_ten,
                     'vai_tro' => $nguoiDung->vai_tro,
-                    'is_logged' => $nguoiDung->is_logged,
+                    'is_change_pass' => $nguoiDung->is_change_pass,
                 ]);
-                if (session('is_logged') === 1) {
+                if (session('is_change_pass') === 1) {
                     return $next($request);
                 }
                 return redirect()->route('dang-nhap-lan-dau')->with([

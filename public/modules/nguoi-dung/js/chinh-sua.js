@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const input = form.querySelector(`[name="${field.name}"]`);
         if (!input) return true;
 
-        // Nếu input bị readonly (như email khi is_logged) thì bỏ qua
+        // Nếu input bị readonly (như email khi is_change_pass) thì bỏ qua
         if (input.hasAttribute("readonly")) return true;
 
         const value = input.value.trim();

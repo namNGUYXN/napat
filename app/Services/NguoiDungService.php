@@ -197,7 +197,7 @@ class NguoiDungService
             'vai_tro' => $data['vai_tro'],
         ];
 
-        if (!$nguoiDung->is_logged) {
+        if (!$nguoiDung->is_change_pass) {
             $updateData['email'] = $data['email'];
         }
 

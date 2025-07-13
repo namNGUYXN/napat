@@ -35,7 +35,7 @@ class AuthService
       'id_nguoi_dung' => $nguoiDung->id,
       'ho_ten' => $nguoiDung->ho_ten,
       'vai_tro' => $nguoiDung->vai_tro,
-      'is_logged' => $nguoiDung->is_logged
+      'is_change_pass' => $nguoiDung->is_change_pass
     ]);
 
     if ($ghiNhoDangNhap) {
@@ -181,7 +181,7 @@ class AuthService
     $nguoiDung = NguoiDung::findOrFail($idNguoiDung);
 
     $nguoiDung->mat_khau = $newPassword;
-    $nguoiDung->is_logged = true;
+    $nguoiDung->is_change_pass = true;
     $nguoiDung->save();
 
     return [

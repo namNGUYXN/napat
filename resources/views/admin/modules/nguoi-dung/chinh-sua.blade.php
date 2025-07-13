@@ -28,7 +28,7 @@
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Email</label>
                         <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
-                            value="{{ old('email', $nguoiDung->email) }}" {{ $nguoiDung->is_logged ? 'readonly' : '' }}>
+                            value="{{ old('email', $nguoiDung->email) }}" {{ $nguoiDung->is_change_pass ? 'readonly' : '' }}>
 
                         <div class="invalid-feedback"> @error('email')
                                 {{ $message }}
@@ -36,7 +36,7 @@
                         </div>
 
 
-                        @if ($nguoiDung->is_logged)
+                        @if ($nguoiDung->is_change_pass)
                             <div class="alert alert-warning mt-2 py-1 px-2 small mb-0">
                                 <i class="bi bi-exclamation-circle me-1"></i>
                                 Tài khoản đã đăng nhập – không thể thay đổi email.

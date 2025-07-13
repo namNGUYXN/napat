@@ -20,7 +20,7 @@ class NguoiDung extends Model
         'mat_khau',
         'vai_tro',
         'is_active',
-        'is_logged',
+        'is_change_pass',
         'ngay_tao'
     ];
 

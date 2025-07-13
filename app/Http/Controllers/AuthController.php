@@ -37,7 +37,7 @@ class AuthController extends Controller
                 'email' => 'required|email',
                 'mat_khau' => [
                     'required',
-                    'regex:/^([A-Z]){1}([\w_\.!@#$%^&*()]+){5,31}$/'
+                    'regex:/^([\w_\.!@#$%^&*()]+){6,32}$/'
                 ],
                 'ghi_nho_dang_nhap' => 'nullable'
             ],
@@ -45,7 +45,7 @@ class AuthController extends Controller
                 'email.required' => 'Vui lòng nhập địa chỉ email.',
                 'email.email' => 'Email không đúng định dạng.',
                 'mat_khau.required' => 'Vui lòng nhập mật khẩu.',
-                'mat_khau.regex' => 'Password chỉ được sử dụng kí tự, chữ số, ký tự đặc biệt, bắt đầu bằng kí tự hoa và có 6 đến 32 kí tự'
+                'mat_khau.regex' => 'Password chỉ được sử dụng kí tự, chữ số, ký tự đặc biệt và có 6 đến 32 kí tự'
             ]
         );
 
@@ -133,13 +133,13 @@ class AuthController extends Controller
                 'email' => 'required|email',
                 'mat_khau' => [
                     'required',
-                    'regex:/^([A-Z]){1}([\w_\.!@#$%^&*()]+){5,31}$/',
+                    'regex:/^([\w_\.!@#$%^&*()]+){6,32}$/',
                     'confirmed'
                 ],
             ],
             [
                 'mat_khau.required' => 'Vui lòng nhập mật khẩu mới.',
-                'mat_khau.regex' => 'Password chỉ được sử dụng kí tự, chữ số, ký tự đặc biệt, bắt đầu bằng kí tự hoa và có 6 đến 32 kí tự',
+                'mat_khau.regex' => 'Password chỉ được sử dụng kí tự, chữ số, ký tự đặc biệt và có 6 đến 32 kí tự',
                 'mat_khau.confirmed' => 'Mật khẩu mới không trùng khớp'
             ]
         );
@@ -179,7 +179,7 @@ class AuthController extends Controller
 
         if ($ketQua['status']) {
             // Đánh dấu đã đổi mật khẩu
-            session(['is_logged' => 1]);
+            session(['is_change_pass' => 1]);
 
             return redirect()->route('home')->with('message', $ketQua['message']);
         }
