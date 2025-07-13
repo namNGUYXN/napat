@@ -102,15 +102,21 @@ class ThanhVienLopService
 
     public function duocPhepTruyCapFile($idGiangVien)
     {
-        return ThanhVienLop::where('id_nguoi_dung', session('id_nguoi_dung'))
-            ->where(function ($query) {
-                $query->where('is_accept', true)
-                    ->orWhereNull('is_accept');
-            })->whereIn('id_lop_hoc_phan', function ($query) use ($idGiangVien) {
-                $query->select('id')
-                    ->from('lop_hoc_phan')
-                    ->where('id_giang_vien', $idGiangVien);
-            })->exists();
+        if (session('vai_tro') == "Sinh viên") {
+            return ThanhVienLop::where('id_nguoi_dung', session('id_nguoi_dung'))
+                ->where(function ($query) {
+                    $query->where('is_accept', true)
+                        ->orWhereNull('is_accept');
+                })->whereIn('id_lop_hoc_phan', function ($query) use ($idGiangVien) {
+                    $query->select('id')
+                        ->from('lop_hoc_phan')
+                        ->where('id_giang_vien', $idGiangVien);
+                })->exists();
+        } else if (session('vai_tro') == "Giảng viên" && session('id_nguoi_dung') == $idGiangVien) {
+            return true;
+        }
+
+        return false;
     }
 
     public function daThamGiaLopHocPhan($idLopHocPhan)
@@ -134,7 +140,7 @@ class ThanhVienLopService
             ->where('id_nguoi_dung', $idNguoiDung)
             ->where(function ($query) {
                 $query->where('is_accept', true)
-                      ->orWhereNull('is_accept');
+                    ->orWhereNull('is_accept');
             })->firstOrFail();
     }
 

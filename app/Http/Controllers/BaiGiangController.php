@@ -88,13 +88,14 @@ class BaiGiangController extends Controller
             [
                 'ten' => 'required|string|max:100',
                 'mo_ta_ngan' => 'nullable|string|max:255',
-                'hinh_anh' => 'image'
+                'hinh_anh' => 'image|max:2048'
             ],
             [
                 'ten.required' => 'Vui lòng nhập tên bài giảng',
                 'ten.max' => 'Tên bài giảng tối đa 100 ký tự',
                 'mo_ta_ngan.max' => 'Mô tả tối đa 255 ký tự',
-                'hinh_anh.image' => 'Hình ảnh không hợp lệ'
+                'hinh_anh.image' => 'Hình ảnh không hợp lệ',
+                'hinh_anh.max' => 'Kích thước ảnh tối đa 2MB'
             ]
         );
         $data['hinh_anh'] = NULL;
@@ -141,13 +142,14 @@ class BaiGiangController extends Controller
             [
                 'ten' => 'required|string|max:100',
                 'mo_ta_ngan' => 'nullable|string|max:255',
-                'hinh_anh' => 'image'
+                'hinh_anh' => 'image|max:2048'
             ],
             [
                 'ten.required' => 'Vui lòng nhập tên bài giảng',
                 'ten.max' => 'Tên bài giảng tối đa 100 ký tự',
                 'mo_ta_ngan.max' => 'Mô tả tối đa 255 ký tự',
-                'hinh_anh.image' => 'Hình ảnh không hợp lệ'
+                'hinh_anh.image' => 'Hình ảnh không hợp lệ',
+                'hinh_anh.max' => 'Kích thước ảnh tối đa 2MB'
             ]
         );
 

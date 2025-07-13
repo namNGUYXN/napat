@@ -340,9 +340,8 @@ function renderChiTietBaiKiemTra(baiKiemTra, chiTiet) {
         html += `</ul>
             <div class="mt-2">
                 <small><strong>Đáp án đúng:</strong> ${dapAnDung}</small><br/>
-                <small><strong>Đáp án chọn:</strong> ${
-                    dapAnChon || "<i>Không chọn</i>"
-                }</small>
+                <small><strong>Đáp án chọn:</strong> ${dapAnChon || "<i>Không chọn</i>"
+            }</small>
             </div>
         </div>`;
     });
@@ -473,9 +472,8 @@ function hienThiCauHoi() {
         html += `
         <div class="mb-4 p-3 border rounded shadow-sm bg-white">
             <h6 class="mb-2 text-primary fw-bold">
-                <i class="bi bi-question-circle me-2"></i> Câu ${index + 1}: ${
-            cau.tieu_de
-        }
+                <i class="bi bi-question-circle me-2"></i> Câu ${index + 1}: ${cau.tieu_de
+            }
             </h6>
             <div class="ps-3">
                 <ul class="list-unstyled">
@@ -483,9 +481,8 @@ function hienThiCauHoi() {
                 </ul>
                 <div class="mt-2">
                     <span class="badge bg-success fw-bold">
-                        <i class="bi bi-check-circle me-1"></i> Đáp án đúng: ${
-                            cau.dap_an_dung
-                        }
+                        <i class="bi bi-check-circle me-1"></i> Đáp án đúng: ${cau.dap_an_dung
+            }
                     </span>
                 </div>
             </div>
@@ -588,21 +585,17 @@ function formatDateForFlatpickr(dateTimeStr) {
 function renderChiTietBaiKiemTraGiangVien() {
     const thongTinBaiKT = `
                          <div class="card p-3 shadow-sm rounded-3" style="font-family: 'Segoe UI', sans-serif; font-size: 16px;">
-            <h5 class="mb-3"><i class="bi bi-journal-check me-2 text-primary"></i><strong>${
-                currentBaiKiemTra.tieu_de
-            }</strong></h5>
+            <h5 class="mb-3"><i class="bi bi-journal-check me-2 text-primary"></i><strong>${currentBaiKiemTra.tieu_de
+        }</strong></h5>
             <p><i class="bi bi-calendar-event me-2 text-secondary"></i><strong>Hạn chót nộp bài:</strong> ${formatNgay(
-                currentBaiKiemTra.ngay_ket_thuc
-            )}</p>
-            <p><i class="bi bi-star me-2 text-warning"></i><strong>Điểm tối đa:</strong> ${
-                currentBaiKiemTra.diem_toi_da
-            }</p>
-            <p><i class="bi bi-file-earmark-text me-2 text-info"></i><strong>Hình thức:</strong> ${
-                currentBaiKiemTra.hinh_thuc ?? "Trắc nghiệm"
-            }</p>
-            <p><i class="bi bi-list-ol me-2 text-success"></i><strong>Số câu hỏi:</strong> ${
-                currentBaiKiemTra.list_cau_hoi.length
-            }</p>
+            currentBaiKiemTra.ngay_ket_thuc
+        )}</p>
+            <p><i class="bi bi-star me-2 text-warning"></i><strong>Điểm tối đa:</strong> ${currentBaiKiemTra.diem_toi_da
+        }</p>
+            <p><i class="bi bi-file-earmark-text me-2 text-info"></i><strong>Hình thức:</strong> ${currentBaiKiemTra.hinh_thuc ?? "Trắc nghiệm"
+        }</p>
+            <p><i class="bi bi-list-ol me-2 text-success"></i><strong>Số câu hỏi:</strong> ${currentBaiKiemTra.list_cau_hoi.length
+        }</p>
         </div>
                     `;
     return thongTinBaiKT;
@@ -626,16 +619,13 @@ const questionTemplate = (
                     <div class="input-group-text">
                         <input class="form-check-input mt-0 correct-answer-radio" 
                                type="radio" name="correctAnswer_${count}" 
-                               value="${value}" ${
-                correctAnswer === value ? "checked" : ""
-            } required>
+                               value="${value}" ${correctAnswer === value ? "checked" : ""
+                } required>
                     </div>
                     <input type="text" class="form-control answer-option" 
-                           value="${
-                               answerOptions[index] || ""
-                           }" placeholder="Đáp án ${
-                optionLabels[index]
-            }" required>
+                           value="${answerOptions[index] || ""
+                }" placeholder="Đáp án ${optionLabels[index]
+                }" required>
                 </div>
             </div>
         `
@@ -737,11 +727,10 @@ const chuyenSangChinhSua = () => {
                                 value="1"
                                 id="editChoPhepNopTre"
                                 name="cho_phep_nop_qua_han"
-                                ${
-                                    currentBaiKiemTra.cho_phep_nop_qua_han
-                                        ? "checked"
-                                        : ""
-                                }>
+                                ${currentBaiKiemTra.cho_phep_nop_qua_han
+            ? "checked"
+            : ""
+        }>
                             <label class="form-check-label fw-semibold" for="editChoPhepNopTre">
                                 Cho phép nộp quá hạn
                             </label>
@@ -952,7 +941,7 @@ $(document).ready(function () {
                     const ketQua = res.ket_qua;
                     const chiTiet = res.chi_tiet;
 
-                    // ✅ Đếm số câu đúng
+                    //  Đếm số câu đúng
                     let soCauDung = 0;
                     let tongCau = 0;
 
@@ -994,17 +983,16 @@ $(document).ready(function () {
                                             <i class="fas fa-clock fa-lg text-warning mb-1"></i>
                                             <p class="mb-0 fw-semibold">Hạn cuối</p>
                                             <span class="text-dark fs-6">${formatNgay(
-                                                ngayDenHan
-                                            )}</span>
+                            ngayDenHan
+                        )}</span>
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-6 mb-2">
                                         <div class="bg-white border rounded-3 p-3 h-100">
                                             <i class="fas fa-star fa-lg text-danger mb-1"></i>
                                             <p class="mb-0 fw-semibold">Điểm tối đa</p>
-                                            <span class="text-dark fs-5">${
-                                                baiKiemTra.diem_toi_da
-                                            }</span>
+                                            <span class="text-dark fs-5">${baiKiemTra.diem_toi_da
+                            }</span>
                                         </div>
                                     </div>
                                 </div>
@@ -1028,19 +1016,19 @@ $(document).ready(function () {
                                 }
                             });
                         });
-                        // ✅ Hiển thị tiêu đề modal gồm tiêu đề + số câu đúng / tổng câu
+                        //  Hiển thị tiêu đề modal gồm tiêu đề + số câu đúng / tổng câu
                         $("#modalChiTiet .modal-title").html(
                             `<span class="text-primary fw-bold fs-5">
                                 <i class="bi bi-journal-text me-2"></i> ${baiKiemTra.tieu_de} - Kết quả: ${soCauDung}/${tongCau} câu đúng
                         </span>`
                         );
 
-                        // ✅ Render nội dung chi tiết
+                        //  Render nội dung chi tiết
                         $("#modalChiTiet .modal-body").html(
                             renderChiTietBaiKiemTra(baiKiemTra, chiTiet)
                         );
 
-                        // ✅ Hiển thị modal
+                        //  Hiển thị modal
                         $("#modalChiTiet").modal("show");
                     }
                 }
@@ -1220,8 +1208,7 @@ $(document).ready(function () {
                 dapAnDuocChon === null
             ) {
                 errorMessages.push(
-                    `• Câu hỏi ${
-                        index + 1
+                    `• Câu hỏi ${index + 1
                     }: Thiếu nội dung hoặc chưa chọn đáp án đúng.`
                 );
                 isValid = false;
@@ -1939,12 +1926,15 @@ $(document).on("click", ".btn-update-phan-hoi", function () {
         .prev(".noi-dung-phan-hoi")
         .text();
 
+
     // Toggle 2 form phản hồi và cập nhật phản hồi
     formReply.css("display", "none");
     formUpdateReply.css("display", "block");
 
     // Gán action form cập nhật
     formUpdateReply.attr("action", urlUpdate);
+
+    console.log(noiDungPhanHoi);
     // Gán giá trị input nội dung
     formUpdateReply.find('input[name="noi_dung"]').val(noiDungPhanHoi);
 });

@@ -213,6 +213,51 @@ $(document).on('click', '.btn-xoa-chuong', function () {
   });
 });
 
+// Xử lý modal xóa hàng loạt chương
+$(document).on('submit', '#form-xoa-hang-loat-chuong', function (e) {
+  e.preventDefault();
+  
+  const formData = new FormData(this);
+  const urlQuickDelete = $(this).attr("action");
+  const urlDetail = $(this).data('url-detail');
+
+  Swal.fire({
+    title: `Bạn có chắc chắn xóa các chương đã chọn không?`,
+    text: `Bạn sẽ không thể khôi phục chương này!`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Xóa",
+    cancelButtonText: "Hủy",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      $.ajax({
+        url: urlQuickDelete,
+        type: 'POST',
+        data: formData,
+        contentType: false, // Để jQuery không set Content-Type
+        processData: false, // Để không chuyển FormData thành chuỗi query
+        dataType: "json",
+        success: function (response) {
+          Swal.fire({
+            icon: response.icon,
+            title: response.message,
+          }).then(() => {
+            window.location.href = urlDetail;
+          });
+        },
+        error: function (xhr) {
+          alert(
+            "Đã xảy ra lỗi: " + xhr.status + " " + xhr.statusText
+          );
+        },
+      });
+    }
+  });
+});
+
+
 // Xử lý check tất cả bản ghi
 $('#check-all').on('change', function () {
   const isChecked = $(this).is(':checked');

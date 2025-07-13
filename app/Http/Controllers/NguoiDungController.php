@@ -57,7 +57,7 @@ class NguoiDungController extends Controller
                 'sdt' => [
                     'nullable',
                     'unique:nguoi_dung,sdt,' . session('id_nguoi_dung'),
-                    'regex:/^(\+84|0)\d{9}$/',
+                    'regex:/^0\d{9,10}$/',
                 ],
                 'hinh_anh' => 'image'
             ],
@@ -65,7 +65,7 @@ class NguoiDungController extends Controller
                 'ho_ten.required' => 'Vui lòng nhập họ tên',
                 'ho_ten.max' => 'Họ tên tối đa 100 ký tự',
                 'sdt.unique' => 'Số điện thoại đã tồn tại trong hệ thống',
-                'sdt.regex' => 'Số điện thoại phải bắt đầu +84 hoặc 0 và kế tiếp tối đa là 9 số',
+                'sdt.regex' => 'Số điện thoại phải là số và bắt đầu bằng số 0 và không quá 11 số',
                 'hinh_anh.image' => 'Hình ảnh không hợp lệ'
             ]
         );

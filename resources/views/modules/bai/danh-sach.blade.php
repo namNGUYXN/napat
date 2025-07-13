@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'Danh sách bài giảng')
+
 @section('content')
   <form id="csrfForm" class="d-none">
     @csrf
@@ -62,7 +64,8 @@
             </div>
 
             {{-- Form thao tác --}}
-            <form action="{{ route('bai.quick-delete') }}" method="POST">
+            <form action="{{ route('bai.quick-delete') }}" id="form-xoa-hang-loat-bai" method="POST"
+              data-url-detail="{{ route('bai.index', $chuong->id) }}">
               @csrf @method('DELETE')
               <input type="hidden" name="id_chuong" value="{{ $chuong->id }}">
 
@@ -94,7 +97,8 @@
                           <i class="fas fa-edit"></i>
                         </a>
                         <button type="button" class="btn btn-sm btn-outline-danger btn-delete-bai"
-                          data-url="{{ route('bai.delete', $bai->id) }}" title="Xóa">
+                          data-url-delete="{{ route('bai.delete', $bai->id) }}" title="Xóa"
+                          data-url-detail="{{ route('bai.index', $chuong->id) }}">
                           <i class="fas fa-trash-alt"></i>
                         </button>
                       </div>
@@ -146,7 +150,7 @@
     </div>
 
     {{-- Modal xóa bài --}}
-    <form action="" method="POST">
+    {{-- <form action="" method="POST">
       @csrf
       @method('DELETE')
       <div class="modal fade" id="modal-xoa-bai" tabindex="-1" aria-labelledby="" aria-hidden="true"
@@ -170,12 +174,12 @@
           </div>
         </div>
       </div>
-    </form>
+    </form> --}}
   </div>
 @endsection
 
 @section('styles')
-  <link rel="stylesheet" href="{{ asset('vendor/sortable/css/sortable.css') }}">
+  {{-- <link rel="stylesheet" href="{{ asset('vendor/sortable/css/sortable.css') }}"> --}}
   <link rel="stylesheet" href="{{ asset('modules/bai/css/danh-sach.css') }}">
 @endsection
 

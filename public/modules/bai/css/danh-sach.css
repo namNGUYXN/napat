@@ -1,4 +1,3 @@
-
 #noi-dung-bai img {
   max-width: 100%;
   height: auto;
@@ -11,12 +10,23 @@
   height: auto !important;
   aspect-ratio: 16 / 9;
 }
+
 .bai-card-title {
-    max-width: 100%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-weight: bold;
-    font-size: 16px;
-    text-align: center;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: bold;
+  font-size: 16px;
+  text-align: center;
+}
+
+.ghost {
+  opacity: 0.4;
+}
+
+#list-bai .draggable-item.chosen>.card {
+  background-color: var(--orange-50) !important;
+  cursor: grab;
+  transition: all 0.3s ease-in-out;
 }

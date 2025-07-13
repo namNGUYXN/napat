@@ -124,7 +124,7 @@ class ChuongController extends Controller
     public function capNhatThuTu(Request $request)
     {
         $inputThuTuChuong = $request->input('listThuTuChuong');
-        
+
         $listThuTuChuong = array_map('intval', $inputThuTuChuong);
 
         $result = $this->chuongService->capNhatThuTu($listThuTuChuong);
@@ -137,25 +137,22 @@ class ChuongController extends Controller
 
     public function xoaHangLoat(Request $request)
     {
-        // dd($request->all());
-
         if ($request->action == 'xoa') {
             $listIdChuong = array_map('intval', $request->list_id_chuong);
-            // dd($listIdChuong);
 
             $result = $this->chuongService->xoaHangLoat($listIdChuong);
 
             if ($result['success']) {
-                return redirect()->route('bai-giang.detail', $request->id_bai_giang)->with([
+                return response()->json([
                     'message' => $result['message'],
                     'icon' => 'success'
                 ]);
             }
 
-            return redirect()->route('bai-giang.detail', $request->id_bai_giang)->with([
-                'message' => $result['message'],
-                'icon' => 'error'
-            ]);
+            return response()->json([
+                    'message' => $result['message'],
+                    'icon' => 'error'
+                ]);
         }
     }
 }

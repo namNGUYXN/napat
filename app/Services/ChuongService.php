@@ -172,7 +172,22 @@ class ChuongService
         try {
             DB::beginTransaction();
 
-            $rows = Chuong::whereIn('id', $listIdChuong)->delete();
+            $soBai = 0;
+
+            $listChuong = Chuong::whereIn('id', $listIdChuong)->withCount('list_bai as so_luong_bai');
+
+            // dd($listChuong->toArray());
+
+            foreach ($listChuong->get() as $chuong) {
+                $soBai += $chuong->so_luong_bai;
+            }
+
+            // Kiểm tra chương có bài không
+            if ($soBai > 0) {
+                throw new \Exception('Không thể xóa vì có bài trong chương');
+            }
+
+            $rows = $listChuong->delete();
 
             DB::commit();
             return [

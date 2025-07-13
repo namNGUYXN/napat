@@ -17,9 +17,9 @@ class UploadImageHelper
     return $path;
   }
 
-  public function delete(string $path): bool
+  public function delete(string $path, $disk = 'public'): bool
   {
     // Xóa file trong storage/app/public
-    return Storage::disk('public')->delete($path);
+    return Storage::disk($disk)->delete($path);
   }
 }

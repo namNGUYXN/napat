@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Tài liệu - Danh sách bài giảng')
+@section('title', 'Chi tiết bài giảng')
 
 @section('content')
   <form id="csrfForm" class="d-none">
@@ -83,7 +83,8 @@
               Giữ vào một chương 0.5s sau đó có thể kéo thả để thiết lập vị trí
             </div>
 
-            <form action="{{ route('chuong.quick-delete') }}" method="POST">
+            <form action="{{ route('chuong.quick-delete') }}" id="form-xoa-hang-loat-chuong" method="POST"
+              data-url-detail="{{ route('bai-giang.detail', $baiGiang->id) }}">
               @csrf
               @method('DELETE')
               <input type="hidden" name="id_bai_giang" value="{{ $baiGiang->id }}">
@@ -91,7 +92,7 @@
               <div id="list-chuong" class="d-flex flex-column gap-2">
                 @forelse ($listChuong as $chuong)
                   <div class="p-3 bg-light border rounded shadow-sm folder-item" data-id="{{ $chuong->id }}"
-                    style="cursor: grab;" draggable="true">
+                    draggable="true">
 
                     <!-- Phần trên: icon + text -->
                     <div class="d-flex flex-column flex-md-row justify-content-between gap-2">

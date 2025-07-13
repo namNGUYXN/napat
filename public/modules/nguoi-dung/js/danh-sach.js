@@ -47,28 +47,49 @@ $(document).ready(function () {
     });
 });
 
-document
-    .querySelectorAll('.form-khoa-mo button[type="button"]')
-    .forEach((button) => {
-        button.addEventListener("click", function (e) {
-            const form = this.closest("form");
-            const action = form.getAttribute("data-action");
-            const ten = form.getAttribute("data-ten");
-            const isLock = this.classList.contains("btn-outline-danger"); // true nếu đang active
+// document
+//     .querySelectorAll('.form-khoa-mo button[type="button"]')
+//     .forEach((button) => {
+//         button.addEventListener("click", function (e) {
+//             const form = this.closest("form");
+//             const action = form.getAttribute("data-action");
+//             const ten = form.getAttribute("data-ten");
+//             const isLock = this.classList.contains("btn-outline-danger"); // true nếu đang active
 
-            Swal.fire({
-                title: isLock ? "Xác nhận khóa?" : "Xác nhận mở khóa?",
-                text: `${isLock ? "Khóa" : "Mở khóa"} người dùng "${ten}"?`,
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: isLock ? "Khóa" : "Mở khóa",
-                cancelButtonText: "Hủy bỏ",
-                reverseButtons: true,
-                confirmButtonColor: isLock ? "#d33" : "#28a745",
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    form.submit();
-                }
-            });
-        });
+//             Swal.fire({
+//                 title: isLock ? "Xác nhận khóa?" : "Xác nhận mở khóa?",
+//                 text: `${isLock ? "Khóa" : "Mở khóa"} người dùng "${ten}"?`,
+//                 icon: "warning",
+//                 showCancelButton: true,
+//                 confirmButtonText: isLock ? "Khóa" : "Mở khóa",
+//                 cancelButtonText: "Hủy bỏ",
+//                 reverseButtons: true,
+//                 confirmButtonColor: isLock ? "#d33" : "#28a745",
+//             }).then((result) => {
+//                 if (result.isConfirmed) {
+//                     form.submit();
+//                 }
+//             });
+//         });
+//     });
+
+$(document).on("click", '.form-khoa-mo button[type="button"]', function () {
+    const form = this.closest("form");
+    const ten = form.getAttribute("data-ten");
+    const isLock = this.classList.contains("btn-outline-danger"); // true nếu đang active
+
+    Swal.fire({
+        title: isLock ? "Xác nhận khóa?" : "Xác nhận mở khóa?",
+        text: `${isLock ? "Khóa" : "Mở khóa"} người dùng "${ten}"?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: isLock ? "Khóa" : "Mở khóa",
+        cancelButtonText: "Hủy bỏ",
+        reverseButtons: true,
+        confirmButtonColor: isLock ? "#d33" : "#28a745",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            form.submit();
+        }
     });
+});
