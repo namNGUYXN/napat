@@ -20,10 +20,10 @@
         </a>
         <ul class="submenu-sidebar custom-scrollbar">
           <li>
-            <a href="#" class="nav-link"><span class="nav-text">Xem danh sách</span></a>
+            <a href="/khoa" class="nav-link"><span class="nav-text">Xem danh sách</span></a>
           </li>
           <li>
-            <a href="#" class="nav-link"><span class="nav-text">Thêm Khoa mới</span></a>
+            <a href="{{ route('khoa.them') }}" class="nav-link"><span class="nav-text">Thêm Khoa mới</span></a>
           </li>
         </ul>
       </li>
@@ -35,10 +35,10 @@
         </a>
         <ul class="submenu-sidebar custom-scrollbar">
           <li>
-            <a href="#" class="nav-link"><span class="nav-text">Xem danh sách</span></a>
+            <a href="/nguoi-dung" class="nav-link"><span class="nav-text">Xem danh sách</span></a>
           </li>
           <li>
-            <a href="#" class="nav-link"><span class="nav-text">Thêm Người dùng mới</span></a>
+            <a href="{{ route('nguoi-dung.them') }}" class="nav-link"><span class="nav-text">Thêm Người dùng mới</span></a>
           </li>
         </ul>
       </li>
