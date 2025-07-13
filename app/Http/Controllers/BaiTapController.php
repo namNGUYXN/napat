@@ -6,18 +6,24 @@ use App\Services\BaiTapService;
 use Illuminate\Http\Request;
 use App\Services\ThanhVienLopService;
 use App\Services\LopHocPhanService;
+use App\Services\TienDoHocTapService;
+use App\Services\BaiTrongLopService;
 
 class BaiTapController extends Controller
 {
     protected $baiTapService;
     protected $thanhVienLopService;
     protected $lopHocPhanService;
+    protected $tienDoHocTapService;
+    protected $baiTrongLopService;
 
-    public function __construct(BaiTapService $baiTapService, ThanhVienLopService $thanhVienService, LopHocPhanService $lopHocPhanService)
+    public function __construct(BaiTapService $baiTapService, ThanhVienLopService $thanhVienService, LopHocPhanService $lopHocPhanService, TienDoHocTapService $tienDoHocTapService, BaiTrongLopService $baiTrongLopService)
     {
         $this->baiTapService = $baiTapService;
         $this->thanhVienLopService = $thanhVienService;
         $this->lopHocPhanService = $lopHocPhanService;
+        $this->tienDoHocTapService = $tienDoHocTapService;
+        $this->baiTrongLopService = $baiTrongLopService;
     }
 
     public function danhSachBaiTap($id)
@@ -50,7 +56,7 @@ class BaiTapController extends Controller
     }
 
     //Dữ liệu chi tiết bài kiểm tra theo id bài kiểm tra
-    public function layChiTiet($id, $lop)
+    public function layChiTiet($lop, $id)
     {
         $idNguoiDung = session('id_nguoi_dung');
         $vaiTro = session('vai_tro');
@@ -61,7 +67,7 @@ class BaiTapController extends Controller
     }
 
     //Trả về giao diện làm bài tập
-    function lamBai($id, $id_lop_hoc_phan)
+    function lamBai($id_lop_hoc_phan, $id)
     {
         $idNguoiDung = session('id_nguoi_dung');
         $baiTap = $this->baiTapService->getById($id);
@@ -94,7 +100,7 @@ class BaiTapController extends Controller
         $answers = $request->input('answers') ?? [];
         $id_lop_hoc_phan = $request->input('id_lop_hoc_phan');
 
-        $baiTap = $this->baiTapService->getById($idBaiTap);
+        $baiTap = $this->baiTapService->getByIdWithBai($idBaiTap);
 
         $idNguoiDung = session('id_nguoi_dung');
 
@@ -132,6 +138,11 @@ class BaiTapController extends Controller
                 'thongBao' => $ketQua['message'],
                 'lop' => $lopHocPhan
             ]);
+        }
+
+        $baiTrongLop = $this->baiTrongLopService->layBaiTrongLop($id_lop_hoc_phan, $baiTap->bai->id);
+        if ($baiTrongLop != null && $baiTrongLop->hoan_thanh_khi) {
+            $this->tienDoHocTapService->danhDauHoanThanh($thanhVienLop->id, $baiTrongLop->id);
         }
 
         return view('modules.lop-hoc.thong-bao', [

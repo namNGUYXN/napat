@@ -20,6 +20,12 @@
                 <button class="nav-link fw-bold" id="discussion-tab" data-bs-toggle="tab" data-bs-target="#discussion"
                     type="button" role="tab" aria-controls="discussion" aria-selected="false">Thảo luận</button>
             </li>
+            @if (session('vai_tro') == 'Giảng viên')
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link fw-bold" id="setting-tab" data-bs-toggle="tab" data-bs-target="#setting"
+                        type="button" role="tab" aria-controls="setting" aria-selected="true">Tùy chỉnh</button>
+                </li>
+            @endif
         </ul>
 
         <div class="tab-content" id="lectureTabsContent">
@@ -31,24 +37,42 @@
                     <div id="content-bai" class="custom-scrollbar position-relative">
                         {!! $baiTrongLop->bai->noi_dung !!}
                     </div>
+                    @if (session('vai_tro') == 'Sinh viên' && !$baiTrongLop->hoan_thanh_khi)
+                        @if (!$daHoanThanh)
+                            <div id="formWrapper">
+                                <form id="formDanhDauHoanThanh" class="mt-4"
+                                    data-url="{{ route('tien-do-hoc-tap.danh-dau-hoan-thanh', [$baiTrongLop->id]) }}">
+                                    @csrf
+                                    <button type="submit" class="btn btn-success rounded-pill px-4 py-2">
+                                        <i class="fas fa-check-circle me-1"></i> Đánh dấu hoàn thành bài học
+                                    </button>
+                                </form>
+                            </div>
+                        @else
+                            <div class="alert alert-success mt-4 d-inline-flex align-items-center" role="alert">
+                                <i class="fas fa-check-circle me-2"></i>
+                                Bạn đã hoàn thành bài học này.
+                            </div>
+                        @endif
+                    @endif
+
                 </div>
             </div>
-
 
             <!-- Tab Bài tập -->
             <div class="tab-pane fade" id="exercise" role="tabpanel" aria-labelledby="exercise-tab">
                 <div class="card border-0 shadow">
                     {{-- Tiêu đề và nút tạo bài tập (nếu cần) --}}
                     {{-- 
-    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center rounded-top">
-        <h5 class="mb-0">Danh sách bài tập</h5>
-        @if (session('vai_tro') == 'Giảng viên')
-            <button class="btn btn-light btn-sm" id="addNewExerciseBtn">
-                <i class="fas fa-plus-circle me-2"></i>Tạo bài tập
-            </button>
-        @endif
-    </div>
-    --}}
+                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center rounded-top">
+                            <h5 class="mb-0">Danh sách bài tập</h5>
+                            @if (session('vai_tro') == 'Giảng viên')
+                                <button class="btn btn-light btn-sm" id="addNewExerciseBtn">
+                                    <i class="fas fa-plus-circle me-2"></i>Tạo bài tập
+                                </button>
+                            @endif
+                        </div>
+                        --}}
 
                     <div class="card-body">
                         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 mt-1" id="danhSachBaiTap"
@@ -109,7 +133,6 @@
             <!-- Tab Thảo luận -->
             <div class="tab-pane fade" id="discussion" role="tabpanel" aria-labelledby="discussion-tab">
                 <div class="container-fluid">
-
                     <div class="card mb-4">
                         <div class="card-header bg-secondary text-white">
                             <h5 class="mb-0">Để lại bình luận của bạn</h5>
@@ -140,6 +163,60 @@
 
                 </div>
             </div>
+            <!-- Tab tùy chỉnh -->
+            @if (session('vai_tro') == 'Giảng viên')
+                <div class="tab-pane fade " id="setting" role="tabpanel" aria-labelledby="setting-tab">
+                    <div class="card shadow-sm border-0 rounded-4">
+                        <div class="card-body">
+                            <h5 class="fw-bold mb-4 text-primary">
+                                <i class="fas fa-check-circle me-2"></i>Điều kiện hoàn thành bài học
+                            </h5>
+
+                            <form id="formHoanThanhBai" method="POST"
+                                data-url="{{ route('bai-trong-lop.cap-nhat-hoan-thanh', [$baiTrongLop->id]) }}">
+                                @csrf
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="form-check border p-3 rounded-3 bg-light hover-shadow-sm">
+                                            <input class="form-check-input me-2" type="radio" name="hoan_thanh_khi"
+                                                id="hoanThanhTuDanhDau" value="0"
+                                                {{ !$baiTrongLop->hoan_thanh_khi ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="hoanThanhTuDanhDau">
+                                                <strong>Sinh viên tự đánh dấu hoàn thành</strong><br>
+                                                <small class="text-muted">Sinh viên chủ động xác nhận đã học xong.</small>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    @if ($baiTap->count() > 0)
+                                        <div class="col-md-6 mb-3">
+                                            <div class="form-check border p-3 rounded-3 bg-light hover-shadow-sm">
+                                                <input class="form-check-input me-2" type="radio" name="hoan_thanh_khi"
+                                                    id="hoanThanhBaiTap" value="1"
+                                                    {{ $baiTrongLop->hoan_thanh_khi ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="hoanThanhBaiTap">
+                                                    <strong>Hoàn thành bài tập được giao</strong><br>
+                                                    <small class="text-muted">Sinh viên cần nộp và hoàn thành bài tập để
+                                                        được đánh dấu.</small>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
+
+                                <div class="mt-4 text-end">
+                                    <button type="submit" class="btn btn-primary px-4">
+                                        <i class="fas fa-save me-1"></i> Lưu thay đổi
+                                    </button>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            @endif
+
         </div>
 
         <button class="btn btn-primary floating-btn rounded-circle" id="toggleMenu">

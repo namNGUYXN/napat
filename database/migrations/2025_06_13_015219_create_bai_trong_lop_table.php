@@ -18,6 +18,7 @@ class CreateBaiTrongLopTable extends Migration
             $table->unsignedBigInteger('id_lop_hoc_phan');
             $table->unsignedBigInteger('id_bai');
             $table->boolean('cong_khai')->default(false);
+            $table->boolean('hoan_thanh_khi')->default(false);
 
             $table->unique(['id_lop_hoc_phan', 'id_bai']);
             // FK
