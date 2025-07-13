@@ -24,9 +24,9 @@
             <ul class="dropdown-menu dropdown-menu-end">
               <li><button class="dropdown-item btn-update-ban-tin" type="button"
                   data-url-detail="{{ route('ban-tin.detail', $banTin->id) }}"
-                  data-url-update="{{ route('ban-tin.update', $banTin->id) }}">✏️ Chỉnh sửa</button></li>
+                  data-url-update="{{ route('ban-tin.update', $banTin->id) }}"><i class="fas fa-edit me-2"></i> Chỉnh sửa</button></li>
               <li><button class="dropdown-item btn-delete-ban-tin text-danger" type="button" data-type="bản tin"
-                  data-url-delete="{{ route('ban-tin.delete', $banTin->id) }}">🗑️ Xóa</button></li>
+                  data-url-delete="{{ route('ban-tin.delete', $banTin->id) }}"><i class="fas fa-trash-alt me-2 text-danger"></i> Xóa</button></li>
             </ul>
           </div>
         @endif
@@ -34,7 +34,7 @@
 
       {{-- Nội dung bản tin --}}
       <div class="news-content mb-3">
-        <div class="px-2 py-2 bg-light rounded">{!! $banTin->noi_dung !!}</div>
+        <div class="px-2 py-2 bg-light rounded clearfix">{!! $banTin->noi_dung !!}</div>
       </div>
 
       {{-- Phản hồi --}}
@@ -42,7 +42,7 @@
         @if (count($banTin->list_ban_tin_con) > 0)
           <a href="javascript:void(0)" class="text-decoration-none text-primary toggle-comments"
             data-bs-toggle="collapse" data-bs-target="#comments-{{ $banTin->id }}">
-            💬 {{ count($banTin->list_ban_tin_con) }} phản hồi
+            <i class="fas fa-comment text-secondary"></i> {{ count($banTin->list_ban_tin_con) }} phản hồi
           </a>
         @endif
       </div>
@@ -109,13 +109,13 @@
                         data-form-reply="#form-reply-{{ $banTin->id }}"
                         data-form-update-reply="#form-update-reply-{{ $banTin->id }}"
                         data-url-update="{{ route('phan-hoi.update', $cmt->id) }}">
-                        ✏️ Chỉnh sửa phản hồi
+                        <i class="fas fa-edit me-2"></i> Chỉnh sửa phản hồi
                       </button>
                     </li>
                     <li>
                       <button class="dropdown-item text-danger btn-delete-ban-tin" type="button" data-type="phản hồi"
                         data-url-delete="{{ route('ban-tin.delete', $cmt->id) }}">
-                        🗑️ Xóa phản hồi
+                        <i class="fas fa-trash-alt me-2 text-danger"></i> Xóa phản hồi
                       </button>
                     </li>
                   </ul>

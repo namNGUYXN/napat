@@ -64,7 +64,7 @@ class BaiKiemTraService
         try {
             $baiKiemTra = BaiKiemTra::create([
                 'tieu_de' => $data['tieuDe'],
-                'slug' => Str::slug($data['tieuDe']),
+                'slug' => '',
                 'diem_toi_da' => $data['diemToiDa'] ?? null,
                 'id_lop_hoc_phan' => $data['idLopHoc'],
                 'ngay_bat_dau' => Carbon::createFromFormat('d/m/Y H:i', $data['thoiGianBatDau']),
@@ -73,6 +73,9 @@ class BaiKiemTraService
                 'ngay_tao' => Carbon::now(),
                 'is_delete' => false
             ]);
+
+            $baiKiemTra->slug = Str::slug($data['tieuDe']) . '-' . $baiKiemTra->id;
+            $baiKiemTra->save();
 
             foreach ($data['danhSachCauHoi'] as $q) {
                 CauHoiBaiKiemTra::create([
@@ -444,7 +447,7 @@ class BaiKiemTraService
             $bai->update([
                 'tieu_de' => $data['tieu_de'],
                 'diem_toi_da' => $data['diem_toi_da'],
-                'slug' => Str::slug($data['tieu_de']),
+                'slug' => Str::slug($data['tieu_de']) . '-' . $bai->id,
                 'ngay_bat_dau' => Carbon::createFromFormat('d-m-Y H:i', $data['ngay_bat_dau']),
                 'ngay_ket_thuc' => Carbon::createFromFormat('d-m-Y H:i', $data['ngay_ket_thuc']),
                 'cho_phep_nop_qua_han' => $data['cho_phep_nop_qua_han'],

@@ -109,6 +109,7 @@ class NguoiDungService
             'sdt' => $data['sdt'] ?? null,
             'mat_khau' => $matKhau,
             'vai_tro' => $data['vai_tro'],
+            'hinh_anh' => 'images/nguoi-dung/no-avatar.png',
             'is_active' => true,
             'ngay_tao' => Carbon::now(),
         ]);
